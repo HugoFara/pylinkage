@@ -7,7 +7,7 @@ Created on Fri Apr 16 16:39:21 2021
 """
 from math import atan2, gcd, tau
 from abc import ABC
-from pylinkage.geometry import sqr_dist, circle_intersect, cyl_to_cart
+from pylinkage.lib.geometry import sqr_dist, circle_intersect, cyl_to_cart
 
 
 class UnbuildableError(Exception):

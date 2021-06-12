@@ -7,7 +7,7 @@ Created on Thu Apr 15 13:26:42 2021
 """
 
 import unittest
-import pylinkage.geometry as geo
+import  pylinkage.lib.geometry as geo
 
 
 class TestCircles(unittest.TestCase):
