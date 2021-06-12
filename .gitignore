@@ -1,0 +1,4 @@
+/lib/__pycache__
+*.log
+# Project generate several videos
+*.mp4
