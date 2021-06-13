@@ -9,6 +9,7 @@ General geometry functions.
 """
 import math
 
+
 def dist_builtin(point1, point2):
     """
     Euclidian distance between two 2D points.
@@ -18,11 +19,13 @@ def dist_builtin(point1, point2):
     return math.sqrt((point1[0] - point2[0]) ** 2
                      + (point1[1] - point2[1]) ** 2)
 
+
 if hasattr(math, 'dist'):
     dist = math.dist
 else:
     print('Unable to import dist from math. Using built-in function.')
     dist = dist_builtin
+
 
 def sqr_dist(point1, point2):
     """
@@ -32,14 +35,15 @@ def sqr_dist(point1, point2):
     """
     return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
 
+
 def norm(vec):
     """Return the norm of a 2-dimensional vector."""
     return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
+
 def cyl_to_cart(radius, theta, ori=(0, 0)):
     """
     Convert polar coordinates into cartesian.
-
 
     Arguments
     ---------
@@ -48,6 +52,7 @@ def cyl_to_cart(radius, theta, ori=(0, 0)):
     ori: origin point.
     """
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
+
 
 def __secant_circles_intersections__(distance, dist_x, dist_y, mid_dist,
                                      radius1, projected):
@@ -64,6 +69,7 @@ def __secant_circles_intersections__(distance, dist_x, dist_y, mid_dist,
         projected[1] + height * dist_x
     )
     return 2, inter1, inter2
+
 
 def circle_intersect(circle1, circle2, tol=0.0):
     """

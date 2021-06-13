@@ -1,11 +1,8 @@
-name: spyder-env
+name: pylinkage-env
 channels:
   - conda-forge
   - defaults
 dependencies:
-  - _libgcc_mutex=0.1=main
-  - alabaster=0.7.12=pyhd3eb1b0_0
-  - appdirs=1.4.4=py_0
   - matplotlib=3.3.4=py38h06a4308_0
   - matplotlib-base=3.3.4=py38h62a2d02_0
   - numpy=1.20.2=py38h2d18471_0

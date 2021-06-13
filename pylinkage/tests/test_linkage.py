@@ -43,9 +43,11 @@ class TestPivot(unittest.TestCase):
     def test_no_intersect(self):
         """Test system almost breaking."""
         pivot2 = Pivot(0, 3)
-        pivot3 = Pivot(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
+        pivot3 = Pivot(y=1, joint0=self.pivot1, joint1=pivot2,
+                       distance0=1, distance1=1)
         with self.assertRaises(UnbuildableError):
             pivot3.reload()
+
 
 class TestFixed(unittest.TestCase):
     """Test Fixed_Joint."""

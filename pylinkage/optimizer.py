@@ -73,6 +73,7 @@ def recurs_variator(ite, copy, coef_list, num=0):
             for j in recurs_variator(ite, copy, coef_list, num + 1):
                 yield j
 
+
 def exhaustive_optimization(eval_func, linkage, parameters, n_results=10,
                             delta_dim=.5, min_dim=2, max_dim=2):
     """
@@ -120,9 +121,9 @@ def exhaustive_optimization(eval_func, linkage, parameters, n_results=10,
 
 
 def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
-                               delta_dim=.3, iner=.8, leader=.6, follower=.8,
-                               neigh=1, lifetime=0, blind_iter=5, merge=.1,
-                               ite=1000, iterable=False, **kwargs):
+                                delta_dim=.3, iner=.8, leader=.6, follower=.8,
+                                neigh=1, lifetime=0, blind_iter=5, merge=.1,
+                                ite=1000, iterable=False, **kwargs):
     """
     Particle Swarm Optimization wrapper for pyswarms.
 
@@ -148,7 +149,8 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
     iner : float, optional
         Inertia of each particle, w in pyswarms. The default is .8.
     leader : float, optional
-        Learning coefficient of each particle, c1 in pyswarms. The default is .6.
+        Learning coefficient of each particle, c1 in pyswarms.
+        The default is .6.
     follower : float, optional
         Social coefficient, c2 in pyswarms. The default is .8.
     neigh : float, optional
@@ -197,7 +199,7 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
 
 
 class Particle(object):
-    """ Simple particle swarm optimization (PSO) class."""
+    """Simple particle swarm optimization (PSO) class."""
 
     __slots__ = ("pos", "speed", "eval", "ini", "swarm",
                  "index", "max_dist", "score", "best_score",
@@ -253,7 +255,6 @@ class Particle(object):
         if self.score >= self.best_score:
             self.best_pos, self.best_score = self.pos, self.score
         return self.score
-
 
     def update_neighbours(self):
         """Update this particle list of neighbours."""

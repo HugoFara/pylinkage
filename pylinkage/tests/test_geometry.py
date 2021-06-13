@@ -26,5 +26,6 @@ class TestCircles(unittest.TestCase):
         self.assertEqual(len(inter), 1)
         self.assertEqual(inter[0], 0)
 
+
 if __name__ == '__main__':
     unittest.main()
