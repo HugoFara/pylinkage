@@ -14,7 +14,8 @@ from numpy.linalg import norm
 # Particle swarm optimization
 from pyswarms.single.local_best import LocalBestPSO
 from pyswarms.utils.plotters import plot_cost_history
-from pylinkage.pylinkage.geometry import sqr_dist
+
+from .geometry import sqr_dist
 
 
 def variator(ite, delta_dim, min_dim=5, max_dim=5):
