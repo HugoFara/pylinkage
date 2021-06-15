@@ -184,17 +184,18 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
     optimizer = LocalBestPSO(
         n_particles=n_indi, dimensions=dims_len, options=options,
         init_pos=init_pos, **kwargs)
-    # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')               # First optimizer with blind iterations
+    # First optimizer with blind iterations
     optimizer.optimize(
-        #vectorized_eval_func,
-        lambda dims, pos: np.any(dims < np.zeros(len(dims))) * float('inf'),
-        blind_iter, pos=pos)
+        lambda dims: np.any(dims < np.zeros((len(dims), 1))) * float('inf'),
+        blind_iter)
     optimizer.reset()
+    # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')
     out = optimizer.optimize(
-        #vectorized_eval_func,
+        # vectorized_eval_func,
         lambda dims, pos: np.array([-eval_func(d, pos) for d in dims]),
         ite, pos=pos)
     plot_cost_history(optimizer.cost_history)
+    return optimizer
     return [(out[0], out[1], pos)]
 
 

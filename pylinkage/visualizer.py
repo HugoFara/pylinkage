@@ -10,10 +10,10 @@ This module makes visualisation of linkages easy using matplotlib.
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-from .linkage import Crank, Fixed, Static, Pivot
+from .linkage import Crank, Fixed, Static, Pivot, UnbuildableError
 
 # List of animations
-ani = []
+animations = []
 
 
 def plot_static_linkage(linkage, ax, locii, locus_highlights=None,
@@ -58,7 +58,7 @@ def plot_static_linkage(linkage, ax, locii, locus_highlights=None,
 
 def update_animated_plot(linkage, index, im, locii):
     """
-    Modify im to make the animation run faster.
+    Modify im, instead of recreating it to make the animation run faster.
 
     Parameters
     ----------
@@ -96,13 +96,13 @@ def update_animated_plot(linkage, index, im, locii):
     return im
 
 
-def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=.04):
+def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=40):
     """
     Plot a linkage with an animation.
 
     Parameters
     ----------
-    linkage : Linkage
+    linkage : pylinkage.linkage.Linkage
         DESCRIPTION.
     fig : matplotlib.figure.Figure
         Figure to support the axes.
@@ -113,7 +113,7 @@ def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=.04):
     frames : int, optional
         Number of frames to draw the linkage on. The default is None.
     interval : float, optional
-        Minimal amount of time between two frames. The default is .04 (24 fps).
+        Delay between frames in milliseconds. The default is 40 (24 fps).
 
     Returns
     -------
@@ -144,15 +144,18 @@ def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=.04):
                 max((max((i[0] for i in m)) for m in locii)) + padding)
     ax.set_ylim(min((min((i[1] for i in m)) for m in locii)),
                 max((max((i[1] for i in m)) for m in locii)) + padding)
-    ani.append(anim.FuncAnimation(
+    animation = anim.FuncAnimation(
         fig=fig,
-        func=lambda index: update_animated_plot(linkage, index, im, locii),
+        func=lambda index: update_animated_plot(linkage, index % len(locii),
+                                                im, locii),
         frames=frames, blit=True, interval=interval, repeat=True,
-        save_count=frames))
+        save_count=frames)
+    return animation
 
 
-def show_results(linkage, save=False, prev=None, L=None, title=str(len(ani)),
-                 duration=5, points=100, fps=24):
+def show_results(linkage, save=False, prev=None, locii=None, points=100,
+                 iteration_factor=1, title=str(len(animations)), duration=5,
+                 fps=24):
     """
     Display results as an animated drawing.
 
@@ -164,14 +167,19 @@ def show_results(linkage, save=False, prev=None, L=None, title=str(len(ani)),
         To save the animation. The default is False.
     prev : list, optional
         Previous coordinates to use for linkage. The default is None.
-    L : list, optional
+    locii : list, optional
         list of locii. The default is None.
+    points : int, optional
+        Number of point to draw for a crank revolution.
+        Useless when locii is set
+        The default is 100.
+    iteration_factor : float, optional
+        A simple way to subdivide the movement. The real number of points
+        will be points * iteration_factor. The default is 1.
     title : str, optional
         Figure title. The default is str(len(ani)).
     duration : float, optional
         Animation duration (in seconds). The default is 5.
-    points : int, optional
-        Number of point to draw for a crank revolution. The default is 100.
     fps : float, optional
         Number of frame per second for the output video. The default is 24.
 
@@ -182,21 +190,77 @@ def show_results(linkage, save=False, prev=None, L=None, title=str(len(ani)),
     """
     # Define intial positions
     linkage.rebuild(prev)
-    if L is None:
-        factor = int(12 / points) + 1
-        L = tuple(tuple(i) for i in linkage.step(
-            iterations=points * factor, dt=1 / factor))
+    if locii is None:
+        locii = tuple(tuple(i) for i in linkage.step(
+            iterations=points * iteration_factor, dt=1 / iteration_factor))
 
     fig = plt.figure("Result " + title, figsize=(14, 7))
     fig.clear()
     ax1 = fig.add_subplot(1, 2, 1)
-    plot_static_linkage(linkage, ax1, L, show_legend=True)
+    plot_static_linkage(linkage, ax1, locii, show_legend=True)
     ax2 = fig.add_subplot(1, 2, 2)
-    plot_animated_linkage(linkage, fig, ax2, L)
+    animation = plot_animated_linkage(linkage, fig, ax2, locii,
+                                      interval=1000 / fps)
     plt.tight_layout()
     plt.show(block=False)
     plt.pause(duration)
     plt.close()
     if save:
         writer = anim.FFMpegWriter(fps=fps, bitrate=3600)
-        ani[-1].save("Linkage animated.mp4", writer=writer)
+        animation.save("Kinamtic linkage animation.mp4", writer=writer)
+    # Save as global variable
+    animations.append(animation)
+    return animation
+
+
+def swarm_tiled_repr(linkage, swarm, fig, axes, dimension_func=None,
+                     points=12, iteration_factor=1):
+    """
+    Show all the linkages in a swarm in tiled mode.
+
+    Parameters
+    ----------
+    linkage : pylinkage.linkage.Linkage
+        The original Linkage that will be MODIFIED.
+    swarm : list
+        Sequence of 3 elements: agents, interation number and initial
+        positions.
+    fig : matplotlib.figure.Figure
+        Figure to support the axes.
+    axes : matplotlib.axes._subplots.AxesSubplot
+        The subplot to draw on.
+    points : int, optional
+        Number of steps to use for each Linkage. The default is 12.
+    iteration_factor : float, optional
+        A simple way to subdivide the movement. The real number of points
+        will be points * iteration_factor. The default is 1.
+    dimension_func : callable, optional
+        If you want a special formatting of dimensions from agents before
+        passing them to the linkage.
+
+    Returns
+    -------
+    None.
+
+    """
+    # fig.suptitle("Iteration: {}, agents: {}".format(swarm[1], len(agents)))
+    for i, dimensions in enumerate(swarm):
+        if dimension_func is None:
+            linkage.set_num_constraints(dimensions)
+        else:
+            linkage.set_num_constraints(dimension_func(dimensions))
+        axes.flatten()[i].clear()
+        try:
+            locii = tuple(
+                tuple(pos) for pos in linkage.step(
+                    iterations=points * iteration_factor,
+                    dt=1 / iteration_factor
+                    ))
+        except UnbuildableError:
+            pass
+        except Exception as err:
+            print(err)
+        else:
+            plot_static_linkage(linkage, axes.flatten()[i], locii)
+        # lines[i].set_data(agents[i][0])
+    # return lines
