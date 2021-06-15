@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``environment.yml``
 - ``setup.cfg`` now replaces ``setup.py``
 - ``tox.ini``
+- ``CHANGELOG.md``
 
 ### Changed
  -``.gitignore`` Python Package specific extensions added
@@ -34,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``MIT License``
 - ``requirements.txt``
 - ``setup.py``
-- ``tests/\_\_init\_\_.py``
+- ``tests/__init__.py``
 - ``tests/test_geometry.py``
 - ``tests/test_linkage.py``
 - ``.gitignore``
