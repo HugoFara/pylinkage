@@ -177,9 +177,9 @@ class Pivot(Joint):
         Circle is a tuple (abscisse, ordinate, radius).
         """
         if self.joint0 is joint:
-            return joint.x, joint.y, self.ref1[1]
-        elif self.joint1 is joint:
-            return joint.x, joint.y, self.ref2[1]
+            return joint.x, joint.y, self.r0
+        if self.joint1 is joint:
+            return joint.x, joint.y, self.r1
         raise ValueError(f'{joint} is not in joints of {self}')
 
     def reload(self):
@@ -223,10 +223,41 @@ class Pivot(Joint):
         self.r0, self.r1 = distance0 or self.r0, distance1 or self.r1
 
     def set_anchor0(self, joint, distance=None):
+        """
+        Set the first anchor for this Joint.
+
+        Parameters
+        ----------
+        joint : Joint
+            The joint to use as achor.
+        distance : float, optional
+            Distance to keep constant from the anchor. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         self.joint0 = joint
         self.set_constraints(distance0=distance)
 
     def set_anchor1(self, joint, distance=None):
+        """
+        Set the second anchor for this Joint.
+
+        Parameters
+        ----------
+        joint : Joint
+            The joint to use as achor.
+        distance : float, optional
+            Distance to keep constant from the anchor. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.joint1 = joint
         self.set_constraints(distance1=distance)
 
 
@@ -371,7 +402,28 @@ class Linkage():
 
     def hyperstaticity(self):
         """Return the hyperstaticity degree of the linkage in 2D."""
-        raise NotImplementedError('Not added in this version!')
+        # TODO : test it
+        # We have at least the frame
+        solids = 1
+        mobilities = 1
+        kinematic_indetermined = 0
+        for j in self.joints:
+            if isinstance(j, (Static, Fixed)):
+                pass
+            elif isinstance(j, Crank):
+                solids += 1
+                kinematic_indetermined += 2
+            elif isinstance(j, Pivot):
+                solids += 1
+                # A Pivot Joint create at least two pivots
+                kinematic_indetermined += 4
+                if not hasattr(j, 'joint1') or j.joint1 is None:
+                    mobilities += 1
+                else:
+                    solids += 1
+                    kinematic_indetermined += 2
+
+        return 3 * (solids - 1) - kinematic_indetermined + mobilities
 
     def step(self, iterations=None, dt=1):
         """
@@ -395,7 +447,7 @@ class Linkage():
         """
         if iterations is None:
             iterations = self.get_rotation_period()
-        for i in range(iterations):
+        for _ in range(iterations):
             for j in self._solve_order:
                 if isinstance(j, Crank):
                     j.reload(dt)

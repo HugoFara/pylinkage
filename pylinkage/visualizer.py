@@ -17,7 +17,7 @@ from .linkage import Crank, Fixed, Static, Pivot
 animations = []
 
 
-def plot_static_linkage(linkage, ax, locii, locus_highlights=None,
+def plot_static_linkage(linkage, axis, locii, locus_highlights=None,
                         show_legend=False):
     """
     Plot a linkage without movement.
@@ -26,7 +26,7 @@ def plot_static_linkage(linkage, ax, locii, locus_highlights=None,
     ----------
     linkage : Linkage
         The linkage you want to see.
-    ax : Artist
+    axis : Artist
         The graph we should draw on.
     locii : sequence
         List of list of coordinates. They will be plotted.
@@ -41,23 +41,23 @@ def plot_static_linkage(linkage, ax, locii, locus_highlights=None,
     None.
 
     """
-    ax.set_aspect('equal')
-    ax.grid(True)
+    axis.set_aspect('equal')
+    axis.grid(True)
     for i in range(len(linkage.joints)):
-        ax.plot(tuple(j[i][0] for j in locii), tuple(j[i][1] for j in locii))
+        axis.plot(tuple(j[i][0] for j in locii), tuple(j[i][1] for j in locii))
     if locus_highlights:
         for locus in locus_highlights:
-            ax.scatter(tuple(coord[0] for coord in locus),
-                       tuple(coord[1] for coord in i))
+            axis.scatter(tuple(coord[0] for coord in locus),
+                         tuple(coord[1] for coord in i))
     if show_legend:
-        ax.set_title("Individual joint locus")
-        ax.set_xlabel("Points abscisses")
-        ax.set_ylabel("Ordinates")
-        ax.legend(tuple(i.name for i in linkage.joints[:11]))
-        ax.set_xlim(min(min(i[0] for i in m) for m in locii) - 4)
+        axis.set_title("Individual joint locus")
+        axis.set_xlabel("Points abscisses")
+        axis.set_ylabel("Ordinates")
+        axis.legend(tuple(i.name for i in linkage.joints[:11]))
+        axis.set_xlim(min(min(i[0] for i in m) for m in locii) - 4)
 
 
-def update_animated_plot(linkage, index, im, locii):
+def update_animated_plot(linkage, index, images, locii):
     """
     Modify im, instead of recreating it to make the animation run faster.
 
@@ -67,7 +67,7 @@ def update_animated_plot(linkage, index, im, locii):
         DESCRIPTION.
     index : int
         Frame index.
-    im : list of images Artists
+    images : list of images Artists
         Artist to be modified.
     locii : list
         list of locuses.
@@ -78,7 +78,7 @@ def update_animated_plot(linkage, index, im, locii):
         Updated version.
 
     """
-    a = 0
+    image = iter(images)
     locus = locii[index]
     for j, pos in enumerate(locus):
         joint = linkage.joints[j]
@@ -86,18 +86,16 @@ def update_animated_plot(linkage, index, im, locii):
         if joint.joint0 is None:
             continue
         par_locus = locus[linkage.joints.index(joint.joint0)]
-        im[a].set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
-        a += 1
+        next(image).set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
         # Then second parent
         if isinstance(joint, (Crank, Static)):
             continue
         par_locus = locus[linkage.joints.index(joint.joint1)]
-        im[a].set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
-        a += 1
-    return im
+        next(image).set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
+    return images
 
 
-def plot_kinematic_linkage(linkage, fig, ax, locii, frames=None, interval=40):
+def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None, interval=40):
     """
     Plot a linkage with an animation.
 
@@ -107,7 +105,7 @@ def plot_kinematic_linkage(linkage, fig, ax, locii, frames=None, interval=40):
         DESCRIPTION.
     fig : matplotlib.figure.Figure
         Figure to support the axes.
-    ax : matplotlib.axes._subplots.AxesSubplot
+    axis : matplotlib.axes._subplots.AxesSubplot
         The subplot to draw on.
     locii : list
         list of list of coordinates.
@@ -121,34 +119,34 @@ def plot_kinematic_linkage(linkage, fig, ax, locii, frames=None, interval=40):
     None.
 
     """
-    ax.set_aspect('equal')
-    ax.set_title("Animation")
+    axis.set_aspect('equal')
+    axis.set_title("Animation")
 
-    im = []
+    images = []
     for j in linkage.joints:
         if isinstance(j, Static):
             # We will draw a fictive line with closest neighbor
             if j.joint0 is not None:
-                im.append(ax.plot([], [], c='k', animated=False)[0])
+                images.append(axis.plot([], [], c='k', animated=False)[0])
         elif isinstance(j, Crank):
             # Crank has one parent only
-            im.append(ax.plot([], [], c='g', animated=True)[0])
+            images.append(axis.plot([], [], c='g', animated=True)[0])
         elif isinstance(j, Fixed):
-            im.append(ax.plot([], [], c='r', animated=True)[0])
-            im.append(ax.plot([], [], c='r', animated=True)[0])
+            images.append(axis.plot([], [], c='r', animated=True)[0])
+            images.append(axis.plot([], [], c='r', animated=True)[0])
         elif isinstance(j, Pivot):
-            im.append(ax.plot([], [], c='b', animated=True)[0])
-            im.append(ax.plot([], [], c='b', animated=True)[0])
+            images.append(axis.plot([], [], c='b', animated=True)[0])
+            images.append(axis.plot([], [], c='b', animated=True)[0])
 
     padding = .5
-    ax.set_xlim(min((min((i[0] for i in m)) for m in locii)) - padding,
-                max((max((i[0] for i in m)) for m in locii)) + padding)
-    ax.set_ylim(min((min((i[1] for i in m)) for m in locii)),
-                max((max((i[1] for i in m)) for m in locii)) + padding)
+    axis.set_xlim(min((min((i[0] for i in m)) for m in locii)) - padding,
+                 max((max((i[0] for i in m)) for m in locii)) + padding)
+    axis.set_ylim(min((min((i[1] for i in m)) for m in locii)),
+                 max((max((i[1] for i in m)) for m in locii)) + padding)
     animation = anim.FuncAnimation(
         fig=fig,
         func=lambda index: update_animated_plot(linkage, index % len(locii),
-                                                im, locii),
+                                                images, locii),
         frames=frames, blit=True, interval=interval, repeat=True,
         save_count=frames)
     return animation
@@ -259,9 +257,5 @@ def swarm_tiled_repr(linkage, swarm, fig, axes, dimension_func=None,
                     ))
         except UnbuildableError:
             pass
-        except Exception as err:
-            print(err)
         else:
             plot_static_linkage(linkage, axes.flatten()[i], locii)
-        # lines[i].set_data(agents[i][0])
-    # return lines
