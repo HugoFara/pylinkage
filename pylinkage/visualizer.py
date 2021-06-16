@@ -10,7 +10,8 @@ This module makes visualisation of linkages easy using matplotlib.
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-from .linkage import Crank, Fixed, Static, Pivot, UnbuildableError
+from .exceptions import UnbuildableError
+from .linkage import Crank, Fixed, Static, Pivot
 
 # List of animations
 animations = []
@@ -96,7 +97,7 @@ def update_animated_plot(linkage, index, im, locii):
     return im
 
 
-def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=40):
+def plot_kinematic_linkage(linkage, fig, ax, locii, frames=None, interval=40):
     """
     Plot a linkage with an animation.
 
@@ -153,7 +154,7 @@ def plot_animated_linkage(linkage, fig, ax, locii, frames=None, interval=40):
     return animation
 
 
-def show_results(linkage, save=False, prev=None, locii=None, points=100,
+def show_linkage(linkage, save=False, prev=None, locii=None, points=100,
                  iteration_factor=1, title=str(len(animations)), duration=5,
                  fps=24):
     """
@@ -199,8 +200,8 @@ def show_results(linkage, save=False, prev=None, locii=None, points=100,
     ax1 = fig.add_subplot(1, 2, 1)
     plot_static_linkage(linkage, ax1, locii, show_legend=True)
     ax2 = fig.add_subplot(1, 2, 2)
-    animation = plot_animated_linkage(linkage, fig, ax2, locii,
-                                      interval=1000 / fps)
+    animation = plot_kinematic_linkage(linkage, fig, ax2, locii,
+                                       interval=1000 / fps)
     plt.tight_layout()
     plt.show(block=False)
     plt.pause(duration)

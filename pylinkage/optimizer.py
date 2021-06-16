@@ -121,9 +121,10 @@ def exhaustive_optimization(eval_func, linkage, parameters, n_results=10,
 
 
 def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
-                                delta_dim=.3, iner=.8, leader=.6, follower=.8,
+                                delta_dim=.3, iner=.5, leader=.3, follower=.6,
                                 neigh=1, lifetime=0, blind_iter=5, merge=.1,
-                                ite=1000, iterable=False, **kwargs):
+                                ite=1000, iterable=False, bounds=None,
+                                **kwargs):
     """
     Particle Swarm Optimization wrapper for pyswarms.
 
@@ -176,19 +177,11 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
 
     """
     dims_len = len(begin)
-    # A distribution not too far from initial position
-    init_pos = np.random.normal(loc=1., scale=.05,
-                                size=(n_indi, dims_len)) * begin
     options = {'c1': leader, 'c2': follower, 'w': iner, 'p': 1, 'k': 5}
     pos = tuple(j.coord() for j in linkage.joints)
     optimizer = LocalBestPSO(
         n_particles=n_indi, dimensions=dims_len, options=options,
-        init_pos=init_pos, **kwargs)
-    # First optimizer with blind iterations
-    optimizer.optimize(
-        lambda dims: np.any(dims < np.zeros((len(dims), 1))) * float('inf'),
-        blind_iter)
-    optimizer.reset()
+        bounds=bounds, **kwargs)
     # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')
     out = optimizer.optimize(
         # vectorized_eval_func,
@@ -208,14 +201,18 @@ class Particle(object):
 
     def __init__(self, pos, speed, ini, eva, swarm, max_dist=float('inf')):
         """
+        Generate swarm.
+
         Arguments:
         pos: particule position
         speed: intial velocity
         ini: additionnal data (initial position of the linkage)
         eva: evaluation function
         swarm: swarm the particule belongs to
-        max_dist: maximum distance at which another particule can attract this one
+        max_dist: maximum distance at which another particule can attract
+        this one
         """
+
         self.pos = np.array(pos)
         self.speed = np.array(speed)
         self.ini, self.eval = ini, eva
@@ -245,11 +242,21 @@ class Particle(object):
         for p in self.swarm:
             p.update_neighbours()
 
-    """ Methodes affecting single agent"""
+    """Methods affecting a single agent"""
+
     def new_score(self):
-        """ Gets the score at the current position and updates best_scores and
-        best_position if the new score is superior OR equal to the previous
-        one """
+        """
+        Get score at current position, update best_score and best_position.
+
+        The update is made  if the new score is superior OR equal to the
+        previous one.
+
+        Returns
+        -------
+        float
+            Current score.
+
+        """
         self.score = self.eval(self.pos, self.ini)
         # Large equality important when score is null.
         # (avoid staying on null position)

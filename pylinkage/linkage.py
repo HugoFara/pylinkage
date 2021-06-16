@@ -7,26 +7,8 @@ Created on Fri Apr 16 16:39:21 2021
 """
 from math import atan2, gcd, tau
 from abc import ABC
+from .exceptions import HypostaticError, UnbuildableError
 from .geometry import sqr_dist, circle_intersect, cyl_to_cart
-
-
-class UnbuildableError(Exception):
-    """Should be raised when the constraints cannont be solved."""
-
-    def __init__(self, joint, message='Unable to solve constraints'):
-        self.joint = joint
-        super().__init__(message)
-
-    def __str__(self):
-        return f"{self.joint} cannot be solved"
-
-
-class HypostaticError(Exception):
-    """Exception when the system can be solved in multiple ways."""
-
-    def __init__(self, linkage, message='The system is hypostatic!'):
-        self.linkage = linkage
-        super().__init__(message)
 
 
 class Joint(ABC):
