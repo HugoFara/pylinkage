@@ -6,7 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.2] - 2021-06-14
+## [0.2.1] - 2021-06-16
+### Added
+- ``swarm_tiled_repr`` function for  ``pylinkage/visualizer.py``, for vizualisation of PySwarms.
+- EXPERIMENTAL ! ``hyperstaticity`` method ``Linkage``'s hyperstaticity calculation.
+
+
+### Changed
+- ``pylinkage/exception.py`` now handles exceptions in another file.
+- Documentation improvements.
+- Python style improvements.
+- ``.gitignore`` now modifed from the standard GitHub gitignore example for Python.
+
+### Fixed
+- ``circle`` method of ``Pivot`` in ``pylinkage/linkage.py``.
+- ``tox.ini`` now fixed.
+
+## [0.2.0] - 2021-06-14
 ### Added
 - ``pylinkage/vizualizer.py`` view your linkages using matplotlib!
 - Issue templates in ``.github/ISSUE_TEMPLATE/``
