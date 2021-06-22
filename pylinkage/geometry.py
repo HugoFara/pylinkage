@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed May  5 17:34:45 2021
+Created on Wed May  5 17:34:45 2021.
 
 @author: HugoFara
 
@@ -142,4 +142,4 @@ def intersection(obj_1, obj_2, tol=0.0):
         return
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:
-        return intersection(obj_2, obj_1, tol)
+        return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)

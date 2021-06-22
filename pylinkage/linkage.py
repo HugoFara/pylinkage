@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 16 16:39:21 2021
+Created on Fri Apr 16 16:39:21 2021.
 
 @author: HugoFara
 """
@@ -78,9 +78,11 @@ class Static(Joint):
         return
 
     def set_anchor0(self, joint):
+        """First joint anchor."""
         self.joint0 = joint
 
     def set_anchor1(self, joint):
+        """Second joint anchor."""
         self.joint1 = joint
 
 
@@ -131,10 +133,12 @@ class Fixed(Joint):
         self.r, self.angle = distance or self.r, angle or self.angle
 
     def set_anchor0(self, joint, distance=None, angle=None):
+        """First joint anchor and characterisitcs."""
         self.joint0 = joint
         self.set_constraints(distance, angle)
 
     def set_anchor1(self, joint):
+        """Second joint anchor."""
         self.joint1 = joint
 
 
@@ -314,6 +318,7 @@ class Crank(Joint):
         self.r = distance or self.r
 
     def set_anchor0(self, joint, distance=None):
+        """First joint anchor and fixed distance."""
         self.joint0 = joint
         self.set_constraints(distance=distance)
 
@@ -457,8 +462,8 @@ class Linkage():
 
     def set_coords(self, coords):
         """Set coordinatess for all joints of the linkage."""
-        for j, c in zip(self.joints, coords):
-            j.set_coord(c)
+        for joint, constraint in zip(self.joints, coords):
+            joint.set_coord(constraint)
 
     def set_num_constraints(self, constraints):
         """
@@ -472,8 +477,8 @@ class Linkage():
         as self.joints. Each element will be passed to the set_constraints
         method of each correspondig Joint.
         """
-        for j, c in zip(self.joints, constraints):
-            j.set_constraints(*c)
+        for joint, constraint in zip(self.joints, constraints):
+            joint.set_constraints(*constraint)
 
     def get_rotation_period(self):
         """

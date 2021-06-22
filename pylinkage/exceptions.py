@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jun 16 15:20:06 2021
+Created on Wed Jun 16 15:20:06 2021.
 
 @author: HugoFara
 """
@@ -12,6 +12,7 @@ class UnbuildableError(Exception):
 
     def __init__(self, joint, message='Unable to solve constraints'):
         self.joint = joint
+        self.message = message
         super().__init__(message)
 
     def __str__(self):
@@ -24,7 +25,7 @@ class UnbuildableError(Exception):
             Name of the joint that can't be solved.
 
         """
-        return f"{self.joint} cannot be solved"
+        return f"{self.message} on {self.joint}"
 
 
 class HypostaticError(Exception):

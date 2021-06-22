@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Mar  8 13:51:45 2019
+Created on Fri Mar  8 13:51:45 2019.
 
 @author: HugoFara
 
@@ -85,12 +85,30 @@ def exhaustive_optimization(eval_func, linkage, parameters, n_results=10,
     Each dimensions set has a score, which is added in an array of n_results
     results, containg the linkages with best scores.
 
-    Arguments
-    ---------
-    * eval_func: evaluation function. Function of R^len(linkage.joints) → R.
-    * linkage: linkage to evaluate
-    * parameters: parameters that will be modified. Geometric constraints.
-    * n_results: number of best cancidates to keep
+    Parameters
+    ----------
+    eval_func : callable
+        Evaluation function. Its signature should be R^len(linkage.joints) → R.
+    linkage : pylinkage.linkage.Linkage
+        Linkage to evaluate.
+    parameters : list
+        Parameters that will be modified. Geometric constraints.
+    n_results : int, optional
+        Number of best cancidates to return. The default is 10.
+    delta_dim : float, optional
+        Dimension variation between two consecutive tries. The default is .5.
+    min_dim : float, optional
+        Minimal scale reduction.
+        Each parameter should not be below original size / min_dim.
+        The default is 2.
+    max_dim : float, optional
+        Maximal scale augmentation factor. The default is 2.
+
+    Returns
+    -------
+    results : tuple
+        tuple of dimensions, score, initial position for each Linkage to
+        return. Its size is {n_results}.
 
     """
     n = (max_dim - 1 / min_dim) / delta_dim

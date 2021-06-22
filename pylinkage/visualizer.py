@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jun 14 12:13:58 2021
+Created on Mon Jun 14 12:13:58 2021.
 
 @author: HugoFara
 
@@ -95,7 +95,8 @@ def update_animated_plot(linkage, index, images, locii):
     return images
 
 
-def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None, interval=40):
+def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None,
+                           interval=40):
     """
     Plot a linkage with an animation.
 
@@ -140,9 +141,9 @@ def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None, interval=40):
 
     padding = .5
     axis.set_xlim(min((min((i[0] for i in m)) for m in locii)) - padding,
-                 max((max((i[0] for i in m)) for m in locii)) + padding)
+                  max((max((i[0] for i in m)) for m in locii)) + padding)
     axis.set_ylim(min((min((i[1] for i in m)) for m in locii)),
-                 max((max((i[1] for i in m)) for m in locii)) + padding)
+                  max((max((i[1] for i in m)) for m in locii)) + padding)
     animation = anim.FuncAnimation(
         fig=fig,
         func=lambda index: update_animated_plot(linkage, index % len(locii),
