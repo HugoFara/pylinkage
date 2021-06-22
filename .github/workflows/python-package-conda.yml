@@ -1,4 +1,4 @@
-name: Check intergrity with conda
+name: Check integrity with conda
 
 on: [push]
 
