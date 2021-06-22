@@ -20,9 +20,9 @@ As of today, the code is segmented in three parts:
 
 Python 3, numpy for calculation, matplotlib for drawing, and standard libraries. You will also need PySwarms for the optimization since the built-in PSO is deprecated and will be removed soon.
 
-## Usage
+## Example
 
-Let's start with a crank-rocker four bar linkage. 
+Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki/Four-bar_linkage), as classic of mechanics. 
 
 ### Joints definition
 The first thing you need if to define points belonging to the frame:
@@ -38,7 +38,7 @@ frame_second = pl.Static(3, 0)
 
 Then we have to define at least one crank because we do a kinematic simulation.
 ```python
-crank = pl.Crank(0, 1, joint0=frame_first, angle=1, distance=1)
+crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1)
 ```
 
 Here you need some explanations: 
@@ -86,7 +86,7 @@ import pylinkage.linkage as pl
 frame_first = pl.Static(0, 0)
 frame_second = pl.Static(3, 0)
 # Main motor
-crank = pl.Crank(0, 1, joint0=frame_first, angle=1, distance=1)
+crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1)
 # Close the loop
 pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second, 
                distance0=3, distance1=1)
@@ -96,7 +96,7 @@ my_linkage = pl.Linkage(joints=(frame_first, frame_second, crank, pin))
 locus = my_linkage.step()
 ```
 
-### Vizualisation
+### Visualization
 Firsting first, you made a cool linkage, but only you know what it is. Let's add friendly names to joints, so the communication is simplified.
 ```python
 frame_first.name = "A"
@@ -124,7 +124,7 @@ import pylinkage.visualizer as visu
 frame_first = pl.Static(0, 0, name="A")
 frame_second = pl.Static(3, 0, name="D")
 # Main motor
-crank = pl.Crank(0, 1, joint0=frame_first, angle=1, distance=1, name="B")
+crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1, name="B")
 # Close the loop
 pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second,
                distance0=3, distance1=1, name="C")
@@ -140,4 +140,12 @@ visu.show_linkage(my_linkage)
 ```
 
 ### Optimization
-Documentation coming soon.
+Now, we want automatic optimization of our linkage, using a certain criterion. Let's find the four-bar linkage with the minimal distance between two points as output.
+
+Our objective function, often called the fitness function, is the following:
+```python
+def fitness_func(linkage, params):
+    """Return some stuff."""
+    linkage.set_constraints(*params)
+    return 0
+    """T
