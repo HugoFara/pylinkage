@@ -38,7 +38,7 @@ frame_second = pl.Static(3, 0)
 
 Then we have to define at least one crank because we do a kinematic simulation.
 ```python
-crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1)
+crank = pl.Crank(0, 1, joint0=frame_first, angle=0.31, distance=1)
 ```
 
 Here you need some explanations: 
@@ -148,4 +148,4 @@ def fitness_func(linkage, params):
     """Return some stuff."""
     linkage.set_constraints(*params)
     return 0
-    """T
+    """
