@@ -5,11 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+ - Code vulnerabilities checker
+
+### Changed
+ - More flexible package version in ``environment.yml``
+ - Output file name now is now formatted as "Kinematic {linkage.name}" in ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
+
+### Fixed
+ - When linkage animation was saved, last frames were often missing in``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``
 
 ## [0.2.1] - 2021-06-16
 ### Added
 - ``swarm_tiled_repr`` function for  ``pylinkage/visualizer.py``, for vizualisation of PySwarms.
-- EXPERIMENTAL ! ``hyperstaticity`` method ``Linkage``'s hyperstaticity calculation.
+- EXPERIMENTAL! ``hyperstaticity`` method ``Linkage``'s hyperstaticity calculation.
 
 
 ### Changed
@@ -19,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``.gitignore`` now modifed from the standard GitHub gitignore example for Python.
 
 ### Fixed
-- ``circle`` method of ``Pivot`` in ``pylinkage/linkage.py``.
+- ``circle`` method of ``Pivot`` in ``pylinkage/linkage.py``. was causing errors
 - ``tox.ini`` now fixed.
 
 ## [0.2.0] - 2021-06-14

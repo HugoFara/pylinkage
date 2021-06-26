@@ -2,6 +2,16 @@
 
 A linkage builder written in Python. This package is made to create planar linkages and optimize them kinematically thanks to [Particle Swarm Optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). It is still an early work, so it should receive great changes in the future.
 
+## Installation
+### Using pip
+This package is in the PyPi as [pylinkage](https://pypi.org/project/pylinkage/), and can be installed using:
+``pip install pylinkage``
+
+It is the recommended way downloading it, since the release versions are synced.
+
+### Setting up Virtual Environment
+We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/environment.yml) file for conda. Use ``conda env update --file environment.yml --name pylinkage-env`` to install the requirements in a separate environment. 
+
 ## Usage
 
 As of today, the code is segmented in three parts:
