@@ -95,7 +95,7 @@ def update_animated_plot(linkage, index, images, locii):
     return images
 
 
-def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None,
+def plot_kinematic_linkage(linkage, fig, axis, locii, frames=100,
                            interval=40):
     """
     Plot a linkage with an animation.
@@ -111,7 +111,7 @@ def plot_kinematic_linkage(linkage, fig, axis, locii, frames=None,
     locii : list
         list of list of coordinates.
     frames : int, optional
-        Number of frames to draw the linkage on. The default is None.
+        Number of frames to draw the linkage on. The default is 100.
     interval : float, optional
         Delay between frames in milliseconds. The default is 40 (24 fps).
 
@@ -207,7 +207,7 @@ def show_linkage(linkage, save=False, prev=None, locii=None, points=100,
     plt.close()
     if save:
         writer = anim.FFMpegWriter(fps=fps, bitrate=3600)
-        animation.save("Kinamtic linkage animation.mp4", writer=writer)
+        animation.save(f"Kinematic {linkage.name}.mp4", writer=writer)
     # Save as global variable
     animations.append(animation)
     return animation
