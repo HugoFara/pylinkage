@@ -125,7 +125,7 @@ import pylinkage.visualizer as visu
 
 visu.show_linkage(my_linkage)
 ```
-![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic_My_four-bar_linkage.gif)
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Last recap, rearranging names:
 ```python
@@ -248,6 +248,6 @@ Here again the result should be 0.0.
 
 So we made something that say it works, let's verify it:
 
-![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic_Windscreen_wiper.gif)
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic%20Windscreen%20wiper.gif)
 
 With a bit of imagination you have a wonderful windscreen wiper!
