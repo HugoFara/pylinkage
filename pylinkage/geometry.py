@@ -9,7 +9,6 @@ General geometry functions.
 """
 import math
 
-
 def dist_builtin(point1, point2):
     """
     Euclidian distance between two 2D points.
@@ -107,16 +106,18 @@ def circle_intersect(circle1, circle2, tol=0.0):
 
     # Distance from first circle's center to orthogonal projection
     # of circles intersections, on the axis between circles' centers
-    mid_dist = (radius1 ** 2 - radius2 ** 2 + distance ** 2) / (2 * distance)
-    # projected is easy now
+    mid_dist = (radius1 ** 2 - radius2 ** 2 + distance ** 2) / distance / 2
+
+    # projected point is easy to compute now
     projected = (
         x_1 + (mid_dist * dist_x) / distance,
         y_1 + (mid_dist * dist_y) / distance
     )
 
     if dual:
-        return __secant_circles_intersections__(distance, dist_x, dist_y,
-                                                mid_dist, radius1, projected)
+        return __secant_circles_intersections__(
+            distance, dist_x, dist_y, mid_dist, radius1, projected
+        )
     return 1, projected
 
 

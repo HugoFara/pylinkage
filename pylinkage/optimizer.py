@@ -138,7 +138,7 @@ def exhaustive_optimization(eval_func, linkage, parameters, n_results=10,
     return results
 
 
-def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
+def particle_swarm_optimization(eval_func, linkage, begin=None, n_indi=21,
                                 delta_dim=.3, iner=.5, leader=.3, follower=.6,
                                 neigh=1, lifetime=0, blind_iter=5, merge=.1,
                                 ite=1000, iterable=False, bounds=None,
@@ -160,7 +160,8 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
         Linkage to be optimized. Make sure to give an optimized linkage for
         better results
     begin : tuple of float
-        initial dimensions.
+        initial dimensions. If None, we will use linkage.get_num_constraints().
+        The default is None.
     n_indi : float, optional
         Number of particles in the swarm. The default is 21.
     delta_dim : float, optional
@@ -194,6 +195,8 @@ def particle_swarm_optimization(eval_func, linkage, begin, n_indi=21,
         List of 3 elements: best dimensions, best score and initial positions.
 
     """
+    if begin is None:
+        begin = tuple(linkage.get_num_constraints())
     dims_len = len(begin)
     options = {'c1': leader, 'c2': follower, 'w': iner, 'p': 1, 'k': 5}
     pos = tuple(j.coord() for j in linkage.joints)

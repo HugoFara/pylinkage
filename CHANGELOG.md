@@ -5,12 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.3.0] - 2021-07-05
 ### Added
+ - ``Joint`` objects now have a ``get_constraints`` method, consistent with their ``set_constraints`` one.
+ - ``Linkage`` now has a ``get_num_constraints`` method.
  - Code vulnerabilities checker
+ - Walktrough example has been expanded and now seems to be complete.
 
 ### Changed
+ - ``Linkage``'s method ``set_num_constraints`` behaviour changed! You should now add ``flat=False`` to come back to the previous behaviour.
+ - ``pylinkage/examples/fourbar_linkage.py`` expanded and finished.
+ - The ``begin`` parameter of ``article_swarm_optimization`` is now longer mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not provided.
  - More flexible package version in ``environment.yml``
  - Output file name now is now formatted as "Kinematic {linkage.name}" in ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
+ - Python 3.6 is no longer tested in ``tox.ini``. Python 3.9 is now tested.
 
 ### Fixed
  - When linkage animation was saved, last frames were often missing in``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``

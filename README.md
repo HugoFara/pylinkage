@@ -1,3 +1,4 @@
+[![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
 # pylinkage
 
 A linkage builder written in Python. This package is made to create planar linkages and optimize them kinematically thanks to [Particle Swarm Optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). It is still an early work, so it should receive great changes in the future.
@@ -124,6 +125,7 @@ import pylinkage.visualizer as visu
 
 visu.show_linkage(my_linkage)
 ```
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic_My_four-bar_linkage.gif)
 
 Last recap, rearranging names:
 ```python
@@ -150,12 +152,102 @@ visu.show_linkage(my_linkage)
 ```
 
 ### Optimization
-Now, we want automatic optimization of our linkage, using a certain criterion. Let's find the four-bar linkage with the minimal distance between two points as output.
+Now, we want automatic optimization of our linkage, using a certain criterion. Let's find a four-bar linkage that make a quarter of a circle. It is a common problem if you want to build a [windscreen wiper](https://en.wikipedia.org/wiki/Windscreen_wiper) for instance.
 
 Our objective function, often called the fitness function, is the following:
 ```python
-def fitness_func(linkage, params):
-    """Return some stuff."""
-    linkage.set_constraints(*params)
-    return 0
+def fitness_func(linkage, params, *args):
     """
+    Return how fit the locus is to describe a quarter of circle.
+
+    It is a minisation problem and the theorical best score is 0.
+    """
+    linkage.set_num_constraints(params)
+    try:
+        points = 12
+        n = linkage.get_rotation_period()
+        # Complete revolution with 12 points
+        tuple(tuple(i) for i in linkage.step(iterations=points + 1,
+                                             dt=n/points))
+        # Again with n points, and at least 12 iterations
+        n = 96
+        factor = int(points / n) + 1
+        L = tuple(tuple(i) for i in linkage.step(
+            iterations=n * factor, dt=1 / factor))
+    except UnbuildableError:
+        return -float('inf')
+    else:
+        # Locus of the Joint 'pin", mast in linkage order
+        foot_locus = tuple(x[-1] for x in L)
+        # We get the bounding box
+        min_x = min_y = float('inf')
+        max_x = max_y = -float('inf')
+        for x, y in foot_locus:
+            min_x = min(min_x, x)
+            min_y = min(min_y, y)
+            max_x = max(max_x, x)
+            max_y = max(max_y, y)
+        curr_bb = (min_x, min_y, max_x, max_y)
+        # We set the reference bounding box with frame_second as down-left
+        # corner and size 2
+        ref_bb = (frame_second.x, frame_second.y,
+                  frame_second.x + 2, frame_second.y + 2)
+        # Our score is the square sum of the edges distances
+        return -sum((pos - ref_pos) ** 2
+                    for pos, ref_pos in zip(curr_bb, ref_bb))
+```
+Please not that it is a *minization* problem, with 0 as lower bound.
+
+We need to get the geometric constraints as the optimization parameters.
+``constraints = tuple(my_linkage.get_num_constraints())```
+
+With this constraints, score should be around -3. 
+
+Let's start with a candide optimization, the [trial-and-error](https://en.wikipedia.org/wiki/Trial_and_error) method. Here it is a serial test of switches.
+```python
+# Exhaustive optimization as an example ONLY
+score, position, coord = opti.exhaustive_optimization(
+    eval_func=fitness_func,
+    linkage=my_linkage,
+    parameters=constraints,
+    delta_dim=.1,
+    n_results=1,
+)[0]
+
+```
+Here the problem is simple enough, so that method typical return the maximal theorical value of 0.0.
+
+However, with more complex linkages you need something more robust, and more efficient. Then we will use [particle swarm optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). Here are the principles:
+* The parameters are the geometric constrints (the dimensions) of the linkage.
+* A dimension set (a n-uplet) is called a *particule* or an *agents*. Think of it like a bee.
+* The particles move in a n-vectorial space. That is, if we have n geometric constraints, the particules move in a n-D space.
+* Together, the particules form the *swarm*.
+* Each time they move, their score is evaluated by our fitness function.
+* They know their best score, and know the current score of they neighbours.
+* Together they will try find the extremum in the space. Here it is a minimum.
+
+it is particularly relevant when the fitness function is not resource-greedy.
+
+Due to incompatibilities, we need a wrapper.
+```python
+# A simple wrapper
+def PSO_fitness_wrapper(constraints, *args):
+    """A simple wrapper to make the fitness function compatible."""
+    return fitness_func(my_linkage, constraints, *args)
+
+# We reinitialize the linkage (an optimal linkage is not interesting)
+my_linkage.set_num_constraints(constraints)
+
+# Particle Swarm Optimization
+score = opti.particle_swarm_optimization(
+    eval_func=PSO_fitness_wrapper,
+    linkage=my_linkage,
+).swarm.best_cost
+```
+Here again the result should be 0.0.
+
+So we made something that say it works, let's verify it:
+
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/pylinkage/examples/images/Kinematic_Windscreen_wiper.gif)
+
+With a bit of imagination you have a wonderful windscreen wiper!

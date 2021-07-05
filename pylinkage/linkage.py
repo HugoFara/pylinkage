@@ -5,6 +5,7 @@ Created on Fri Apr 16 16:39:21 2021.
 
 @author: HugoFara
 """
+import abc
 from math import atan2, gcd, tau
 from abc import ABC
 from .exceptions import HypostaticError, UnbuildableError
@@ -56,6 +57,20 @@ class Joint(ABC):
         else:
             self.x, self.y = args[0], args[1]
 
+    @abc.abstractmethod
+    def get_constraints(self):
+        """Return geometric constraints applying to this Joint."""
+        raise NotImplementedError(
+            "You can't call a constraint from an abstract class."
+        )
+
+    @abc.abstractmethod
+    def set_constraints(self, *args):
+        """Set geometric constraints applying to this Joint."""
+        raise NotImplementedError(
+            "You can't set a constraint from an abstract class."
+        )
+
 
 class Static(Joint):
     """
@@ -70,12 +85,16 @@ class Static(Joint):
         super().__init__(x, y, name=name)
 
     def reload(self):
-        """Do nothing, for consistence only."""
-        return
+        """Do nothing, for consistency only."""
+        pass
+
+    def get_constraints(self):
+        """Return an empty tuple."""
+        return ()
 
     def set_constraints(self, *args):
-        """Do nothing, for consistence only."""
-        return
+        """Do nothing, for consistency only."""
+        pass
 
     def set_anchor0(self, joint):
         """First joint anchor."""
@@ -127,6 +146,10 @@ class Fixed(Joint):
         # Position in global space
         self.x, self.y = cyl_to_cart(self.r, self.angle + rot,
                                      self.joint0.coord())
+
+    def get_constraints(self):
+        """Return the constraining distance and angle parameters."""
+        return self.r, self.angle
 
     def set_constraints(self, distance=None, angle=None):
         """Set geometric constraints."""
@@ -221,6 +244,9 @@ class Pivot(Joint):
                                                        self.coord()))
                 self.x, self.y = [i + j * coco[1][2] for i, j in zip(coco[1],
                                   vect)]
+    def get_constraints(self):
+        """Return the two constraining distances of this joint."""
+        return self.r0, self.r1
 
     def set_constraints(self, distance0=None, distance1=None):
         """Set geometric constraints."""
@@ -312,6 +338,10 @@ class Crank(Joint):
         rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
         self.x, self.y = cyl_to_cart(self.r, rot + self.angle * dt,
                                      self.joint0.coord())
+
+    def get_constraints(self):
+        """Return the distance to the center of rotation."""
+        return (self.r,)
 
     def set_constraints(self, distance=None, *args):
         """Set geometric constraints, only self.r is affected."""
@@ -465,20 +495,60 @@ class Linkage():
         for joint, constraint in zip(self.joints, coords):
             joint.set_coord(constraint)
 
-    def set_num_constraints(self, constraints):
+    def get_num_constraints(self, flat=True):
+        """
+        Return numeric constraints of this linkage.
+
+        Parameters
+        ----------
+        flat : bool
+            Whether to force one-dimensionnal representation of constraints.
+            The default is True.
+
+        Returns
+        -------
+        constraints : list
+            List of geometric constraints.
+        """
+        constraints = []
+        for joint in self.joints:
+            for constraint in joint.get_constraints():
+                if flat:
+                    constraints.append(constraint)
+                else:
+                    constraints.extend(constraint)
+        return constraints
+
+    def set_num_constraints(self, constraints, flat=True):
         """
         Set numeric constraints for this linkage.
 
         Numeric constraints are distances or angles between joints.
 
-        Arguments
-        ---------
-        * constraints: a sequence of tuples of digits. Should be in same order
-        as self.joints. Each element will be passed to the set_constraints
-        method of each correspondig Joint.
+        Parameters
+        ----------
+        constraints : sequence
+            Sequence of constraints to pass to the joints.
+        flat : bool
+            If flat is True, should be a one-dimensionnal sequence of floats.
+            If flat is False, should be a sequence of tuples of digits.
+                Each element will be passed to the set_constraints method of
+                each correspondig Joint.
+            The default is True.
         """
-        for joint, constraint in zip(self.joints, constraints):
-            joint.set_constraints(*constraint)
+        if flat:
+            # Is in charge of redistributing constraints
+            dispatcher = iter(constraints)
+            for joint in self.joints:
+                if isinstance(joint, Static):
+                    pass
+                elif isinstance(joint, Crank):
+                    joint.set_constraints(next(dispatcher))
+                elif isinstance(joint, (Fixed, Pivot)):
+                    joint.set_constraints(next(dispatcher), next(dispatcher))
+        else:
+            for joint, constraint in zip(self.joints, constraints):
+                joint.set_constraints(constraint)
 
     def get_rotation_period(self):
         """
