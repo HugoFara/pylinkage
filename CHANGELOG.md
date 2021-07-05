@@ -16,13 +16,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
  - ``Linkage``'s method ``set_num_constraints`` behaviour changed! You should now add ``flat=False`` to come back to the previous behaviour.
  - ``pylinkage/examples/fourbar_linkage.py`` expanded and finished.
- - The ``begin`` parameter of ``article_swarm_optimization`` is now longer mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not provided.
+ - The ``begin`` parameter of ``article_swarm_optimization`` is no longer mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not provided.
  - More flexible package version in ``environment.yml``
  - Output file name now is now formatted as "Kinematic {linkage.name}" in ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
  - Python 3.6 is no longer tested in ``tox.ini``. Python 3.9 is now tested.
 
 ### Fixed
- - When linkage animation was saved, last frames were often missing in``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``
+ - When linkage animation was saved, last frames were often missing in``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``.
+
+## [0.2.2] - 2021-06-22
+### Added
+ - More continuous integrations workflows for multiple Python versions.
+
+### Fixed
+ - ``README.md`` could not be seen in PyPi.
+ - Various types
 
 ## [0.2.1] - 2021-06-16
 ### Added
