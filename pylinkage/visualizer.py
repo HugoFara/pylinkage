@@ -58,7 +58,7 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
     """
     axis.set_aspect('equal')
     axis.grid(True)
-    # Plot locuses
+    # Plot loci
     for i, joint in enumerate(linkage.joints):
         axis.plot(tuple(j[i][0] for j in loci), tuple(j[i][1] for j in loci))
         # Then the linkage in initial position
@@ -80,14 +80,11 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
             c=_get_color(joint)
         )
 
+    # Highlight for specific loci
     if locus_highlights:
         for locus in locus_highlights:
             axis.scatter(tuple(coord[0] for coord in locus),
                          tuple(coord[1] for coord in i))
-
-
-        par_locus = locus[linkage.joints.index(joint.joint1)]
-        next(image).set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
 
     if show_legend:
         axis.set_title("Static representation")

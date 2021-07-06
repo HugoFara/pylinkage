@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - ``movement_bounding_box`` in ``visualizer.py`` to get the bounding box of multiple loci.
  - ``parameters`` is optional in ``trials_and_errors_optimization`` (former ``exhaustive_optimization``)
  - ``pylinkage/tests/test_optimizer.py`` for testing the optimizers, but it is a bit ugly as for now.
+ - Flake8 validation in ``tox.ini``
 
 ### Fixed
  - ``set_num_constraints`` in ``Linkage`` was misbehaving due to update 0.3.0.
@@ -30,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
  - Legacy built-in Particle Swarm Optimization, to avoid confusions.
- - We do no longer show a default legend on static representation
+ - We do no longer show a default legend on static representation.
 
 ## [0.3.0] - 2021-07-05
 ### Added
