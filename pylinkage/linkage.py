@@ -90,7 +90,7 @@ class Static(Joint):
 
     def get_constraints(self):
         """Return an empty tuple."""
-        return ()
+        return tuple()
 
     def set_constraints(self, *args):
         """Do nothing, for consistency only."""
@@ -385,7 +385,7 @@ class Linkage():
         self._solve_order = order
 
     def __find_solving_order__(self):
-        """Automatically finds solving order."""
+        """Find solving order automatically (experimental)."""
         # TODO : test it
         solvable = [j for j in self.joints if isinstance(j, Static)]
         # True of new joints where added in the current pass
@@ -406,7 +406,7 @@ class Linkage():
             raise HypostaticError(
                 'Unable to determine automatic order!'
                 'Those joints are left unsolved:'
-                ','.join(j for j in self.joints if j not in solvable)
+                ','.join(str(j) for j in self.joints if j not in solvable)
                 )
         self._solve_order = tuple(solvable)
         raise NotImplementedError('Unable to determine automatic order')
@@ -416,10 +416,13 @@ class Linkage():
         """
         Redifine linkage joints and given intial positions to joints.
 
-        pos: a tuple of initial positions, in the same order as linka["order"],
-        for linka["crank"] at position (0, -1). Fixed_Joint WON'T be modified.
-        Coordinates does not need to be precise, they will allow us the best
-        fitting position between all possible positions satifying constraints.
+        Parameters
+        ----------
+        pos : tuple[tuple[int]]
+            Initial positions for each joint in self.joints.
+            Coordinates does not need to be precise, they will allow us the best
+            fitting position between all possible positions satifying
+            constraints.
         """
         if not hasattr(self, '_solve_order'):
             self.__find_solving_order__()
@@ -428,12 +431,16 @@ class Linkage():
         # Parents joint do not have children.
         if pos is not None:
             # Defintition of initial coordinates
-            for p, j in zip(pos, self.joints):
-                j.set_coord(p)
+            self.set_coords(pos)
 
-    def get_pos(self):
+    def get_coords(self):
         """Return positions of all elements of the system."""
-        return (j.coord() for j in self.joints)
+        return [j.coord() for j in self.joints]
+
+    def set_coords(self, coords):
+        """Set coordinatess for all joints of the linkage."""
+        for joint, coord in zip(self.joints, coords):
+            joint.set_coord(coord)
 
     def hyperstaticity(self):
         """Return the hyperstaticity degree of the linkage in 2D."""
@@ -490,11 +497,6 @@ class Linkage():
                     j.reload()
             yield tuple(j.coord() for j in self.joints)
 
-    def set_coords(self, coords):
-        """Set coordinatess for all joints of the linkage."""
-        for joint, constraint in zip(self.joints, coords):
-            joint.set_coord(constraint)
-
     def get_num_constraints(self, flat=True):
         """
         Return numeric constraints of this linkage.
@@ -512,11 +514,10 @@ class Linkage():
         """
         constraints = []
         for joint in self.joints:
-            for constraint in joint.get_constraints():
-                if flat:
-                    constraints.append(constraint)
-                else:
-                    constraints.extend(constraint)
+            if flat:
+                constraints.extend(joint.get_constraints())
+            else:
+                constraints.append(joint.get_constraints())
         return constraints
 
     def set_num_constraints(self, constraints, flat=True):
@@ -548,7 +549,7 @@ class Linkage():
                     joint.set_constraints(next(dispatcher), next(dispatcher))
         else:
             for joint, constraint in zip(self.joints, constraints):
-                joint.set_constraints(constraint)
+                joint.set_constraints(*constraint)
 
     def get_rotation_period(self):
         """

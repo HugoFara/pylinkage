@@ -144,3 +144,28 @@ def intersection(obj_1, obj_2, tol=0.0):
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:
         return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)
+
+def bounding_box(locus):
+    """
+    Compute the bounding box of a locus.
+
+    Parameters
+    ----------
+    locus : list[tuple[float]]
+        A list of point or any iterable with the same structure.
+
+    Returns
+    -------
+    tuple[float]
+        Bounding box as (y_min, x_max, y_max, x_min).
+    """
+    y_min = float('inf')
+    x_min = float('inf')
+    y_max = -float('inf')
+    x_max = -float('inf')
+    for point in locus:
+        y_min = min(y_min, point[1])
+        x_min = min(x_min, point[0])
+        y_max = max(y_max, point[1])
+        x_max = max(x_max, point[0])
+    return (y_min, x_max, y_max, x_min)

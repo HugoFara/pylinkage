@@ -143,9 +143,10 @@ pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second,
 
 # Linkage definition
 my_linkage = pl.Linkage(
-    joints=(frame_first, frame_second, crank, pin),
-    order=(frame_first, frame_second, crank, pin),
-    name="My four-bar linkage")
+    joints=(crank, pin),
+    order=(crank, pin),
+    name="My four-bar linkage"
+)
 
 # Visualization
 visu.show_linkage(my_linkage)
@@ -156,12 +157,18 @@ Now, we want automatic optimization of our linkage, using a certain criterion. L
 
 Our objective function, often called the fitness function, is the following:
 ```python
+from pylinkage.geometry import bounding_box
+
+# We save initial position because we don't want a completely different movement
+init_pos = my_linkage.get_coords()
+
 def fitness_func(linkage, params, *args):
     """
     Return how fit the locus is to describe a quarter of circle.
 
     It is a minisation problem and the theorical best score is 0.
     """
+    linkage.set_coords(init_pos)
     linkage.set_num_constraints(params)
     try:
         points = 12
@@ -178,20 +185,13 @@ def fitness_func(linkage, params, *args):
         return -float('inf')
     else:
         # Locus of the Joint 'pin", mast in linkage order
-        foot_locus = tuple(x[-1] for x in L)
+        tip_locus = tuple(x[-1] for x in L)
         # We get the bounding box
-        min_x = min_y = float('inf')
-        max_x = max_y = -float('inf')
-        for x, y in foot_locus:
-            min_x = min(min_x, x)
-            min_y = min(min_y, y)
-            max_x = max(max_x, x)
-            max_y = max(max_y, y)
-        curr_bb = (min_x, min_y, max_x, max_y)
+        curr_bb = bounding_box(tip_locus)
         # We set the reference bounding box with frame_second as down-left
         # corner and size 2
-        ref_bb = (frame_second.x, frame_second.y,
-                  frame_second.x + 2, frame_second.y + 2)
+        ref_bb = (frame_second.y, frame_second.x + 2,
+                  frame_second.y + 2, frame_second.x)
         # Our score is the square sum of the edges distances
         return -sum((pos - ref_pos) ** 2
                     for pos, ref_pos in zip(curr_bb, ref_bb))
@@ -209,7 +209,6 @@ Let's start with a candide optimization, the [trial-and-error](https://en.wikipe
 score, position, coord = opti.exhaustive_optimization(
     eval_func=fitness_func,
     linkage=my_linkage,
-    parameters=constraints,
     delta_dim=.1,
     n_results=1,
 )[0]
@@ -235,14 +234,24 @@ def PSO_fitness_wrapper(constraints, *args):
     """A simple wrapper to make the fitness function compatible."""
     return fitness_func(my_linkage, constraints, *args)
 
+
 # We reinitialize the linkage (an optimal linkage is not interesting)
 my_linkage.set_num_constraints(constraints)
+# As we do for initial positions
+my_linkage.set_coords(init_pos)
 
-# Particle Swarm Optimization
+
+import numpy as np
+
+# Optimization is more efficient with a start space
+bounds = (np.zeros(len(constraints)), np.ones(len(constraints)) * 5)
+
 score = opti.particle_swarm_optimization(
     eval_func=PSO_fitness_wrapper,
     linkage=my_linkage,
+    bounds=bounds
 ).swarm.best_cost
+
 ```
 Here again the result should be 0.0.
 

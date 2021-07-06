@@ -6,10 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2021-07-06
+### Added
+ - The ``bounding_box`` method of geometry allow to compute the bounding box of a finite set of 2D points. 
+ - You can now customize colors of linkage's bars with the ``COLOR_SWITCHER`` variable of ``visualizer.py``.
+ - ``movement_bounding_box`` in ``visualizer.py`` to get the bounding box of multiple loci.
+ - ``parameters`` is optional in ``trials_and_errors_optimization`` (former ``exhaustive_optimization``)
+ - ``pylinkage/tests/test_optimizer.py`` for testing the optimizers, but it is a bit ugly as for now.
+
+### Fixed
+ - ``set_num_constraints`` in ``Linkage`` was misbehaving due to update 0.3.0.
+ - Cost history is no longer plotted automatically after a PSO.
+
+### Changed
+ - ``exhaustive_optimization`` is now known as ``trials_and_errors_optimizattion``.
+ - Axis on linkage visualization are now named "x" and "y", and no longer "Points abcsices" and "Ordinates".
+ - A default view of the linkage is displayed in ``plot_static_linkage``.
+ - Default padding in linkage representation was changed from an absolute value of 0.5 to a relative 20%.
+ - Static view of linkage is now aligned with its kinematic one.
+ - ``get_pos`` method of ``Linkage`` is now known as ``get_coords`` for consistency.
+ - Parameters renamed, reorganized and removed in ``particle_swarm_optimization`` to align to PySwarms.
+ - ``README.md`` updated consequently to the changes.
+
+### Removed
+ - Legacy built-in Particle Swarm Optimization, to avoid confusions.
+ - We do no longer show a default legend on static representation
+
 ## [0.3.0] - 2021-07-05
 ### Added
  - ``Joint`` objects now have a ``get_constraints`` method, consistent with their ``set_constraints`` one.
- - ``Linkage`` now has a ``get_num_constraints`` method.
+ - ``Linkage`` now has a ``get_num_constraints`` method as synctactic sugar.
  - Code vulnerabilities checker
  - Walktrough example has been expanded and now seems to be complete.
 
