@@ -5,14 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.4.1] - 2021-07-11
 ### Added
  - The legend in ``visualizer.py`` is back!
  - Documentation published to GitHub pages! It is contained in the ``docs/`` folder.
  - ``setup.cfg`` now include links to the website.
 
 ### Changed
- - Examples moved from ``pylinkage/examples/`` to ``docs/examples/``
- - Tests moved from ``pylinkage/tests/`` to ``tests/``
+ - Examples moved from ``pylinkage/examples/`` to ``docs/examples/``.
+ - Tests moved from ``pylinkage/tests/`` to ``tests/``.
 
 ## [0.4.0] - 2021-07-06
 ### Added
