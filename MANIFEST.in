@@ -1,3 +1,4 @@
 include README.md
 include LICENSE
 include CODE_OF_CONDUCT.md
+recursive-include docs *

@@ -7,7 +7,7 @@ Created on Thu Apr 15 13:26:42 2021
 """
 
 import unittest
-from ..geometry import circle_intersect
+from pylinkage.geometry import circle_intersect
 
 
 class TestCircles(unittest.TestCase):

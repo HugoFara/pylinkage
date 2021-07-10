@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
  - The legend in ``visualizer.py`` is back!
+ - Documentation published to GitHub pages! It is contained in the ``docs/`` folder.
+ - ``setup.cfg`` now include links to the website.
+
+### Changed
+ - Examples moved from ``pylinkage/examples/`` to ``docs/examples/``
+ - Tests moved from ``pylinkage/tests/`` to ``tests/``
 
 ## [0.4.0] - 2021-07-06
 ### Added
@@ -91,7 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``CHANGELOG.md``
 
 ### Changed
- -``.gitignore`` Python Package specific extensions added
+ - ``.gitignore`` Python Package specific extensions added
  - ``MIT License`` → ``LICENSE``
  - ``lib/`` → ``pylinkage/``
  - ``tests/`` → ``pylinkage/tests/``

@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>geometry &mdash; pylinkage 0.4.1-alpha documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pylinkage
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>geometry</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/geometry.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="geometry">
+<h1>geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pylinkage.geometry">
+<span id="base-module-for-geometric-abstractions"></span><h2>Base module for geometric abstractions<a class="headerlink" href="#module-pylinkage.geometry" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed May  5 17:34:45 2021.</p>
+<p>&#64;author: HugoFara</p>
+<p>General geometry functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the bounding box of a locus.</p>
+<dl class="simple">
+<dt>locus<span class="classifier">list[tuple[float]]</span></dt><dd><p>A list of point or any iterable with the same structure.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>tuple[float]</dt><dd><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.circle_intersect">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">circle_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.circle_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the intersections between two circles.</p>
+<p>Transcription of a Matt Woodhead program, method provided by Paul Bourke,
+1997. <a class="reference external" href="http://paulbourke.net/geometry/circlesphere/">http://paulbourke.net/geometry/circlesphere/</a>.</p>
+<p>circle1: first circle, sequence of (abscisse, ordinate, radius)
+circle2: second circle, sequence of (abscisse, ordinate, radius)
+tol: distance under which two points are considered equal.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.cyl_to_cart">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">cyl_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.cyl_to_cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert polar coordinates into cartesian.</p>
+<p>radius: distance from ori
+theta: angle is the angle starting from abscisses axis
+ori: origin point.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.dist_builtin">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">dist_builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.dist_builtin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euclidian distance between two 2D points.</p>
+<p>Legacy built-in unoptimized equivalent of math.dist in Python 3.8.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.intersection">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return intersection between two objects (points or circles).</p>
+<p>Return nothing of no intersection.
+tol: absolute tolerance to use if provided.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.norm">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the norm of a 2-dimensional vector.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.sqr_dist">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">sqr_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.sqr_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Square of the distance between two points.</p>
+<p>Faster than dist.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Hugo Farajallah
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,10 +1,10 @@
 import unittest
 import numpy as np
 
-from ..geometry import bounding_box
-from ..exceptions import UnbuildableError
-from .. import linkage as pl
-from .. import optimizer as opti
+from pylinkage.geometry import bounding_box
+from pylinkage.exceptions import UnbuildableError
+from pylinkage import linkage as pl
+from pylinkage import optimizer as opti
 
 def prepare_linkage():
     """Return a simple four-bar linkage."""
