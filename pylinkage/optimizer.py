@@ -7,14 +7,9 @@ Created on Fri Mar  8 13:51:45 2019.
 Module proposing different function optimization algorithms. The output is
 generally leg dimensions of walking linkages.
 """
-from copy import deepcopy
 import numpy as np
-from numpy.random import rand
-from numpy.linalg import norm
 # Particle swarm optimization
 from pyswarms.single.local_best import LocalBestPSO
-
-from .geometry import sqr_dist
 
 
 def variator(ite, delta_dim, min_dim=5, max_dim=5):
@@ -55,7 +50,7 @@ def variator(ite, delta_dim, min_dim=5, max_dim=5):
     middle, even = variations // 2, variations % 2
     # We reordinate the coo
     coef = (coef[middle:0:-2] + coef[0:1]
-            + coef[even:middle:2] + coef[middle+1:])
+            + coef[even:middle:2] + coef[middle + 1:])
     return recurs_variator(c, list(c), coef)
 
 
