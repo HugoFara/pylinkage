@@ -61,15 +61,24 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
     # Plot loci
     for i, joint in enumerate(linkage.joints):
         axis.plot(tuple(j[i][0] for j in loci), tuple(j[i][1] for j in loci))
+
+    # The plot linkage in intial position
+    # It as imporant to use separate loops, because we would have bad
+    # formatted legend otherwisee
+    for i, joint in enumerate(linkage.joints):
         # Then the linkage in initial position
         # Draw link to first parent if it exists
         if joint.joint0 is None:
             continue
         pos = joint.coord()
         par_pos = joint.joint0.coord()
+        plot_kwargs = {
+            "c": _get_color(joint),
+            "linewidth": .3
+        }
         axis.plot(
             [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-            c=_get_color(joint)
+            **plot_kwargs
         )
         # Then second parent
         if isinstance(joint, (Crank, Static)):
@@ -77,7 +86,7 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
         par_pos = joint.joint1.coord()
         axis.plot(
             [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-            c=_get_color(joint)
+            **plot_kwargs
         )
 
     # Highlight for specific loci
@@ -90,7 +99,7 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
         axis.set_title("Static representation")
         axis.set_xlabel("x")
         axis.set_ylabel("y")
-
+        axis.legend(tuple(i.name for i in linkage.joints))
 
 def update_animated_plot(linkage, index, images, loci):
     """
