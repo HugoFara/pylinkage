@@ -6,11 +6,9 @@ Created on Sat Jun 19 12:32:37 2021.
 @author: HugoFara
 """
 
-from pylinkage.geometry import bounding_box
-import pylinkage.linkage as pl
-import pylinkage.visualizer as visu
-import pylinkage.optimizer as opti
-from pylinkage.exceptions import UnbuildableError
+import numpy as np
+
+import pylinkage as pl
 
 # Static points in space, belonging to the frame
 frame_first = pl.Static(0, 0, name="A")
@@ -29,7 +27,7 @@ my_linkage = pl.Linkage(
 )
 
 # Visualization
-visu.show_linkage(my_linkage)
+pl.show_linkage(my_linkage)
 
 # Optimization part
 
@@ -48,50 +46,52 @@ def fitness_func(linkage, params, *args):
         points = 12
         n = linkage.get_rotation_period()
         # Complete revolution with 12 points
-        tuple(tuple(i) for i in linkage.step(iterations=points + 1,
-                                             dt=n/points))
+        tuple(
+            tuple(i) for i in linkage.step(
+                iterations=points + 1, dt=n / points
+            )
+        )
         # Again with n points, and at least 12 iterations
         n = 96
         factor = int(points / n) + 1
-        L = tuple(tuple(i) for i in linkage.step(
-            iterations=n * factor, dt=1 / factor))
-    except UnbuildableError:
-        return -float('inf')
+        loci = tuple(
+            tuple(i) for i in linkage.step(
+                iterations=n * factor, dt=1 / factor
+            )
+        )
+    except pl.UnbuildableError:
+        return float('inf')
     else:
         # Locus of the Joint 'pin", mast in linkage order
-        tip_locus = tuple(x[-1] for x in L)
+        tip_locus = tuple(x[-1] for x in loci)
         # We get the bounding box
-        curr_bb = bounding_box(tip_locus)
+        curr_bb = pl.bounding_box(tip_locus)
         # We set the reference bounding box with frame_second as down-left
         # corner and size 2
         ref_bb = (frame_second.y, frame_second.x + 2,
                   frame_second.y + 2, frame_second.x)
         # Our score is the square sum of the edges distances
-        return -sum((pos - ref_pos) ** 2
-                    for pos, ref_pos in zip(curr_bb, ref_bb))
+        return sum(
+            (pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb)
+        )
 
 constraints = tuple(my_linkage.get_num_constraints())
 
 print(
-    "Score before optimization : {}".format(
+    "Score before optimization: {}".format(
         fitness_func(my_linkage, constraints)
     )
 )
 
 # Trials and errors optimization as an example ONLY
-score, position, coord = opti.trials_and_errors_optimization(
+score, position, coord = pl.trials_and_errors_optimization(
     eval_func=fitness_func,
     linkage=my_linkage,
-    delta_dim=.1,
-    n_results=1,
+    divisions=25,
+    order_relation=min,
 )[0]
 
-print("Score after exhaustive optimization: {}".format(score))
-
-# A simple wrapper
-def PSO_fitness_wrapper(constraints, *args):
-    """A simple wrapper to make the fitness function compatible."""
-    return fitness_func(my_linkage, constraints, *args)
+print("Score after trials and errors optimization: {}".format(score))
 
 # We reinitialize the linkage (an optimal linkage is not interesting)
 my_linkage.set_num_constraints(constraints)
@@ -100,19 +100,19 @@ my_linkage.set_coords(init_pos)
 
 # Particle Swarm Optimization
 
-import numpy as np
 
 # Optimization is more efficient with a start space
-bounds = (np.zeros(len(constraints)), np.ones(len(constraints)) * 5)
+bounds = pl.generate_bounds(my_linkage.get_num_constraints())
 
-score = opti.particle_swarm_optimization(
-    eval_func=PSO_fitness_wrapper,
+score, position, coord = pl.particle_swarm_optimization(
+    eval_func=fitness_func,
     linkage=my_linkage,
-    bounds=bounds
-).swarm.best_cost
+    bounds=bounds,
+    order_relation=min,
+)[0]
 
 print("Score after particle swarm optimization: {}".format(score))
 
 # Visualization of the optimized linkage
 my_linkage.set_num_constraints(position)
-visu.show_linkage(my_linkage)
+pl.show_linkage(my_linkage)

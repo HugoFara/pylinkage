@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+ - It is now possible and advised to import useful functions from pylinkage.{object}, without full path. For instance, use ``from pylinkage import Linkage`` instead of ``from pylinkage.linkage import Linkage``.
+ - Each module had his header improved.
+ - The ``generate_bounds`` functions is a simple way to generate bounds before optimization. 
+ - The ``order_relation`` arguments of ``particle_swarm_optimization`` and ``trials_and_errors_optimization`` let you choose between maximization and minimization problem.
+ - You can specify a custom order relation with ``trials_and_errors_optimization``.
+
+### Changed
+ - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to
+the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
+ - The ``trials_and_errors_optimization`` function now asks for bounds instead of dilatation and compression factors.
+ - In ``trials_and_errors_optimization`` absolute step ``delta_dim`` is now replaced by number of subdivisions ``divisions``.
+
+### Fixed
+ - After many hours of computations, default parameters in ``particle_swarm_optimization`` are much more efficient. With the demo ``fourbar_linkage``, the output wasn't even convergent some times. Now we have a high convergence rate (~100%), and results equivalent to the ``trials_and_errors_optimization`` (in the example). 
+ - ``variator`` function of ``optimizer`` module was poorly working.
 
 ## [0.4.1] - 2021-07-11
 ### Added

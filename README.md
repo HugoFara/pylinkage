@@ -40,7 +40,7 @@ Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki
 The first thing you need if to define points belonging to the frame:
 
 ```python
-import pylinkage.linkage as pl
+import pylinkage as pl
 
 frame_first = pl.Static(0, 0)
 frame_second = pl.Static(3, 0)
@@ -92,7 +92,7 @@ You can also specify the number of steps with the ``iteration`` argument, or sub
 
 Let's recape.
 ```python
-import pylinkage.linkage as pl
+import pylinkage as pl
 
 # Static points in space, belonging to the frame
 frame_first = pl.Static(0, 0)
@@ -122,17 +122,12 @@ my_linkage.name = "Four-bar linkage"
 Then you can view your linkage!
 
 ```python
-import pylinkage.visualizer as visu
-
-visu.show_linkage(my_linkage)
+pl.show_linkage(my_linkage)
 ```
 ![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Last recap, rearranging names:
 ```python
-import pylinkage.linkage as pl
-import pylinkage.visualizer as visu
-
 # Static points in space, belonging to the frame
 frame_first = pl.Static(0, 0, name="A")
 frame_second = pl.Static(3, 0, name="D")
@@ -150,7 +145,7 @@ my_linkage = pl.Linkage(
 )
 
 # Visualization
-visu.show_linkage(my_linkage)
+pl.show_linkage(my_linkage)
 ```
 
 ### Optimization
@@ -158,8 +153,6 @@ Now, we want automatic optimization of our linkage, using a certain criterion. L
 
 Our objective function, often called the fitness function, is the following:
 ```python
-from pylinkage.geometry import bounding_box
-
 # We save initial position because we don't want a completely different movement
 init_pos = my_linkage.get_coords()
 
@@ -175,18 +168,24 @@ def fitness_func(linkage, params, *args):
         points = 12
         n = linkage.get_rotation_period()
         # Complete revolution with 12 points
-        tuple(tuple(i) for i in linkage.step(iterations=points + 1,
-                                             dt=n/points))
+        tuple(
+          tuple(i) for i in linkage.step(
+            iterations=points + 1, dt=n / points
+          )
+        )
         # Again with n points, and at least 12 iterations
         n = 96
         factor = int(points / n) + 1
-        L = tuple(tuple(i) for i in linkage.step(
-            iterations=n * factor, dt=1 / factor))
-    except UnbuildableError:
-        return -float('inf')
+        loci = tuple(
+          tuple(i) for i in linkage.step(
+            iterations=n * factor, dt=1 / factor
+          )
+        )
+    except pl.UnbuildableError:
+        return float('inf')
     else:
         # Locus of the Joint 'pin", mast in linkage order
-        tip_locus = tuple(x[-1] for x in L)
+        tip_locus = tuple(x[-1] for x in loci)
         # We get the bounding box
         curr_bb = bounding_box(tip_locus)
         # We set the reference bounding box with frame_second as down-left
@@ -194,8 +193,9 @@ def fitness_func(linkage, params, *args):
         ref_bb = (frame_second.y, frame_second.x + 2,
                   frame_second.y + 2, frame_second.x)
         # Our score is the square sum of the edges distances
-        return -sum((pos - ref_pos) ** 2
-                    for pos, ref_pos in zip(curr_bb, ref_bb))
+        return sum(
+          (pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb)
+        )
 ```
 Please not that it is a *minization* problem, with 0 as lower bound.
 
@@ -207,13 +207,13 @@ With this constraints, score should be around -3.
 Let's start with a candide optimization, the [trial-and-error](https://en.wikipedia.org/wiki/Trial_and_error) method. Here it is a serial test of switches.
 ```python
 # Exhaustive optimization as an example ONLY
-score, position, coord = opti.exhaustive_optimization(
+score, position, coord = pl.trials_and_errors_optimization(
     eval_func=fitness_func,
     linkage=my_linkage,
-    delta_dim=.1,
+    divisions=25,
     n_results=1,
+    order_relation=min,
 )[0]
-
 ```
 Here the problem is simple enough, so that method typical return the maximal theorical value of 0.0.
 
@@ -226,33 +226,24 @@ However, with more complex linkages you need something more robust, and more eff
 * They know their best score, and know the current score of they neighbours.
 * Together they will try find the extremum in the space. Here it is a minimum.
 
-it is particularly relevant when the fitness function is not resource-greedy.
+It is particularly relevant when the fitness function is not resource-greedy.
 
-Due to incompatibilities, we need a wrapper.
 ```python
-# A simple wrapper
-def PSO_fitness_wrapper(constraints, *args):
-    """A simple wrapper to make the fitness function compatible."""
-    return fitness_func(my_linkage, constraints, *args)
-
 
 # We reinitialize the linkage (an optimal linkage is not interesting)
 my_linkage.set_num_constraints(constraints)
 # As we do for initial positions
 my_linkage.set_coords(init_pos)
 
-
-import numpy as np
-
 # Optimization is more efficient with a start space
-bounds = (np.zeros(len(constraints)), np.ones(len(constraints)) * 5)
+bounds = pl.generate_bounds(my_linkage.get_num_constraints())
 
-score = opti.particle_swarm_optimization(
-    eval_func=PSO_fitness_wrapper,
+score, position, coord = pl.particle_swarm_optimization(
+    eval_func=fitness_func,
     linkage=my_linkage,
-    bounds=bounds
-).swarm.best_cost
-
+    bounds=bounds,
+    order_relation=min,
+)[0]
 ```
 Here again the result should be 0.0.
 

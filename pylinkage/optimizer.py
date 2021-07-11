@@ -1,18 +1,42 @@
 # -*- coding: utf-8 -*-
 """
+The optimizer module proposing different optimization algorithms.
+
+The output of this functions is generally dimensions of linkages.
+
 Created on Fri Mar  8 13:51:45 2019.
 
 @author: HugoFara
-
-Module proposing different function optimization algorithms. The output is
-generally leg dimensions of walking linkages.
 """
+import math
+import itertools
 import numpy as np
 # Particle swarm optimization
 from pyswarms.single.local_best import LocalBestPSO
 
 
-def variator(ite, delta_dim, min_dim=5, max_dim=5):
+def generate_bounds(center, min_ratio=5, max_factor=5):
+    """
+    Simple function to generate bounds from a linkage.
+
+    Parameters
+    ----------
+    center : sequence
+        1-D sequence, often in the form of ``linkage.get_num_constraints()``.
+    min_ratio : float, optional
+        Minimal compression ratio for the bounds. Minimal bounds will be of the
+        shpae center[x] / min_ratio.
+        The default is 5.
+    max_factor : float, optional
+        Dilation factor for the upper bounds. Maximal bounds will be of the
+        shpae center[x] * max_factor.
+        The default is 5.
+    """
+    np_center = np.array(center)
+    return (np_center / min_ratio, np_center * max_factor)
+
+
+def variator(center, divisions, bounds):
     """
     Return an iterable of all possibles variations of elements.
 
@@ -26,15 +50,12 @@ def variator(ite, delta_dim, min_dim=5, max_dim=5):
 
     Parameters
     ----------
-    ite : sequence of floats
+    center : sequence of floats
         Elements that should vary.
-    delta_dim : float
-        Scale factor for each variation.
-    min_dim : float, optional
-        Minimal scale reduction (dimensions not shorter that dim/min_dim).
-        The default is 5.
-    max_dim : float, optional
-        maximal scale augmentation (not above dim * max_dim). The default is 5.
+    divisions : int
+        Number of subdivisions between bounds.
+    bounds : tuple[tuple[float]]
+        2-uple of minimal then maximal bounds.
 
     Returns
     -------
@@ -42,30 +63,29 @@ def variator(ite, delta_dim, min_dim=5, max_dim=5):
         Each element is the list of floats with little variations.
 
     """
-    # We copy the sequence
-    c = tuple(ite)
-    inv = 1 / min_dim
-    variations = int((max_dim - inv) / delta_dim)
-    coef = tuple(inv + i * delta_dim for i in range(variations))
-    middle, even = variations // 2, variations % 2
-    # We reordinate the coo
-    coef = (coef[middle:0:-2] + coef[0:1]
-            + coef[even:middle:2] + coef[middle + 1:])
-    return recurs_variator(c, list(c), coef)
+    lists = [
+        list(np.linspace(low, high, divisions))
+        for low, high in zip(bounds[0], bounds[1])
+    ]
+    for j in itertools.product(*lists):
+        yield list(j)
+    return
 
-
-def recurs_variator(ite, copy, coef_list, num=0):
-    """
-    Recursive dimensions generator.
-
-    Called by variator. Only "copy" is modified.
-    """
-    for coef in coef_list:
-        copy[num] = ite[num] * coef
-        yield copy
-        if num < len(ite) - 1:
-            for j in recurs_variator(ite, copy, coef_list, num + 1):
-                yield j
+    # In the first place w go decreasing order to lower bound
+    fall = np.linspace(center, bounds[0], int(divisions / 2))
+    # We only look at one index over 2
+    for dim in fall[::2]:
+        yield dim
+    # The we go back to the center with the remaining indexes
+    if divisions % 2:
+        for dim in fall[-2::-2]:
+            yield dim
+    else:
+        for dim in fall[::-2]:
+            yield dim
+    # And last indexes
+    for dim in np.linspace(center, bounds[1], math.ceil(divisions / 2)):
+        yield dim
 
 
 def trials_and_errors_optimization(
@@ -73,65 +93,75 @@ def trials_and_errors_optimization(
         linkage,
         parameters=None,
         n_results=10,
-        delta_dim=.5,
-        min_dim=2,
-        max_dim=2
+        divisions=5,
+        bounds=None,
+        order_relation=max
 ):
     """
     Return the list of dimensions optimizing eval_func.
 
-    We start wy making the dimensions vary, then we try a crank revolution on
-    10 points. If no error we try on 75 points (higher precision).
-
     Each dimensions set has a score, which is added in an array of n_results
-    results, containg the linkages with best scores.
+    results, containg the linkages with best scores in a maximization problem
+    by default.
 
     Parameters
     ----------
     eval_func : callable
-        Evaluation function. Its signature should be R^len(linkage.joints) → R.
+        Evaluation function.
+        Input: (linkage, num_constraints, initial_coordinates).
+        Output: score (float)
     linkage : pylinkage.linkage.Linkage
         Linkage to evaluate.
-    parameters : list
+    parameters : list, optional
         Parameters that will be modified. Geometric constraints.
         If not, it will be assignated tuple(linkage.get_num_constraints()).
         The default is None.
     n_results : int, optional
         Number of best cancidates to return. The default is 10.
-    delta_dim : float, optional
-        Dimension variation between two consecutive tries. The default is .5.
-    min_dim : float, optional
-        Minimal scale reduction.
-        Each parameter should not be below original size / min_dim.
-        The default is 2.
-    max_dim : float, optional
-        Maximal scale augmentation factor. The default is 2.
+    divisions : int, optional
+        Number of subdivisions between bounds. The default is 5.
+    bounds : tuple[tuple], optional
+        A 2-uple (tuple of two elements), containing the minimal and maximal
+        bounds. If None, we will use parameters as center.
+        The default is None.
+    order_relation : callable, optional
+        A function of two arguments, should return the best score of two scores.
+        Common examples are min, max, abs.
+        The default is max.
 
     Returns
     -------
-    results : tuple
-        tuple of dimensions, score, initial position for each Linkage to
+    results : tuple[tuple[float, tuple[float], tuple[tuple[float]]]]
+        3-uple of score, dimensions and initial position for each Linkage to
         return. Its size is {n_results}.
 
     """
-    n = (max_dim - 1 / min_dim) / delta_dim
     if parameters is None:
-        parameters = list(linkage.get_num_constraints())
-    print("Computation running, about {} combinations...".format(
-        int(n) ** len(parameters)))
+        center = np.array(linkage.get_num_constraints())
+    else:
+        center = np.array(parameters)
+    if bounds is None:
+        bounds = generate_bounds(center)
+
+    print(
+        "Computation running, about {} combinations...".format(
+            divisions ** len(center)
+        )
+    )
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
-    results = [[-float('inf'), [], []] for i in range(n_results)]
+    results = [[None, [], []] for i in range(n_results)]
     prev = [i.coord() for i in linkage.joints]
-    # We start by a "fall" : we do not want to break the system by modifying
+    # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.
-    # A list of dictionaries of all possible dimensions
-    for dim in variator(parameters, delta_dim, min_dim, max_dim):
+    # A list of all possible dimensions
+    for dim in variator(center, divisions, bounds):
         # Check performances
+        #print(dim)
         score = eval_func(linkage, dim, prev)
         for r in results:
-            if r[0] < score:
+            if r[0] is None or order_relation(r[0], score) != r[0]:
                 r[0] = score
                 r[1] = dim.copy()
                 r[2] = prev.copy()
@@ -149,9 +179,10 @@ def particle_swarm_optimization(
         center=None,
         dimensions=None,
         n_particles=100,
-        iner=.3, leader=.2, follower=.5,
+        leader=3.0, follower=.1, inertia=0.6, neighbors=17,
         iters=200,
         bounds=None,
+        order_relation=max,
         **kwargs
 ):
     """
@@ -162,18 +193,18 @@ def particle_swarm_optimization(
 
     Parameters
     ----------
-    eval_func : callable, must return float
+    eval_func : callable -> float
         The evaluation function.
-        Input: a set of dimensions and intial position for the linkage
-        Output: a score, a float
+        Input: (linkage, num_constraints, initial_coordinates).
+        Output: score (float).
         The swarm will look for the HIGHEST score.
-    linkage : Linkage
+    linkage : pylinkage.linkage.Linkage
         Linkage to be optimized. Make sure to give an optimized linkage for
         better results
-    center : list
+    center : list, optional
         A list of initial dimension. If None, dimensions will be generated
         randomly between bounds. The default is None.
-    dimensions : int
+    dimensions : int, optional
         Number of dimensions of the swarm space, number of parameters.
         If None, it takes the value len(tuple(linkage.get_num_constraints())).
         The default is None.
@@ -186,20 +217,32 @@ def particle_swarm_optimization(
         The default is .2.
     follower : float, optional
         Social coefficient, c2 in pyswarms. The default is .5.
+    neighbors : int, optional
+        Number of neighbors to consider. The default is 17.
     iters : int, optional
         Number of iterations to describe. The default is 200.
+    order_relation : callable(float, float) -> float, optional
+        How to compare scores. Should not be anything else than the built-in
+        max and min functions.
+        The default is max.
     **kwargs : dict
         keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
 
     Returns
     -------
-    list
-        List of 3 elements: best dimensions, best score and initial positions.
+    list[float, list[float], list[list[float]]]
+        List of 3 elements: best score, best dimensions and initial positions.
 
     """
     if dimensions is None:
         dimensions = len(tuple(linkage.get_num_constraints()))
-    options = {'c1': leader, 'c2': follower, 'w': iner, 'p': 1, 'k': 5}
+    options = {
+        'c1': leader,
+        'c2': follower,
+        'w': inertia,
+        'k': neighbors,
+        'p': 1,
+    }
     pos = tuple(j.coord() for j in linkage.joints)
     optimizer = LocalBestPSO(
         n_particles=n_particles,
@@ -210,10 +253,16 @@ def particle_swarm_optimization(
         **kwargs
     )
     # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')
-    out = optimizer.optimize(
+    def eval_wrapper(dims, pos):
+        """Wrapper for the evaluation function since PySwarms is too rigid."""
+        if order_relation is max:
+            return [-eval_func(linkage, d, pos) for d in dims]
+        elif order_relation is min:
+            return [eval_func(linkage, d, pos) for d in dims]
+
+    score, constraints = optimizer.optimize(
         # vectorized_eval_func,
-        lambda dims, pos: np.array([-eval_func(d, pos) for d in dims]),
+        eval_wrapper,
         iters, pos=pos
     )
-    return optimizer
-    return [(out[0], out[1], pos)]
+    return [(score, constraints, pos)]
