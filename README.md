@@ -37,31 +37,24 @@ Python 3, numpy for calculation, matplotlib for drawing, and standard libraries.
 Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki/Four-bar_linkage), as classic of mechanics. 
 
 ### Joints definition
-The first thing you need if to define points belonging to the frame:
-
-```python
-import pylinkage as pl
-
-frame_first = pl.Static(0, 0)
-frame_second = pl.Static(3, 0)
-```
+You don't need to define points belonging to the frame, we will use those anchors:
 * ``O, O``: "x, y" position of the first point.
 * ``3, 0``: same for the second point. 
 
-Then we have to define at least one crank because we do a kinematic simulation.
+Firstly we have to define at least one crank because want a kinematic simulation.
 ```python
-crank = pl.Crank(0, 1, joint0=frame_first, angle=0.31, distance=1)
+crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
 ```
 
 Here you need some explanations: 
 * ``0, 1``: x and y initial coordinates of the **tail** of the crank link.
-* ``joint0``: the parent Joint to link with. The pin will be created on the position of the parent, which is the head of the crank link.
+* ``joint0``: the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.
 * ``angle``: the crank will rotate with this angle, in radians, at each iteration.
 * ``distance``: distance to keep constant between crank link tail and head.
 
 Now we add a pin joint to close the kinematic loop.
 ```python
-pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second, distance0=3, distance1=1)
+pin = pl.Pivot(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
 ```
 Here comes some help:
 * ``joint0``, ``joint1``: first and second ``Joint``s you want to link to, the order is not important.
@@ -80,7 +73,7 @@ Once your linkage is finished, you can either can the ``reload`` method of each 
 
 Linkage definition is simple:
 ```python
-my_linkage = pl.Linkage(joints=(frame_first, frame_second, crank, pin))
+my_linkage = pl.Linkage(joints=(crank, pin))
 ```
 That's all!
 
@@ -93,17 +86,13 @@ You can also specify the number of steps with the ``iteration`` argument, or sub
 Let's recape.
 ```python
 import pylinkage as pl
-
-# Static points in space, belonging to the frame
-frame_first = pl.Static(0, 0)
-frame_second = pl.Static(3, 0)
 # Main motor
-crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1)
+crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1)
 # Close the loop
-pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second, 
+pin = pl.Pivot(3, 2, joint0=crank, joint1=(3, 0), 
                distance0=3, distance1=1)
 
-my_linkage = pl.Linkage(joints=(frame_first, frame_second, crank, pin))
+my_linkage = pl.Linkage(joints=(crank, pin))
 
 locus = my_linkage.step()
 ```
@@ -111,10 +100,8 @@ locus = my_linkage.step()
 ### Visualization
 Firsting first, you made a cool linkage, but only you know what it is. Let's add friendly names to joints, so the communication is simplified.
 ```python
-frame_first.name = "A"
 crank.name = "B"
 pin.name = "C"
-frame_second.name = "D"
 # Linkage can also have names
 my_linkage.name = "Four-bar linkage"
 ```
@@ -128,13 +115,10 @@ pl.show_linkage(my_linkage)
 
 Last recap, rearranging names:
 ```python
-# Static points in space, belonging to the frame
-frame_first = pl.Static(0, 0, name="A")
-frame_second = pl.Static(3, 0, name="D")
 # Main motor
-crank = pl.Crank(0, 1, joint0=frame_first, angle=.31, distance=1, name="B")
+crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1, name="B")
 # Close the loop
-pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second,
+pin = pl.Pivot(3, 2, joint0=crank, joint1=(3, 0), 
                distance0=3, distance1=1, name="C")
 
 # Linkage definition
@@ -215,7 +199,7 @@ score, position, coord = pl.trials_and_errors_optimization(
     order_relation=min,
 )[0]
 ```
-Here the problem is simple enough, so that method typical return the maximal theorical value of 0.0.
+Here the problem is simple enough, so that method takes only a few second and returns 0.05.
 
 However, with more complex linkages you need something more robust, and more efficient. Then we will use [particle swarm optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). Here are the principles:
 * The parameters are the geometric constrints (the dimensions) of the linkage.
@@ -245,7 +229,7 @@ score, position, coord = pl.particle_swarm_optimization(
     order_relation=min,
 )[0]
 ```
-Here again the result should be 0.0.
+Here the result can vary, but it is rarely above 0.2.
 
 So we made something that say it works, let's verify it:
 

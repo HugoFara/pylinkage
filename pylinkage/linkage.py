@@ -29,20 +29,35 @@ class Joint(ABC):
 
         Arguments
         ---------
-        * x: joint axis, scalar
-        * y: joint ordinate
-        * joint0: first reference to use, usually a Joint
-        * joint1: second reference, same behavior as joint0
-        * name: unique name
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        joint0 : Union[Joint, tuple[float]], optional
+            Linked pivot joint 1 (geometric constraints). The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            Other pivot joint linked. The default is None.
         """
         self.x, self.y = x, y
-        self.joint0, self.joint1 = joint0, joint1
-        self.name = name or str(id(self))
+        if joint0 is None or isinstance(joint0, Joint):
+            self.joint0 = joint0
+        else:
+            self.joint0 = Static(*joint0)
+        if joint1 is None or isinstance(joint1, Joint):
+            self.joint1 = joint1
+        else:
+            self.joint1 = Static(*joint1)
+        self.name = name
+        if name is None:
+            self.name = str(id(self))
 
     def __repr__(self):
         """Represent object with class name, coordinates, name and state."""
-        return "{}(x={}, y={}, name={})".format(self.__class__.__name__,
-                                                self.x, self.y, self.name)
+        return "{}(x={}, y={}, name={})".format(
+            self.__class__.__name__, self.x, self.y, self.name
+        )
 
     def __get_joints__(self):
         """Return constraint joints as a tuple."""
@@ -84,6 +99,18 @@ class Static(Joint):
     __slots__ = tuple()
 
     def __init__(self, x=0, y=0, name=None):
+        """
+        A Static joint is a point in space to use as anchor by other joints.
+
+        It is NOT a kind of joint as viewed in engineering terms!
+
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        """
         super().__init__(x, y, name=name)
 
     def reload(self):
@@ -119,11 +146,22 @@ class Fixed(Joint):
 
         Arguments
         ---------
-        * joint0: first reference joint,
-        * joint1: second reference joint.
-        * distance: to keep constant between joint0 and self.
-        * angle: It is the angle (joint1, joint0, self).
-        Should be in radian and in trigonometric order.
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        joint0 : Union[Joint, tuple[float]], optional
+            Linked pivot joint 1 (geometric constraints). The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            Other pivot joint linked. The default is None.
+        distance : float, optional
+            Distance to keep constant between joint0 and self. The default is
+            None.
+        angle : float, optional
+         Angle (joint1, joint0, self). Should be in radian and in trigonometric
+         order. The default is None.
         """
         super().__init__(x, y, joint0, joint1, name)
         self.angle = angle
@@ -185,15 +223,14 @@ class Pivot(Joint):
             Position on vertical axis. The default is O.
         name : str, optional
             Friendly name for human readability. The default is None.
-        joint0 : Joint, optional
+        joint0 : Union[Joint, tuple[float]], optional
             Linked pivot joint 1 (geometric constraints). The default is None.
-        joint1 : Joint, optional
+        joint1 : Union[Joint, tuple[float]], optional
             Other pivot joint linked. The default is None.
         distance0 : float, optional
             Distance from joint0 to the current Joint. The default is None.
         distance1 : float, optional
-            Distance from joint1 to the current Joint.
-
+            Distance from joint1 to the current Joint. The default is None.
         """
         super().__init__(x, y, joint0, joint1, name)
         self.r0, self.r1 = distance0, distance1
@@ -267,7 +304,7 @@ class Pivot(Joint):
 
         Parameters
         ----------
-        joint : Joint
+        joint : Union[Joint, tuple[float]]
             The joint to use as achor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
@@ -286,7 +323,7 @@ class Pivot(Joint):
 
         Parameters
         ----------
-        joint : Joint
+        joint : Union[Joint, tuple[float]]
             The joint to use as achor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
@@ -317,7 +354,7 @@ class Crank(Joint):
             The default is None.
         y : float, optional
             initial vertical position. The default is None.
-        joint0 : Joint, optional
+        joint0 : Union[Joint, tuple[float]], optional
             first reference joint. The default is None.
         distance : float, optional
             distance to keep between joint0 and self. The default is None.
@@ -378,12 +415,19 @@ class Linkage():
 
         Arguments
         ---------
-        * joints: all Joint to be part of the linkage
-        * order: sequence that manually define resolution order for each step.
-        Should be elements of joints if provided.
-        * name: linkage name
+        joints : list[Joint]
+            All Joint to be part of the linkage
+        order : list[Joint]
+            Sequence to manually define resolution order for each step.
+            Should be a subset of joints.
+            Automatic computed order is experimental! The default is None.
+        name : str, optional
+            Human-readable name for the Linkage. If None, take the value
+            str(id(self)). The default is None.
         """
-        self.name = str(name or id(self))
+        self.name = name
+        if name is None:
+            self.name = str(id(self))
         self.joints = tuple(joints)
         self._cranks = tuple(j for j in joints if isinstance(j, Crank))
         if order:

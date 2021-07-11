@@ -10,14 +10,19 @@ import numpy as np
 
 import pylinkage as pl
 
-# Static points in space, belonging to the frame
-frame_first = pl.Static(0, 0, name="A")
-frame_second = pl.Static(3, 0, name="D")
 # Main motor
-crank = pl.Crank(0, 1, joint0=frame_first, angle=0.31, distance=1, name="B")
+crank = pl.Crank(
+    0, 1,
+    joint0=(0, 0), # Fixed to a single point in space
+    angle=0.31, distance=1,
+    name="B"
+)
 # Close the loop
-pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second,
-               distance0=3, distance1=1, name="C")
+pin = pl.Pivot(
+    3, 2,
+    joint0=crank, joint1=(3, 0),
+    distance0=3, distance1=1, name="C"
+)
 
 # Linkage definition
 my_linkage = pl.Linkage(
@@ -34,6 +39,7 @@ pl.show_linkage(my_linkage)
 # We save initial position because we don't want a completely different movement
 init_pos = my_linkage.get_coords()
 
+@pl.kinematic_minimization
 def fitness_func(linkage, params, *args):
     """
     Return how fit the locus is to describe a quarter of circle.
@@ -66,10 +72,8 @@ def fitness_func(linkage, params, *args):
         tip_locus = tuple(x[-1] for x in loci)
         # We get the bounding box
         curr_bb = pl.bounding_box(tip_locus)
-        # We set the reference bounding box with frame_second as down-left
-        # corner and size 2
-        ref_bb = (frame_second.y, frame_second.x + 2,
-                  frame_second.y + 2, frame_second.x)
+        # Reference bounding box in order (min_y, max_x, max_y, min_x)
+        ref_bb = (0, 5, 2, 3)
         # Our score is the square sum of the edges distances
         return sum(
             (pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb)
@@ -106,6 +110,7 @@ bounds = pl.generate_bounds(my_linkage.get_num_constraints())
 
 score, position, coord = pl.particle_swarm_optimization(
     eval_func=fitness_func,
+    init_pos=init_pos,
     linkage=my_linkage,
     bounds=bounds,
     order_relation=min,

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - The ``generate_bounds`` functions is a simple way to generate bounds before optimization. 
  - The ``order_relation`` arguments of ``particle_swarm_optimization`` and ``trials_and_errors_optimization`` let you choose between maximization and minimization problem.
  - You can specify a custom order relation with ``trials_and_errors_optimization``.
+ - ``Static`` joints can now be defined implicitely. 
 
 ### Changed
  - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to
