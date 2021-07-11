@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+The linkage module defines useful classes for linkage definition.
+
 Created on Fri Apr 16 16:39:21 2021.
 
 @author: HugoFara
@@ -175,16 +177,23 @@ class Pivot(Joint):
         """
         Set point position, parents, and if it is fixed for this turn.
 
-        Arguments:
+        Arguments
         ---------
-        * x: position on horizontal axis
-        * y: position on vertical axis
-        * name: friendly name for human readability
-        * joint0: linked pivot joint 1 (geometric constraints). A Joint
-        representing the center of a pivot joint.
-        * joint1: other pivot joint linked.
-        * distance0: distance from joint0 to the current Joint
-        * distance1: distance from joint1 to the current Joint.
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        joint0 : Joint, optional
+            Linked pivot joint 1 (geometric constraints). The default is None.
+        joint1 : Joint, optional
+            Other pivot joint linked. The default is None.
+        distance0 : float, optional
+            Distance from joint0 to the current Joint. The default is None.
+        distance1 : float, optional
+            Distance from joint1 to the current Joint.
+
         """
         super().__init__(x, y, joint0, joint1, name)
         self.r0, self.r1 = distance0, distance1
@@ -531,10 +540,10 @@ class Linkage():
         constraints : sequence
             Sequence of constraints to pass to the joints.
         flat : bool
-            If flat is True, should be a one-dimensionnal sequence of floats.
-            If flat is False, should be a sequence of tuples of digits.
-                Each element will be passed to the set_constraints method of
-                each correspondig Joint.
+            If True, should be a one-dimensionnal sequence of floats.
+            If False, should be a sequence of tuples of digits. Each element
+            will be passed to the set_constraints method of each correspondig
+            Joint.
             The default is True.
         """
         if flat:

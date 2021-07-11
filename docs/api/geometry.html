@@ -162,19 +162,23 @@
 <h1>geometry<a class="headerlink" href="#geometry" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-pylinkage.geometry">
 <span id="base-module-for-geometric-abstractions"></span><h2>Base module for geometric abstractions<a class="headerlink" href="#module-pylinkage.geometry" title="Permalink to this headline">¶</a></h2>
+<p>The geometry modules provides general geometry functions.</p>
+<p>It is used extensively, so each function should be highly optimized.</p>
 <p>Created on Wed May  5 17:34:45 2021.</p>
 <p>&#64;author: HugoFara</p>
-<p>General geometry functions.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.bounding_box">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.bounding_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the bounding box of a locus.</p>
-<dl class="simple">
-<dt>locus<span class="classifier">list[tuple[float]]</span></dt><dd><p>A list of point or any iterable with the same structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>locus</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – A list of point or any iterable with the same structure.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>tuple[float]</dt><dd><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple[float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -185,18 +189,30 @@
 <dd><p>Return the intersections between two circles.</p>
 <p>Transcription of a Matt Woodhead program, method provided by Paul Bourke,
 1997. <a class="reference external" href="http://paulbourke.net/geometry/circlesphere/">http://paulbourke.net/geometry/circlesphere/</a>.</p>
-<p>circle1: first circle, sequence of (abscisse, ordinate, radius)
-circle2: second circle, sequence of (abscisse, ordinate, radius)
-tol: distance under which two points are considered equal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circle1</strong> (<em>first circle</em><em>, </em><em>sequence of</em><em> (</em><em>abscisse</em><em>, </em><em>ordinate</em><em>, </em><em>radius</em><em>)</em>) – </p></li>
+<li><p><strong>circle2</strong> (<em>second circle</em><em>, </em><em>sequence of</em><em> (</em><em>abscisse</em><em>, </em><em>ordinate</em><em>, </em><em>radius</em><em>)</em>) – </p></li>
+<li><p><strong>tol</strong> (<em>distance under which two points are considered equal.</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.cyl_to_cart">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">cyl_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.cyl_to_cart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert polar coordinates into cartesian.</p>
-<p>radius: distance from ori
-theta: angle is the angle starting from abscisses axis
-ori: origin point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> (<em>distance from ori</em>) – </p></li>
+<li><p><strong>theta</strong> (<em>angle is the angle starting from abscisses axis</em>) – </p></li>
+<li><p><strong>ori</strong> (<em>origin point.</em>) – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

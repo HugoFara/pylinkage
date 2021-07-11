@@ -21,6 +21,7 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 ### Fixed
  - After many hours of computations, default parameters in ``particle_swarm_optimization`` are much more efficient. With the demo ``fourbar_linkage``, the output wasn't even convergent some times. Now we have a high convergence rate (~100%), and results equivalent to the ``trials_and_errors_optimization`` (in the example). 
  - ``variator`` function of ``optimizer`` module was poorly working.
+ - The docstrings were not displayed properly in documentation, this is fixed.
 
 ## [0.4.1] - 2021-07-11
 ### Added

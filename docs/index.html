@@ -169,12 +169,12 @@
 <li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="changeloglink.html#unreleased">[Unreleased]</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id1">[0.4.1] - 2021-07-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id2">[0.4.0] - 2021-07-06</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id5">[0.3.0] - 2021-07-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id9">[0.2.2] - 2021-06-22</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id12">[0.2.1] - 2021-06-16</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id16">[0.2.0] - 2021-06-14</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id19">[0.0.1] - 2021-06-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id4">[0.4.0] - 2021-07-06</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id8">[0.3.0] - 2021-07-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id12">[0.2.2] - 2021-06-22</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id15">[0.2.1] - 2021-06-16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id19">[0.2.0] - 2021-06-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id22">[0.0.1] - 2021-06-12</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a><ul>
@@ -253,7 +253,7 @@
 <div class="section" id="joints-definition">
 <h3>Joints definition<a class="headerlink" href="#joints-definition" title="Permalink to this headline">¶</a></h3>
 <p>The first thing you need if to define points belonging to the frame:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage.linkage</span> <span class="k">as</span> <span class="nn">pl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
 
 <span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">frame_second</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -305,7 +305,7 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 </div>
 <p>You can also specify the number of steps with the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> argument, or subdivisions of each iteration with<code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
 <p>Let’s recape.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage.linkage</span> <span class="k">as</span> <span class="nn">pl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
 
 <span class="c1"># Static points in space, belonging to the frame</span>
 <span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -334,17 +334,12 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 </pre></div>
 </div>
 <p>Then you can view your linkage!</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage.visualizer</span> <span class="k">as</span> <span class="nn">visu</span>
-
-<span class="n">visu</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
 <p>Last recap, rearranging names:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage.linkage</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">pylinkage.visualizer</span> <span class="k">as</span> <span class="nn">visu</span>
-
-<span class="c1"># Static points in space, belonging to the frame</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Static points in space, belonging to the frame</span>
 <span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
 <span class="n">frame_second</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
 <span class="c1"># Main motor</span>
@@ -361,7 +356,7 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <span class="p">)</span>
 
 <span class="c1"># Visualization</span>
-<span class="n">visu</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -369,9 +364,7 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h3>
 <p>Now, we want automatic optimization of our linkage, using a certain criterion. Let’s find a four-bar linkage that make a quarter of a circle. It is a common problem if you want to build a <a class="reference external" href="https://en.wikipedia.org/wiki/Windscreen_wiper">windscreen wiper</a> for instance.</p>
 <p>Our objective function, often called the fitness function, is the following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pylinkage.geometry</span> <span class="kn">import</span> <span class="n">bounding_box</span>
-
-<span class="c1"># We save initial position because we don&#39;t want a completely different movement</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We save initial position because we don&#39;t want a completely different movement</span>
 <span class="n">init_pos</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
@@ -386,18 +379,24 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
         <span class="n">points</span> <span class="o">=</span> <span class="mi">12</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_rotation_period</span><span class="p">()</span>
         <span class="c1"># Complete revolution with 12 points</span>
-        <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="n">points</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                             <span class="n">dt</span><span class="o">=</span><span class="n">n</span><span class="o">/</span><span class="n">points</span><span class="p">))</span>
+        <span class="nb">tuple</span><span class="p">(</span>
+          <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="n">points</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">n</span> <span class="o">/</span> <span class="n">points</span>
+          <span class="p">)</span>
+        <span class="p">)</span>
         <span class="c1"># Again with n points, and at least 12 iterations</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">96</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">points</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
-            <span class="n">iterations</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">factor</span><span class="p">))</span>
-    <span class="k">except</span> <span class="n">UnbuildableError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="n">loci</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+          <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
+            <span class="n">iterations</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">factor</span>
+          <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">pl</span><span class="o">.</span><span class="n">UnbuildableError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
-        <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">L</span><span class="p">)</span>
+        <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
         <span class="c1"># We get the bounding box</span>
         <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
         <span class="c1"># We set the reference bounding box with frame_second as down-left</span>
@@ -405,8 +404,9 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
         <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="n">frame_second</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">frame_second</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
                   <span class="n">frame_second</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">frame_second</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
         <span class="c1"># Our score is the square sum of the edges distances</span>
-        <span class="k">return</span> <span class="o">-</span><span class="nb">sum</span><span class="p">((</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-                    <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+          <span class="p">(</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 <p>Please not that it is a <em>minization</em> problem, with 0 as lower bound.</p>
@@ -415,11 +415,12 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <p>With this constraints, score should be around -3.</p>
 <p>Let’s start with a candide optimization, the <a class="reference external" href="https://en.wikipedia.org/wiki/Trial_and_error">trial-and-error</a> method. Here it is a serial test of switches.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exhaustive optimization as an example ONLY</span>
-<span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">opti</span><span class="o">.</span><span class="n">exhaustive_optimization</span><span class="p">(</span>
+<span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">trials_and_errors_optimization</span><span class="p">(</span>
     <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_func</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-    <span class="n">delta_dim</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span>
+    <span class="n">divisions</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
     <span class="n">n_results</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -434,30 +435,21 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <li><p>They know their best score, and know the current score of they neighbours.</p></li>
 <li><p>Together they will try find the extremum in the space. Here it is a minimum.</p></li>
 </ul>
-<p>it is particularly relevant when the fitness function is not resource-greedy.</p>
-<p>Due to incompatibilities, we need a wrapper.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># A simple wrapper</span>
-<span class="k">def</span> <span class="nf">PSO_fitness_wrapper</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A simple wrapper to make the fitness function compatible.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">fitness_func</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-
-<span class="c1"># We reinitialize the linkage (an optimal linkage is not interesting)</span>
+<p>It is particularly relevant when the fitness function is not resource-greedy.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We reinitialize the linkage (an optimal linkage is not interesting)</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
 <span class="c1"># As we do for initial positions</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
 
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
 <span class="c1"># Optimization is more efficient with a start space</span>
-<span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">constraints</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">constraints</span><span class="p">))</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">my_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
 
-<span class="n">score</span> <span class="o">=</span> <span class="n">opti</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">PSO_fitness_wrapper</span><span class="p">,</span>
+<span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_func</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span>
-<span class="p">)</span><span class="o">.</span><span class="n">swarm</span><span class="o">.</span><span class="n">best_cost</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+<span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Here again the result should be 0.0.</p>

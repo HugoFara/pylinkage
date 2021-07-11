@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+The visualizer module makes visualisation of linkages easy using matplotlib.
+
 Created on Mon Jun 14 12:13:58 2021.
 
 @author: HugoFara
-
-This module makes visualisation of linkages easy using matplotlib.
 """
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim

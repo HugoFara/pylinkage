@@ -35,7 +35,9 @@ extensions = [
     'sphinx.ext.autodoc',
     # Useful for markdown integration
     'm2r2',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.githubpages',
+    # For NumPy style docustrings
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

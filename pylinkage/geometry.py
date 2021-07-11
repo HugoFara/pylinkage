@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+The geometry modules provides general geometry functions.
+
+It is used extensively, so each function should be highly optimized.
+
 Created on Wed May  5 17:34:45 2021.
 
 @author: HugoFara
-
-General geometry functions.
 """
 import math
 
