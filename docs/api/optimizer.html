@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>optimizer &mdash; pylinkage 0.4.1-alpha documentation</title>
+  <title>optimizer &mdash; pylinkage 0.5.0 documentation</title>
   
 
   
@@ -188,7 +188,7 @@ The default is 5.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimizer.particle_swarm_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func</span></em>, <em class="sig-param"><span class="pre">linkage</span></em>, <em class="sig-param"><span class="pre">center=None</span></em>, <em class="sig-param"><span class="pre">dimensions=None</span></em>, <em class="sig-param"><span class="pre">n_particles=100</span></em>, <em class="sig-param"><span class="pre">leader=3.0</span></em>, <em class="sig-param"><span class="pre">follower=0.1</span></em>, <em class="sig-param"><span class="pre">inertia=0.6</span></em>, <em class="sig-param"><span class="pre">neighbors=17</span></em>, <em class="sig-param"><span class="pre">iters=200</span></em>, <em class="sig-param"><span class="pre">bounds=None</span></em>, <em class="sig-param"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.particle_swarm_optimization" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func</span></em>, <em class="sig-param"><span class="pre">linkage</span></em>, <em class="sig-param"><span class="pre">center=None</span></em>, <em class="sig-param"><span class="pre">dimensions=None</span></em>, <em class="sig-param"><span class="pre">n_particles=100</span></em>, <em class="sig-param"><span class="pre">leader=3.0</span></em>, <em class="sig-param"><span class="pre">follower=0.1</span></em>, <em class="sig-param"><span class="pre">inertia=0.6</span></em>, <em class="sig-param"><span class="pre">neighbors=17</span></em>, <em class="sig-param"><span class="pre">iters=200</span></em>, <em class="sig-param"><span class="pre">bounds=None</span></em>, <em class="sig-param"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></em>, <em class="sig-param"><span class="pre">verbose=True</span></em>, <em class="sig-param"><span class="pre">**kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.particle_swarm_optimization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particle Swarm Optimization wrapper for pyswarms.</p>
 <p>This function is a simple wrapper to optimize a linkage using PSO. It will
 mainly call the LocalBestPSO function from pyswarms.single.</p>
@@ -216,6 +216,8 @@ The default is .2.</p></li>
 <li><p><strong>order_relation</strong> (<em>callable</em><em>(</em><em>float</em><em>, </em><em>float</em><em>) </em><em>-&gt; float</em><em>, </em><em>optional</em>) – How to compare scores. Should not be anything else than the built-in
 max and min functions.
 The default is max.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – The optimization state will be printed in console if True.
+The default is True.</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em>) – keyword arguments to pass to pyswarm.local.single.LocalBestPSO.</p></li>
 </ul>
 </dd>
@@ -230,7 +232,7 @@ The default is max.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimizer.trials_and_errors_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func</span></em>, <em class="sig-param"><span class="pre">linkage</span></em>, <em class="sig-param"><span class="pre">parameters=None</span></em>, <em class="sig-param"><span class="pre">n_results=10</span></em>, <em class="sig-param"><span class="pre">divisions=5</span></em>, <em class="sig-param"><span class="pre">bounds=None</span></em>, <em class="sig-param"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.trials_and_errors_optimization" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func</span></em>, <em class="sig-param"><span class="pre">linkage</span></em>, <em class="sig-param"><span class="pre">parameters=None</span></em>, <em class="sig-param"><span class="pre">n_results=10</span></em>, <em class="sig-param"><span class="pre">divisions=5</span></em>, <em class="sig-param"><span class="pre">bounds=None</span></em>, <em class="sig-param"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></em>, <em class="sig-param"><span class="pre">verbose=True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.trials_and_errors_optimization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the list of dimensions optimizing eval_func.</p>
 <p>Each dimensions set has a score, which is added in an array of n_results
 results, containg the linkages with best scores in a maximization problem
@@ -253,6 +255,8 @@ The default is None.</p></li>
 <li><p><strong>order_relation</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function of two arguments, should return the best score of two scores.
 Common examples are min, max, abs.
 The default is max.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – The number of cominations will be printed in console if True.
+The default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

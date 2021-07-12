@@ -19,7 +19,7 @@ Git tags will no longer receive a "-alpha" mention.
  - The ``verbose`` argument in optimizers can disable verbosity.
  - ``Static`` joints can now be defined implicitely. 
  - The ``utility`` module provides two useful decarators ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly simplify the workflow of defining fitness functions. 
-
+ - Versionning is now done thanks to bump2version.
 
 ### Changed
  - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to

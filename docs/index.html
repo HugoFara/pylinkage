@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to pylinkage’s documentation! &mdash; pylinkage 0.4.1-alpha documentation</title>
+  <title>Welcome to pylinkage’s documentation! &mdash; pylinkage 0.5.0 documentation</title>
   
 
   
@@ -169,13 +169,14 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="changeloglink.html#unreleased">[Unreleased]</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id1">[0.4.1] - 2021-07-11</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id4">[0.4.0] - 2021-07-06</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id8">[0.3.0] - 2021-07-05</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id12">[0.2.2] - 2021-06-22</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id15">[0.2.1] - 2021-06-16</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id19">[0.2.0] - 2021-06-14</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id22">[0.0.1] - 2021-06-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id1">[0.5.0] - 2021-07-12</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id2">[0.4.1] - 2021-07-11</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id5">[0.4.0] - 2021-07-06</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id9">[0.3.0] - 2021-07-05</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id13">[0.2.2] - 2021-06-22</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id16">[0.2.1] - 2021-06-16</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id20">[0.2.0] - 2021-06-14</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changeloglink.html#id23">[0.0.1] - 2021-06-12</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a><ul>
@@ -227,7 +228,6 @@
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>As of today, the code is segmented in three parts:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/geometry.py">geometry.py</a> that module handles geometric primitives, such as circle intersections, distance claculation. It works in Euclidian space only. Aside from <code class="docutils literal notranslate"><span class="pre">dist</span></code> and <code class="docutils literal notranslate"><span class="pre">sqr_dist</span></code> functions, you might not use it directly.</p></li>
 <li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py">linkage.py</a> this module describes joints and linkages</p>
 <ul>
 <li><p>Due to the geometric approach, joints (instances of <code class="docutils literal notranslate"><span class="pre">Joint</span></code> object) are defined without links.</p></li>
@@ -257,11 +257,6 @@
 <p>Let’s start with a crank-rocker <a class="reference external" href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar linkage</a>, as classic of mechanics.</p>
 <div class="section" id="joints-definition">
 <h3>Joints definition<a class="headerlink" href="#joints-definition" title="Permalink to this headline">¶</a></h3>
-<p>You don’t need to define points belonging to the frame, we will use those anchors:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">O,</span> <span class="pre">O</span></code>: “x, y” position of the first point.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">3,</span> <span class="pre">0</span></code>: same for the second point.</p></li>
-</ul>
 <p>Firstly we have to define at least one crank because want a kinematic simulation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -269,7 +264,7 @@
 <p>Here you need some explanations:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0,</span> <span class="pre">1</span></code>: x and y initial coordinates of the <strong>tail</strong> of the crank link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the position of the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the crank will rotate with this angle, in radians, at each iteration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">distance</span></code>: distance to keep constant between crank link tail and head.</p></li>
 </ul>
@@ -364,14 +359,14 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 
 <span class="sd">    It is a minisation problem and the theorical best score is 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-      <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
-      <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
-      <span class="c1"># We get the bounding box</span>
-      <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
-      <span class="c1"># We set the reference bounding box, in order (min_y, max_x, max_y, min_x)</span>
-      <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-      <span class="c1"># Our score is the square sum of the edges distances</span>
-      <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">))</span>
+    <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
+    <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
+    <span class="c1"># We get the bounding box</span>
+    <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
+    <span class="c1"># We set the reference bounding box, in order (min_y, max_x, max_y, min_x)</span>
+    <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Our score is the square sum of the edges distances</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Please not that it is a <em>minization</em> problem, with 0 as lower bound. On the
@@ -403,7 +398,7 @@ first line you notice a decorator, wich play a great role:</p>
 <p>However, with more complex linkages you need something more robust, and more efficient. Then we will use <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">particle swarm optimization</a>. Here are the principles:</p>
 <ul class="simple">
 <li><p>The parameters are the geometric constrints (the dimensions) of the linkage.</p></li>
-<li><p>A dimension set (a n-uplet) is called a <em>particule</em> or an <em>agents</em>. Think of it like a bee.</p></li>
+<li><p>A dimension set (a n-uplet) is called a <em>particule</em> or an <em>agent</em>. Think of it like a bee.</p></li>
 <li><p>The particles move in a n-vectorial space. That is, if we have n geometric constraints, the particules move in a n-D space.</p></li>
 <li><p>Together, the particules form the <em>swarm</em>.</p></li>
 <li><p>Each time they move, their score is evaluated by our fitness function.</p></li>
