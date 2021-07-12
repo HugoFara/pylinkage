@@ -86,12 +86,6 @@ class TestTrialsAndErros(unittest.TestCase):
 
     def test_convergence(self):
         """Test if the output after some iterations is improved."""
-        """print(opti.trials_and_errors_optimization(
-            eval_func=lambda *x: -fitness_func(*x),
-            linkage=self.linkage,
-            divisions=5000,
-            n_results=10,
-        ))"""
         bounds = opti.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
         score, dimensions, coord = opti.trials_and_errors_optimization(
             eval_func=fitness_func,
@@ -100,6 +94,7 @@ class TestTrialsAndErros(unittest.TestCase):
             bounds=bounds,
             n_results=40,
             order_relation=min,
+            verbose=False,
         )[0]
         self.assertAlmostEqual(score, 0.0, delta=0.3)
 
@@ -120,6 +115,7 @@ class TestPSO(unittest.TestCase):
             n_particles=60,
             iters=50,
             order_relation=min,
+            verbose=False,
         )[0]
         # Do not apply optimization problems
         self.assertAlmostEqual(score, 0.0, delta=1)

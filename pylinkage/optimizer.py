@@ -95,7 +95,8 @@ def trials_and_errors_optimization(
         n_results=10,
         divisions=5,
         bounds=None,
-        order_relation=max
+        order_relation=max,
+        verbose=True,
 ):
     """
     Return the list of dimensions optimizing eval_func.
@@ -128,6 +129,9 @@ def trials_and_errors_optimization(
         A function of two arguments, should return the best score of two scores.
         Common examples are min, max, abs.
         The default is max.
+    verbose : bool, optional
+        The number of cominations will be printed in console if True.
+        The default is True.
 
     Returns
     -------
@@ -143,11 +147,12 @@ def trials_and_errors_optimization(
     if bounds is None:
         bounds = generate_bounds(center)
 
-    print(
-        "Computation running, about {} combinations...".format(
-            divisions ** len(center)
+    if verbose:
+        print(
+            "Computation running, about {} combinations...".format(
+                divisions ** len(center)
+            )
         )
-    )
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
     results = [[None, [], []] for i in range(n_results)]
@@ -183,6 +188,7 @@ def particle_swarm_optimization(
         iters=200,
         bounds=None,
         order_relation=max,
+        verbose=True,
         **kwargs
 ):
     """
@@ -225,6 +231,9 @@ def particle_swarm_optimization(
         How to compare scores. Should not be anything else than the built-in
         max and min functions.
         The default is max.
+    verbose : bool, optional
+        The optimization state will be printed in console if True.
+        The default is True.
     **kwargs : dict
         keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
 
@@ -263,6 +272,7 @@ def particle_swarm_optimization(
     score, constraints = optimizer.optimize(
         # vectorized_eval_func,
         eval_wrapper,
-        iters, pos=pos
+        iters, pos=pos,
+        verbose=verbose,
     )
     return [(score, constraints, pos)]
