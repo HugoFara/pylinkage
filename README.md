@@ -17,7 +17,6 @@ We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/environm
 ## Usage
 
 As of today, the code is segmented in three parts:
-* [geometry.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/geometry.py) that module handles geometric primitives, such as circle intersections, distance claculation. It works in Euclidian space only. Aside from ``dist`` and ``sqr_dist`` functions, you might not use it directly.
 * [linkage.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py) this module describes joints and linkages 
   * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
   * The ``Linkage`` class that will make your code shorter.
@@ -37,10 +36,6 @@ Python 3, numpy for calculation, matplotlib for drawing, and standard libraries.
 Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki/Four-bar_linkage), as classic of mechanics. 
 
 ### Joints definition
-You don't need to define points belonging to the frame, we will use those anchors:
-* ``O, O``: "x, y" position of the first point.
-* ``3, 0``: same for the second point. 
-
 Firstly we have to define at least one crank because want a kinematic simulation.
 ```python
 crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
@@ -48,7 +43,7 @@ crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
 
 Here you need some explanations: 
 * ``0, 1``: x and y initial coordinates of the **tail** of the crank link.
-* ``joint0``: the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.
+* ``joint0``: the position of the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.
 * ``angle``: the crank will rotate with this angle, in radians, at each iteration.
 * ``distance``: distance to keep constant between crank link tail and head.
 
@@ -147,14 +142,14 @@ def fitness_func(loci, **kwargs):
 
     It is a minisation problem and the theorical best score is 0.
     """
-      # Locus of the Joint 'pin", mast in linkage order
-      tip_locus = tuple(x[-1] for x in loci)
-      # We get the bounding box
-      curr_bb = bounding_box(tip_locus)
-      # We set the reference bounding box, in order (min_y, max_x, max_y, min_x)
-      ref_bb = (0, 5, 3, 0)
-      # Our score is the square sum of the edges distances
-      return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
+    # Locus of the Joint 'pin", mast in linkage order
+    tip_locus = tuple(x[-1] for x in loci)
+    # We get the bounding box
+    curr_bb = bounding_box(tip_locus)
+    # We set the reference bounding box, in order (min_y, max_x, max_y, min_x)
+    ref_bb = (0, 5, 3, 0)
+    # Our score is the square sum of the edges distances
+    return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
 ```
 Please not that it is a *minization* problem, with 0 as lower bound. On the 
 first line you notice a decorator, wich play a great role:
@@ -182,7 +177,7 @@ Here the problem is simple enough, so that method takes only a few second and re
 
 However, with more complex linkages you need something more robust, and more efficient. Then we will use [particle swarm optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). Here are the principles:
 * The parameters are the geometric constrints (the dimensions) of the linkage.
-* A dimension set (a n-uplet) is called a *particule* or an *agents*. Think of it like a bee.
+* A dimension set (a n-uplet) is called a *particule* or an *agent*. Think of it like a bee.
 * The particles move in a n-vectorial space. That is, if we have n geometric constraints, the particules move in a n-D space.
 * Together, the particules form the *swarm*.
 * Each time they move, their score is evaluated by our fitness function.

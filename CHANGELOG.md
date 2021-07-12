@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.5.0] - 2021-07-12
+End alpha development! The package is now robust enough to be used by a mere human. This version introduces a lot of changes and simplifications, so everything is not perfect yet, but it is complete enough to be considered a beta version.
+
+Git tags will no longer receive a "-alpha" mention.
 ### Added
  - It is now possible and advised to import useful functions from pylinkage.{object}, without full path. For instance, use ``from pylinkage import Linkage`` instead of ``from pylinkage.linkage import Linkage``.
  - Each module had his header improved.
