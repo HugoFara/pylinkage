@@ -34,6 +34,7 @@ from .optimizer import (
     particle_swarm_optimization,
 )
 from .utility import (
+    kinematic_default_test,
     kinematic_maximization,
     kinematic_minimization,
 )
@@ -47,3 +48,5 @@ from .exceptions import (
     UnbuildableError,
     HypostaticError
 )
+
+__version__ = "0.4.1"
