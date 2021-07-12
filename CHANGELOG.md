@@ -18,7 +18,7 @@ Git tags will no longer receive a "-alpha" mention.
  - You can specify a custom order relation with ``trials_and_errors_optimization``.
  - The ``verbose`` argument in optimizers can disable verbosity.
  - ``Static`` joints can now be defined implicitely. 
- - The ``utility`` module provides two useful decarators ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly simplify the workflow of defining fitness functions. 
+ - The ``utility`` module provides two useful decorators ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly simplify the workflow of defining fitness functions. 
  - Versionning is now done thanks to bump2version.
 
 ### Changed
