@@ -92,6 +92,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="optimizer.html">optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">exceptions</a></li>
 </ul>
@@ -180,7 +181,7 @@
 <li><p><strong>x</strong> (<em>float</em><em>, </em><em>optional</em>) – initial horizontal position, won’t be used thereafter.
 The default is None.</p></li>
 <li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – initial vertical position. The default is None.</p></li>
-<li><p><strong>joint0</strong> (<a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>optional</em>) – first reference joint. The default is None.</p></li>
+<li><p><strong>joint0</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – first reference joint. The default is None.</p></li>
 <li><p><strong>distance</strong> (<em>float</em><em>, </em><em>optional</em>) – distance to keep between joint0 and self. The default is None.</p></li>
 <li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – It is the angle (horizontal axis, joint0, self).
 Should be in radian and in trigonometric order.
@@ -250,11 +251,15 @@ The default is None.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joint0</strong> (<em>*</em>) – </p></li>
-<li><p><strong>joint1</strong> (<em>*</em>) – </p></li>
-<li><p><strong>distance</strong> (<em>*</em>) – </p></li>
-<li><p><strong>angle</strong> (<em>*</em>) – </p></li>
-<li><p><strong>be in radian and in trigonometric order.</strong> (<em>Should</em>) – </p></li>
+<li><p><strong>x</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on horizontal axis. The default is 0.</p></li>
+<li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on vertical axis. The default is O.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Friendly name for human readability. The default is None.</p></li>
+<li><p><strong>joint0</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Linked pivot joint 1 (geometric constraints). The default is None.</p></li>
+<li><p><strong>joint1</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Other pivot joint linked. The default is None.</p></li>
+<li><p><strong>distance</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance to keep constant between joint0 and self. The default is
+None.</p></li>
+<li><p><strong>angle</strong> (<em>float</em><em>, </em><em>optional</em>) – Angle (joint1, joint0, self). Should be in radian and in trigonometric
+order. The default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -324,11 +329,11 @@ whole. Local space is defined by link[0] as the origin and
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>*</em>) – </p></li>
-<li><p><strong>y</strong> (<em>*</em>) – </p></li>
-<li><p><strong>joint0</strong> (<em>*</em>) – </p></li>
-<li><p><strong>joint1</strong> (<em>*</em>) – </p></li>
-<li><p><strong>name</strong> (<em>*</em>) – </p></li>
+<li><p><strong>x</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on horizontal axis. The default is 0.</p></li>
+<li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on vertical axis. The default is O.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Friendly name for human readability. The default is None.</p></li>
+<li><p><strong>joint0</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Linked pivot joint 1 (geometric constraints). The default is None.</p></li>
+<li><p><strong>joint1</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Other pivot joint linked. The default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -404,10 +409,12 @@ base.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joints</strong> (<em>*</em>) – </p></li>
-<li><p><strong>order</strong> (<em>*</em>) – </p></li>
-<li><p><strong>be elements of joints if provided.</strong> (<em>Should</em>) – </p></li>
-<li><p><strong>name</strong> (<em>*</em>) – </p></li>
+<li><p><strong>joints</strong> (<em>list</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>]</em>) – All Joint to be part of the linkage</p></li>
+<li><p><strong>order</strong> (<em>list</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>]</em>) – Sequence to manually define resolution order for each step.
+Should be a subset of joints.
+Automatic computed order is experimental! The default is None.</p></li>
+<li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Human-readable name for the Linkage. If None, take the value
+str(id(self)). The default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -553,10 +560,10 @@ All cranks rotate by their self.angle * dt. The default is 1.</p></li>
 <li><p><strong>x</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on horizontal axis. The default is 0.</p></li>
 <li><p><strong>y</strong> (<em>float</em><em>, </em><em>optional</em>) – Position on vertical axis. The default is O.</p></li>
 <li><p><strong>name</strong> (<em>str</em><em>, </em><em>optional</em>) – Friendly name for human readability. The default is None.</p></li>
-<li><p><strong>joint0</strong> (<a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>optional</em>) – Linked pivot joint 1 (geometric constraints). The default is None.</p></li>
-<li><p><strong>joint1</strong> (<a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>optional</em>) – Other pivot joint linked. The default is None.</p></li>
+<li><p><strong>joint0</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Linked pivot joint 1 (geometric constraints). The default is None.</p></li>
+<li><p><strong>joint1</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Other pivot joint linked. The default is None.</p></li>
 <li><p><strong>distance0</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance from joint0 to the current Joint. The default is None.</p></li>
-<li><p><strong>distance1</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance from joint1 to the current Joint.</p></li>
+<li><p><strong>distance1</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance from joint1 to the current Joint. The default is None.</p></li>
 </ul>
 </dd>
 </dl>
@@ -603,7 +610,7 @@ All cranks rotate by their self.angle * dt. The default is 1.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a>) – The joint to use as achor.</p></li>
+<li><p><strong>joint</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – The joint to use as achor.</p></li>
 <li><p><strong>distance</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
 </ul>
 </dd>
@@ -623,7 +630,7 @@ All cranks rotate by their self.angle * dt. The default is 1.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a>) – The joint to use as achor.</p></li>
+<li><p><strong>joint</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#pylinkage.linkage.Joint" title="pylinkage.linkage.Joint"><em>Joint</em></a><em>, </em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – The joint to use as achor.</p></li>
 <li><p><strong>distance</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
 </ul>
 </dd>
@@ -653,16 +660,14 @@ All cranks rotate by their self.angle * dt. The default is 1.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.Static.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.Static.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create Joint.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>*</em>) – </p></li>
-<li><p><strong>y</strong> (<em>*</em>) – </p></li>
-<li><p><strong>joint0</strong> (<em>*</em>) – </p></li>
-<li><p><strong>joint1</strong> (<em>*</em>) – </p></li>
-<li><p><strong>name</strong> (<em>*</em>) – </p></li>
-</ul>
+<dd><p>A Static joint is a point in space to use as anchor by other joints.</p>
+<p>It is NOT a kind of joint as viewed in engineering terms!</p>
+<dl class="simple">
+<dt>x<span class="classifier">float, optional</span></dt><dd><p>Position on horizontal axis. The default is 0.</p>
+</dd>
+<dt>y<span class="classifier">float, optional</span></dt><dd><p>Position on vertical axis. The default is O.</p>
+</dd>
+<dt>name<span class="classifier">str, optional</span></dt><dd><p>Friendly name for human readability. The default is None.</p>
 </dd>
 </dl>
 </dd></dl>

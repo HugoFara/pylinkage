@@ -135,6 +135,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/linkage.html">linkage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/optimizer.html">optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/utility.html">utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/exceptions.html">exceptions</a></li>
 </ul>
@@ -216,6 +217,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>The <code class="docutils literal notranslate"><span class="pre">generate_bounds</span></code> functions is a simple way to generate bounds before optimization.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">order_relation</span></code> arguments of <code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization</span></code> and <code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization</span></code> let you choose between maximization and minimization problem.</p></li>
 <li><p>You can specify a custom order relation with <code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Static</span></code> joints can now be defined implicitely.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">utility</span></code> module provides two useful decarators <code class="docutils literal notranslate"><span class="pre">kinematic_minimization</span></code> and <code class="docutils literal notranslate"><span class="pre">kinematic_optimizatino</span></code>. They greatly simplify the workflow of defining fitness functions.</p></li>
 </ul>
 </div>
 <div class="section" id="changed">

@@ -140,53 +140,32 @@ Our objective function, often called the fitness function, is the following:
 # We save initial position because we don't want a completely different movement
 init_pos = my_linkage.get_coords()
 
-def fitness_func(linkage, params, *args):
+@pl.kinematic_minimizastion
+def fitness_func(loci, **kwargs):
     """
     Return how fit the locus is to describe a quarter of circle.
 
     It is a minisation problem and the theorical best score is 0.
     """
-    linkage.set_coords(init_pos)
-    linkage.set_num_constraints(params)
-    try:
-        points = 12
-        n = linkage.get_rotation_period()
-        # Complete revolution with 12 points
-        tuple(
-          tuple(i) for i in linkage.step(
-            iterations=points + 1, dt=n / points
-          )
-        )
-        # Again with n points, and at least 12 iterations
-        n = 96
-        factor = int(points / n) + 1
-        loci = tuple(
-          tuple(i) for i in linkage.step(
-            iterations=n * factor, dt=1 / factor
-          )
-        )
-    except pl.UnbuildableError:
-        return float('inf')
-    else:
-        # Locus of the Joint 'pin", mast in linkage order
-        tip_locus = tuple(x[-1] for x in loci)
-        # We get the bounding box
-        curr_bb = bounding_box(tip_locus)
-        # We set the reference bounding box with frame_second as down-left
-        # corner and size 2
-        ref_bb = (frame_second.y, frame_second.x + 2,
-                  frame_second.y + 2, frame_second.x)
-        # Our score is the square sum of the edges distances
-        return sum(
-          (pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb)
-        )
+      # Locus of the Joint 'pin", mast in linkage order
+      tip_locus = tuple(x[-1] for x in loci)
+      # We get the bounding box
+      curr_bb = bounding_box(tip_locus)
+      # We set the reference bounding box, in order (min_y, max_x, max_y, min_x)
+      ref_bb = (0, 5, 3, 0)
+      # Our score is the square sum of the edges distances
+      return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
 ```
-Please not that it is a *minization* problem, with 0 as lower bound.
+Please not that it is a *minization* problem, with 0 as lower bound. On the 
+first line you notice a decorator, wich play a great role:
+* The decarator arguments are (linkage, constraints), it can also receive ``init_pos``
+* It sets the linkage with the constraints.
+* Then it verifies if the linkage can do a complete crank turn.
+  * If it can, pass the arguments and the resulting loci (path of joints) to the decorated function.
+  * If not, return the penalty. In a minimization problem the penalty will be ``float('inf')``.
+* The decorated function should return the score of this linkage.  
 
-We need to get the geometric constraints as the optimization parameters.
-``constraints = tuple(my_linkage.get_num_constraints())```
-
-With this constraints, score should be around -3. 
+With this constraints, the best theoric score is 0.0. 
 
 Let's start with a candide optimization, the [trial-and-error](https://en.wikipedia.org/wiki/Trial_and_error) method. Here it is a serial test of switches.
 ```python
@@ -231,7 +210,7 @@ score, position, coord = pl.particle_swarm_optimization(
 ```
 Here the result can vary, but it is rarely above 0.2.
 
-So we made something that say it works, let's verify it:
+So we made something that says it works, let's verify it:
 
 ![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
 

@@ -15,6 +15,7 @@ Welcome to pylinkage's documentation!
    api/geometry
    api/linkage
    api/optimizer
+   api/utility
    api/visualizer
    api/exceptions
 

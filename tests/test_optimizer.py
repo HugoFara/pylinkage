@@ -5,6 +5,7 @@ from pylinkage.geometry import bounding_box
 from pylinkage.exceptions import UnbuildableError
 from pylinkage import linkage as pl
 from pylinkage import optimizer as opti
+from pylinkage.utility import kinematic_minimization
 
 
 def prepare_linkage():
@@ -28,8 +29,8 @@ def prepare_linkage():
     init_pos = tuple(linkage.get_coords())
     return linkage
 
-
-def fitness_func(linkage, params, *args):
+@kinematic_minimization
+def fitness_func(loci, **kwargs):
     """
     Return how fit the locus is to describe a quarter of circle.
 
@@ -37,40 +38,14 @@ def fitness_func(linkage, params, *args):
     Theorical best score is 0.
     Worst score is float('inf').
     """
-    linkage.set_coords(init_pos)
-    linkage.set_num_constraints(params)
-    try:
-        points = 12
-        n = linkage.get_rotation_period()
-        # Complete revolution with 12 points
-        tuple(
-            tuple(i) for i in linkage.step(
-                iterations=points + 1, dt=n / points
-            )
-        )
-        # Again with n points, and at least 12 iterations
-        n = 96
-        factor = int(points / n) + 1
-        loci = tuple(
-            tuple(i) for i in linkage.step(
-                iterations=n * factor, dt=1 / factor
-            )
-        )
-    except UnbuildableError:
-        return float('inf')
-    else:
-        # Locus of the Joint 'pin", mast in linkage order
-        tip_locus = tuple(x[-1] for x in loci)
-        # We get the bounding box
-        curr_bb = bounding_box(tip_locus)
-        # We set the reference bounding box with frame_second as down-left
-        # corner and size 2
-        parent = linkage.joints[1].joint1
-        ref_bb = (parent.y, parent.x + 2, parent.y + 2, parent.x)
-        # Our score is the square sum of the edges distances
-        return sum(
-            (pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb)
-        )
+    # Locus of the Joint 'pin", mast in linkage order
+    tip_locus = tuple(x[-1] for x in loci)
+    # We get the bounding box
+    curr_bb = bounding_box(tip_locus)
+    # We set the reference bounding box
+    ref_bb = (0, 5, 2, 3)
+    # Our score is the square sum of the edges distances
+    return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
 
 
 class TestGenerateBounds(unittest.TestCase):
@@ -142,7 +117,7 @@ class TestPSO(unittest.TestCase):
             eval_func=fitness_func,
             linkage=self.linkage,
             bounds=bounds,
-            n_particles=40,
+            n_particles=60,
             iters=50,
             order_relation=min,
         )[0]

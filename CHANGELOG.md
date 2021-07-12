@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - The ``order_relation`` arguments of ``particle_swarm_optimization`` and ``trials_and_errors_optimization`` let you choose between maximization and minimization problem.
  - You can specify a custom order relation with ``trials_and_errors_optimization``.
  - ``Static`` joints can now be defined implicitely. 
+ - The ``utility`` module provides two useful decarators ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly simplify the workflow of defining fitness functions. 
 
 ### Changed
  - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to

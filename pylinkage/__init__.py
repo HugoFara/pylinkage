@@ -33,6 +33,10 @@ from .optimizer import (
     trials_and_errors_optimization,
     particle_swarm_optimization,
 )
+from .utility import (
+    kinematic_maximization,
+    kinematic_minimization,
+)
 from .visualizer import (
     plot_static_linkage,
     plot_kinematic_linkage,

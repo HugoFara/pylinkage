@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/linkage.html">linkage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/optimizer.html">optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/utility.html">utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/exceptions.html">exceptions</a></li>
 </ul>
@@ -189,6 +190,10 @@
 <li class="toctree-l2"><a class="reference internal" href="api/optimizer.html#module-pylinkage.optimizer">Trials-and-errors and PSO optomizers</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="api/utility.html">utility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/utility.html#module-pylinkage.utility">Various functions to help you handling linkages</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/visualizer.html#module-pylinkage.visualizer">Simple plotter for your linkages</a></li>
 </ul>
@@ -252,30 +257,24 @@
 <p>Let’s start with a crank-rocker <a class="reference external" href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar linkage</a>, as classic of mechanics.</p>
 <div class="section" id="joints-definition">
 <h3>Joints definition<a class="headerlink" href="#joints-definition" title="Permalink to this headline">¶</a></h3>
-<p>The first thing you need if to define points belonging to the frame:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
-
-<span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">frame_second</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>You don’t need to define points belonging to the frame, we will use those anchors:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">O,</span> <span class="pre">O</span></code>: “x, y” position of the first point.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">3,</span> <span class="pre">0</span></code>: same for the second point.</p></li>
 </ul>
-<p>Then we have to define at least one crank because we do a kinematic simulation.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">frame_first</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<p>Firstly we have to define at least one crank because want a kinematic simulation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here you need some explanations:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0,</span> <span class="pre">1</span></code>: x and y initial coordinates of the <strong>tail</strong> of the crank link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the parent Joint to link with. The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the crank will rotate with this angle, in radians, at each iteration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">distance</span></code>: distance to keep constant between crank link tail and head.</p></li>
 </ul>
 <p>Now we add a pin joint to close the kinematic loop.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="n">frame_second</span><span class="p">,</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here comes some help:</p>
@@ -295,7 +294,7 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <h3>Linkage definition and simulation<a class="headerlink" href="#linkage-definition-and-simulation" title="Permalink to this headline">¶</a></h3>
 <p>Once your linkage is finished, you can either can the <code class="docutils literal notranslate"><span class="pre">reload</span></code> method of each <code class="docutils literal notranslate"><span class="pre">Joint</span></code> in a loop, or put everything in a <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> that will handle this can of thinks for you.</p>
 <p>Linkage definition is simple:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">frame_first</span><span class="p">,</span> <span class="n">frame_second</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>That’s all!</p>
@@ -306,17 +305,13 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <p>You can also specify the number of steps with the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> argument, or subdivisions of each iteration with<code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
 <p>Let’s recape.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
-
-<span class="c1"># Static points in space, belonging to the frame</span>
-<span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">frame_second</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="c1"># Main motor</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">frame_first</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># Close the loop</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="n">frame_second</span><span class="p">,</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">frame_first</span><span class="p">,</span> <span class="n">frame_second</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
+<span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
 
 <span class="n">locus</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 </pre></div>
@@ -325,10 +320,8 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <div class="section" id="visualization">
 <h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
 <p>Firsting first, you made a cool linkage, but only you know what it is. Let’s add friendly names to joints, so the communication is simplified.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">frame_first</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-<span class="n">crank</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
 <span class="n">pin</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
-<span class="n">frame_second</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span>
 <span class="c1"># Linkage can also have names</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Four-bar linkage&quot;</span>
 </pre></div>
@@ -339,13 +332,10 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 </div>
 <a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
 <p>Last recap, rearranging names:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Static points in space, belonging to the frame</span>
-<span class="n">frame_first</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="n">frame_second</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
-<span class="c1"># Main motor</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">frame_first</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main motor</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
 <span class="c1"># Close the loop</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="n">frame_second</span><span class="p">,</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
 
 <span class="c1"># Linkage definition</span>
@@ -367,52 +357,37 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We save initial position because we don&#39;t want a completely different movement</span>
 <span class="n">init_pos</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimizastion</span>
+<span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return how fit the locus is to describe a quarter of circle.</span>
 
 <span class="sd">    It is a minisation problem and the theorical best score is 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
-    <span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="mi">12</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_rotation_period</span><span class="p">()</span>
-        <span class="c1"># Complete revolution with 12 points</span>
-        <span class="nb">tuple</span><span class="p">(</span>
-          <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
-            <span class="n">iterations</span><span class="o">=</span><span class="n">points</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">n</span> <span class="o">/</span> <span class="n">points</span>
-          <span class="p">)</span>
-        <span class="p">)</span>
-        <span class="c1"># Again with n points, and at least 12 iterations</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="mi">96</span>
-        <span class="n">factor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">points</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">loci</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
-          <span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span>
-            <span class="n">iterations</span><span class="o">=</span><span class="n">n</span> <span class="o">*</span> <span class="n">factor</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span> <span class="o">/</span> <span class="n">factor</span>
-          <span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">except</span> <span class="n">pl</span><span class="o">.</span><span class="n">UnbuildableError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
-        <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
-        <span class="c1"># We get the bounding box</span>
-        <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
-        <span class="c1"># We set the reference bounding box with frame_second as down-left</span>
-        <span class="c1"># corner and size 2</span>
-        <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="n">frame_second</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">frame_second</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span>
-                  <span class="n">frame_second</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">frame_second</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># Our score is the square sum of the edges distances</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
-          <span class="p">(</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">)</span>
-        <span class="p">)</span>
+      <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
+      <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
+      <span class="c1"># We get the bounding box</span>
+      <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
+      <span class="c1"># We set the reference bounding box, in order (min_y, max_x, max_y, min_x)</span>
+      <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+      <span class="c1"># Our score is the square sum of the edges distances</span>
+      <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Please not that it is a <em>minization</em> problem, with 0 as lower bound.</p>
-<p>We need to get the geometric constraints as the optimization parameters.
-<code class="docutils literal notranslate"><span class="pre">constraints</span> <span class="pre">=</span> <span class="pre">tuple(my_linkage.get_num_constraints())`</span></code></p>
-<p>With this constraints, score should be around -3.</p>
+<p>Please not that it is a <em>minization</em> problem, with 0 as lower bound. On the
+first line you notice a decorator, wich play a great role:</p>
+<ul class="simple">
+<li><p>The decarator arguments are (linkage, constraints), it can also receive <code class="docutils literal notranslate"><span class="pre">init_pos</span></code></p></li>
+<li><p>It sets the linkage with the constraints.</p></li>
+<li><p>Then it verifies if the linkage can do a complete crank turn.</p>
+<ul>
+<li><p>If it can, pass the arguments and the resulting loci (path of joints) to the decorated function.</p></li>
+<li><p>If not, return the penalty. In a minimization problem the penalty will be <code class="docutils literal notranslate"><span class="pre">float('inf')</span></code>.</p></li>
+</ul>
+</li>
+<li><p>The decorated function should return the score of this linkage.</p></li>
+</ul>
+<p>With this constraints, the best theoric score is 0.0.</p>
 <p>Let’s start with a candide optimization, the <a class="reference external" href="https://en.wikipedia.org/wiki/Trial_and_error">trial-and-error</a> method. Here it is a serial test of switches.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exhaustive optimization as an example ONLY</span>
 <span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">trials_and_errors_optimization</span><span class="p">(</span>
@@ -424,7 +399,7 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Here the problem is simple enough, so that method typical return the maximal theorical value of 0.0.</p>
+<p>Here the problem is simple enough, so that method takes only a few second and returns 0.05.</p>
 <p>However, with more complex linkages you need something more robust, and more efficient. Then we will use <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">particle swarm optimization</a>. Here are the principles:</p>
 <ul class="simple">
 <li><p>The parameters are the geometric constrints (the dimensions) of the linkage.</p></li>
@@ -452,8 +427,8 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Here again the result should be 0.0.</p>
-<p>So we made something that say it works, let’s verify it:</p>
+<p>Here the result can vary, but it is rarely above 0.2.</p>
+<p>So we made something that says it works, let’s verify it:</p>
 <a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
 <p>With a bit of imagination you have a wonderful windscreen wiper!</p>
 </div>
