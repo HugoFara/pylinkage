@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+ - The trials and errors optimization now have a progress bar (same kind of the one in particle swarm optimization), using the [tqdm](https://pypi.org/project/tqdm/).
+
+### Changed
+ - [matplotlib](https://matplotlib.org/) and tqdm are now required. 
 
 ## [0.5.0] - 2021-07-12
 End alpha development! The package is now robust enough to be used by a mere human. This version introduces a lot of changes and simplifications, so everything is not perfect yet, but it is complete enough to be considered a beta version.

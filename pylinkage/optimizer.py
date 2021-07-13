@@ -11,9 +11,23 @@ Created on Fri Mar  8 13:51:45 2019.
 import math
 import itertools
 import numpy as np
+# Progress bar
+try:
+    from tqdm import tqdm
+except ModuleNotFoundError:
+    tqdm = None
 # Particle swarm optimization
 from pyswarms.single.local_best import LocalBestPSO
 
+
+def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
+    """Wrapper for tqdm, that let you specify if you want verbosity."""
+    if verbose and tqdm:
+        for i in tqdm(iterable, *args, **kwargs):
+            yield i
+    else:
+        for i in iterable:
+            yield i
 
 def generate_bounds(center, min_ratio=5, max_factor=5):
     """
@@ -147,12 +161,6 @@ def trials_and_errors_optimization(
     if bounds is None:
         bounds = generate_bounds(center)
 
-    if verbose:
-        print(
-            "Computation running, about {} combinations...".format(
-                divisions ** len(center)
-            )
-        )
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
     results = [[None, [], []] for i in range(n_results)]
@@ -161,9 +169,15 @@ def trials_and_errors_optimization(
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.
     # A list of all possible dimensions
-    for dim in variator(center, divisions, bounds):
+    variations = tqdm_verbosity(
+            variator(center, divisions, bounds),
+            total=divisions ** len(center),
+            desc='trials_and_errors_optimization',
+            # postfix=results[0],
+            verbose=verbose,
+    )
+    for dim in variations:
         # Check performances
-        #print(dim)
         score = eval_func(linkage, dim, prev)
         for r in results:
             if r[0] is None or order_relation(r[0], score) != r[0]:
@@ -175,6 +189,13 @@ def trials_and_errors_optimization(
             # Save initial positions if score not null, for further
             # computations
             prev = [k.coord() for k in linkage.joints]
+    if verbose:
+        print(
+            "Trials and arros optimization finished. "
+            "Best score: {}, best dimensions: {}".format(
+                *results[0][:2]
+            )
+        )
     return results
 
 
