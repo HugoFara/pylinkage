@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-PyLinkage is a module to create, optimize and visualise linkages.
+PyLinkage is a module to create, optimize and visualize linkages.
 
 Please see the documentation at https://hugofara.github.io/pylinkage/.
 A copy of the documentation should have been distributed on your system in the
@@ -49,4 +49,4 @@ from .exceptions import (
     HypostaticError
 )
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
