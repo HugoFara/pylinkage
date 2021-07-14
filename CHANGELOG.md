@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.5.1] - 2021-07-14
 ### Added
  - The trials and errors optimization now have a progress bar (same kind of the one in particle swarm optimization), using the [tqdm](https://pypi.org/project/tqdm/).
 
