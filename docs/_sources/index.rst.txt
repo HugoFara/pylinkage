@@ -8,16 +8,29 @@ Welcome to pylinkage's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Introduction
 
-   readmelink
+   Readme <readmelink>
    changeloglink
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Modules
+
    api/geometry
    api/linkage
    api/optimizer
    api/utility
    api/visualizer
    api/exceptions
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Quick Links
+
+   Source Code <https://github.com/HugoFara/pylinkage>
+   Download on PyPi <https://pypi.org/project/pylinkage/>
+   Get Support <https://github.com/HugoFara/pylinkage/issues>
 
 .. include:: readmelink.rst
 
