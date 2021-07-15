@@ -169,12 +169,13 @@ def trials_and_errors_optimization(
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.
-    # A list of all possible dimensions
+    postfix = ["best score", None, "best dimensions", []]
+    # An iterable of all possible dimensions
     variations = tqdm_verbosity(
         variator(center, divisions, bounds),
         total=divisions ** len(center),
         desc='trials_and_errors_optimization',
-        # postfix=results[0],
+        postfix=postfix,
         verbose=verbose,
     )
     for dim in variations:
@@ -185,6 +186,9 @@ def trials_and_errors_optimization(
                 r[0] = score
                 r[1] = dim.copy()
                 r[2] = prev.copy()
+                if verbose:
+                    postfix[1] = results[0][0]
+                    postfix[3] = results[0][1]
                 break
         if score and False:
             # Save initial positions if score not null, for further

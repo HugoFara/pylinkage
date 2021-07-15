@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+ - You can see the best score and best dimensions updating in ``trials_and_errors_optimization``.
 
 ### Changed
  - The optimizers tests are 5 times quicker (~1 second now)  and raise less false positive.
