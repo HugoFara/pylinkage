@@ -11,13 +11,13 @@ Created on Fri Mar  8 13:51:45 2019.
 import math
 import itertools
 import numpy as np
+# Particle swarm optimization
+from pyswarms.single.local_best import LocalBestPSO
 # Progress bar
 try:
     from tqdm import tqdm
 except ModuleNotFoundError:
     tqdm = None
-# Particle swarm optimization
-from pyswarms.single.local_best import LocalBestPSO
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
@@ -29,6 +29,7 @@ def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
         for i in iterable:
             yield i
 
+
 def generate_bounds(center, min_ratio=5, max_factor=5):
     """
     Simple function to generate bounds from a linkage.
@@ -39,15 +40,15 @@ def generate_bounds(center, min_ratio=5, max_factor=5):
         1-D sequence, often in the form of ``linkage.get_num_constraints()``.
     min_ratio : float, optional
         Minimal compression ratio for the bounds. Minimal bounds will be of the
-        shpae center[x] / min_ratio.
+        shape center[x] / min_ratio.
         The default is 5.
     max_factor : float, optional
         Dilation factor for the upper bounds. Maximal bounds will be of the
-        shpae center[x] * max_factor.
+        shape center[x] * max_factor.
         The default is 5.
     """
     np_center = np.array(center)
-    return (np_center / min_ratio, np_center * max_factor)
+    return np_center / min_ratio, np_center * max_factor
 
 
 def variator(center, divisions, bounds):
@@ -170,11 +171,11 @@ def trials_and_errors_optimization(
     # dimensions progressively to minimal dimensions.
     # A list of all possible dimensions
     variations = tqdm_verbosity(
-            variator(center, divisions, bounds),
-            total=divisions ** len(center),
-            desc='trials_and_errors_optimization',
-            # postfix=results[0],
-            verbose=verbose,
+        variator(center, divisions, bounds),
+        total=divisions ** len(center),
+        desc='trials_and_errors_optimization',
+        # postfix=results[0],
+        verbose=verbose,
     )
     for dim in variations:
         # Check performances
@@ -283,6 +284,7 @@ def particle_swarm_optimization(
         **kwargs
     )
     # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')
+
     def eval_wrapper(dims, pos):
         """Wrapper for the evaluation function since PySwarms is too rigid."""
         if order_relation is max:

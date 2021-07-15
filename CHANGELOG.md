@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+ - The optimizers tests are 5 times quicker (~1 second now)  and raise less false positive.
+ - The sidebar in the documentation make navigation easier.
+
 ## [0.5.1] - 2021-07-14
 ### Added
  - The trials and errors optimization now have a progress bar (same kind of the one in particle swarm optimization), using the [tqdm](https://pypi.org/project/tqdm/).

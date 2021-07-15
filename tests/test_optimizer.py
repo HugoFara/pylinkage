@@ -1,8 +1,6 @@
 import unittest
 import numpy as np
 
-from pylinkage.geometry import bounding_box
-from pylinkage.exceptions import UnbuildableError
 from pylinkage import linkage as pl
 from pylinkage import optimizer as opti
 from pylinkage.utility import kinematic_minimization
@@ -13,39 +11,27 @@ def prepare_linkage():
     # Static points in space, belonging to the frame
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
-    # Main motor
-    crank = pl.Crank(0, 1, joint0=frame_first, angle=0.31, distance=1)
     # Close the loop
-    pin = pl.Pivot(3, 2, joint0=crank, joint1=frame_second,
-                   distance0=3, distance1=1)
-
-    # Linkage definition
-    linkage = pl.Linkage(
-        joints=(crank, pin),
-        order=(crank, pin),
+    pin = pl.Pivot(
+        0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1
     )
-
-    global init_pos
-    init_pos = tuple(linkage.get_coords())
-    return linkage
+    # Linkage definition
+    return pl.Linkage(joints=[pin], order=[pin])
 
 @kinematic_minimization
 def fitness_func(loci, **kwargs):
     """
-    Return how fit the locus is to describe a quarter of circle.
+    Return if the tip can go to the point (3, 1).
 
+    Notes
+    -----
     It is a minimization problem.
-    Theorical best score is 0.
+    Best possible score is 0.
     Worst score is float('inf').
     """
-    # Locus of the Joint 'pin", mast in linkage order
-    tip_locus = tuple(x[-1] for x in loci)
-    # We get the bounding box
-    curr_bb = bounding_box(tip_locus)
-    # We set the reference bounding box
-    ref_bb = (0, 5, 2, 3)
-    # Our score is the square sum of the edges distances
-    return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
+    # Locus of the Joint 'pin"
+    tip_locus = tuple(x[0] for x in loci)[0]
+    return (tip_locus[0] - 3) ** 2 + tip_locus[1] ** 2
 
 
 class TestGenerateBounds(unittest.TestCase):
@@ -67,7 +53,7 @@ class TestEvaluation(unittest.TestCase):
     def test_score(self):
         """Test if score is well returned."""
         score = fitness_func(self.linkage, self.constraints)
-        self.assertAlmostEqual(score, 3, delta=.1)
+        self.assertAlmostEqual(score, 1, delta=.1)
 
 
 class TestVariator(unittest.TestCase):
@@ -81,7 +67,7 @@ class TestVariator(unittest.TestCase):
             self.assertAlmostEqual(length, divisions, delta=1)
 
 
-class TestTrialsAndErros(unittest.TestCase):
+class TestTrialsAndErrors(unittest.TestCase):
     linkage = prepare_linkage()
 
     def test_convergence(self):
@@ -90,9 +76,9 @@ class TestTrialsAndErros(unittest.TestCase):
         score, dimensions, coord = opti.trials_and_errors_optimization(
             eval_func=fitness_func,
             linkage=self.linkage,
-            divisions=20,
+            divisions=10,
             bounds=bounds,
-            n_results=40,
+            n_results=10,
             order_relation=min,
             verbose=False,
         )[0]
@@ -112,13 +98,13 @@ class TestPSO(unittest.TestCase):
             eval_func=fitness_func,
             linkage=self.linkage,
             bounds=bounds,
-            n_particles=60,
+            n_particles=20,
             iters=50,
             order_relation=min,
             verbose=False,
         )[0]
         # Do not apply optimization problems
-        self.assertAlmostEqual(score, 0.0, delta=1)
+        self.assertAlmostEqual(score, 0.0, delta=.3)
 
 
 if __name__ == '__main__':
