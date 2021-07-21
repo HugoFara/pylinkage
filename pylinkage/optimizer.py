@@ -162,6 +162,7 @@ def trials_and_errors_optimization(
         Number of subdivisions between bounds. The default is 5.
     **kwargs : dict, optional
         Extra arguments for the optimization.
+        
         bounds : tuple[tuple], optional
             A 2-uple (tuple of two elements), containing the minimal and maximal
             bounds. If None, we will use parameters as center.

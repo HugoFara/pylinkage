@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>optimizer &mdash; pylinkage 0.5.1 documentation</title>
+  <title>optimizer &mdash; pylinkage 0.5.2 documentation</title>
   
 
   
@@ -177,6 +177,28 @@
 <p>Created on Fri Mar  8 13:51:45 2019.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.optimizer.fast_variator">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">fast_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.fast_variator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an iterable of all possibles variations of elements.</p>
+<p>Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).</p>
+<p>Here the order in the variations is not important.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>divisions</strong> (<em>int</em>) – Number of subdivisions between <cite>bounds</cite>.</p></li>
+<li><p><strong>bounds</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – 2-uple of minimal then maximal bounds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An iterable of all the dimensions combinations.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimizer.generate_bounds">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">generate_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.generate_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple function to generate bounds from a linkage.</p>
@@ -216,12 +238,13 @@ randomly between bounds. The default is None.</p></li>
 If None, it takes the value len(tuple(linkage.get_num_constraints())).
 The default is None.</p></li>
 <li><p><strong>n_particles</strong> (<em>float</em><em>, </em><em>optional</em>) – Number of particles in the swarm. The default is 100.</p></li>
-<li><p><strong>iner</strong> (<em>float</em><em>, </em><em>optional</em>) – Inertia of each particle, w in pyswarms. The default is .3.</p></li>
+<li><p><strong>inertia</strong> (<em>float</em><em>, </em><em>optional</em>) – Inertia of each particle, w in pyswarms. The default is .3.</p></li>
 <li><p><strong>leader</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning coefficient of each particle, c1 in pyswarms.
 The default is .2.</p></li>
 <li><p><strong>follower</strong> (<em>float</em><em>, </em><em>optional</em>) – Social coefficient, c2 in pyswarms. The default is .5.</p></li>
 <li><p><strong>neighbors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of neighbors to consider. The default is 17.</p></li>
 <li><p><strong>iters</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations to describe. The default is 200.</p></li>
+<li><p><strong>bounds</strong> (<em>sequence of two list of float</em>) – Bounds to the space, in format (lower_bound, upper_bound).</p></li>
 <li><p><strong>order_relation</strong> (<em>callable</em><em>(</em><em>float</em><em>, </em><em>float</em><em>) </em><em>-&gt; float</em><em>, </em><em>optional</em>) – How to compare scores. Should not be anything else than the built-in
 max and min functions.
 The default is max.</p></li>
@@ -240,53 +263,8 @@ The default is True.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimizer.tqdm_verbosity">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">tqdm_verbosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.tqdm_verbosity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper for tqdm, that let you specify if you want verbosity.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimizer.trials_and_errors_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func</span></em>, <em class="sig-param"><span class="pre">linkage</span></em>, <em class="sig-param"><span class="pre">parameters=None</span></em>, <em class="sig-param"><span class="pre">n_results=10</span></em>, <em class="sig-param"><span class="pre">divisions=5</span></em>, <em class="sig-param"><span class="pre">bounds=None</span></em>, <em class="sig-param"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></em>, <em class="sig-param"><span class="pre">verbose=True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.trials_and_errors_optimization" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the list of dimensions optimizing eval_func.</p>
-<p>Each dimensions set has a score, which is added in an array of n_results
-results, containg the linkages with best scores in a maximization problem
-by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> (<em>callable</em>) – Evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float)</p></li>
-<li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>pylinkage.linkage.Linkage</em></a>) – Linkage to evaluate.</p></li>
-<li><p><strong>parameters</strong> (<em>list</em><em>, </em><em>optional</em>) – Parameters that will be modified. Geometric constraints.
-If not, it will be assignated tuple(linkage.get_num_constraints()).
-The default is None.</p></li>
-<li><p><strong>n_results</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of best cancidates to return. The default is 10.</p></li>
-<li><p><strong>divisions</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of subdivisions between bounds. The default is 5.</p></li>
-<li><p><strong>bounds</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>]</em><em>, </em><em>optional</em>) – A 2-uple (tuple of two elements), containing the minimal and maximal
-bounds. If None, we will use parameters as center.
-The default is None.</p></li>
-<li><p><strong>order_relation</strong> (<em>callable</em><em>, </em><em>optional</em>) – A function of two arguments, should return the best score of two scores.
-Common examples are min, max, abs.
-The default is max.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – The number of cominations will be printed in console if True.
-The default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>results</strong> – 3-uple of score, dimensions and initial position for each Linkage to
-return. Its size is {n_results}.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>tuple[tuple[float, tuple[float], tuple[tuple[float]]]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimizer.variator">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.variator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pylinkage.optimizer.sequential_variator">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">sequential_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.sequential_variator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterable of all possibles variations of elements.</p>
 <p>Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).</p>
 <p>Because linkage are not tolerant to violent changes, the order of output
@@ -296,8 +274,8 @@ middle → max (step 1), so that there is no huge variation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>center</strong> (<em>sequence of floats</em>) – Elements that should vary.</p></li>
-<li><p><strong>divisions</strong> (<em>int</em>) – Number of subdivisions between bounds.</p></li>
+<li><p><strong>center</strong> (<em>sequence of float</em>) – Elements that should vary.</p></li>
+<li><p><strong>divisions</strong> (<em>int</em>) – Number of subdivisions between <cite>bounds</cite>.</p></li>
 <li><p><strong>bounds</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – 2-uple of minimal then maximal bounds.</p></li>
 </ul>
 </dd>
@@ -306,6 +284,60 @@ middle → max (step 1), so that there is no huge variation.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.optimizer.tqdm_verbosity">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">tqdm_verbosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.tqdm_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for tqdm, that let you specify if you want verbosity.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.optimizer.trials_and_errors_optimization">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimizer.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimizer.trials_and_errors_optimization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the list of dimensions optimizing eval_func.</p>
+<p>Each dimensions set has a score, which is added in an array of n_results
+results, contains the linkages with best scores in a maximization problem
+by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eval_func</strong> (<em>callable</em>) – Evaluation function.
+Input: (linkage, num_constraints, initial_coordinates).
+Output: score (float)</p></li>
+<li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>pylinkage.linkage.Linkage</em></a>) – Linkage to evaluate.</p></li>
+<li><p><strong>parameters</strong> (<em>list</em><em>, </em><em>optional</em>) – Parameters that will be modified. Geometric constraints.
+If not, it will be assigned tuple(linkage.get_num_constraints()).
+The default is None.</p></li>
+<li><p><strong>n_results</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of best candidates to return. The default is 10.</p></li>
+<li><p><strong>divisions</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of subdivisions between bounds. The default is 5.</p></li>
+<li><p><strong>**kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – <p>Extra arguments for the optimization.</p>
+<dl class="simple">
+<dt>bounds<span class="classifier">tuple[tuple], optional</span></dt><dd><p>A 2-uple (tuple of two elements), containing the minimal and maximal
+bounds. If None, we will use parameters as center.
+The default is None.</p>
+</dd>
+<dt>order_relation<span class="classifier">callable, optional</span></dt><dd><p>A function of two arguments, should return the best score of two
+scores. Common examples are <cite>min</cite>, <cite>max</cite>, <cite>abs</cite>.
+The default is <cite>max</cite>.</p>
+</dd>
+<dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>The number of combinations will be printed in console if <cite>True</cite>.
+The default is <cite>True</cite>.</p>
+</dd>
+<dt>sequential<span class="classifier">bool</span></dt><dd><p>If True, two consecutive linkages will have a small variation.</p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>results</strong> – 3-uple of score, dimensions and initial position for each Linkage to
+return. Its size is {n_results}.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple[tuple[float, tuple[float], tuple[tuple[float]]]]</p>
 </dd>
 </dl>
 </dd></dl>
