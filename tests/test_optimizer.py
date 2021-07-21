@@ -63,8 +63,14 @@ class TestVariator(unittest.TestCase):
         sequence = [1]
         bounds = ([0], [3])
         for divisions in (1, 2, 3, 5, 6, 13, 30):
-            length = sum(1 for x in opti.variator(sequence, divisions, bounds))
+            length = sum(
+                1 for x in opti.sequential_variator(sequence, divisions, bounds)
+            )
             self.assertAlmostEqual(length, divisions, delta=1)
+            length = sum(
+                1 for x in opti.fast_variator(divisions, bounds)
+            )
+            self.assertAlmostEqual(length, divisions)
 
 
 class TestTrialsAndErrors(unittest.TestCase):
