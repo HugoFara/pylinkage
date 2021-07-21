@@ -1,6 +1,6 @@
 [![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/leggedsnake/master/LICENSE.rst)
-[![Downloads](https://pepy.tech/badge/pylinkage/week)](https://pepy.tech/project/pylinkage)
+[![Downloads](https://static.pepy.tech/personalized-badge/pylinkage?period=total&units=international_system&left_color=grey&right_color=green&left_text=Downloads)](https://pepy.tech/project/pylinkage)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/master/LICENSE.rst)
 # pylinkage
 
 A linkage builder written in Python. This package is made to create planar linkages and optimize them kinematically thanks to [Particle Swarm Optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). It is still an early work, so it should receive great changes in the future.
@@ -17,7 +17,7 @@ We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/blob/mas
 
 ## Usage
 
-As of today, the code is segmented in three parts:
+As of today, we segment the code in main three parts:
 * [linkage.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/linkage.py) this module describes joints and linkages 
   * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
   * The ``Linkage`` class that will make your code shorter.
