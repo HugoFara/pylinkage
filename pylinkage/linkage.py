@@ -9,12 +9,15 @@ Created on Fri Apr 16 16:39:21 2021.
 """
 import abc
 from math import atan2, gcd, tau
-from abc import ABC
+import warnings
 from .exceptions import HypostaticError, UnbuildableError
-from .geometry import sqr_dist, circle_intersect, cyl_to_cart
+from .geometry import (
+    sqr_dist, circle_intersect, cyl_to_cart, circle_line_intersection, line_from_points
+)
 
 
-class Joint(ABC):
+# TODO: change description because we now use other than two joints
+class Joint(abc.ABC):
     """
     Geometric constraint expressed by two joints.
 
@@ -135,7 +138,9 @@ class Static(Joint):
 
 
 class Fixed(Joint):
-    """Define a joint using parents locations only, with no ambiguity."""
+    """
+    A joint using parents locations only, with no ambiguity on its position.
+    """
 
     __slots__ = "r", "angle"
 
@@ -196,13 +201,76 @@ class Fixed(Joint):
         self.r, self.angle = distance or self.r, angle or self.angle
 
     def set_anchor0(self, joint, distance=None, angle=None):
-        """First joint anchor and characterisitcs."""
+        """First joint anchor and characteristics."""
         self.joint0 = joint
         self.set_constraints(distance, angle)
 
     def set_anchor1(self, joint):
         """Second joint anchor."""
         self.joint1 = joint
+
+
+class Linear(Joint):
+    """Define a point constrained by a prismatic pair and a revolute pair."""
+
+    __slots__ = "r0", "joint2"
+
+    def __init__(
+            self, x=0, y=0,
+            joint0=None, joint1=None, joint2=None,
+            distance0=None, name=None
+    ):
+        """
+        Set point position, parents, and if it is fixed for this turn.
+
+        Arguments
+        ---------
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        joint0 : Union[Joint, tuple[float]], optional
+            Linked pivot joint 1 (geometric constraints). The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            First joint or point defining the axis. The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            Second joint or point defining the axis. The default is None.
+        distance0 : float, optional
+            Distance from joint0 to the current Joint. The default is None.
+        """
+        super().__init__(x, y, joint0, joint1, name)
+        self.r0 = distance0
+        self.joint2 = joint2
+
+    def reload(self):
+        """Compute position of pivot joint, with the three linked joints."""
+        positions = circle_line_intersection(
+            (*self.joint0.coord(), self.r0),
+            line_from_points(self.joint1.coord(), self.joint2.coord())
+        )
+        if len(positions) == 0:
+            raise UnbuildableError(self)
+        elif len(positions) == 1:
+            self.x, self.y = positions[0]
+        else:
+            # Got to the nearer point
+            if (
+                    sqr_dist(self.coord(), positions[0]) <
+                    sqr_dist(self.coord(), positions[1])
+            ):
+                self.x, self.y = positions[0]
+            else:
+                self.x, self.y = positions[1]
+
+    def get_constraints(self):
+        """Return the only distance constraint for this joint."""
+        return tuple([self.r0])
+
+    def set_constraints(self, distance0=None):
+        """Set the only distance constraint for this joint."""
+        self.r0 = distance0 or self.r0
 
 
 class Pivot(Joint):
@@ -286,10 +354,13 @@ class Pivot(Joint):
                 raise Warning(f"Joint {self.name} has an infinite number of"
                               "solutions, position will be arbitrary")
                 # We project position on circle of possible positions
-                vect = ((j-i)/abs(j-i) for i, j in zip(coco[1],
-                                                       self.coord()))
-                self.x, self.y = [i + j * coco[1][2] for i, j in zip(coco[1],
-                                  vect)]
+                vector = (
+                    (j - i) / abs(j - i) for i, j in zip(coco[1], self.coord())
+                )
+                self.x, self.y = [
+                    i + j * coco[1][2] for i, j in zip(coco[1], vector)
+                ]
+
     def get_constraints(self):
         """Return the two constraining distances of this joint."""
         return self.r0, self.r1
@@ -305,7 +376,7 @@ class Pivot(Joint):
         Parameters
         ----------
         joint : Union[Joint, tuple[float]]
-            The joint to use as achor.
+            The joint to use as anchor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
 
@@ -324,7 +395,7 @@ class Pivot(Joint):
         Parameters
         ----------
         joint : Union[Joint, tuple[float]]
-            The joint to use as achor.
+            The joint to use as anchor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
 
@@ -387,7 +458,7 @@ class Crank(Joint):
 
     def get_constraints(self):
         """Return the distance to the center of rotation."""
-        return (self.r,)
+        return self.r,
 
     def set_constraints(self, distance=None, *args):
         """Set geometric constraints, only self.r is affected."""
@@ -399,11 +470,11 @@ class Crank(Joint):
         self.set_constraints(distance=distance)
 
 
-class Linkage():
+class Linkage:
     """
     A linkage is a set of Joint objects.
 
-    It is defined kinematicaly. Coordinates are given relative to its own
+    It is defined cinematically. Coordinates are given relative to its own
     base.
     """
 
@@ -460,21 +531,21 @@ class Linkage():
                 'Unable to determine automatic order!'
                 'Those joints are left unsolved:'
                 ','.join(str(j) for j in self.joints if j not in solvable)
-                )
+            )
         self._solve_order = tuple(solvable)
         raise NotImplementedError('Unable to determine automatic order')
         return self._solve_order
 
     def rebuild(self, pos=None):
         """
-        Redifine linkage joints and given intial positions to joints.
+        Redefine linkage joints and given initial positions to joints.
 
         Parameters
         ----------
         pos : tuple[tuple[int]]
             Initial positions for each joint in self.joints.
             Coordinates does not need to be precise, they will allow us the best
-            fitting position between all possible positions satifying
+            fitting position between all possible positions satisfying
             constraints.
         """
         if not hasattr(self, '_solve_order'):
@@ -483,7 +554,7 @@ class Linkage():
         # Links parenting in descending order solely.
         # Parents joint do not have children.
         if pos is not None:
-            # Defintition of initial coordinates
+            # Definition of initial coordinates
             self.set_coords(pos)
 
     def get_coords(self):
@@ -491,34 +562,42 @@ class Linkage():
         return [j.coord() for j in self.joints]
 
     def set_coords(self, coords):
-        """Set coordinatess for all joints of the linkage."""
+        """Set coordinates for all joints of the linkage."""
         for joint, coord in zip(self.joints, coords):
             joint.set_coord(coord)
 
-    def hyperstaticity(self):
-        """Return the hyperstaticity degree of the linkage in 2D."""
-        # TODO : test it
+    def indeterminacy(self):
+        """Return the indeterminacy degree degree of the linkage in 2D."""
+        # TODO: test it
         # We have at least the frame
         solids = 1
         mobilities = 1
-        kinematic_indetermined = 0
+        kinematic_indeterminate = 0
         for j in self.joints:
             if isinstance(j, (Static, Fixed)):
                 pass
             elif isinstance(j, Crank):
                 solids += 1
-                kinematic_indetermined += 2
+                kinematic_indeterminate += 2
             elif isinstance(j, Pivot):
                 solids += 1
                 # A Pivot Joint create at least two pivots
-                kinematic_indetermined += 4
+                kinematic_indeterminate += 4
                 if not hasattr(j, 'joint1') or j.joint1 is None:
                     mobilities += 1
                 else:
                     solids += 1
-                    kinematic_indetermined += 2
+                    kinematic_indeterminate += 2
 
-        return 3 * (solids - 1) - kinematic_indetermined + mobilities
+        return 3 * (solids - 1) - kinematic_indeterminate + mobilities
+
+    def hyperstaticity(self):
+        """Deprecated name of the indeterminacy method."""
+        warnings.warn(
+            'The "hyperstaticity" method was renamed to indeterminacy',
+            DeprecationWarning
+        )
+        return self.indeterminacy()
 
     def step(self, iterations=None, dt=1):
         """
@@ -557,7 +636,7 @@ class Linkage():
         Parameters
         ----------
         flat : bool
-            Whether to force one-dimensionnal representation of constraints.
+            Whether to force one-dimensional representation of constraints.
             The default is True.
 
         Returns
@@ -584,9 +663,9 @@ class Linkage():
         constraints : sequence
             Sequence of constraints to pass to the joints.
         flat : bool
-            If True, should be a one-dimensionnal sequence of floats.
+            If True, should be a one-dimensional sequence of floats.
             If False, should be a sequence of tuples of digits. Each element
-            will be passed to the set_constraints method of each correspondig
+            will be passed to the set_constraints method of each corresponding
             Joint.
             The default is True.
         """

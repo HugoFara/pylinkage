@@ -12,7 +12,7 @@ import matplotlib.animation as anim
 from pylinkage.geometry import bounding_box
 
 from .exceptions import UnbuildableError
-from .linkage import Crank, Fixed, Static, Pivot
+from .linkage import Crank, Fixed, Static, Linear, Pivot
 
 # List of animations
 ANIMATIONS = []
@@ -22,7 +22,8 @@ COLOR_SWITCHER = {
     Static: 'k',
     Crank: 'g',
     Fixed: 'r',
-    Pivot: 'b'
+    Pivot: 'b',
+    Linear: 'orange'
 }
 
 def _get_color(joint):
@@ -81,25 +82,35 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
             **plot_kwargs
         )
         # Then second parent
-        if isinstance(joint, (Crank, Static)):
-            continue
-        par_pos = joint.joint1.coord()
-        axis.plot(
-            [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-            **plot_kwargs
-        )
+        if isinstance(joint, (Fixed, Pivot)):
+            par_pos = joint.joint1.coord()
+            axis.plot(
+                [par_pos[0], pos[0]], [par_pos[1], pos[1]],
+                **plot_kwargs
+            )
+        elif isinstance(joint, Linear):
+            # Different ordering
+            par_pos = joint.joint2.coord()
+            other_pos = joint.joint1.coord()
+            axis.plot(
+                [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],
+                **plot_kwargs
+            )
 
     # Highlight for specific loci
     if locus_highlights:
         for locus in locus_highlights:
-            axis.scatter(tuple(coord[0] for coord in locus),
-                         tuple(coord[1] for coord in i))
+            axis.scatter(
+                tuple(coord[0] for coord in locus),
+                tuple(coord[1] for coord in locus)
+            )
 
     if show_legend:
         axis.set_title("Static representation")
         axis.set_xlabel("x")
         axis.set_ylabel("y")
         axis.legend(tuple(i.name for i in linkage.joints))
+
 
 def update_animated_plot(linkage, index, images, loci):
     """
@@ -197,6 +208,7 @@ def plot_kinematic_linkage(
         save_count=frames)
     return animation
 
+
 def movement_bounding_bow(loci):
     """Return the general bounding box of a group of loci."""
     bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
@@ -207,6 +219,7 @@ def movement_bounding_bow(loci):
             max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
         )
     return bb
+
 
 def show_linkage(
         linkage,

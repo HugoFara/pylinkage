@@ -11,6 +11,7 @@ Created on Wed May  5 17:34:45 2021.
 """
 import math
 
+
 def dist_builtin(point1, point2):
     """
     Euclidian distance between two 2D points.
@@ -55,9 +56,10 @@ def cyl_to_cart(radius, theta, ori=(0, 0)):
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
 
 
-def __secant_circles_intersections__(distance, dist_x, dist_y, mid_dist,
-                                     radius1, projected):
-    """Return the TWO intersections of secante circles."""
+def secant_circles_intersections(
+        distance, dist_x, dist_y, mid_dist, radius1, projected
+    ):
+    """Return the TWO intersections of secant circles."""
     # Distance between projected P and points
     # and the points of which P is projection
     height = math.sqrt(radius1 ** 2 - mid_dist ** 2) / distance
@@ -93,10 +95,10 @@ def circle_intersect(circle1, circle2, tol=0.0):
     distance = math.sqrt(dist_x ** 2 + dist_y ** 2)
     if distance > radius1 + radius2:
         # Circles two far
-        return (0, )
+        return 0, None
     if distance < abs(radius2 - radius1):
         # One circle in the other
-        return (0, )
+        return 0, None
     if distance <= tol and abs(radius1 - radius2) <= tol:
         # Same circle
         return 3, circle1
@@ -117,10 +119,95 @@ def circle_intersect(circle1, circle2, tol=0.0):
     )
 
     if dual:
-        return __secant_circles_intersections__(
+        return secant_circles_intersections(
             distance, dist_x, dist_y, mid_dist, radius1, projected
         )
     return 1, projected
+
+
+def line_from_points(point0, point1):
+    """
+    Return a cartesian equation of a line joining two points.
+
+    Arguments
+    ---------
+    point0 : (float, float)
+        On point of the line.
+    point1 : (float, float)
+        Another point on the line.
+
+    Returns
+    -------
+    (float, float, float)
+    A cartesian equation of this line.
+    """
+    director = (
+        point1[0] - point0[0],
+        point1[1] - point0[1]
+    )
+    # The barycenter should give more precision
+    mean = (
+        (point0[0] + point1[0]) / 2,
+        (point0[1] + point1[1]) / 2
+    )
+    equilibrium = director[1] * mean[0] - director[0] * mean[1]
+    return -director[1], director[0], equilibrium
+
+
+def circle_line_intersection(circle, line):
+    """
+    Return the intersection between a line and a circle.
+
+    Arguments
+    ---------
+    circle : (float, float, float)
+        Sequence of (abscisse, ordinate, radius)
+    line : (float, float, float)
+        Cartesian equation of a line.
+
+    Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
+    """
+    a, b, c = line
+    x0, y0, r = circle
+    discriminant = a ** 2 * r ** 2 - a ** 2 * x0 ** 2 - 2 * a * b * x0 * y0 - 2 * a * c * x0 + b ** 2 * r ** 2 - b ** 2 * y0 ** 2 - 2 * b * c * y0 - c ** 2
+    A = a ** 2 + b ** 2
+    if discriminant < 0:
+        return tuple()
+    if discriminant == 0:
+        return tuple([
+            -(b * ( -(-a ** 2 * y0 + a * b * x0 + b * c) / A) + c) / a,
+            - (-a ** 2 * y0 + a * b * x0 + b * c) / A
+        ])
+
+    s_discri = math.sqrt(discriminant)
+    return (
+        (
+            -(b * (a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
+            a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
+         ),
+        (
+            -(b * (-a * s_discri / A - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
+            -a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
+        )
+    )
+
+
+    # We want to solve an equation of the type au²+bu+c=0
+    a = sqr_dist(joint1.coord(), joint2.coord())
+    b = 2 * (
+        (joint2.x - joint1.x) * (joint1.x - joint0.x) +
+        (joint2.y - joint1.y) * (joint1.y - joint0.y)
+    )
+    c = (
+            self.joint0.x ** 2 + self.joint0.y ** 2 +
+            self.joint1.x ** 2 + self.joint1.y ** 2 -
+            2 * (
+                    self.joint0.x * self.joint1.x +
+                    self.joint0.y * self.joint1.y
+            ) - self.distance0 ** 2
+    )
+    if b ** 2 < 4 * a * c:
+        raise UnbuildableError(self)
 
 
 def intersection(obj_1, obj_2, tol=0.0):
@@ -146,6 +233,7 @@ def intersection(obj_1, obj_2, tol=0.0):
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:
         return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)
+
 
 def bounding_box(locus):
     """

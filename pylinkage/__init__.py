@@ -23,6 +23,7 @@ from .geometry import (
 )
 from .linkage import (
     Static,
+    Linear,
     Pivot,
     Crank,
     Fixed,

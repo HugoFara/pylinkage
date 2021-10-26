@@ -5,6 +5,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- The ``Linear`` joint is here! His geometric model was of course implemented.
+- ``line_from_points`` and ``circle_line_intersection``.
+
+### Changed
+- ``__secant_circles_intersections__`` renamed to
+``secant_circles_intersections`` in ``geometry.py``.
+
+### Fixed
+- The highlighted locus was sometimes buggy in ``plot_static_linkage`` in 
+``visualizer.py``.
+
+### Deprecated
+- The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage`` 
+(linkage.py)
+
 ## [0.5.2] - 2021-07-21
 ### Added
  - You can see the best score and best dimensions updating in 
@@ -49,7 +65,7 @@ Git tags will no longer receive a "-alpha" mention.
  - The ``utility`` module provides two useful decorators 
    ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly 
    simplify the workflow of defining fitness functions. 
- - Versionning is now done thanks to bump2version.
+ - Versioning is now done thanks to bump2version.
 
 ### Changed
  - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to
@@ -62,7 +78,7 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 ### Fixed
  - After many hours of computations, default parameters in 
    ``particle_swarm_optimization`` are much more efficient. With the demo 
-   ``fourbar_linkage``, the output wasn't even convergent some times. Now we 
+   ``fourbar_linkage``, the output wasn't even convergent sometimes. Now we 
    have a high convergence rate (~100%), and results equivalent to the 
    ``trials_and_errors_optimization`` (in the example). 
  - ``variator`` function of ``optimizer`` module was poorly working.
@@ -119,9 +135,9 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 ### Added
  - ``Joint`` objects now have a ``get_constraints`` method, consistent with 
    their ``set_constraints`` one.
- - ``Linkage`` now has a ``get_num_constraints`` method as synctactic sugar.
+ - ``Linkage`` now has a ``get_num_constraints`` method as syntactic sugar.
  - Code vulnerabilities checker
- - Walktrough example has been expanded and now seems to be complete.
+ - Walkthrough example has been expanded and now seems to be complete.
 
 ### Changed
  - ``Linkage``'s method ``set_num_constraints`` behaviour changed! You should
@@ -131,7 +147,7 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
    mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not
    provided.
  - More flexible package version in ``environment.yml``
- - Output file name now is now formatted as "Kinematic {linkage.name}" in
+ - Output file name is now formatted as "Kinematic {linkage.name}" in
    ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
  - Python 3.6 is no longer tested in ``tox.ini``. Python 3.9 is now tested.
 
@@ -159,7 +175,7 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 - ``pylinkage/exception.py`` now handles exceptions in another file.
 - Documentation improvements.
 - Python style improvements.
-- ``.gitignore`` now modifed from the standard GitHub gitignore example for 
+- ``.gitignore`` now modified from the standard GitHub gitignore example for 
   Python.
 
 ### Fixed
