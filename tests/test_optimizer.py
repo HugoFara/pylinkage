@@ -28,8 +28,8 @@ def prepare_linkage():
 def fitness_func(loci, **kwargs):
     """Return if the tip can go to the point (3, 1).
 
-    :param loci: 
-    :param **kwargs: 
+    :param loci:
+    :param kwargs:
 
     .. notes
     It is a minimization problem.
