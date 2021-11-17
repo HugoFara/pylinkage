@@ -83,9 +83,27 @@ def circle_intersect(circle1, circle2, tol=0.0):
 
     Arguments
     ---------
-    circle1: first circle, sequence of (abscisse, ordinate, radius)
-    circle2: second circle, sequence of (abscisse, ordinate, radius)
-    tol: distance under which two points are considered equal.
+    circle1 : (float, float, float)
+        First circle, sequence of (abscisse, ordinate, radius)
+    circle2 : (float, float, float)
+        Ssecond circle, sequence of (abscisse, ordinate, radius)
+    tol : float
+        Distance under which two points are considered equal.
+
+    Returns
+    -------
+    (int, None) or (int, squence of flaats)
+    The first int gives the Intersection type, other values are the points of
+    intersection.
+
+    First int
+        - 0: no intersection, second value is None
+        - 1: on intersection (tangent circles), second value is the intersection
+        point (float, float)
+        - 2: two intersections, second value is the first intersection point
+         (float, float), third value the second point (float, float)
+        - 3: circles are the same one, second value is the (float, float, float)
+        (the input circle.
     """
     x_1, y_1, radius1 = circle1
     x_2, y_2, radius2 = circle2
@@ -158,6 +176,8 @@ def circle_line_intersection(circle, line):
     """
     Return the intersection between a line and a circle.
 
+    Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
+
     Arguments
     ---------
     circle : (float, float, float)
@@ -165,7 +185,11 @@ def circle_line_intersection(circle, line):
     line : (float, float, float)
         Cartesian equation of a line.
 
-    Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
+    Returns
+    -------
+    (None, ) or ((float, float), ) or ((float, float), (float, float))
+    The first int gives the intersection type
+
     """
     a, b, c = line
     x0, y0, r = circle
@@ -174,10 +198,10 @@ def circle_line_intersection(circle, line):
     if discriminant < 0:
         return tuple()
     if discriminant == 0:
-        return tuple([
+        return tuple([(
             -(b * ( -(-a ** 2 * y0 + a * b * x0 + b * c) / A) + c) / a,
             - (-a ** 2 * y0 + a * b * x0 + b * c) / A
-        ])
+        )])
 
     s_discri = math.sqrt(discriminant)
     return (

@@ -104,7 +104,7 @@ class TestPSO(unittest.TestCase):
             eval_func=fitness_func,
             linkage=self.linkage,
             bounds=bounds,
-            n_particles=20,
+            n_particles=50,
             iters=50,
             order_relation=min,
             verbose=False,
