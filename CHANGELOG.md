@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- We now checked compatibility with Python 3.10 and 3.11.
+
 ### Fixed
 
-- Fixed many typos in documentation as well as in code. 
+- Fixed many typos in documentation as well as in code.
+
+### Deprecated
+
+- Using Python 3.7 is officially deprecated ([end of life by 2023-06-27](https://devguide.python.org/versions/)). 
+It will no longer be tested, use it at your own risks!
 
 ## [0.5.2] - 2021-07-21
 
