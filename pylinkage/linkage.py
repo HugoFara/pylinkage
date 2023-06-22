@@ -9,12 +9,11 @@ Created on Fri Apr 16, 16:39:21 2021.
 """
 import abc
 from math import atan2, gcd, tau
-from abc import ABC
 from .exceptions import HypostaticError, UnbuildableError
 from .geometry import sqr_dist, circle_intersect, cyl_to_cart
 
 
-class Joint(ABC):
+class Joint(abc.ABC):
     """
     Geometric constraint expressed by two joints.
 
@@ -54,7 +53,7 @@ class Joint(ABC):
             self.name = str(id(self))
 
     def __repr__(self):
-        """Represent object with class name, coordinates, name and state."""
+        """Represent an object with class name, coordinates, name and state."""
         return "{}(x={}, y={}, name={})".format(
             self.__class__.__name__, self.x, self.y, self.name
         )
@@ -596,10 +595,10 @@ class Linkage:
         constraints : sequence
             Sequence of constraints to pass to the joints.
         flat : bool
-            If True, should be a one-dimensional sequence of floats.
-            If False, should be a sequence of tuples of digits. Each element
-            will be passed to the set_constraints method of each corresponding
-            Joint.
+            If True, constraints should be a one-dimensional sequence of floats.
+            If False, constraints should be a sequence of tuples of digits.
+            Each element will be passed to the set_constraints method of each
+            corresponding Joint.
             The default is True.
         """
         if flat:

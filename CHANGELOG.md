@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Setting negative rotation angle do no longer break ``get_rotation_period`` ([#7](https://github.com/HugoFara/pylinkage/issues/7)).
+- Setting a motor with a negative rotation angle do no longer break ``get_rotation_period`` 
+([#7](https://github.com/HugoFara/pylinkage/issues/7)).
 - Fixed many typos in documentation as well as in code.
 
 ### Deprecated
