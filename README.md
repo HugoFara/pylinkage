@@ -1,11 +1,12 @@
+# Pylinkage
+
 [![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
 [![Downloads](https://static.pepy.tech/personalized-badge/pylinkage?period=total&units=international_system&left_color=grey&right_color=green&left_text=Downloads)](https://pepy.tech/project/pylinkage)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/master/LICENSE.rst)
-# pylinkage
 
 Pylinkage is a Python linkage builder and optimizer. 
 You can create planar linkages and optimize them with a [Particle Swarm Optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). 
-It is still in beta, so don't hesistate to post pull request or issues for features you would like to see!.
+It is still in beta, so don't hesitate to post pull request or issues for features you would like to see!.
 
 ## Installation
 
@@ -22,29 +23,71 @@ It is the recommended way of downloading it.
 ### Setting up Virtual Environment
 
 We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/blob/master/environment.yml) file for conda. 
-Use ``conda env update --file environment.yml --name pylinkage-env`` to install the requirements in a separate environment. 
+Use ``conda env update --file environment.yml --name pylinkage-env`` to install the requirements in a separate environment.
 
-## Usage
+## Short demo
 
-As of today, we segment the code in main three parts:
-* [linkage.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/linkage.py) this module describes joints and linkages 
-  * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
-  * The ``Linkage`` class that will make your code shorter.
-* [optimizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
-  * The "exhaustive" optimization (``exhaustive_optimization`` function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.
-  * The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.
-  * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms). We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.
-* [visualizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
-  * It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.
+Let's start with a short demo of the package's capabilities.
 
-## Requirements
+It is highly Pythonning and emphasizes efficient code. Here is the definition of a **four-bar linkage**.
+```python
+import pylinkage as pl
 
-Python 3, numpy for calculation, matplotlib for drawing, and standard libraries. 
-You will also need PySwarms for the optimization since the built-in PSO is deprecated and will be removed soon.
+# Main motor
+crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1)
+# Close the loop
+pin = pl.Pivot(
+    3, 2, joint0=crank, joint1=(3, 0), 
+    distance0=3, distance1=1
+)
 
-## Example
+# Create the linkage
+my_linkage = pl.Linkage(joints=(crank, pin))
 
-Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki/Four-bar_linkage), as classic of mechanics. 
+# Show the results
+pl.show_linkage(my_linkage)
+```
+
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
+
+Cool, isn't it? But the package doesn't stop here as it provides a library **to achieve any movement**. 
+
+Let's say that you want the ``pin`` joint to stay in top-right corner, with an amplitude of [0, 90] exactly. 
+You can solve it by yourself, you can ask the code to do it for you.
+
+Define evaluation function called ``fitness_func``, that returns a good score to the linkage 
+when the ``pin`` joint stays in the first quadrant, and 0 otherwise. 
+
+Then just run the following code:
+
+```python
+# Let's set some bounds to keep the dimensions reasonable
+bounds = pl.generate_bounds(my_linkage.get_num_constraints())
+
+# Now comes the "magic" function that solve of issue
+score, position, coord = pl.particle_swarm_optimization(
+    eval_func=fitness_func,
+    linkage=my_linkage,
+    bounds=bounds,
+    order_relation=min,
+)[0]
+
+# Let's use the result in our linkage!
+my_linkage.set_num_constraints(constraints) # Dimensions
+my_linkage.set_coords(init_pos) # Intial position
+
+pl.show_linkage(my_linkage)
+```
+
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
+
+Tadaaa!
+We defined a mechanism, solved an issue and viewed the result in a few lines of code!
+And remember, you can define any objective function, so let's give it a try!
+
+## Complete example
+
+Let's start with a crank-rocker [four-bar linkage](https://en.wikipedia.org/wiki/Four-bar_linkage), as a classic mechanism. 
 
 ### Joints definition
 
@@ -57,7 +100,8 @@ crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
 Here we are actually doing the following:
 
 * ``0, 1``: x and y initial coordinates of the **tail** of the crank link.
-* ``joint0``: the position of the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.
+* ``joint0``: the position of the parent Joint to link with, here it is a fixed point in space. 
+The pin will be created on the position of the parent, which is the head of the crank link.
 * ``angle``: the crank will rotate with this angle, in radians, at each iteration.
 * ``distance``: distance to keep constant between crank link tail and head.
 
@@ -74,14 +118,18 @@ In human language, here is what is happening:
 
 And here comes the trick:
 Why do we specify initial coordinates ``3, 2``? They even seem incompatible with distance to parents/parents' positions! 
-  * This explanation is simple: mathematically a pin joint the intersection of two circles. The intersection is often two points. To choose the strating point, we calculate both intersection (when possible), then we keep the intersection closer to the previous position as the solution. 
+  * This explanation is simple: mathematically a pin joint the intersection of two circles. 
+The intersection is often two points. 
+To choose the starting point, we calculate both intersection (when possible), 
+then we keep the intersection closer to the previous position as the solution. 
 
 
 Wait! A linkage with a single motor and only one pin joint? That doesn't make sense!
 : Behind the curtain, many joints are created on the fly. 
 When you define a ``Crank`` joint, it creates a motor **and** a pin joint on the crank's link head. 
-For a ``Pivot`` joint, it creates **3 pin joints**: one on each of its parents' position, and one its position, 
-which forms a reshapable triangle. This is why pylinkage is so short to write.
+For a ``Pivot`` joint, it creates **3 pin joints**: one on each of its parents' positions, and one its position, 
+which forms a deformable triangle. 
+This is why pylinkage is so short to write.
 
 ### Linkage definition and simulation
 
@@ -111,8 +159,10 @@ import pylinkage as pl
 # Main motor
 crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1)
 # Close the loop
-pin = pl.Pivot(3, 2, joint0=crank, joint1=(3, 0), 
-               distance0=3, distance1=1)
+pin = pl.Pivot(
+    3, 2, joint0=crank, joint1=(3, 0), 
+    distance0=3, distance1=1
+)
 
 my_linkage = pl.Linkage(joints=(crank, pin))
 
@@ -165,12 +215,12 @@ pl.show_linkage(my_linkage)
 
 Now, we want automatic optimization of our linkage, using a certain criterion. 
 Let's find a four-bar linkage that makes a quarter of a circle. 
-It is a common problem if you want to build a [windscreen wiper](https://en.wikipedia.org/wiki/Windscreen_wiper) for instance.
+It is a common problem if you want to build a [windshield wiper](https://en.wikipedia.org/wiki/Windscreen_wiper) for instance.
 
 Our objective function, often called the fitness function, is the following:
 
 ```python
-# We save initial position because we don't want a completely different movement
+# We save the initial positions because we don't want a completely different movement
 init_pos = my_linkage.get_coords()
 
 @pl.kinematic_minimizastion
@@ -178,7 +228,7 @@ def fitness_func(loci, **kwargs):
     """
     Return how fit the locus is to describe a quarter of circle.
 
-    It is a minisation problem and the theorical best score is 0.
+    It is a minimization problem and the theoretic best score is 0.
     """
     # Locus of the Joint 'pin", mast in linkage order
     tip_locus = tuple(x[-1] for x in loci)
@@ -186,7 +236,7 @@ def fitness_func(loci, **kwargs):
     curr_bb = bounding_box(tip_locus)
     # We set the reference bounding box, in order (min_y, max_x, max_y, min_x)
     ref_bb = (0, 5, 3, 0)
-    # Our score is the square sum of the edges distances
+    # Our score is the square sum of the edge distances
     return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
 ```
 
@@ -223,8 +273,8 @@ Then we will use [particle swarm optimization](https://en.wikipedia.org/wiki/Par
 Here are the principles:
 
 * The parameters are the geometric constraints (the dimensions) of the linkage.
-* A dimension set (a n-uplet) is called a *particle* or an *agent*. Think of it like a bee.
-* The particles move in a n-vectorial space. That is, if we have n geometric constraints, the particles move in a n-D space.
+* A dimension set (an n-uplet) is called a *particle* or an *agent*. Think of it like a bee.
+* The particles move in an n-vectorial space. That is, if we have n geometric constraints, the particles move in an n-D space.
 * Together, the particles form the *swarm*.
 * Each time they move, their score is evaluated by our fitness function.
 * They know their best score, and know the current score of their neighbor.
@@ -233,8 +283,7 @@ Here are the principles:
 It is particularly relevant when the fitness function is not resource-greedy.
 
 ```python
-
-# We reinitialize the linkage (an optimal linkage is not interesting)
+# We reset the linkage (an optimal linkage is not interesting)
 my_linkage.set_num_constraints(constraints)
 # As we do for initial positions
 my_linkage.set_coords(init_pos)
@@ -256,3 +305,28 @@ So we made something that says it works, let's verify it:
 ![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
 
 With a bit of imagination, you have a wonderful windshield wiper!
+
+
+## Structure
+
+As of today, we segment the code in main three parts:
+* [linkage.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/linkage.py) this module describes joints and linkages 
+  * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
+  * The ``Linkage`` class that will make your code shorter.
+* [optimizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
+  * The "exhaustive" optimization (``exhaustive_optimization`` function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.
+  * The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.
+  * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms). We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.
+* [visualizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
+  * It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.
+
+## Requirements
+
+Python 3, numpy for calculation, matplotlib for drawing, and standard libraries. 
+You will also need PySwarms for the Particle Swarm Optimization.
+
+## Contributing
+
+**Pylinkage is open to contribution**. 
+I may consider any pull request, but I ask you to respect the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+and follow the guidelines as defined in [CONTRIBUTING.md](CONTRIBUTING.md). 
