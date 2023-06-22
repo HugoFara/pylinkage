@@ -388,8 +388,10 @@ class Crank(Joint):
         if self.joint0 is None:
             return
         if None in self.joint0.coord():
-            raise HypostaticError(f'{self.joint0} has None coordinates. '
-                                  f'{self} cannot be calculated')
+            raise HypostaticError(
+                f'{self.joint0} has None coordinates. '
+                f'{self} cannot be calculated'
+            )
         # Rotation angle of local space relative to global
         rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
         self.x, self.y = cyl_to_cart(self.r, rot + self.angle * dt,
@@ -511,24 +513,24 @@ class Linkage:
         # We have at least the frame
         solids = 1
         mobilities = 1
-        kinematic_indetermined = 0
+        kinematic_undetermined = 0
         for j in self.joints:
             if isinstance(j, (Static, Fixed)):
                 pass
             elif isinstance(j, Crank):
                 solids += 1
-                kinematic_indetermined += 2
+                kinematic_undetermined += 2
             elif isinstance(j, Pivot):
                 solids += 1
-                # A Pivot Joint create at least two pivots
-                kinematic_indetermined += 4
+                # A Pivot Joint creates at least two pivots
+                kinematic_undetermined += 4
                 if not hasattr(j, 'joint1') or j.joint1 is None:
                     mobilities += 1
                 else:
                     solids += 1
-                    kinematic_indetermined += 2
+                    kinematic_undetermined += 2
 
-        return 3 * (solids - 1) - kinematic_indetermined + mobilities
+        return 3 * (solids - 1) - kinematic_undetermined + mobilities
 
     def step(self, iterations=None, dt=1):
         """
@@ -628,6 +630,6 @@ class Linkage:
         periods = 1
         for j in self.joints:
             if isinstance(j, Crank):
-                freq = round(tau / j.angle)
+                freq = round(tau / abs(j.angle))
                 periods = periods * freq // gcd(periods, freq)
         return periods
