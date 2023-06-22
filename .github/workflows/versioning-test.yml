@@ -5,20 +5,17 @@ name: Python versioning test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
 
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - os: ubuntu-latest
-          - os: macos-latest
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:

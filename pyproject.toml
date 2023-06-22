@@ -44,4 +44,4 @@ dynamic = ["version"]
 Homepage = "https://hugofara.github.io/pylinkage/"
 Documentation = "https://hugofara.github.io/pylinkage/"
 Repository = "https://github.com/HugoFara/pylinkage"
-Changelog = "https://github.com/hugofara/pylinkage/blob/master/CHANGELOG.md"
+Changelog = "https://github.com/hugofara/pylinkage/blob/main/CHANGELOG.md"

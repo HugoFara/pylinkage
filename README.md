@@ -2,7 +2,7 @@
 
 [![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
 [![Downloads](https://static.pepy.tech/personalized-badge/pylinkage?period=total&units=international_system&left_color=grey&right_color=green&left_text=Downloads)](https://pepy.tech/project/pylinkage)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/master/LICENSE.rst)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst)
 
 Pylinkage is a Python linkage builder and optimizer. 
 You can create planar linkages and optimize them with a [Particle Swarm Optimization](https://en.wikipedia.org/wiki/Particle_swarm_optimization). 
@@ -22,7 +22,7 @@ It is the recommended way of downloading it.
 
 ### Setting up Virtual Environment
 
-We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/blob/master/environment.yml) file for conda. 
+We provide an [environment.yml](https://github.com/HugoFara/leggedsnake/blob/main/environment.yml) file for conda. 
 Use ``conda env update --file environment.yml --name pylinkage-env`` to install the requirements in a separate environment.
 
 ## Short demo
@@ -48,7 +48,7 @@ my_linkage = pl.Linkage(joints=(crank, pin))
 pl.show_linkage(my_linkage)
 ```
 
-![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Cool, isn't it? But the package doesn't stop here as it provides a library **to achieve any movement**. 
 
@@ -79,7 +79,7 @@ my_linkage.set_coords(init_pos) # Intial position
 pl.show_linkage(my_linkage)
 ```
 
-![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
 
 Tadaaa!
 We defined a mechanism, solved an issue and viewed the result in a few lines of code!
@@ -187,7 +187,7 @@ Then you can view your linkage!
 pl.show_linkage(my_linkage)
 ```
 
-![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Last recap, rearranging names:
 
@@ -302,7 +302,7 @@ Here the result can vary, but it is rarely above 0.2.
 
 So we made something that says it works, let's verify it:
 
-![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif)
 
 With a bit of imagination, you have a wonderful windshield wiper!
 
@@ -310,14 +310,14 @@ With a bit of imagination, you have a wonderful windshield wiper!
 ## Structure
 
 As of today, we segment the code in main three parts:
-* [linkage.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/linkage.py) this module describes joints and linkages 
+* [linkage.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py) this module describes joints and linkages 
   * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
   * The ``Linkage`` class that will make your code shorter.
-* [optimizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
+* [optimizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
   * The "exhaustive" optimization (``exhaustive_optimization`` function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.
   * The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.
   * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms). We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.
-* [visualizer.py](https://github.com/HugoFara/pylinkage/blob/master/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
+* [visualizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
   * It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.
 
 ## Requirements

@@ -1,6 +1,6 @@
 name: Conda integrity check
 
-on: [push]
+on: [ push ]
 
 jobs:
   build-linux:

@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - We now checked compatibility with Python 3.10 and 3.11.
-- ``pyproject.toml`` is now the official definition of the package
+- ``pyproject.toml`` is now the official definition of the package.
+
+### Changed
+
+- ``master`` branch is now ``main``.
 
 ### Fixed
 
