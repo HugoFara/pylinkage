@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-The visualizer module makes visualisation of linkages easy using matplotlib.
+The visualizer module makes visualization of linkages easy using matplotlib.
 
-Created on Mon Jun 14 12:13:58 2021.
+Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
@@ -25,6 +25,7 @@ COLOR_SWITCHER = {
     Pivot: 'b'
 }
 
+
 def _get_color(joint):
     """Search in COLOR_SWITCHER for the corresponding color."""
     for joint_type, color in COLOR_SWITCHER.items():
@@ -32,8 +33,11 @@ def _get_color(joint):
             return color
     return ''
 
-def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
-                        show_legend=False):
+
+def plot_static_linkage(
+        linkage, axis, loci, locus_highlights=None,
+        show_legend=False
+):
     """
     Plot a linkage without movement.
 
@@ -46,7 +50,7 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
     loci : sequence
         List of list of coordinates. They will be plotted.
     locus_highlights : list, optional
-        If a list, shoud be a list of list of coordinates you want to see
+        If a list, should be a list of list of coordinates you want to see
         highlighted. The default is None.
     show_legend : bool, optional
         To add an automatic legend to the graph. The default is False.
@@ -62,9 +66,9 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
     for i, joint in enumerate(linkage.joints):
         axis.plot(tuple(j[i][0] for j in loci), tuple(j[i][1] for j in loci))
 
-    # The plot linkage in intial position
-    # It as imporant to use separate loops, because we would have bad
-    # formatted legend otherwisee
+    # The plot linkage in initial position
+    # It as important to use separate loops, because we would have bad
+    # formatted legend otherwise
     for i, joint in enumerate(linkage.joints):
         # Then the linkage in initial position
         # Draw link to first parent if it exists
@@ -101,6 +105,7 @@ def plot_static_linkage(linkage, axis, loci, locus_highlights=None,
         axis.set_ylabel("y")
         axis.legend(tuple(i.name for i in linkage.joints))
 
+
 def update_animated_plot(linkage, index, images, loci):
     """
     Modify im, instead of recreating it to make the animation run faster.
@@ -114,7 +119,7 @@ def update_animated_plot(linkage, index, images, loci):
     images : list of images Artists
         Artist to be modified.
     loci : list
-        list of locuses.
+        list of loci.
 
     Returns
     -------
@@ -197,6 +202,7 @@ def plot_kinematic_linkage(
         save_count=frames)
     return animation
 
+
 def movement_bounding_bow(loci):
     """Return the general bounding box of a group of loci."""
     bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
@@ -207,6 +213,7 @@ def movement_bounding_bow(loci):
             max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
         )
     return bb
+
 
 def show_linkage(
         linkage,
@@ -233,7 +240,7 @@ def show_linkage(
     loci : list, optional
         list of loci. The default is None.
     points : int, optional
-        Number of point to draw for a crank revolution.
+        Number of points to draw for a crank revolution.
         Useless when loci is set.
         The default is 100.
     iteration_factor : float, optional
@@ -244,7 +251,8 @@ def show_linkage(
     duration : float, optional
         Animation duration (in seconds). The default is 5.
     fps : float, optional
-        Number of frame per second for the output video. The default is 24.
+        Number of frames per second for the output video.
+        The default is 24.
 
     Returns
     -------
@@ -254,8 +262,12 @@ def show_linkage(
     # Define intial positions
     linkage.rebuild(prev)
     if loci is None:
-        loci = tuple(tuple(i) for i in linkage.step(
-            iterations=points * iteration_factor, dt=1 / iteration_factor))
+        loci = tuple(
+            tuple(i) for i in linkage.step(
+                iterations=points * iteration_factor,
+                dt=1 / iteration_factor
+            )
+        )
 
     fig = plt.figure("Result " + title, figsize=(14, 7))
     fig.clear()
@@ -266,7 +278,7 @@ def show_linkage(
     linkage_bb = movement_bounding_bow(loci)
     # We introduce a relative padding of 20%
     padding = (
-        (linkage_bb[2] -  linkage_bb[0]) ** 2
+        (linkage_bb[2] - linkage_bb[0]) ** 2
         + (linkage_bb[3] - linkage_bb[1]) ** 2
     ) ** .5 * .2
     for axis in (ax1, ax2):
@@ -337,7 +349,8 @@ def swarm_tiled_repr(
                 tuple(pos) for pos in linkage.step(
                     iterations=points * iteration_factor,
                     dt=1 / iteration_factor
-                    ))
+                )
+            )
         except UnbuildableError:
             pass
         else:

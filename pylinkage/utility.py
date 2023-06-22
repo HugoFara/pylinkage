@@ -11,7 +11,7 @@ def kinematic_default_test(func, error_penalty):
     """
     Standard run for any linkage before a complete fitness evaluation.
 
-    This decorator make a kinematic simulation, before passing the loci to the
+    This decorator makes a kinematic simulation, before passing the loci to the
     decorated function.
 
     Parameters
@@ -34,7 +34,7 @@ def kinematic_default_test(func, error_penalty):
             Geometric constraints to pass to linkage.set_num_constraints.
         init_pos : tuple[tuple[float]]
             List of initial positions for the joints. If None it will be
-            redifined at each succefull iteration. The default is None.
+            redefined at each successful iteration. The default is None.
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
@@ -59,7 +59,7 @@ def kinematic_default_test(func, error_penalty):
         except UnbuildableError:
             return error_penalty
         else:
-            # We redefine intial position if requested
+            # We redefine initial position if requested
             if init_pos is None:
                 init_pos = linkage.get_coords()
             return func(
@@ -71,7 +71,7 @@ def kinematic_maximization(func):
     """
     Standard run for any linkage before a complete fitness evaluation.
 
-    This decorator make a kinematic simulation, before passing the loci to the
+    This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is -float('inf')
 
     Parameters
@@ -86,7 +86,7 @@ def kinematic_minimization(func):
     """
     Standard run for any linkage before a complete fitness evaluation.
 
-    This decorator make a kinematic simulation, before passing the loci to the
+    This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is float('inf')
 
     Parameters

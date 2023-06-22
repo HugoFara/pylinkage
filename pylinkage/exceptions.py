@@ -3,14 +3,14 @@
 """
 The exceptions module is a simple quick way to access the built-in exceptions.
 
-Created on Wed Jun 16 15:20:06 2021.
+Created on Wed Jun 16, 15:20:06 2021.
 
 @author: HugoFara
 """
 
 
 class UnbuildableError(Exception):
-    """Should be raised when the constraints cannont be solved."""
+    """Should be raised when the constraints cannot be solved."""
 
     def __init__(self, joint, message='Unable to solve constraints'):
         self.joint = joint
@@ -19,7 +19,7 @@ class UnbuildableError(Exception):
 
     def __str__(self):
         """
-        Output the problementic joint.
+        Output the problematic joint.
 
         Returns
         -------
@@ -33,6 +33,6 @@ class UnbuildableError(Exception):
 class HypostaticError(Exception):
     """Exception when the system can be solved in multiple ways."""
 
-    def __init__(self, linkage, message='The system is hypostatic!'):
+    def __init__(self, linkage, message='The system is hypo-static!'):
         self.linkage = linkage
         super().__init__(message)

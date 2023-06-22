@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-The geometry modules provides general geometry functions.
+The geometry module provides general geometry functions.
 
 It is used extensively, so each function should be highly optimized.
 
-Created on Wed May  5 17:34:45 2021.
+Created on Wed May 5, 17:34:45 2021.
 
 @author: HugoFara
 """
 import math
+
 
 def dist_builtin(point1, point2):
     """
@@ -17,8 +18,9 @@ def dist_builtin(point1, point2):
 
     Legacy built-in unoptimized equivalent of math.dist in Python 3.8.
     """
-    return math.sqrt((point1[0] - point2[0]) ** 2
-                     + (point1[1] - point2[1]) ** 2)
+    return math.sqrt(
+        (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
+    )
 
 
 if hasattr(math, 'dist'):
@@ -49,7 +51,7 @@ def cyl_to_cart(radius, theta, ori=(0, 0)):
     Arguments
     ---------
     radius: distance from ori
-    theta: angle is the angle starting from abscisses axis
+    theta: angle is the angle starting from abscissa axis
     ori: origin point.
     """
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
@@ -57,7 +59,7 @@ def cyl_to_cart(radius, theta, ori=(0, 0)):
 
 def __secant_circles_intersections__(distance, dist_x, dist_y, mid_dist,
                                      radius1, projected):
-    """Return the TWO intersections of secante circles."""
+    """Return the TWO intersections of secant circles."""
     # Distance between projected P and points
     # and the points of which P is projection
     height = math.sqrt(radius1 ** 2 - mid_dist ** 2) / distance
@@ -81,8 +83,8 @@ def circle_intersect(circle1, circle2, tol=0.0):
 
     Arguments
     ---------
-    circle1: first circle, sequence of (abscisse, ordinate, radius)
-    circle2: second circle, sequence of (abscisse, ordinate, radius)
+    circle1: first circle, sequence of (abscissa, ordinate, radius)
+    circle2: second circle, sequence of (abscissa, ordinate, radius)
     tol: distance under which two points are considered equal.
     """
     x_1, y_1, radius1 = circle1
@@ -147,6 +149,7 @@ def intersection(obj_1, obj_2, tol=0.0):
     if len(obj_1) == 3 and len(obj_2) == 2:
         return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)
 
+
 def bounding_box(locus):
     """
     Compute the bounding box of a locus.
@@ -154,7 +157,7 @@ def bounding_box(locus):
     Parameters
     ----------
     locus : list[tuple[float]]
-        A list of point or any iterable with the same structure.
+        A list of points or any iterable with the same structure.
 
     Returns
     -------
@@ -170,4 +173,4 @@ def bounding_box(locus):
         x_min = min(x_min, point[0])
         y_max = max(y_max, point[1])
         x_max = max(x_max, point[0])
-    return (y_min, x_max, y_max, x_min)
+    return y_min, x_max, y_max, x_min

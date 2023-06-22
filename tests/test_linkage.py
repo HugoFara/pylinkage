@@ -56,7 +56,7 @@ class TestFixed(unittest.TestCase):
     pivot1 = Pivot(0, 0)
 
     def test_pos(self):
-        """Test Fixed_Joint positionning."""
+        """Test Fixed_Joint positioning."""
         pivot2 = Pivot(1, 0)
         fixed = Fixed(joint0=self.pivot1, joint1=pivot2, angle=0, distance=1)
         fixed.reload()

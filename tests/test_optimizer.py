@@ -18,6 +18,7 @@ def prepare_linkage():
     # Linkage definition
     return pl.Linkage(joints=[pin], order=[pin])
 
+
 @kinematic_minimization
 def fitness_func(loci, **kwargs):
     """
@@ -26,10 +27,10 @@ def fitness_func(loci, **kwargs):
     Notes
     -----
     It is a minimization problem.
-    Best possible score is 0.
-    Worst score is float('inf').
+    The best possible score is 0.
+    The worst score is float('inf').
     """
-    # Locus of the Joint 'pin"
+    # Locus of the Joint "pin"
     tip_locus = tuple(x[0] for x in loci)[0]
     return (tip_locus[0] - 3) ** 2 + tip_locus[1] ** 2
 
@@ -64,11 +65,11 @@ class TestVariator(unittest.TestCase):
         bounds = ([0], [3])
         for divisions in (1, 2, 3, 5, 6, 13, 30):
             length = sum(
-                1 for x in opti.sequential_variator(sequence, divisions, bounds)
+                1 for _ in opti.sequential_variator(sequence, divisions, bounds)
             )
             self.assertAlmostEqual(length, divisions, delta=1)
             length = sum(
-                1 for x in opti.fast_variator(divisions, bounds)
+                1 for _ in opti.fast_variator(divisions, bounds)
             )
             self.assertAlmostEqual(length, divisions)
 
@@ -97,7 +98,7 @@ class TestPSO(unittest.TestCase):
     constraints = tuple(linkage.get_num_constraints())
 
     def test_convergence(self):
-        """Test if the result is not to far from 0.0."""
+        """Test if the result is not too far from 0.0."""
         dim = len(self.constraints)
         bounds = (np.zeros(dim), np.ones(dim) * 5)
         score, dimensions, coord = opti.particle_swarm_optimization(

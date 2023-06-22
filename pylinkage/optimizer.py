@@ -2,9 +2,9 @@
 """
 The optimizer module proposing different optimization algorithms.
 
-The output of this functions is generally dimensions of linkages.
+The output of these functions is generally dimensions of linkages.
 
-Created on Fri Mar  8 13:51:45 2019.
+Created on Fri Mar 8, 13:51:45 2019.
 
 @author: HugoFara
 """
@@ -53,11 +53,11 @@ def generate_bounds(center, min_ratio=5, max_factor=5):
 
 def sequential_variator(center, divisions, bounds):
     """
-    Return an iterable of all possibles variations of elements.
+    Return an iterable of each possibles variations for the elements.
 
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
 
-    Because linkage are not tolerant to violent changes, the order of output
+    Because linkage is not tolerant to violent changes, the order of output
     for the coefficients is very important.
 
     The coefficient is in order: middle → min (step 2), min → middle (step 2),
@@ -83,7 +83,7 @@ def sequential_variator(center, divisions, bounds):
     # We only look at one index over 2
     for dim in fall[::2]:
         yield dim
-    # The we go back to the center with the remaining indexes
+    # Then we go back to the center with the remaining indexes
     if divisions % 2:
         for dim in fall[-2::-2]:
             yield dim
@@ -140,8 +140,8 @@ def trials_and_errors_optimization(
     """
     Return the list of dimensions optimizing eval_func.
 
-    Each dimensions set has a score, which is added in an array of n_results
-    results, contains the linkages with best scores in a maximization problem
+    Each dimension set has a score, which is added in an array of n_results
+    results, contains the linkages with the best scores in a maximization problem
     by default.
 
     Parameters
@@ -157,7 +157,7 @@ def trials_and_errors_optimization(
         If not, it will be assigned tuple(linkage.get_num_constraints()).
         The default is None.
     n_results : int, optional
-        Number of best candidates to return. The default is 10.
+        Number of the best candidates to return. The default is 10.
     divisions : int, optional
         Number of subdivisions between bounds. The default is 5.
     **kwargs : dict, optional
@@ -165,7 +165,7 @@ def trials_and_errors_optimization(
         
         bounds : tuple[tuple], optional
             A 2-uple (tuple of two elements), containing the minimal and maximal
-            bounds. If None, we will use parameters as center.
+            bounds. If None, we will use parameters as a center.
             The default is None.
         order_relation : callable, optional
             A function of two arguments, should return the best score of two
@@ -180,7 +180,7 @@ def trials_and_errors_optimization(
     Returns
     -------
     results : tuple[tuple[float, tuple[float], tuple[tuple[float]]]]
-        3-uple of score, dimensions and initial position for each Linkage to
+        3-uplet of score, dimensions and initial position for each Linkage to
         return. Its size is {n_results}.
 
     """
@@ -274,7 +274,7 @@ def particle_swarm_optimization(
         Linkage to be optimized. Make sure to give an optimized linkage for
         better results
     center : list, optional
-        A list of initial dimension. If None, dimensions will be generated
+        A list of initial dimensions. If None, dimensions will be generated
         randomly between bounds. The default is None.
     dimensions : int, optional
         Number of dimensions of the swarm space, number of parameters.
@@ -296,11 +296,12 @@ def particle_swarm_optimization(
     bounds : sequence of two list of float
         Bounds to the space, in format (lower_bound, upper_bound).
     order_relation : callable(float, float) -> float, optional
-        How to compare scores. Should not be anything else than the built-in
+        How to compare scores.
+        There should not be anything else than the built-in
         max and min functions.
         The default is max.
     verbose : bool, optional
-        The optimization state will be printed in console if True.
+        The optimization state will be printed in the console if True.
         The default is True.
     **kwargs : dict
         keyword arguments to pass to pyswarm.local.single.LocalBestPSO.

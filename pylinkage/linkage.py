@@ -3,7 +3,7 @@
 """
 The linkage module defines useful classes for linkage definition.
 
-Created on Fri Apr 16 16:39:21 2021.
+Created on Fri Apr 16, 16:39:21 2021.
 
 @author: HugoFara
 """
@@ -18,7 +18,7 @@ class Joint(ABC):
     """
     Geometric constraint expressed by two joints.
 
-    Abstract class, should not be used by itself.
+    Abstract class should always be inherited.
     """
 
     __slots__ = "x", "y", "joint0", "joint1", "name"
@@ -172,9 +172,10 @@ class Fixed(Joint):
         Compute point coordinates.
 
         We know point position relative to its two parents, which gives a local
-        space. The know the orientation of local space, so we can solve the
+        space.
+        We know the orientation of local space, so we can solve the
         whole. Local space is defined by link[0] as the origin and
-        (link[0], link[1]) as abscisses axis.
+        (link[0], link[1]) as abscissas axis.
         """
         if self.joint0 is None:
             return
@@ -196,7 +197,7 @@ class Fixed(Joint):
         self.r, self.angle = distance or self.r, angle or self.angle
 
     def set_anchor0(self, joint, distance=None, angle=None):
-        """First joint anchor and characterisitcs."""
+        """First joint anchor and characteristics."""
         self.joint0 = joint
         self.set_constraints(distance, angle)
 
@@ -245,7 +246,7 @@ class Pivot(Joint):
 
     def circle(self, joint):
         """
-        Return first link between self and parent as a circle.
+        Return the first link between self and parent as a circle.
 
         Circle is a tuple (abscisse, ordinate, radius).
         """
@@ -256,7 +257,7 @@ class Pivot(Joint):
         raise ValueError(f'{joint} is not in joints of {self}')
 
     def reload(self):
-        """Compute position of pivot joint, use the two linked joints."""
+        """Compute the position of pivot joint, use the two linked joints."""
         if self.joint0 is None:
             return
         # Fixed joint as reference. In links, we only keep fixed objects
@@ -265,13 +266,17 @@ class Pivot(Joint):
             # Don't modify coordinates (irrelevant)
             return
         if len(ref) == 1:
-            raise Warning("Unable to set coordinates of pivot joint {}:"
-                          "Only one constraint is set."
-                          "Coordinates unchanged".format(self.name))
+            raise Warning(
+                "Unable to set coordinates of pivot joint {}:"
+                "Only one constraint is set."
+                "Coordinates unchanged".format(self.name)
+            )
         elif len(ref) == 2:
             # Most common case, optimized here
-            coco = circle_intersect(self.__get_joint_as_circle__(0),
-                                    self.__get_joint_as_circle__(1))
+            coco = circle_intersect(
+                self.__get_joint_as_circle__(0),
+                self.__get_joint_as_circle__(1)
+            )
             if coco[0] == 0:
                 raise UnbuildableError(self)
             if coco[0] == 1:
@@ -283,13 +288,18 @@ class Pivot(Joint):
                 else:
                     self.x, self.y = coco[2]
             elif coco[0] == 3:
-                raise Warning(f"Joint {self.name} has an infinite number of"
-                              "solutions, position will be arbitrary")
+                raise Warning(
+                    f"Joint {self.name} has an infinite number of"
+                    "solutions, position will be arbitrary"
+                )
                 # We project position on circle of possible positions
-                vect = ((j-i)/abs(j-i) for i, j in zip(coco[1],
-                                                       self.coord()))
-                self.x, self.y = [i + j * coco[1][2] for i, j in zip(coco[1],
-                                  vect)]
+                vect = (
+                    (j-i)/abs(j-i) for i, j in zip(coco[1], self.coord())
+                )
+                self.x, self.y = [
+                    i + j * coco[1][2] for i, j in zip(coco[1], vect)
+                ]
+
     def get_constraints(self):
         """Return the two constraining distances of this joint."""
         return self.r0, self.r1
@@ -305,7 +315,7 @@ class Pivot(Joint):
         Parameters
         ----------
         joint : Union[Joint, tuple[float]]
-            The joint to use as achor.
+            The joint to use as anchor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
 
@@ -324,7 +334,7 @@ class Pivot(Joint):
         Parameters
         ----------
         joint : Union[Joint, tuple[float]]
-            The joint to use as achor.
+            The joint to use as anchor.
         distance : float, optional
             Distance to keep constant from the anchor. The default is None.
 
@@ -399,12 +409,12 @@ class Crank(Joint):
         self.set_constraints(distance=distance)
 
 
-class Linkage():
+class Linkage:
     """
     A linkage is a set of Joint objects.
 
-    It is defined kinematicaly. Coordinates are given relative to its own
-    base.
+    It is defined as a kinematic linkage.
+    Coordinates are given relative to its own base.
     """
 
     __slots__ = "name", "joints", "_cranks", "_solve_order"
@@ -419,7 +429,7 @@ class Linkage():
             All Joint to be part of the linkage
         order : list[Joint]
             Sequence to manually define resolution order for each step.
-            Should be a subset of joints.
+            It should be a subset of joints.
             Automatic computed order is experimental! The default is None.
         name : str, optional
             Human-readable name for the Linkage. If None, take the value
@@ -460,21 +470,21 @@ class Linkage():
                 'Unable to determine automatic order!'
                 'Those joints are left unsolved:'
                 ','.join(str(j) for j in self.joints if j not in solvable)
-                )
+            )
         self._solve_order = tuple(solvable)
         raise NotImplementedError('Unable to determine automatic order')
         return self._solve_order
 
     def rebuild(self, pos=None):
         """
-        Redifine linkage joints and given intial positions to joints.
+        Redefine linkage joints and given initial positions to joints.
 
         Parameters
         ----------
         pos : tuple[tuple[int]]
             Initial positions for each joint in self.joints.
-            Coordinates does not need to be precise, they will allow us the best
-            fitting position between all possible positions satifying
+            Coordinates do not need to be precise, they will allow us the best
+            fitting position between all possible positions satisfying
             constraints.
         """
         if not hasattr(self, '_solve_order'):
@@ -483,20 +493,20 @@ class Linkage():
         # Links parenting in descending order solely.
         # Parents joint do not have children.
         if pos is not None:
-            # Defintition of initial coordinates
+            # Definition of initial coordinates
             self.set_coords(pos)
 
     def get_coords(self):
-        """Return positions of all elements of the system."""
+        """Return the positions of each element in the system."""
         return [j.coord() for j in self.joints]
 
     def set_coords(self, coords):
-        """Set coordinatess for all joints of the linkage."""
+        """Set coordinates for all joints of the linkage."""
         for joint, coord in zip(self.joints, coords):
             joint.set_coord(coord)
 
     def hyperstaticity(self):
-        """Return the hyperstaticity degree of the linkage in 2D."""
+        """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D."""
         # TODO : test it
         # We have at least the frame
         solids = 1
@@ -557,7 +567,7 @@ class Linkage():
         Parameters
         ----------
         flat : bool
-            Whether to force one-dimensionnal representation of constraints.
+            Whether to force one-dimensional representation of constraints.
             The default is True.
 
         Returns
@@ -584,9 +594,9 @@ class Linkage():
         constraints : sequence
             Sequence of constraints to pass to the joints.
         flat : bool
-            If True, should be a one-dimensionnal sequence of floats.
+            If True, should be a one-dimensional sequence of floats.
             If False, should be a sequence of tuples of digits. Each element
-            will be passed to the set_constraints method of each correspondig
+            will be passed to the set_constraints method of each corresponding
             Joint.
             The default is True.
         """
@@ -608,11 +618,11 @@ class Linkage():
         """
         Return the number of iterations to finish in the previous state.
 
-        Formally it is the common denominator of all crank periods.
+        Formally, it is the common denominator of all crank periods.
 
         Returns
         -------
-        Number of iterations, with dt=1.
+        Number of iterations with dt=1.
 
         """
         periods = 1
