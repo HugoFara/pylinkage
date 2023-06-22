@@ -7,185 +7,189 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed many typos in documentation as well as in code. 
+
 ## [0.5.2] - 2021-07-21
 
-### Added
+### Added in 0.5.2
 
- - You can see the best score and the best dimensions updating in 
-   ``trials_and_errors_optimization``.
+- You can see the best score and the best dimensions updating in 
+  ``trials_and_errors_optimization``.
 
-### Changed
+### Changed in 0.5.2
 
- - The optimizer tests are 5 times quicker (~1 second now) and raise less 
-   false positive.
- - The sidebar in the documentation makes navigation easier.
- - A bit of reorganization in optimizers, it should not affect users.
+- The optimizer tests are 5 times quicker (~1 second now) and raise less 
+  false positive.
+- The sidebar in the documentation makes navigation easier.
+- A bit of reorganization in optimizers, it should not affect users.
 
 ## [0.5.1] - 2021-07-14
 
-### Added
+### Added in 0.5.1
 
- - The trial and errors optimization now have a progress bar (same kind of the
-   one in particle swarm optimization), using 
-   [tqdm](https://pypi.org/project/tqdm/).
+- The trial and errors optimization now have a progress bar (same kind of the
+  one in particle swarm optimization), using 
+  [tqdm](https://pypi.org/project/tqdm/).
 
-### Changed
+### Changed in 0.5.1
 
- - [matplotlib](https://matplotlib.org/) and tqdm now required. 
+- [matplotlib](https://matplotlib.org/) and tqdm now required. 
 
 ## [0.5.0] - 2021-07-12
 
-End alpha development! The package is now robust enough to be used by a mere 
-human. This version introduces a lot of changes and simplifications, so 
-everything is not perfect yet, but it is complete enough to be considered a beta
-version.
+End of alpha development!
+The package is now robust enough to be used by a mere human.
+This version introduces a lot of changes and simplifications, 
+so everything is not perfect yet, 
+but it is complete enough to be considered a beta version.
 
 Git tags will no longer receive an "-alpha" mention.
 
-### Added
+### Added in 0.5.0
 
- - It is now possible and advised to import useful functions from 
-   pylinkage.{object}, without full path. For instance, use 
-   ``from pylinkage import Linkage`` instead of 
-   ``from pylinkage.linkage import Linkage``.
- - Each module had his header improved.
- - The ``generate_bounds`` functions is a simple way to generate bounds before 
-   optimization. 
- - The ``order_relation`` arguments of ``particle_swarm_optimization`` and 
-   ``trials_and_errors_optimization`` let you choose between maximization and 
-   minimization problem.
- - You can specify a custom order relation with ``trials_and_errors_optimization``.
- - The ``verbose`` argument in optimizers can disable verbosity.
- - ``Static`` joints can now be defined implicitly. 
- - The ``utility`` module provides two useful decorators 
-   ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly 
-   simplify the workflow of defining fitness functions. 
- - Versioning is now done thanks to bump2version.
+- It is now possible and advised to import useful functions from 
+  pylinkage.{object}, without full path. For instance, use 
+  ``from pylinkage import Linkage`` instead of 
+  ``from pylinkage.linkage import Linkage``.
+- Each module had his header improved.
+- The ``generate_bounds`` functions is a simple way to generate bounds before 
+  optimization. 
+- The ``order_relation`` arguments of ``particle_swarm_optimization`` and 
+  ``trials_and_errors_optimization`` let you choose between maximization and 
+  minimization problem.
+- You can specify a custom order relation with ``trials_and_errors_optimization``.
+- The ``verbose`` argument in optimizers can disable verbosity.
+- ``Static`` joints can now be defined implicitly. 
+- The ``utility`` module provides two useful decorators 
+  ``kinematic_minimization`` and ``kinematic_optimizatino``. They greatly 
+  simplify the workflow of defining fitness functions. 
+- Versioning is now done thanks to bump2version.
 
-### Changed
+### Changed in 0.5.0
 
- - The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to
+- The ``particle_swarm_optimization`` ``eval_func`` signature is now similar to
 the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
- - The ``trials_and_errors_optimization`` function now asks for bounds instead 
-   of dilatation and compression factors.
- - In ``trials_and_errors_optimization`` absolute step ``delta_dim`` is now 
-   replaced by number of subdivisions ``divisions``.
+- The ``trials_and_errors_optimization`` function now asks for bounds instead 
+  of dilatation and compression factors.
+- In ``trials_and_errors_optimization`` absolute step ``delta_dim`` is now 
+  replaced by number of subdivisions ``divisions``.
 
-### Fixed
+### Fixed in 0.5.0
 
- - After many hours of computations, default parameters in 
-   ``particle_swarm_optimization`` are much more efficient. With the demo 
-   ``fourbar_linkage``, the output wasn't even convergent sometimes. Now we 
-   have a high convergence rate (~100%), and results equivalent to the 
-   ``trials_and_errors_optimization`` (in the example). 
- - ``variator`` function of ``optimizer`` module was poorly working.
- - The docstrings were not displayed properly in documentation, this is fixed.
+- After many hours of computations, default parameters in 
+  ``particle_swarm_optimization`` are much more efficient. With the demo 
+  ``fourbar_linkage``, the output wasn't even convergent sometimes. Now we 
+  have a high convergence rate (~100%), and results equivalent to the 
+  ``trials_and_errors_optimization`` (in the example). 
+- ``variator`` function of ``optimizer`` module was poorly working.
+- The docstrings were not displayed properly in documentation, this is fixed.
 
 ## [0.4.1] - 2021-07-11
 
-### Added
+### Added in 0.4.1
 
- - The legend in ``visualizer.py`` is back!
- - Documentation published to GitHub pages! It is contained in the ``docs/`` 
-   folder.
- - ``setup.cfg`` now include links to the website.
+- The legend in ``visualizer.py`` is back!
+- Documentation published to GitHub pages! It is contained in the ``docs/`` 
+  folder.
+- ``setup.cfg`` now include links to the website.
 
-### Changed
+### Changed in 0.4.1
 
- - Examples moved from ``pylinkage/examples/`` to ``docs/examples/``.
- - Tests moved from ``pylinkage/tests/`` to ``tests/``.
+- Examples moved from ``pylinkage/examples/`` to ``docs/examples/``.
+- Tests moved from ``pylinkage/tests/`` to ``tests/``.
 
 ## [0.4.0] - 2021-07-06
 
-### Added
+### Added in 0.4.0
 
- - The ``bounding_box`` method of geometry allows computing the bounding box of 
-   a 2D points finite set. 
- - You can now customize colors of linkage's bars with the ``COLOR_SWITCHER`` 
-   variable of ``visualizer.py``.
- - ``movement_bounding_box`` in ``visualizer.py`` to get the bounding box of 
-   multiple loci.
- - ``parameters`` is optional in ``trials_and_errors_optimization`` (former 
-   ``exhaustive_optimization``)
- - ``pylinkage/tests/test_optimizer.py`` for testing the optimizers, but it is a
-   bit ugly as for now.
- - Flake8 validation in ``tox.ini``
+- The ``bounding_box`` method of geometry allows computing the bounding box of 
+  a 2D points finite set. 
+- You can now customize colors of linkage's bars with the ``COLOR_SWITCHER`` 
+  variable of ``visualizer.py``.
+- ``movement_bounding_box`` in ``visualizer.py`` to get the bounding box of 
+  multiple loci.
+- ``parameters`` is optional in ``trials_and_errors_optimization`` (former 
+  ``exhaustive_optimization``)
+- ``pylinkage/tests/test_optimizer.py`` for testing the optimizers, but it is a
+  bit ugly as for now.
+- Flake8 validation in ``tox.ini``
 
-### Fixed
+### Fixed in 0.4.0
 
- - ``set_num_constraints`` in ``Linkage`` was misbehaving due to update 0.3.0.
- - Cost history is no longer plotted automatically after a PSO.
+- ``set_num_constraints`` in ``Linkage`` was misbehaving due to update 0.3.0.
+- Cost history is no longer plotted automatically after a PSO.
 
-### Changed
+### Changed in 0.4.0
 
- - ``exhaustive_optimization`` is now known as ``trials_and_errors_optimizattion``.
- - Axis on linkage visualization are now named "x" and "y", and no longer 
-   "Points abcsices" and "Ordinates".
- - A default view of the linkage is displayed in ``plot_static_linkage``.
- - Default padding in linkage representation was changed from an absolute value
-   of 0.5 to a relative 20%.
- - Static view of linkage is now aligned with its kinematic one.
- - ``get_pos`` method of ``Linkage`` is now known as ``get_coords`` for 
-   consistency.
- - Parameters renamed, reorganized and removed in ``particle_swarm_optimization``
-   to align to PySwarms.
- - ``README.md`` updated consequently to the changes.
+- ``exhaustive_optimization`` is now known as ``trials_and_errors_optimizattion``.
+- Axes on linkage visualization are now named "x" and "y". It was "Points abcsices" and "Ordinates".
+- A default view of the linkage is displayed in ``plot_static_linkage``.
+- Default padding in linkage representation was changed from an absolute value
+  of 0.5 to a relative 20%.
+- Static view of linkage is now aligned with its kinematic one.
+- ``get_pos`` method of ``Linkage`` is now known as ``get_coords`` for 
+  consistency.
+- Parameters renamed, reorganized and removed in ``particle_swarm_optimization``
+  to align to PySwarms.
+- ``README.md`` updated consequently to the changes.
 
-### Removed
+### Removed in 0.4.0
 
- - Legacy built-in Particle Swarm Optimization, to avoid confusion.
- - We do no longer show a default legend on static representation.
+- Legacy built-in Particle Swarm Optimization, to avoid confusion.
+- We do no longer show a default legend on static representation.
 
 ## [0.3.0] - 2021-07-05
 
-### Added
+### Added in 0.3.0
 
- - ``Joint`` objects now have a ``get_constraints`` method, consistent with 
-   their ``set_constraints`` one.
- - ``Linkage`` now has a ``get_num_constraints`` method as syntactic sugar.
- - Code vulnerabilities checker
- - Walkthrough's example has been expanded and now seems to be complete.
+- ``Joint`` objects now have a ``get_constraints`` method, consistent with 
+  their ``set_constraints`` one.
+- ``Linkage`` now has a ``get_num_constraints`` method as syntactic sugar.
+- Code vulnerabilities checker
+- Walkthrough's example has been expanded and now seems to be complete.
 
-### Changed
+### Changed in 0.3.0
 
- - ``Linkage``'s method ``set_num_constraints`` behaviour changed! You should
-   now add ``flat=False`` to come back to the previous behavior.
- - ``pylinkage/examples/fourbar_linkage.py`` expanded and finished.
- - The ``begin`` parameter of ``article_swarm_optimization`` is no longer
-   mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not
-   provided.
- - More flexible package version in ``environment.yml``
- - Output file name now is formatted as "Kinematic {linkage.name}" in
-   ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
- - Python 3.6 is no longer tested in ``tox.ini``. Python 3.9 is now tested.
+- ``Linkage``'s method ``set_num_constraints`` behaviour changed! You should
+  now add ``flat=False`` to come back to the previous behavior.
+- ``pylinkage/examples/fourbar_linkage.py`` expanded and finished.
+- The ``begin`` parameter of ``article_swarm_optimization`` is no longer
+  mandatory. ``linkage.get_num_constraints()`` will be used if ``begin`` is not
+  provided.
+- More flexible package version in ``environment.yml``
+- Output file name now is formatted as "Kinematic {linkage.name}" in
+  ``plot_kinematic_linkage`` function of ``pylinkage/visualizer.py``
+- Python 3.6 is no longer tested in ``tox.ini``. Python 3.9 is now tested.
 
-### Fixed
+### Fixed in 0.3.0
 
- - When linkage animation was saved, last frames were often missing in
-   ``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``.
+- When linkage animation was saved, last frames were often missing in
+  ``pylinkage/visualizer.py``, function ``plot_kinematic_linkage``.
 
 ## [0.2.2] - 2021-06-22
 
-### Added
+### Added in 0.2.2
 
- - More continuous integration workflows for multiple Python versions.
+- More continuous integration workflows for multiple Python versions.
 
-### Fixed
+### Fixed in 0.2.2
 
- - ``README.md`` could not be seen in PyPi.
- - Various types
+- ``README.md`` could not be seen in PyPi.
+- Various types
 
 ## [0.2.1] - 2021-06-16
 
-### Added
+### Added in 0.2.1
 
 - ``swarm_tiled_repr`` function for  ``pylinkage/visualizer.py``, for 
-  visualization of PySwarms.
+visualization of PySwarms.
 - EXPERIMENTAL! ``hyperstaticity`` method ``Linkage``'s hyperstaticity (over constrained) 
-  calculation.
+calculation.
 
 
-### Changed
+### Changed in 0.2.1
 
 - ``pylinkage/exception.py`` now handles exceptions in another file.
 - Documentation improvements.
@@ -193,14 +197,14 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 - ``.gitignore`` now modified from the standard GitHub gitignore example for 
   Python.
 
-### Fixed
+### Fixed in 0.2.1
 
 - ``circle`` method of ``Pivot`` in ``pylinkage/linkage.py``. It was causing errors
 - ``tox.ini`` now fixed.
 
 ## [0.2.0] - 2021-06-14
 
-### Added
+### Added in 0.2.0
 
 - ``pylinkage/vizualizer.py`` view your linkages using matplotlib!
 - Issue templates in ``.github/ISSUE_TEMPLATE/``
@@ -214,18 +218,18 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 - ``tox.ini``
 - ``CHANGELOG.md``
 
-### Changed
+### Changed in 0.2.0
 
- - ``.gitignore`` Python Package specific extensions added
- - ``MIT License`` → ``LICENSE``
- - ``lib/`` → ``pylinkage/``
- - ``tests/`` → ``pylinkage/tests/``
- - Revamped package organization.
- - Cleared ``setup.py``
+- ``.gitignore`` Python Package specific extensions added
+- ``MIT License`` → ``LICENSE``
+- ``lib/`` → ``pylinkage/``
+- ``tests/`` → ``pylinkage/tests/``
+- Revamped package organization.
+- Cleared ``setup.py``
 
 ## [0.0.1] - 2021-06-12
 
-### Added
+### Added in 0.0.1
 
 - ``lib/geometry.py`` as a mathematical basis for kinematic optimization
 - ``lib/linkage.py``, linkage builder
