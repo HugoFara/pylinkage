@@ -1,3 +1,47 @@
 [build-system]
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pylinkage"
+authors = [
+    {name = "Hugo Farajallah", email = "pylinkage@hugofara.net"},
+]
+description = "Build and optimize planar linkages using PSO"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = [
+    "linkage", "mechanism", "optimization",
+    "particle swarm optimization"
+]
+license = {text = "MIT License"}
+classifiers = [
+	"Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+	"Topic :: Scientific/Engineering",
+	"Topic :: Scientific/Engineering :: Artificial Intelligence",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.7",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Environment :: Console",
+	"Intended Audience :: Science/Research",
+	"Intended Audience :: Legal Industry",
+	"Intended Audience :: End Users/Desktop",
+	"Operating System :: OS Independent"
+]
+dependencies = [
+	"numpy",
+	"tqdm",
+	"matplotlib",
+	"pyswarms"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://hugofara.github.io/pylinkage/"
+Documentation = "https://hugofara.github.io/pylinkage/"
+Repository = "https://github.com/HugoFara/pylinkage"
+Changelog = "https://github.com/hugofara/pylinkage/blob/master/CHANGELOG.md"
