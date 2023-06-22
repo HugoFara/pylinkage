@@ -8,6 +8,7 @@ Created on Fri Apr 16, 16:39:21 2021.
 @author: HugoFara
 """
 import abc
+import warnings
 from math import atan2, gcd, tau
 from .exceptions import HypostaticError, UnbuildableError
 from .geometry import sqr_dist, circle_intersect, cyl_to_cart
@@ -265,7 +266,7 @@ class Pivot(Joint):
             # Don't modify coordinates (irrelevant)
             return
         if len(ref) == 1:
-            raise Warning(
+            warnings.warn(
                 "Unable to set coordinates of pivot joint {}:"
                 "Only one constraint is set."
                 "Coordinates unchanged".format(self.name)
@@ -287,13 +288,13 @@ class Pivot(Joint):
                 else:
                     self.x, self.y = coco[2]
             elif coco[0] == 3:
-                raise Warning(
+                warnings.warn(
                     f"Joint {self.name} has an infinite number of"
                     "solutions, position will be arbitrary"
                 )
                 # We project position on circle of possible positions
                 vect = (
-                    (j-i)/abs(j-i) for i, j in zip(coco[1], self.coord())
+                    (j-i) / abs(j-i) for i, j in zip(coco[1], self.coord())
                 )
                 self.x, self.y = [
                     i + j * coco[1][2] for i, j in zip(coco[1], vect)
@@ -451,6 +452,9 @@ class Linkage:
     def __find_solving_order__(self):
         """Find solving order automatically (experimental)."""
         # TODO : test it
+        warnings.warn(
+            "Automatic solving order is still in experimental stage!"
+        )
         solvable = [j for j in self.joints if isinstance(j, Static)]
         # True of new joints where added in the current pass
         solved_in_pass = True
@@ -473,7 +477,6 @@ class Linkage:
                 ','.join(str(j) for j in self.joints if j not in solvable)
             )
         self._solve_order = tuple(solvable)
-        raise NotImplementedError('Unable to determine automatic order')
         return self._solve_order
 
     def rebuild(self, pos=None):
@@ -509,6 +512,9 @@ class Linkage:
     def hyperstaticity(self):
         """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D."""
         # TODO : test it
+        warnings.warn(
+            "The hyperstaticity method is in experimental stage! Results should be double-checked!"
+        )
         # We have at least the frame
         solids = 1
         mobilities = 1

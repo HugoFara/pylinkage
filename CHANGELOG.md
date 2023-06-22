@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - We now checked compatibility with Python 3.10 and 3.11.
 - ``pyproject.toml`` is now the official definition of the package.
+- ``Linkage.hyperstaticity`` now clearly outputs a warning when used.
 
 ### Changed
 
@@ -20,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Setting a motor with a negative rotation angle do no longer break ``get_rotation_period`` 
 ([#7](https://github.com/HugoFara/pylinkage/issues/7)).
+- ``Pivot.reload`` and ``Linkage.__find_solving_order__`` were raising Warnings (stopping the code), 
+when they should only print a message (intended behavior).
 - Fixed many typos in documentation as well as in code.
 
 ### Deprecated
