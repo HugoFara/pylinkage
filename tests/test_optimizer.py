@@ -99,19 +99,28 @@ class TestPSO(unittest.TestCase):
 
     def test_convergence(self):
         """Test if the result is not too far from 0.0."""
+        delta = 0.3
         dim = len(self.constraints)
-        bounds = (np.zeros(dim), np.ones(dim) * 5)
-        score, dimensions, coord = opti.particle_swarm_optimization(
-            eval_func=fitness_func,
-            linkage=self.linkage,
-            bounds=bounds,
-            n_particles=20,
-            iters=50,
-            order_relation=min,
-            verbose=False,
-        )[0]
+        bounds = np.zeros(dim), np.ones(dim) * 5
+        opti_kwargs = {
+            "eval_func": fitness_func,
+            "linkage": self.linkage,
+            "bounds": bounds,
+            "n_particles": 20,
+            "iters": 30,
+            "order_relation": min,
+            "verbose": False
+        }
+        score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
+        if score > delta:
+            # Try again with more agents
+            opti_kwargs.update({
+                "n_particles": 50,
+                "iters": 100,
+            })
+            score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
         # Do not apply optimization problems
-        self.assertAlmostEqual(score, 0.0, delta=.3)
+        self.assertAlmostEqual(score, 0.0, delta=delta)
 
 
 if __name__ == '__main__':

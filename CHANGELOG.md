@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``Pivot.reload`` and ``Linkage.__find_solving_order__`` were raising Warnings (stopping the code), 
 when they should only print a message (intended behavior).
 - Fixed many typos in documentation as well as in code.
+- The ``TestPSO.test_convergence`` is now faster on average, and when it fails in the first time, it launches a bigger 
+test.
 
 ### Deprecated
 

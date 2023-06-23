@@ -53,7 +53,7 @@ def generate_bounds(center, min_ratio=5, max_factor=5):
 
 def sequential_variator(center, divisions, bounds):
     """
-    Return an iterable of each possibles variations for the elements.
+    Return an iterable of each possible variation for the elements.
 
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
 
@@ -90,7 +90,7 @@ def sequential_variator(center, divisions, bounds):
     else:
         for dim in fall[::-2]:
             yield dim
-    # Save memory, list can be long
+    # Save memory, a list can be long
     del fall
     # And last indexes
     for dim in np.linspace(center, bounds[1], math.ceil(divisions / 2)):
@@ -115,7 +115,7 @@ def fast_variator(divisions, bounds):
     Returns
     -------
     generator
-        An iterable of all the dimensions combinations.
+        An iterable of all the dimension combinations.
 
     See Also
     --------
@@ -195,7 +195,7 @@ def trials_and_errors_optimization(
 
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
-    results = [[None, [], []] for i in range(n_results)]
+    results = [[None, [], []] for _ in range(n_results)]
     prev = [i.coord() for i in linkage.joints]
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
@@ -321,7 +321,7 @@ def particle_swarm_optimization(
         'k': neighbors,
         'p': 1,
     }
-    pos = tuple(j.coord() for j in linkage.joints)
+    joint_pos = tuple(j.coord() for j in linkage.joints)
     optimizer = LocalBestPSO(
         n_particles=n_particles,
         dimensions=dimensions,
@@ -342,7 +342,7 @@ def particle_swarm_optimization(
     score, constraints = optimizer.optimize(
         # vectorized_eval_func,
         eval_wrapper,
-        iters, pos=pos,
+        iters, pos=joint_pos,
         verbose=verbose,
     )
-    return [(score, constraints, pos)]
+    return [(score, constraints, joint_pos)]
