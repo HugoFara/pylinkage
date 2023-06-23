@@ -5,20 +5,20 @@ All notable changes to pylinkage are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.5.3] - 2023-06-23
 
-### Added
+### Added in 0.5.3
 
 - We now checked compatibility with Python 3.10 and 3.11.
 - ``pyproject.toml`` is now the official definition of the package.
 - ``Linkage.hyperstaticity`` now clearly outputs a warning when used.
 
-### Changed
+### Changed in 0.5.3
 
 - ``master`` branch is now ``main``.
 - ``docs/example/fourbar_linkage.py`` can now be used as a module (not the target but anyway).
 
-### Fixed
+### Fixed in 0.5.3
 
 - Setting a motor with a negative rotation angle do no longer break ``get_rotation_period`` 
 ([#7](https://github.com/HugoFara/pylinkage/issues/7)).
@@ -29,7 +29,7 @@ when they should only print a message (intended behavior).
 test.
 - Minor lintings in the demo file ``docs/example/fourbar_linkage.py``.
 
-### Deprecated
+### Deprecated in 0.5.3
 
 - Using Python 3.7 is officially deprecated ([end of life by 2023-06-27](https://devguide.python.org/versions/)). 
 It will no longer be tested, use it at your own risks!
