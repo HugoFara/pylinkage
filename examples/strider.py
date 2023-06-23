@@ -143,133 +143,6 @@ def complete_strider(constraints, prev):
     return strider
 
 
-def strider_builder(constraints, prev, minimal=False):
-    """
-    Quickly build a strider with various parameters.
-
-    Parameters
-    ----------
-    constraints : iterable of 2-tuple
-        Iterable of all the constraints to set.
-    prev : tuple of 2-tuples
-        Initial coordinates.
-    n_leg_pairs : int, optional
-        The number of leg pairs that the strider should have. The default is 1.
-    minimal : bool, optional
-        Minimal representation is with one foot only. The default is False.
-
-    Returns
-    -------
-    strider : Linkage
-        The requested strider linkage.
-    """
-    linka = {
-        # Fixed points (mechanism body)
-        # A is the origin
-        "A": pl.Static(x=0, y=0, name="A"),
-        # Vertical axis for convenience
-        "Y": pl.Static(0, 1, name="Point (0, 1)"),
-    }
-    # For drawing only
-    linka["Y"].joint0 = linka["A"]
-    linka.update({
-        # Not fixed because we will optimize this position
-        "B": pl.Fixed(joint0=linka["A"], joint1=linka["Y"], name="Frame right (B)"),
-        "B_p": pl.Fixed(joint0=linka["A"], joint1=linka["Y"], name="Frame left (B_p)"),
-        # Pivot joints, explicitly defined to be modified later
-        # Joint linked to crank. Coordinates are chosen in each frame
-        "C": pl.Crank(joint0=linka["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)")
-    })
-    linka.update({
-        "D": pl.Pivot(joint0=linka["B_p"], joint1=linka["C"], name="Left knee link (D)"),
-        "E": pl.Pivot(joint0=linka["B"], joint1=linka["C"], name="Right knee link (E)")
-    })
-    # F is fixed relative to C and E
-    linka["F"] = pl.Fixed(joint0=linka["C"], joint1=linka["E"], name='Left ankle link (F)')
-    linka["H"] = pl.Pivot(joint0=linka["D"], joint1=linka["F"], name="Left foot (H)")
-    joints = list(linka.values())
-    if not minimal:
-        # G fixed to C and D
-        linka["G"] = pl.Fixed(joint0=linka["C"], joint1=linka["D"], name='Right ankle link (G)')
-        joints.insert(-1, linka["G"])
-        joints.append(pl.Pivot(joint0=linka["E"], joint1=linka["G"], name="Right foot (I)"))
-    # Mechanism definition
-    strider = pl.Linkage(
-        joints=joints,
-        order=joints,
-        name="Strider"
-    )
-    if minimal and len(prev) > len(joints):
-        prev = list(prev)
-        constraints = list(constraints)
-        # Joint G
-        prev.pop(-3)
-        constraints.pop(-3)
-        # Joint I
-        prev.pop(-1)
-        constraints.pop(-1)
-    strider.set_coords(prev)
-    strider.set_num_constraints(constraints, flat=False)
-    return strider
-
-
-def show_all_walkers(dnas, duration=40, save=False):
-    """
-    Parameters
-    ----------
-    dnas : iterable of dna
-
-    duration : float, optional
-        Animation duration. The default is 40.
-    save : bool, optional
-        Whether to save the resulting animation. The default is False.
-
-
-    Returns
-    -------
-
-    """
-    linkages = []
-    for dna in dnas:
-        dummy_strider = complete_strider(param2dimensions(DIMENSIONS), INIT_COORD)
-        dummy_strider.set_num_constraints(dna[1])
-        dummy_strider.set_coords(dna[2])
-        linkages.append(dummy_strider)
-    max_score = max(dna[0] for dna in dnas)
-    min_score = min(dna[0] for dna in dnas)
-    pl.all_linkages_video(
-        linkages, duration, save,
-        np.random.rand(len(dnas), 3)  # random color
-        #np.interp([dna[0] for dna in dnas], [min_score, max_score], [0, 1])  # fitness-based opacity
-    )
-
-
-def show_physics(linkage, prev=None, debug=False, duration=40, save=False):
-    """
-    Give mechanism a dynamic model and launch video.
-
-    Parameters
-    ----------
-    linkage : leggedsnake.walker.Walker
-        Linkage to simulate.
-    prev : tuple[tuple[float]], optional
-        Previous coordinates to use. The default is None.
-    debug : bool, optional
-        Launch in debug mode (frame by frame, with forces visualization).
-        The default is False.
-    duration : float, optional
-        Simulation duration (in seconds). The default is 40.
-    save : bool, optional
-        Save the video file instead of displaying it. The default is False.
-    """
-    # Define initial positions
-    linkage.rebuild(prev)
-    if debug:
-        pl.video_debug(linkage)
-    else:
-        pl.video(linkage, duration, save)
-
-
 # Ugly way to save (position + cost) history
 history = []
 
@@ -340,9 +213,98 @@ def repr_polar_swarm(current_swarm, fig=None, lines=None, t=0):
     return lines
 
 
+def view_swarm_polar(
+    linkage, dims=DIMENSIONS, save_each=0, age=300,
+    iters=400
+):
+    out = pl.particle_swarm_optimization(
+        sym_stride_evaluator, linkage,
+        center=dims, n_particles=age, iters=iters,
+        bounds=BOUNDS, dimensions=len(dims)
+    )
+
+    fig = plt.figure("Swarm in polar graph")
+    ax = fig.add_subplot(111, projection='polar')
+    lines = [ax.plot([], [], lw=.5, animated=False)[0] for i in range(age)]
+    t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
+    ax.set_xticks(t)
+    ax.set_rmax(7)
+    ax.set_xticklabels(DIM_NAMES + ("score",))
+    formatted_history = [
+        history[i:i + age] for i in range(0, len(history), age)
+    ]
+    animation = anim.FuncAnimation(
+        fig,
+        func=repr_polar_swarm,
+        frames=formatted_history,
+        fargs=(fig, lines, t), blit=True,
+        interval=10, repeat=True,
+        save_count=(iters - 1) * bool(save_each)
+    )
+    plt.show()
+    if save_each:
+        writer = anim.FFMpegWriter(
+            fps=24, bitrate=1800,
+            metadata={
+                'title': "Particle swarm looking for R^8 in R "
+                "application maximum",
+                'comment': "Made with Python and Matplotlib",
+                'description': "The swarm tries to find best dimension"
+                " set for Strider legged mechanism"
+            }
+        )
+        animation.save(r"PSO.mp4", writer=writer)
+    if animation:
+        pass
+    return out
+
+
+def view_swarm_tiled(
+    linkage, dims=DIMENSIONS, save_each=0, age=300,
+    iters=400
+):
+    out = pl.particle_swarm_optimization(
+        sym_stride_evaluator, linkage,
+        center=dims, n_particles=age, iters=iters,
+        bounds=BOUNDS, dimensions=len(dims)
+    )
+
+    fig = plt.figure("Swarm in tiled mode")
+    cells = int(np.ceil(np.sqrt(age)))
+    axes = fig.subplots(cells, cells)
+    lines = [ax.plot([], [], lw=.5, animated=False)[0]
+             for ax in axes.flatten()]
+    formatted_history = [
+        history[i:i + age][:-1] for i in range(0, len(history), age)
+    ]
+    animation = anim.FuncAnimation(
+        fig, lambda *args: pl.swarm_tiled_repr(linkage, *args),
+        formatted_history, fargs=(fig, axes, param2dimensions), blit=False,
+        interval=40, repeat=False, save_count=(iters - 1) * bool(save_each)
+    )
+    plt.show(block=not save_each)
+    if save_each:
+        writer = anim.FFMpegWriter(
+            fps=24, bitrate=1800,
+            metadata={
+                'title': "Particle swarm looking for R^8 in R "
+                "application maximum",
+                'comment': "Made with Python and Matplotlib",
+                'description': "The swarm looks for best dimension "
+                "set for Strider legged mechanism"
+            }
+        )
+
+        animation.save("Particle swarm optimization.mp4", writer=writer)
+    # Don't let the animation be garbage-collected!
+    if animation:
+        pass
+    return out
+
+
 def swarm_optimizer(
-        linkage, dims=DIMENSIONS, show=False, save_each=0, age=300,
-        iters=400, *args
+    linkage, dims=DIMENSIONS, show=False, save_each=0, age=300,
+    iters=400, *args
 ):
     """
     Optimize linkage geometrically using PSO.
@@ -379,97 +341,21 @@ def swarm_optimizer(
     print("Initial dimensions:", dims)
 
     if show == 1:
-        out = pl.particle_swarm_optimization(
-            sym_stride_evaluator, linkage,
-            center=dims, n_particles=age, iters=iters,
-            bounds=BOUNDS, dimensions=len(dims), *args,
-        )
-
-        fig = plt.figure("Swarm in polar graph")
-        ax = fig.add_subplot(111, projection='polar')
-        lines = [ax.plot([], [], lw=.5, animated=False)[0] for i in range(age)]
-        t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
-        ax.set_xticks(t)
-        ax.set_rmax(7)
-        ax.set_xticklabels(DIM_NAMES + ("score",))
-        formatted_history = [
-            history[i:i + age] for i in range(0, len(history), age)
-        ]
-        animation = anim.FuncAnimation(
-            fig,
-            func=repr_polar_swarm,
-            frames=formatted_history,
-            fargs=(fig, lines, t), blit=True,
-            interval=10, repeat=True,
-            save_count=(iters - 1) * bool(save_each)
-        )
-        plt.show()
-        if save_each:
-            writer = anim.FFMpegWriter(
-                fps=24, bitrate=1800,
-                metadata={
-                    'title': "Particle swarm looking for R^8 in R "
-                    "application maximum",
-                    'comment': "Made with Python and Matplotlib",
-                    'description': "The swarm tries to find best dimension"
-                    " set for Strider legged mechanism"
-                }
-            )
-            animation.save(r"PSO.mp4", writer=writer)
-        if animation:
-            pass
-        return out
+        return view_swarm_polar(linkage, dims, save_each, age, iters)
     elif show == 2:
         # Tiled representation of swarm
-        out = pl.particle_swarm_optimization(
-            sym_stride_evaluator, linkage,
-            center=dims, n_particles=age, iters=iters,
-            bounds=BOUNDS, dimensions=len(dims),
-            *args
-        )
+        return view_swarm_tiled(linkage, dims, save_each, age, iters)
 
-        fig = plt.figure("Swarm in tiled mode")
-        cells = int(np.ceil(np.sqrt(age)))
-        axes = fig.subplots(cells, cells)
-        lines = [ax.plot([], [], lw=.5, animated=False)[0]
-                 for ax in axes.flatten()]
-        formatted_history = [
-            history[i:i + age][:-1] for i in range(0, len(history), age)
-        ]
-        animation = anim.FuncAnimation(
-            fig, lambda *args: pl.swarm_tiled_repr(linkage, *args),
-            formatted_history, fargs=(fig, axes, param2dimensions), blit=False,
-            interval=40, repeat=False, save_count=(iters - 1) * bool(save_each)
-        )
-        plt.show(block=not save_each)
-        if save_each:
-            writer = anim.FFMpegWriter(
-                fps=24, bitrate=1800,
-                metadata={
-                    'title': "Particle swarm looking for R^8 in R "
-                    "application maximum",
-                    'comment': "Made with Python and Matplotlib",
-                    'description': "The swarm looks for best dimension "
-                    "set for Strider legged mechanism"
-                }
-            )
-
-            animation.save("Particle swarm optimization.mp4", writer=writer)
-        # Don't let the animation be garbage-collected!
-        if animation:
-            pass
-        return out
-
-    elif save_each:
+    if save_each:
         for dim, i in pl.particle_swarm_optimization(
-                sym_stride_evaluator,
-                linkage,
-                dims,
-                age,
-                iters=iters,
-                bounds=BOUNDS,
-                dimensions=len(dims),
-                # *args
+            sym_stride_evaluator,
+            linkage,
+            dims,
+            age,
+            iters=iters,
+            bounds=BOUNDS,
+            dimensions=len(dims),
+            # *args
         ):
             if not i % save_each:
                 f = open('PSO optimizer.txt', 'w')
@@ -483,47 +369,17 @@ def swarm_optimizer(
                     f.write('----\n')
                 f.close()
     else:
-        out = tuple(
-            pl.particle_swarm_optimization(
-                sym_stride_evaluator,
-                linkage,
-                dims,
-                n_particles=age,
-                bounds=BOUNDS,
-                dimensions=len(dims),
-                iters=iters,
-                *args
-            )
+        out = pl.particle_swarm_optimization(
+            sym_stride_evaluator,
+            linkage,
+            dims,
+            n_particles=age,
+            bounds=BOUNDS,
+            dimensions=len(dims),
+            iters=iters,
+            *args
         )
-        return out
-
-
-def dna_interpreter(dna):
-    linkage_hollow = complete_strider(param2dimensions(DIMENSIONS), INIT_COORD)
-    linkage_hollow.set_num_constraints(dna[1])
-    linkage_hollow.rebuild(dna[2])
-    return linkage_hollow
-
-
-def move_linkage(linkage_hollow):
-    """
-    Make the linkage do a movement and return it, False if impossible.
-
-    Parameters
-    ----------
-    linkage_hollow : pylinkage.Linkage
-
-    Returns
-    -------
-
-    """
-    # Check if the mechanism is buildable
-    try:
-        # Save initial coordinates
-        pos = tuple(linkage_hollow.step(iterations=LAP_POINTS))[-1]
-        return pos
-    except pl.UnbuildableError:
-        return False
+        return tuple(out)
 
 
 def show_optimized(linkage, data, n_show=10, duration=5, symmetric=True):
