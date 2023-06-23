@@ -29,7 +29,7 @@ Use ``conda env update --file environment.yml --name pylinkage-env`` to install 
 
 Let's start with a short demo of the package's capabilities.
 
-It is highly Pythonning and emphasizes efficient code. Here is the definition of a **four-bar linkage**.
+It is highly Pythonic and emphasizes efficient code. Here is the definition of a **four-bar linkage**.
 ```python
 import pylinkage as pl
 
@@ -48,7 +48,7 @@ my_linkage = pl.Linkage(joints=(crank, pin))
 pl.show_linkage(my_linkage)
 ```
 
-![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Cool, isn't it? But the package doesn't stop here as it provides a library **to achieve any movement**. 
 
@@ -79,7 +79,7 @@ my_linkage.set_coords(init_pos) # Intial position
 pl.show_linkage(my_linkage)
 ```
 
-![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif)
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif)
 
 Tadaaa!
 We defined a mechanism, solved an issue and viewed the result in a few lines of code!
@@ -187,7 +187,7 @@ Then you can view your linkage!
 pl.show_linkage(my_linkage)
 ```
 
-![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif)
+![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif)
 
 Last recap, rearranging names:
 
@@ -302,7 +302,7 @@ Here the result can vary, but it is rarely above 0.2.
 
 So we made something that says it works, let's verify it:
 
-![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif)
+![An optimized four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif)
 
 With a bit of imagination, you have a wonderful windshield wiper!
 
