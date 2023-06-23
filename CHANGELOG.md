@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
 based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html)
 
+### Fixed
+
+- ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
+
 ## [0.5.3] - 2023-06-23
 
 ### Added in 0.5.3

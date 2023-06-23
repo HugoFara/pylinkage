@@ -66,12 +66,13 @@ def plot_static_linkage(
     for i, joint in enumerate(linkage.joints):
         axis.plot(tuple(j[i][0] for j in loci), tuple(j[i][1] for j in loci))
 
-    # The plot linkage in initial position
+    # The plot linkage in initial positioning
     # It as important to use separate loops, because we would have bad
     # formatted legend otherwise
     for i, joint in enumerate(linkage.joints):
         # Then the linkage in initial position
-        # Draw link to first parent if it exists
+
+        # Draw a link to the first parent if it exists
         if joint.joint0 is None:
             continue
         pos = joint.coord()
@@ -131,7 +132,7 @@ def update_animated_plot(linkage, index, images, loci):
     locus = loci[index]
     for j, pos in enumerate(locus):
         joint = linkage.joints[j]
-        # Draw link to first parent if it exists
+        # Draw a link to the first parent if it exists
         if joint.joint0 is None:
             continue
         if isinstance(joint.joint0, Static):
@@ -305,13 +306,14 @@ def show_linkage(
 
 
 def swarm_tiled_repr(
-        linkage,
-        swarm,
-        fig,
-        axes,
-        dimension_func=None,
-        points=12,
-        iteration_factor=1):
+    linkage,
+    swarm,
+    fig,
+    axes,
+    dimension_func=None,
+    points=12,
+    iteration_factor=1
+):
     """
     Show all the linkages in a swarm in tiled mode.
 
@@ -341,7 +343,8 @@ def swarm_tiled_repr(
 
     """
     # fig.suptitle("Iteration: {}, agents: {}".format(swarm[1], len(agents)))
-    for i, dimensions in enumerate(swarm):
+    for i, agent in enumerate(swarm):
+        dimensions = agent[1]
         if dimension_func is None:
             linkage.set_num_constraints(dimensions)
         else:
@@ -349,12 +352,14 @@ def swarm_tiled_repr(
         axes.flatten()[i].clear()
         try:
             loci = tuple(
-                tuple(pos) for pos in linkage.step(
-                    iterations=points * iteration_factor,
-                    dt=1 / iteration_factor
+                map(
+                    tuple,
+                    linkage.step(
+                        iterations=points * iteration_factor,
+                        dt=1 / iteration_factor
+                    )
                 )
             )
         except UnbuildableError:
-            pass
-        else:
-            plot_static_linkage(linkage, axes.flatten()[i], loci)
+            continue
+        plot_static_linkage(linkage, axes.flatten()[i], loci)
