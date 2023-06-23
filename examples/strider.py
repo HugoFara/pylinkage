@@ -4,6 +4,7 @@ Kinematic Strider linkage, a type of walking linkage.
 The original linkage can be found at https://www.diywalkers.com/strider-linkage-plans.html
 """
 
+from functools import partial
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import numpy as np
@@ -272,14 +273,19 @@ def view_swarm_tiled(
     fig = plt.figure("Swarm in tiled mode")
     cells = int(np.ceil(np.sqrt(age)))
     axes = fig.subplots(cells, cells)
-    lines = [ax.plot([], [], lw=.5, animated=False)[0]
-             for ax in axes.flatten()]
     formatted_history = [
         history[i:i + age][:-1] for i in range(0, len(history), age)
     ]
     animation = anim.FuncAnimation(
-        fig, lambda *args: pl.swarm_tiled_repr(linkage, *args),
-        formatted_history, fargs=(fig, axes, param2dimensions), blit=False,
+        fig,
+        lambda i: pl.swarm_tiled_repr(
+            linkage=linkage,
+            swarm=out,
+            fig=fig,
+            axes=axes,
+            dimension_func=lambda dim: param2dimensions(dim, flat=True)
+        ),
+        formatted_history, blit=False,
         interval=40, repeat=False, save_count=(iters - 1) * bool(save_each)
     )
     plt.show(block=not save_each)
