@@ -241,7 +241,7 @@ def show_linkage(
         list of loci. The default is None.
     points : int, optional
         Number of points to draw for a crank revolution.
-        Useless when loci is set.
+        Useless when loci are set.
         The default is 100.
     iteration_factor : float, optional
         A simple way to subdivide the movement. The real number of points
@@ -259,13 +259,16 @@ def show_linkage(
     None.
 
     """
-    # Define intial positions
+    # Define initial positions
     linkage.rebuild(prev)
     if loci is None:
         loci = tuple(
-            tuple(i) for i in linkage.step(
-                iterations=points * iteration_factor,
-                dt=1 / iteration_factor
+            map(
+                tuple,
+                linkage.step(
+                    iterations=points * iteration_factor,
+                    dt=1 / iteration_factor
+                )
             )
         )
 

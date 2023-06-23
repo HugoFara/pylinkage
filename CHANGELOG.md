@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``docs/example/fourbar_linkage.py`` can now be used as a module (not the target but anyway).
 - ``docs/examples`` moved to ``examples/`` (main folder).
   - Now ``docs/`` only contains sphinx documentation.
-- ``docs/examles/images`` moved to ``images/``.
+- ``docs/examples/images`` moved to ``images/``.
 
 ### Fixed in 0.5.3
 

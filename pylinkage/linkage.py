@@ -394,8 +394,10 @@ class Crank(Joint):
             )
         # Rotation angle of local space relative to global
         rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
-        self.x, self.y = cyl_to_cart(self.r, rot + self.angle * dt,
-                                     self.joint0.coord())
+        self.x, self.y = cyl_to_cart(
+            self.r, rot + self.angle * dt,
+            self.joint0.coord()
+        )
 
     def get_constraints(self):
         """Return the distance to the center of rotation."""
