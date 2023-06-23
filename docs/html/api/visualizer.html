@@ -1,198 +1,129 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>visualizer &mdash; pylinkage 0.5.2 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>visualizer &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="exceptions" href="exceptions.html" />
     <link rel="prev" title="utility" href="utility.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home"> pylinkage
           
-
-          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Introduction</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="linkage.html">linkage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizer.html">optimizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">utility</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">visualizer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.visualizer">Simple plotter for your linkages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.visualizer">Simple plotter for your linkages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer._get_color"><code class="docutils literal notranslate"><span class="pre">_get_color()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.movement_bounding_bow"><code class="docutils literal notranslate"><span class="pre">movement_bounding_bow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.plot_kinematic_linkage"><code class="docutils literal notranslate"><span class="pre">plot_kinematic_linkage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.plot_static_linkage"><code class="docutils literal notranslate"><span class="pre">plot_static_linkage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.show_linkage"><code class="docutils literal notranslate"><span class="pre">show_linkage()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.swarm_tiled_repr"><code class="docutils literal notranslate"><span class="pre">swarm_tiled_repr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.update_animated_plot"><code class="docutils literal notranslate"><span class="pre">update_animated_plot()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">exceptions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Quick Links</span></p>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">pylinkage</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html">Docs</a> &raquo;</li>
-        
-      <li>visualizer</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">visualizer</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/visualizer.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="visualizer">
-<h1>visualizer<a class="headerlink" href="#visualizer" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-pylinkage.visualizer">
-<span id="simple-plotter-for-your-linkages"></span><h2>Simple plotter for your linkages<a class="headerlink" href="#module-pylinkage.visualizer" title="Permalink to this headline">¶</a></h2>
-<p>The visualizer module makes visualisation of linkages easy using matplotlib.</p>
-<p>Created on Mon Jun 14 12:13:58 2021.</p>
+             
+  <section id="visualizer">
+<h1>visualizer<a class="headerlink" href="#visualizer" title="Permalink to this heading"></a></h1>
+<section id="module-pylinkage.visualizer">
+<span id="simple-plotter-for-your-linkages"></span><h2>Simple plotter for your linkages<a class="headerlink" href="#module-pylinkage.visualizer" title="Permalink to this heading"></a></h2>
+<p>The visualizer module makes visualization of linkages easy using matplotlib.</p>
+<p>Created on Mon Jun 14, 12:13:58 2021.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer._get_color">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">_get_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer._get_color" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">_get_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer._get_color" title="Permalink to this definition"></a></dt>
 <dd><p>Search in COLOR_SWITCHER for the corresponding color.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.movement_bounding_bow">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">movement_bounding_bow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.movement_bounding_bow" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">movement_bounding_bow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.movement_bounding_bow" title="Permalink to this definition"></a></dt>
 <dd><p>Return the general bounding box of a group of loci.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.plot_kinematic_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_kinematic_linkage" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_kinematic_linkage" title="Permalink to this definition"></a></dt>
 <dd><p>Plot a linkage with an animation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>pylinkage.linkage.Linkage</em></a>) – DESCRIPTION.</p></li>
 <li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – Figure to support the axes.</p></li>
@@ -202,75 +133,67 @@
 <li><p><strong>interval</strong> (<em>float</em><em>, </em><em>optional</em>) – Delay between frames in milliseconds. The default is 40 (24 fps).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.plot_static_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_static_linkage" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_static_linkage" title="Permalink to this definition"></a></dt>
 <dd><p>Plot a linkage without movement.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>Linkage</em></a>) – The linkage you want to see.</p></li>
 <li><p><strong>axis</strong> (<em>Artist</em>) – The graph we should draw on.</p></li>
 <li><p><strong>loci</strong> (<em>sequence</em>) – List of list of coordinates. They will be plotted.</p></li>
-<li><p><strong>locus_highlights</strong> (<em>list</em><em>, </em><em>optional</em>) – If a list, shoud be a list of list of coordinates you want to see
+<li><p><strong>locus_highlights</strong> (<em>list</em><em>, </em><em>optional</em>) – If a list, should be a list of list of coordinates you want to see
 highlighted. The default is None.</p></li>
 <li><p><strong>show_legend</strong> (<em>bool</em><em>, </em><em>optional</em>) – To add an automatic legend to the graph. The default is False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.show_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.show_linkage" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.show_linkage" title="Permalink to this definition"></a></dt>
 <dd><p>Display results as an animated drawing.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>pylinkage.linkage.Linkage</em></a>) – The Linkage you want to draw.</p></li>
 <li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – To save the animation. The default is False.</p></li>
 <li><p><strong>prev</strong> (<em>list</em><em>, </em><em>optional</em>) – Previous coordinates to use for linkage. The default is None.</p></li>
 <li><p><strong>loci</strong> (<em>list</em><em>, </em><em>optional</em>) – list of loci. The default is None.</p></li>
-<li><p><strong>points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of point to draw for a crank revolution.
+<li><p><strong>points</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of points to draw for a crank revolution.
 Useless when loci is set.
 The default is 100.</p></li>
 <li><p><strong>iteration_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – A simple way to subdivide the movement. The real number of points
 will be points * iteration_factor. The default is 1.</p></li>
 <li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Figure title. The default is str(len(ani)).</p></li>
 <li><p><strong>duration</strong> (<em>float</em><em>, </em><em>optional</em>) – Animation duration (in seconds). The default is 5.</p></li>
-<li><p><strong>fps</strong> (<em>float</em><em>, </em><em>optional</em>) – Number of frame per second for the output video. The default is 24.</p></li>
+<li><p><strong>fps</strong> (<em>float</em><em>, </em><em>optional</em>) – Number of frames per second for the output video.
+The default is 24.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.swarm_tiled_repr">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.swarm_tiled_repr" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.swarm_tiled_repr" title="Permalink to this definition"></a></dt>
 <dd><p>Show all the linkages in a swarm in tiled mode.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>linkage</strong> (<a class="reference internal" href="linkage.html#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><em>pylinkage.linkage.Linkage</em></a>) – The original Linkage that will be MODIFIED.</p></li>
 <li><p><strong>swarm</strong> (<em>list</em>) – Sequence of 3 elements: agents, interation number and initial
@@ -284,87 +207,66 @@ will be points * iteration_factor. The default is 1.</p></li>
 passing them to the linkage.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.update_animated_plot">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">update_animated_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.update_animated_plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">update_animated_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.update_animated_plot" title="Permalink to this definition"></a></dt>
 <dd><p>Modify im, instead of recreating it to make the animation run faster.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>linkage</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
 <li><p><strong>index</strong> (<em>int</em>) – Frame index.</p></li>
-<li><p><strong>images</strong> (<em>list of images Artists</em>) – Artist to be modified.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of locuses.</p></li>
+<li><p><strong>images</strong> (<em>list</em><em> of </em><em>images Artists</em>) – Artist to be modified.</p></li>
+<li><p><strong>loci</strong> (<em>list</em>) – list of loci.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>im</strong> – Updated version.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of images Artists</p>
 </dd>
 </dl>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="exceptions.html" class="btn btn-neutral float-right" title="exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="utility.html" class="btn btn-neutral float-left" title="utility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="utility.html" class="btn btn-neutral float-left" title="utility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="exceptions.html" class="btn btn-neutral float-right" title="exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Hugo Farajallah
-
-    </p>
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

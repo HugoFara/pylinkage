@@ -1,88 +1,48 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>pylinkage &mdash; pylinkage 0.5.2 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pylinkage &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Changelog" href="changeloglink.html" />
     <link rel="prev" title="Welcome to pylinkage’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> pylinkage
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            pylinkage
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Introduction</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Readme</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
@@ -90,20 +50,22 @@
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-virtual-environment">Setting up Virtual Environment</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example">Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#short-demo">Short demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete example</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#joints-definition">Joints definition</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#linkage-definition-and-simulation">Linkage definition and simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#optimization">Optimization</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#structure">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/linkage.html">linkage</a></li>
@@ -112,135 +74,126 @@
 <li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/exceptions.html">exceptions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Quick Links</span></p>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">pylinkage</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>pylinkage</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pylinkage</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/readmelink.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <a class="reference external image-reference" href="https://pypi.python.org/pypi/pylinkage/"><img alt="PyPI version fury.io" src="https://badge.fury.io/py/pylinkage.svg" /></a>
+             
+  <section id="pylinkage">
+<h1>Pylinkage<a class="headerlink" href="#pylinkage" title="Permalink to this heading"></a></h1>
+<a class="reference external image-reference" href="https://pypi.python.org/pypi/pylinkage/"><img alt="PyPI version fury.io" src="https://badge.fury.io/py/pylinkage.svg" /></a>
 <a class="reference external image-reference" href="https://pepy.tech/project/pylinkage"><img alt="Downloads" src="https://static.pepy.tech/personalized-badge/pylinkage?period=total&amp;units=international_system&amp;left_color=grey&amp;right_color=green&amp;left_text=Downloads" /></a>
-<a class="reference external image-reference" href="https://raw.githubusercontent.com/HugoFara/pylinkage/master/LICENSE.rst"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
-<div class="section" id="pylinkage">
-<h1>pylinkage<a class="headerlink" href="#pylinkage" title="Permalink to this headline">¶</a></h1>
-<p>A linkage builder written in Python. This package is made to create planar linkages and optimize them kinematically thanks to <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">Particle Swarm Optimization</a>. It is still an early work, so it should receive great changes in the future.</p>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="using-pip">
-<h3>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this headline">¶</a></h3>
-<p>This package is in the PyPi as <a class="reference external" href="https://pypi.org/project/pylinkage/">pylinkage</a>, and can be installed using:
-<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage</span></code></p>
+<a class="reference external image-reference" href="https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
+<p>Pylinkage is a Python linkage builder and optimizer.
+You can create planar linkages and optimize them with a <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">Particle Swarm Optimization</a>.
+It is still in beta, so don’t hesitate to post pull request or issues for features you would like to see!.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<section id="using-pip">
+<h3>Using pip<a class="headerlink" href="#using-pip" title="Permalink to this heading"></a></h3>
+<p>This package is in the PyPi as <a class="reference external" href="https://pypi.org/project/pylinkage/">pylinkage</a>, and can be installed using:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pylinkage
+</pre></div>
+</div>
 <p>It is the recommended way of downloading it.</p>
+</section>
+<section id="setting-up-virtual-environment">
+<h3>Setting up Virtual Environment<a class="headerlink" href="#setting-up-virtual-environment" title="Permalink to this heading"></a></h3>
+<p>We provide an <a class="reference external" href="https://github.com/HugoFara/leggedsnake/blob/main/environment.yml">environment.yml</a> file for conda.
+Use <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">update</span> <span class="pre">--file</span> <span class="pre">environment.yml</span> <span class="pre">--name</span> <span class="pre">pylinkage-env</span></code> to install the requirements in a separate environment.</p>
+</section>
+</section>
+<section id="short-demo">
+<h2>Short demo<a class="headerlink" href="#short-demo" title="Permalink to this heading"></a></h2>
+<p>Let’s start with a short demo of the package’s capabilities.</p>
+<p>It is highly Pythonning and emphasizes efficient code. Here is the definition of a <strong>four-bar linkage</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
+
+<span class="c1"># Main motor</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Close the loop</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="c1"># Create the linkage</span>
+<span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
+
+<span class="c1"># Show the results</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
+</pre></div>
 </div>
-<div class="section" id="setting-up-virtual-environment">
-<h3>Setting up Virtual Environment<a class="headerlink" href="#setting-up-virtual-environment" title="Permalink to this headline">¶</a></h3>
-<p>We provide an <a class="reference external" href="https://github.com/HugoFara/leggedsnake/blob/master/environment.yml">environment.yml</a> file for conda. Use <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">update</span> <span class="pre">--file</span> <span class="pre">environment.yml</span> <span class="pre">--name</span> <span class="pre">pylinkage-env</span></code> to install the requirements in a separate environment.</p>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
+<p>Cool, isn’t it? But the package doesn’t stop here as it provides a library <strong>to achieve any movement</strong>.</p>
+<p>Let’s say that you want the <code class="docutils literal notranslate"><span class="pre">pin</span></code> joint to stay in top-right corner, with an amplitude of [0, 90] exactly.
+You can solve it by yourself, you can ask the code to do it for you.</p>
+<p>Define evaluation function called <code class="docutils literal notranslate"><span class="pre">fitness_func</span></code>, that returns a good score to the linkage
+when the <code class="docutils literal notranslate"><span class="pre">pin</span></code> joint stays in the first quadrant, and 0 otherwise.</p>
+<p>Then just run the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s set some bounds to keep the dimensions reasonable</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">my_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+
+<span class="c1"># Now comes the &quot;magic&quot; function that solve of issue</span>
+<span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_func</span><span class="p">,</span>
+    <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+<span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="c1"># Let&#39;s use the result in our linkage!</span>
+<span class="n">my_linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="c1"># Dimensions</span>
+<span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span> <span class="c1"># Intial position</span>
+
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
+</pre></div>
 </div>
-</div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>As of today, we segment the code in main three parts:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/master/pylinkage/linkage.py">linkage.py</a> this module describes joints and linkages</p>
-<ul>
-<li><p>Due to the geometric approach, joints (instances of <code class="docutils literal notranslate"><span class="pre">Joint</span></code> object) are defined without links.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> class that will make your code shorter.</p></li>
-</ul>
-</li>
-<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/master/pylinkage/optimizer.py">optimizer.py</a> proposes three optimizations based on three techniques:</p>
-<ul>
-<li><p>The “exhaustive” optimization (<code class="docutils literal notranslate"><span class="pre">exhaustive_optimization</span></code> function) is a dumb optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.</p></li>
-<li><p>The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.</p></li>
-<li><p>PSO using <a class="reference external" href="https://github.com/ljvmiranda921/pyswarms">PySwarms</a>. We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.</p></li>
-</ul>
-</li>
-<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/master/pylinkage/visualizer.py">visualizer.py</a> can make graphic illustrations of your linkage using matplotlib.</p>
-<ul>
-<li><p>It is also used to visualise your n-dimensional swarm, which is not supported by PySwarms.</p></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>Python 3, numpy for calculation, matplotlib for drawing, and standard libraries. You will also need PySwarms for the optimization since the built-in PSO is deprecated and will be removed soon.</p>
-</div>
-<div class="section" id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>Let’s start with a crank-rocker <a class="reference external" href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar linkage</a>, as classic of mechanics.</p>
-<div class="section" id="joints-definition">
-<h3>Joints definition<a class="headerlink" href="#joints-definition" title="Permalink to this headline">¶</a></h3>
-<p>Firstly we have to define at least one crank because want a kinematic simulation.</p>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
+<p>Tadaaa!
+We defined a mechanism, solved an issue and viewed the result in a few lines of code!
+And remember, you can define any objective function, so let’s give it a try!</p>
+</section>
+<section id="complete-example">
+<h2>Complete example<a class="headerlink" href="#complete-example" title="Permalink to this heading"></a></h2>
+<p>Let’s start with a crank-rocker <a class="reference external" href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar linkage</a>, as a classic mechanism.</p>
+<section id="joints-definition">
+<h3>Joints definition<a class="headerlink" href="#joints-definition" title="Permalink to this heading"></a></h3>
+<p>First, we define at least one crank because we want a kinematic simulation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here you need some explanations:</p>
+<p>Here we are actually doing the following:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">0,</span> <span class="pre">1</span></code>: x and y initial coordinates of the <strong>tail</strong> of the crank link.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the position of the parent Joint to link with, here it is a fixed point in space. The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>: the position of the parent Joint to link with, here it is a fixed point in space.
+The pin will be created on the position of the parent, which is the head of the crank link.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">angle</span></code>: the crank will rotate with this angle, in radians, at each iteration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">distance</span></code>: distance to keep constant between crank link tail and head.</p></li>
 </ul>
@@ -248,22 +201,30 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here comes some help:</p>
+<p>In human language, here is what is happening:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>, <code class="docutils literal notranslate"><span class="pre">joint1</span></code>: first and second <code class="docutils literal notranslate"><span class="pre">Joint</span></code>s you want to link to, the order is not important.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">distance0</span></code>, <code class="docutils literal notranslate"><span class="pre">distance1</span></code>: distance to keep constant between this joint and his two parents.</p></li>
 </ul>
-<p>And here comes the pain:
-Why do we specify initial coordinates <code class="docutils literal notranslate"><span class="pre">3,</span> <span class="pre">2</span></code>? Moreover, they seem incompatible with distance to parents/parents’ positions!</p>
+<p>And here comes the trick:
+Why do we specify initial coordinates <code class="docutils literal notranslate"><span class="pre">3,</span> <span class="pre">2</span></code>? They even seem incompatible with distance to parents/parents’ positions!</p>
 <ul class="simple">
-<li><p>This explanation is simple: mathematically a pin joint the intersection of two circles. The intersection is often two points. To choose the strating point, we calculate both intersection (when possible), then we keep the intersection closer to the previous position as the solution.</p></li>
+<li><p>This explanation is simple: mathematically a pin joint the intersection of two circles.
+The intersection is often two points.
+To choose the starting point, we calculate both intersection (when possible),
+then we keep the intersection closer to the previous position as the solution.</p></li>
 </ul>
 <p>Wait! A linkage with a single motor and only one pin joint? That doesn’t make sense!
-:Behind the curtain, many joints are created on the fly. When you define a <code class="docutils literal notranslate"><span class="pre">Crank</span></code> joint, it creates a motor <strong>and</strong> a pin joint on the crank’s link head. For a <code class="docutils literal notranslate"><span class="pre">Pivot</span></code> joint, it creates <strong>3 pin joints</strong>: one on the position of each of its parents, and one its position, forming a reshapable triangle. This is why pylinkage is so short to write.</p>
-</div>
-<div class="section" id="linkage-definition-and-simulation">
-<h3>Linkage definition and simulation<a class="headerlink" href="#linkage-definition-and-simulation" title="Permalink to this headline">¶</a></h3>
-<p>Once your linkage is finished, you can either can the <code class="docutils literal notranslate"><span class="pre">reload</span></code> method of each <code class="docutils literal notranslate"><span class="pre">Joint</span></code> in a loop, or put everything in a <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> that will handle this can of thinks for you.</p>
+: Behind the curtain, many joints are created on the fly.
+When you define a <code class="docutils literal notranslate"><span class="pre">Crank</span></code> joint, it creates a motor <strong>and</strong> a pin joint on the crank’s link head.
+For a <code class="docutils literal notranslate"><span class="pre">Pivot</span></code> joint, it creates <strong>3 pin joints</strong>: one on each of its parents’ positions, and one its position,
+which forms a deformable triangle.
+This is why pylinkage is so short to write.</p>
+</section>
+<section id="linkage-definition-and-simulation">
+<h3>Linkage definition and simulation<a class="headerlink" href="#linkage-definition-and-simulation" title="Permalink to this heading"></a></h3>
+<p>Once your linkage is finished, you can either use the <code class="docutils literal notranslate"><span class="pre">reload</span></code> method of each <code class="docutils literal notranslate"><span class="pre">Joint</span></code> in a loop,
+or put everything in a <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> that will handle this can of thinks for you.</p>
 <p>Linkage definition is simple:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
 </pre></div>
@@ -274,23 +235,27 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 </pre></div>
 </div>
 <p>You can also specify the number of steps with the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> argument, or subdivisions of each iteration with<code class="docutils literal notranslate"><span class="pre">dt</span></code>.</p>
-<p>Let’s recape.</p>
+<p>Let’s recap.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
+
 <span class="c1"># Main motor</span>
 <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="c1"># Close the loop</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-               <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
 
 <span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
 
 <span class="n">locus</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="visualization">
-<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this headline">¶</a></h3>
-<p>Firsting first, you made a cool linkage, but only you know what it is. Let’s add friendly names to joints, so the communication is simplified.</p>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Permalink to this heading"></a></h3>
+<p>First thing first, you made a cool linkage, but only you know what it is.
+Let’s add friendly names to joints, so the communication is simplified.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">crank</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
 <span class="n">pin</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
 <span class="c1"># Linkage can also have names</span>
@@ -301,13 +266,15 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
 <p>Last recap, rearranging names:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main motor</span>
 <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
 <span class="c1"># Close the loop</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-               <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Pivot</span><span class="p">(</span>
+    <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+<span class="p">)</span>
 
 <span class="c1"># Linkage definition</span>
 <span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
@@ -320,20 +287,22 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="optimization">
-<h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h3>
-<p>Now, we want automatic optimization of our linkage, using a certain criterion. Let’s find a four-bar linkage that make a quarter of a circle. It is a common problem if you want to build a <a class="reference external" href="https://en.wikipedia.org/wiki/Windscreen_wiper">windscreen wiper</a> for instance.</p>
+</section>
+<section id="optimization">
+<h3>Optimization<a class="headerlink" href="#optimization" title="Permalink to this heading"></a></h3>
+<p>Now, we want automatic optimization of our linkage, using a certain criterion.
+Let’s find a four-bar linkage that makes a quarter of a circle.
+It is a common problem if you want to build a <a class="reference external" href="https://en.wikipedia.org/wiki/Windscreen_wiper">windshield wiper</a> for instance.</p>
 <p>Our objective function, often called the fitness function, is the following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We save initial position because we don&#39;t want a completely different movement</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We save the initial positions because we don&#39;t want a completely different movement</span>
 <span class="n">init_pos</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
 
 <span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimizastion</span>
 <span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return how fit the locus is to describe a quarter of circle.</span>
 
-<span class="sd">    It is a minisation problem and the theorical best score is 0.</span>
+<span class="sd">    It is a minimization problem and the theoretic best score is 0.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Locus of the Joint &#39;pin&quot;, mast in linkage order</span>
     <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
@@ -341,14 +310,14 @@ Why do we specify initial coordinates <code class="docutils literal notranslate"
     <span class="n">curr_bb</span> <span class="o">=</span> <span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)</span>
     <span class="c1"># We set the reference bounding box, in order (min_y, max_x, max_y, min_x)</span>
     <span class="n">ref_bb</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="c1"># Our score is the square sum of the edges distances</span>
+    <span class="c1"># Our score is the square sum of the edge distances</span>
     <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">pos</span> <span class="o">-</span> <span class="n">ref_pos</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref_pos</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">curr_bb</span><span class="p">,</span> <span class="n">ref_bb</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>Please not that it is a <em>minization</em> problem, with 0 as lower bound. On the
-first line you notice a decorator, wich play a great role:</p>
+<p>Please note that it is a <em>minimization</em> problem, with 0 as lower bound.
+On the first line, you notice a decorator; which plays a crucial role:</p>
 <ul class="simple">
-<li><p>The decarator arguments are (linkage, constraints), it can also receive <code class="docutils literal notranslate"><span class="pre">init_pos</span></code></p></li>
+<li><p>The decorator arguments are (linkage, constraints), it can also receive <code class="docutils literal notranslate"><span class="pre">init_pos</span></code></p></li>
 <li><p>It sets the linkage with the constraints.</p></li>
 <li><p>Then it verifies if the linkage can do a complete crank turn.</p>
 <ul>
@@ -358,8 +327,9 @@ first line you notice a decorator, wich play a great role:</p>
 </li>
 <li><p>The decorated function should return the score of this linkage.</p></li>
 </ul>
-<p>With this constraints, the best theoric score is 0.0.</p>
-<p>Let’s start with a candide optimization, the <a class="reference external" href="https://en.wikipedia.org/wiki/Trial_and_error">trial-and-error</a> method. Here it is a serial test of switches.</p>
+<p>With this constraint, the best theoretic score is 0.0.</p>
+<p>Let’s start with a candide optimization, the <a class="reference external" href="https://en.wikipedia.org/wiki/Trial_and_error">trial-and-error</a> method.
+Here it is a serial test of switches.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Exhaustive optimization as an example ONLY</span>
 <span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coord</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">trials_and_errors_optimization</span><span class="p">(</span>
     <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_func</span><span class="p">,</span>
@@ -370,19 +340,21 @@ first line you notice a decorator, wich play a great role:</p>
 <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Here the problem is simple enough, so that method takes only a few second and returns 0.05.</p>
-<p>However, with more complex linkages you need something more robust, and more efficient. Then we will use <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">particle swarm optimization</a>. Here are the principles:</p>
+<p>Here the problem is simple enough, so that method takes only a few seconds and returns 0.05.</p>
+<p>However, with more complex linkages, you need something more robust and more efficient.
+Then we will use <a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">particle swarm optimization</a>.
+Here are the principles:</p>
 <ul class="simple">
-<li><p>The parameters are the geometric constrints (the dimensions) of the linkage.</p></li>
-<li><p>A dimension set (a n-uplet) is called a <em>particule</em> or an <em>agent</em>. Think of it like a bee.</p></li>
-<li><p>The particles move in a n-vectorial space. That is, if we have n geometric constraints, the particules move in a n-D space.</p></li>
-<li><p>Together, the particules form the <em>swarm</em>.</p></li>
+<li><p>The parameters are the geometric constraints (the dimensions) of the linkage.</p></li>
+<li><p>A dimension set (an n-uplet) is called a <em>particle</em> or an <em>agent</em>. Think of it like a bee.</p></li>
+<li><p>The particles move in an n-vectorial space. That is, if we have n geometric constraints, the particles move in an n-D space.</p></li>
+<li><p>Together, the particles form the <em>swarm</em>.</p></li>
 <li><p>Each time they move, their score is evaluated by our fitness function.</p></li>
-<li><p>They know their best score, and know the current score of they neighbours.</p></li>
-<li><p>Together they will try find the extremum in the space. Here it is a minimum.</p></li>
+<li><p>They know their best score, and know the current score of their neighbor.</p></li>
+<li><p>Together they will try to find the extreme in the space. Here it is a minimum.</p></li>
 </ul>
 <p>It is particularly relevant when the fitness function is not resource-greedy.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We reinitialize the linkage (an optimal linkage is not interesting)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># We reset the linkage (an optimal linkage is not interesting)</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
 <span class="c1"># As we do for initial positions</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
@@ -400,59 +372,76 @@ first line you notice a decorator, wich play a great role:</p>
 </div>
 <p>Here the result can vary, but it is rarely above 0.2.</p>
 <p>So we made something that says it works, let’s verify it:</p>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/master/docs/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
-<p>With a bit of imagination you have a wonderful windscreen wiper!</p>
-</div>
-</div>
-</div>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
+<p>With a bit of imagination, you have a wonderful windshield wiper!</p>
+</section>
+</section>
+<section id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this heading"></a></h2>
+<p>As of today, we segment the code in main three parts:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py">linkage.py</a> this module describes joints and linkages</p>
+<ul>
+<li><p>Due to the geometric approach, joints (instances of <code class="docutils literal notranslate"><span class="pre">Joint</span></code> object) are defined without links.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> class that will make your code shorter.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/optimizer.py">optimizer.py</a> proposes three optimizations based on three techniques:</p>
+<ul>
+<li><p>The “exhaustive” optimization (<code class="docutils literal notranslate"><span class="pre">exhaustive_optimization</span></code> function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.</p></li>
+<li><p>The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.</p></li>
+<li><p>PSO using <a class="reference external" href="https://github.com/ljvmiranda921/pyswarms">PySwarms</a>. We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/visualizer.py">visualizer.py</a> can make graphic illustrations of your linkage using matplotlib.</p>
+<ul>
+<li><p>It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<p>Python 3, numpy for calculation, matplotlib for drawing, and standard libraries.
+You will also need PySwarms for the Particle Swarm Optimization.</p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading"></a></h2>
+<p><strong>Pylinkage is open to contribution</strong>.
+I may consider any pull request, but I ask you to respect the <a class="reference external" href="CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a>
+and follow the guidelines as defined in <a class="reference external" href="CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="changeloglink.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pylinkage’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to pylinkage’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="changeloglink.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2021, Hugo Farajallah
-
-    </p>
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
