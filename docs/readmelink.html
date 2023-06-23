@@ -132,7 +132,7 @@ Use <code class="docutils literal notranslate"><span class="pre">conda</span> <s
 <section id="short-demo">
 <h2>Short demo<a class="headerlink" href="#short-demo" title="Permalink to this heading"></a></h2>
 <p>Let’s start with a short demo of the package’s capabilities.</p>
-<p>It is highly Pythonning and emphasizes efficient code. Here is the definition of a <strong>four-bar linkage</strong>.</p>
+<p>It is highly Pythonic and emphasizes efficient code. Here is the definition of a <strong>four-bar linkage</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pylinkage</span> <span class="k">as</span> <span class="nn">pl</span>
 
 <span class="c1"># Main motor</span>
@@ -150,7 +150,7 @@ Use <code class="docutils literal notranslate"><span class="pre">conda</span> <s
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
 <p>Cool, isn’t it? But the package doesn’t stop here as it provides a library <strong>to achieve any movement</strong>.</p>
 <p>Let’s say that you want the <code class="docutils literal notranslate"><span class="pre">pin</span></code> joint to stay in top-right corner, with an amplitude of [0, 90] exactly.
 You can solve it by yourself, you can ask the code to do it for you.</p>
@@ -175,7 +175,7 @@ when the <code class="docutils literal notranslate"><span class="pre">pin</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif" /></a>
 <p>Tadaaa!
 We defined a mechanism, solved an issue and viewed the result in a few lines of code!
 And remember, you can define any objective function, so let’s give it a try!</p>
@@ -266,7 +266,7 @@ Let’s add friendly names to joints, so the communication is simplified.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif"><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif" /></a>
 <p>Last recap, rearranging names:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main motor</span>
 <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
@@ -372,7 +372,7 @@ Here are the principles:</p>
 </div>
 <p>Here the result can vary, but it is rarely above 0.2.</p>
 <p>So we made something that says it works, let’s verify it:</p>
-<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/examples/images/Kinematic%20Windscreen%20wiper.gif" /></a>
+<a class="reference external image-reference" href="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif"><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif" /></a>
 <p>With a bit of imagination, you have a wonderful windshield wiper!</p>
 </section>
 </section>
