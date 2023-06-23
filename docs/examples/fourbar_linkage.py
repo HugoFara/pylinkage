@@ -10,39 +10,39 @@ Created on Sat Jun 19, 12:32:37 2021.
 
 @author: HugoFara
 """
-
-import numpy as np
-
 import pylinkage as pl
 
-# Main motor
-crank = pl.Crank(
-    0, 1,
-    joint0=(0, 0),  # Fixed to a single point in space
-    angle=0.31, distance=1,
-    name="B"
-)
-# Close the loop
-pin = pl.Pivot(
-    3, 2,
-    joint0=crank, joint1=(3, 0),
-    distance0=3, distance1=1, name="C"
-)
 
-# Linkage definition
-my_linkage = pl.Linkage(
-    joints=(crank, pin),
-    order=(crank, pin),
-    name="My four-bar linkage"
-)
+def define_linkage():
+    """
+    Define a simple four-bar linkage.
 
-# Visualization
-pl.show_linkage(my_linkage)
+    Returns
+    -------
+    Linkage
+        A demo four-bar linkage.
+    """
+    # Main motor
+    crank = pl.Crank(
+        0, 1,
+        joint0=(0, 0),  # Fixed to a single point in space
+        angle=0.31, distance=1,
+        name="B"
+    )
+    # Close the loop
+    pin = pl.Pivot(
+        3, 2,
+        joint0=crank, joint1=(3, 0),
+        distance0=3, distance1=1, name="C"
+    )
 
-# Optimization part
-
-# We save the initial position because we don't want a completely different movement
-init_pos = my_linkage.get_coords()
+    # Linkage definition
+    my_linkage = pl.Linkage(
+        joints=(crank, pin),
+        order=(crank, pin),
+        name="My four-bar linkage"
+    )
+    return my_linkage
 
 
 @pl.kinematic_minimization
@@ -68,43 +68,63 @@ def quadrant_fitness(loci, **kwargs):
     return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
 
 
-constraints = tuple(my_linkage.get_num_constraints())
+def main():
+    """
+    Define and optimize a demo linkage.
 
-print(
-    "Score before optimization:",
-    quadrant_fitness(my_linkage, constraints, init_pos)
-)
+    Returns
+    -------
+    None
+    """
+    my_linkage = define_linkage()
+    # Visualization
+    pl.show_linkage(my_linkage)
 
-# Trials and errors optimization as an example ONLY
-score, position, coord = pl.trials_and_errors_optimization(
-    eval_func=quadrant_fitness,
-    linkage=my_linkage,
-    divisions=25,
-    order_relation=min,
-)[0]
+    # Optimization part
 
-print("Score after trials and errors optimization", score)
+    # We save the initial position because we don't want a completely different movement
+    init_pos = my_linkage.get_coords()
 
-# We reinitialize the linkage (an optimal linkage is not interesting)
-my_linkage.set_num_constraints(constraints)
-# As we do for initial positions
-my_linkage.set_coords(init_pos)
+    constraints = tuple(my_linkage.get_num_constraints())
+
+    print(
+        "Score before optimization:",
+        quadrant_fitness(my_linkage, constraints, init_pos)
+    )
+
+    # Trials and errors optimization as an example ONLY
+
+    score, position, coord = pl.trials_and_errors_optimization(
+        eval_func=quadrant_fitness,
+        linkage=my_linkage,
+        divisions=25,
+        order_relation=min,
+    )[0]
+
+    print("Score after trials and errors optimization", score)
+    # We reinitialize the linkage (an optimal linkage is not interesting)
+    my_linkage.set_num_constraints(constraints)
+    # As we do for initial positions
+    my_linkage.set_coords(init_pos)
+
+    # Particle Swarm Optimization
+
+    # Optimization is more efficient with a start space
+    bounds = pl.generate_bounds(my_linkage.get_num_constraints())
+
+    score, position, _coord = pl.particle_swarm_optimization(
+        eval_func=quadrant_fitness,
+        linkage=my_linkage,
+        bounds=bounds,
+        order_relation=min,
+    )[0]
+
+    print("Score after particle swarm optimization:", score)
+
+    # Visualization of the optimized linkage
+    my_linkage.set_num_constraints(position)
+    pl.show_linkage(my_linkage)
 
 
-# Particle Swarm Optimization
-
-# Optimization is more efficient with a start space
-bounds = pl.generate_bounds(my_linkage.get_num_constraints())
-
-score, _position, _coord = pl.particle_swarm_optimization(
-    eval_func=quadrant_fitness,
-    linkage=my_linkage,
-    bounds=bounds,
-    order_relation=min,
-)[0]
-
-print("Score after particle swarm optimization: {}".format(score))
-
-# Visualization of the optimized linkage
-my_linkage.set_num_constraints(position)
-pl.show_linkage(my_linkage)
+if __name__ == "__main__":
+    main()
