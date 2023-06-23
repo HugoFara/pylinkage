@@ -26,6 +26,7 @@ when they should only print a message (intended behavior).
 - Fixed many typos in documentation as well as in code.
 - The ``TestPSO.test_convergence`` is now faster on average, and when it fails in the first time, it launches a bigger 
 test.
+- Minor lintings in the demo file ``docs/example/fourbar_linkage.py``.
 
 ### Deprecated
 
