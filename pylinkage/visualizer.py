@@ -97,8 +97,10 @@ def plot_static_linkage(
     # Highlight for specific loci
     if locus_highlights:
         for locus in locus_highlights:
-            axis.scatter(tuple(coord[0] for coord in locus),
-                         tuple(coord[1] for coord in i))
+            axis.scatter(
+                tuple(coord[0] for coord in locus),
+                tuple(coord[1] for coord in locus)
+            )
 
     if show_legend:
         axis.set_title("Static representation")
@@ -300,8 +302,6 @@ def show_linkage(
     if save:
         writer = anim.FFMpegWriter(fps=fps, bitrate=3600)
         animation.save(f"Kinematic {linkage.name}.mp4", writer=writer)
-    # Save as global variable
-    ANIMATIONS.append(animation)
     return animation
 
 

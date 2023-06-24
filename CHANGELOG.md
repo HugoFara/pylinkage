@@ -15,6 +15,7 @@ based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.
 ### Fixed
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
+- Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
 
 ## [0.5.3] - 2023-06-23
 
