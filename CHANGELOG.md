@@ -21,6 +21,9 @@ based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.
   - ``repr_polar_swarm`` (in example scripts) changed to follow the new format.
   - ``swarm_tiled_repr`` takes (index, swarm) as input argument. swarm is (score, dim, pos) for each agent for this 
 iteration.
+- ``repr_polar_swarm`` reload frame only when a new buildable linkage is generated.
+  - This makes the display much faster.
+  - For each iteration, you may see linkages that do not exist anymore.
 
 ### Fixed
 

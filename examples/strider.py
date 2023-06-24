@@ -82,11 +82,8 @@ def param2dimensions(param=DIMENSIONS, flat=False):
     if not flat:
         return out
     flat_dims = []
-    for constraint in out:
-        if constraint == ():
-            flat_dims.append(0)
-        else:
-            flat_dims.extend(constraint)
+    for constraint in out[2:]:
+        flat_dims.extend(constraint)
     return tuple(flat_dims)
 
 
@@ -157,8 +154,7 @@ def sym_stride_evaluator(linkage, dims, pos):
     -------
 
     """
-    linkage.set_num_constraints(param2dimensions(dims), flat=False)
-    linkage.set_coords(pos)
+    linkage.set_completely(param2dimensions(dims, flat=True), pos)
     points = 12
     try:
         # Complete revolution with 12 points
@@ -323,7 +319,8 @@ def view_swarm_tiled(
         ),
         frames=enumerate(formatted_history),
         blit=False,
-        interval=500, repeat=False#, save_count=(iters - 1) * bool(save_each)
+        interval=1000, repeat=False,
+        save_count=(iters - 1) * bool(save_each)
     )
     plt.show(block=not save_each)
     if save_each:

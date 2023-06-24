@@ -350,7 +350,6 @@ def swarm_tiled_repr(
         else:
             linkage.set_num_constraints(dimension_func(dimensions))
         linkage.set_coords(agent[2])
-        axes.flatten()[i].clear()
         try:
             loci = tuple(
                 map(
@@ -363,4 +362,5 @@ def swarm_tiled_repr(
             )
         except UnbuildableError:
             continue
+        axes.flatten()[i].clear()
         plot_static_linkage(linkage, axes.flatten()[i], loci)
