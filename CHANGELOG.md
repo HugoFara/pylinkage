@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
-based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html)
+based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
+- ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
 
 ### Changed
 

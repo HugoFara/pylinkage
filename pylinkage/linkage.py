@@ -640,3 +640,23 @@ class Linkage:
                 freq = round(tau / abs(j.angle))
                 periods = periods * freq // gcd(periods, freq)
         return periods
+
+    def set_completely(self, dimensions, positions, flat=True):
+        """
+        Set both dimension and initial positions.
+
+        Parameters
+        ----------
+        dimensions : tuple of float or tuple of tuple of float
+            List of dimensions.
+        positions : tuple of float
+        flat : bool, optional
+            If the dimensions are in "flat mode".
+            The default is True.
+
+        Returns
+        -------
+
+        """
+        self.set_num_constraints(dimensions, flat=flat)
+        self.set_coords(positions)
