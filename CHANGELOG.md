@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
 based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
 - ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
+- ``collections.Agent`` and ``collections.MutableAgent`` are two new classes that should standardize the format of 
+optimization, related to in ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
+  - ``Agent`` is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.
+  - ``MutableAgent`` is mutable. It may be deprecated/removed if ``Agent`` is satisfactory.
 
 ### Changed
 
