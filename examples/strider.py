@@ -181,7 +181,7 @@ def history_saver(evaluator, history, linkage, dims, pos):
     return score
 
 
-def repr_polar_swarm(current_swarm, fig=None, lines=None, t=0):
+def repr_polar_swarm(current_swarm, lines=None):
     """
     Represent a swarm in a polar graph.
 
@@ -189,12 +189,8 @@ def repr_polar_swarm(current_swarm, fig=None, lines=None, t=0):
     ----------
     current_swarm : list[list[float]]
         List of dimensions + cost (concatenated).
-    fig : matplotlib.pyplot.Figure, optional
-        Figure to draw on. The default is None.
     lines : list[matplotlib.pyplot.Artist], optional
         Lines to be modified. The default is None.
-    t : int, optional
-        Frame index. The default is 0.
 
     Returns
     -------
@@ -202,9 +198,8 @@ def repr_polar_swarm(current_swarm, fig=None, lines=None, t=0):
         Lines with coordinates modified.
 
     """
-    best_cost = max(x[0] for x in current_swarm)
-    fig.suptitle(f"Best cost: {best_cost}")
-    for line, agent in zip(lines, current_swarm):
+    t = np.linspace(0, 2 * np.pi, len(current_swarm[1][0][1]) + 2)[:-1]
+    for line, agent in zip(lines, current_swarm[1]):
         line.set_data(t, agent[1] + [agent[0]])
     return lines
 
@@ -236,22 +231,23 @@ def view_swarm_polar(
         bounds=BOUNDS, dimensions=len(dims)
     )
 
-    fig = plt.figure("Swarm in polar graph")
+    fig = plt.figure(f"Swarm in polar graph")
+    fig.suptitle(f"Final best cost: {-out[0][0]:.2f}")
     ax = fig.add_subplot(111, projection='polar')
     lines = [ax.plot([], [], lw=.5, animated=False)[0] for i in range(age)]
-    t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
-    ax.set_xticks(t)
     ax.set_rmax(7)
     ax.set_xticklabels(DIM_NAMES + ("score",))
+    t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
+    ax.set_xticks(t)
     formatted_history = [
         history[i:i + age] for i in range(0, len(history), age)
     ]
     animation = anim.FuncAnimation(
         fig,
         func=repr_polar_swarm,
-        frames=formatted_history,
-        fargs=(fig, lines, t), blit=True,
-        interval=10, repeat=True,
+        frames=enumerate(formatted_history),
+        fargs=(lines, ), blit=True,
+        interval=400, repeat=True,
         save_count=(iters - 1) * bool(save_each)
     )
     plt.show()
@@ -390,12 +386,10 @@ def swarm_optimizer(
         for dim, i in pl.particle_swarm_optimization(
             sym_stride_evaluator,
             linkage,
-            dims,
-            age,
-            iters=iters,
-            bounds=BOUNDS,
             dimensions=len(dims),
-            # *args
+            n_particles=age,
+            iters=iters,
+            bounds=BOUNDS
         ):
             if not i % save_each:
                 f = open('PSO optimizer.txt', 'w')
