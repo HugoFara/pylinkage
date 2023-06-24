@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
 based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html)
 
+### Changed
+
+- Changes to the "history" style.
+  - It is no longer a global variable in example scripts.
+  - It was in format iterations[dimensions, score], now it is a standard iterations[score, dimensions, initial pos].
+  - ``repr_polar_swarm`` (in example scripts) changed to follow the new format.
+  - ``swarm_tiled_repr`` takes (index, swarm) as input argument. swarm is (score, dim, pos) for each agent for this 
+iteration.
+
 ### Fixed
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.

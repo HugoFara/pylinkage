@@ -143,10 +143,6 @@ def complete_strider(constraints, prev):
     return strider
 
 
-# Ugly way to save (position + cost) history
-history = []
-
-
 def sym_stride_evaluator(linkage, dims, pos):
     """
     Give score to each dimension set for symmetric strider.
@@ -176,12 +172,16 @@ def sym_stride_evaluator(linkage, dims, pos):
         )
     except pl.UnbuildableError:
         return 0
-    history.append(list(dims) + [0])
     foot_locus = tuple(x[-2] for x in loci)
     # Constraints check
     # Performances evaluation
     score = max(k[0] for k in foot_locus) - min(k[0] for k in foot_locus)
-    history[-1][-1] = score
+    return score
+
+
+def history_saver(evaluator, history, linkage, dims, pos):
+    score = evaluator(linkage, dims, pos)
+    history.append((score, list(dims), pos))
     return score
 
 
@@ -206,10 +206,10 @@ def repr_polar_swarm(current_swarm, fig=None, lines=None, t=0):
         Lines with coordinates modified.
 
     """
-    best_cost = max(x[-1] for x in current_swarm)
+    best_cost = max(x[0] for x in current_swarm)
     fig.suptitle(f"Best cost: {best_cost}")
-    for line, dimension_set in zip(lines, current_swarm):
-        line.set_data(t, dimension_set)
+    for line, agent in zip(lines, current_swarm):
+        line.set_data(t, agent[1] + [agent[0]])
     return lines
 
 
@@ -232,8 +232,10 @@ def view_swarm_polar(
     -------
 
     """
+    history = []
     out = pl.particle_swarm_optimization(
-        sym_stride_evaluator, linkage,
+        lambda *x: history_saver(sym_stride_evaluator, history, *x),
+        linkage,
         center=dims, n_particles=age, iters=iters,
         bounds=BOUNDS, dimensions=len(dims)
     )
@@ -293,8 +295,11 @@ def view_swarm_tiled(
     -------
 
     """
+    history = []
+
     out = pl.particle_swarm_optimization(
-        sym_stride_evaluator, linkage,
+        lambda *x: history_saver(sym_stride_evaluator, history, *x),
+        linkage,
         center=dims, n_particles=age, iters=iters,
         bounds=BOUNDS, dimensions=len(dims)
     )
@@ -303,10 +308,9 @@ def view_swarm_tiled(
     cells = int(np.ceil(np.sqrt(age)))
     axes = fig.subplots(cells, cells)
     formatted_history = [
-        [
-            (0, dim, INIT_COORD) for dim in history[i:i + age][:-1]
-        ] for i in range(0, len(history), age)
+        history[i:i + age] for i in range(0, len(history), age)
     ]
+
 
     animation = anim.FuncAnimation(
         fig,
@@ -317,9 +321,9 @@ def view_swarm_tiled(
             axes=axes,
             dimension_func=lambda dim: param2dimensions(dim, flat=True)
         ),
-        frames=formatted_history,
+        frames=enumerate(formatted_history),
         blit=False,
-        interval=40, repeat=False, save_count=(iters - 1) * bool(save_each)
+        interval=500, repeat=False#, save_count=(iters - 1) * bool(save_each)
     )
     plt.show(block=not save_each)
     if save_each:

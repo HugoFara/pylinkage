@@ -342,8 +342,8 @@ def swarm_tiled_repr(
     None.
 
     """
-    # fig.suptitle("Iteration: {}, agents: {}".format(swarm[1], len(agents)))
-    for i, agent in enumerate(swarm):
+    fig.suptitle("Iteration: {}, best score: {}".format(swarm[0], max(agent[0] for agent in swarm[1])))
+    for i, agent in enumerate(swarm[1]):
         dimensions = agent[1]
         if dimension_func is None:
             linkage.set_num_constraints(dimensions)
