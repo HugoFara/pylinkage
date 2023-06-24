@@ -181,28 +181,6 @@ def history_saver(evaluator, history, linkage, dims, pos):
     return score
 
 
-def repr_polar_swarm(current_swarm, lines=None):
-    """
-    Represent a swarm in a polar graph.
-
-    Parameters
-    ----------
-    current_swarm : list[list[float]]
-        List of dimensions + cost (concatenated).
-    lines : list[matplotlib.pyplot.Artist], optional
-        Lines to be modified. The default is None.
-
-    Returns
-    -------
-    lines : list[matplotlib.pyplot.Artist]
-        Lines with coordinates modified.
-
-    """
-    t = np.linspace(0, 2 * np.pi, len(current_swarm[1][0][1]) + 2)[:-1]
-    for line, agent in zip(lines, current_swarm[1]):
-        line.set_data(t, agent[1] + [agent[0]])
-    return lines
-
 
 def view_swarm_polar(
     linkage, dims=DIMENSIONS, save_each=0, age=300,
@@ -232,21 +210,43 @@ def view_swarm_polar(
     )
 
     fig = plt.figure(f"Swarm in polar graph")
-    fig.suptitle(f"Final best cost: {-out[0][0]:.2f}")
-    ax = fig.add_subplot(111, projection='polar')
-    lines = [ax.plot([], [], lw=.5, animated=False)[0] for i in range(age)]
-    ax.set_rmax(7)
-    ax.set_xticklabels(DIM_NAMES + ("score",))
-    t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
-    ax.set_xticks(t)
+    fig.suptitle(f"Final best score: {-out[0][0]:.2f}")
     formatted_history = [
         history[i:i + age] for i in range(0, len(history), age)
     ]
+    artists = []
+
+    def init_polar_repr():
+        ax = fig.add_subplot(111, projection='polar')
+        artists.extend(
+            [ax.plot([], [], lw=.5, animated=False)[0] for _ in range(age)]
+        )
+        ax.set_rmax(7)
+        ax.set_xticklabels(DIM_NAMES + ("score",))
+        t = np.linspace(0, 2 * np.pi, len(dims) + 2)[:-1]
+        ax.set_xticks(t)
+        text = ax.text(1.9 * np.pi, 2, "", animated=True)
+        artists.append(text)
+        return artists
+
+    def repr_polar_swarm(current_swarm):
+        """Represent a swarm in a polar graph."""
+        t = np.linspace(0, 2 * np.pi, len(current_swarm[1][0][1]) + 2)[:-1]
+        for line, agent in zip(artists, current_swarm[1]):
+            line.set_data(t, agent[1] + [agent[0]])
+        artists[-1].set_text(
+            f"Best score: {max(x[0] for x in current_swarm[1]):.2f}"
+            f"\nIteration: {current_swarm[0]}"
+        )
+
+        return artists
+
     animation = anim.FuncAnimation(
         fig,
         func=repr_polar_swarm,
         frames=enumerate(formatted_history),
-        fargs=(lines, ), blit=True,
+        init_func=init_polar_repr,
+        blit=True,
         interval=400, repeat=True,
         save_count=(iters - 1) * bool(save_each)
     )
