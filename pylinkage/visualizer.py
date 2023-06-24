@@ -322,8 +322,8 @@ def swarm_tiled_repr(
     linkage : pylinkage.linkage.Linkage
         The original Linkage that will be MODIFIED.
     swarm : list
-        Sequence of 3 elements: agents, interation number and initial
-        positions.
+        Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
+        positions).
     fig : matplotlib.figure.Figure
         Figure to support the axes.
     axes : matplotlib.axes._subplots.AxesSubplot
@@ -349,6 +349,7 @@ def swarm_tiled_repr(
             linkage.set_num_constraints(dimensions)
         else:
             linkage.set_num_constraints(dimension_func(dimensions))
+        linkage.set_coords(agent[2])
         axes.flatten()[i].clear()
         try:
             loci = tuple(

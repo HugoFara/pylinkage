@@ -332,17 +332,16 @@ def particle_swarm_optimization(
     )
     # vectorized_eval_func=np.vectorize(eval_func, signature='(n),(m,k)->()')
 
-    def eval_wrapper(dims, pos):
+    def eval_wrapper(dims):
         """Wrapper for the evaluation function since PySwarms is too rigid."""
         if order_relation is max:
-            return [-eval_func(linkage, d, pos) for d in dims]
+            return [-eval_func(linkage, d, joint_pos) for d in dims]
         elif order_relation is min:
-            return [eval_func(linkage, d, pos) for d in dims]
+            return [eval_func(linkage, d, joint_pos) for d in dims]
 
     score, constraints = optimizer.optimize(
-        # vectorized_eval_func,
         eval_wrapper,
-        iters, pos=joint_pos,
-        verbose=verbose,
+        iters,
+        verbose=verbose
     )
     return [(score, constraints, joint_pos)]

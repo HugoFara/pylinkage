@@ -4,7 +4,6 @@ Kinematic Strider linkage, a type of walking linkage.
 The original linkage can be found at https://www.diywalkers.com/strider-linkage-plans.html
 """
 
-from functools import partial
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import numpy as np
@@ -218,6 +217,21 @@ def view_swarm_polar(
     linkage, dims=DIMENSIONS, save_each=0, age=300,
     iters=400
 ):
+    """
+    Draw an animation of the swarm in a polar graph.
+
+    Parameters
+    ----------
+    linkage : Linkage
+    dims : Sized
+    save_each : int | None
+    age : int
+    iters : int
+
+    Returns
+    -------
+
+    """
     out = pl.particle_swarm_optimization(
         sym_stride_evaluator, linkage,
         center=dims, n_particles=age, iters=iters,
@@ -264,6 +278,21 @@ def view_swarm_tiled(
     linkage, dims=DIMENSIONS, save_each=0, age=300,
     iters=400
 ):
+    """
+    Represent the final state of the best linkages. Currently broken.
+
+    Parameters
+    ----------
+    linkage : Linkage
+    dims : Sized
+    save_each : int | None
+    age : int
+    iters : int
+
+    Returns
+    -------
+
+    """
     out = pl.particle_swarm_optimization(
         sym_stride_evaluator, linkage,
         center=dims, n_particles=age, iters=iters,
@@ -274,18 +303,22 @@ def view_swarm_tiled(
     cells = int(np.ceil(np.sqrt(age)))
     axes = fig.subplots(cells, cells)
     formatted_history = [
-        history[i:i + age][:-1] for i in range(0, len(history), age)
+        [
+            (0, dim, INIT_COORD) for dim in history[i:i + age][:-1]
+        ] for i in range(0, len(history), age)
     ]
+
     animation = anim.FuncAnimation(
         fig,
-        lambda i: pl.swarm_tiled_repr(
+        lambda frame: pl.swarm_tiled_repr(
             linkage=linkage,
-            swarm=out,
+            swarm=frame,
             fig=fig,
             axes=axes,
             dimension_func=lambda dim: param2dimensions(dim, flat=True)
         ),
-        formatted_history, blit=False,
+        frames=formatted_history,
+        blit=False,
         interval=40, repeat=False, save_count=(iters - 1) * bool(save_each)
     )
     plt.show(block=not save_each)
