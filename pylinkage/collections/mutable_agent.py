@@ -13,6 +13,11 @@ class MutableAgent:
         self.dimensions = dimensions
         self.init_positions = init_position
 
+    def __iter__(self):
+        yield self.score
+        yield self.dimensions
+        yield self.init_positions
+
     def __setitem__(self, key, value):
         """
         Allow index assignment.
@@ -24,6 +29,9 @@ class MutableAgent:
             self.dimensions = value
         elif key == 2:
             self.init_positions = value
+        elif isinstance(key, slice):
+            for i, val in zip([0, 1, 2][key], value):
+                self[i] = val
         else:
             raise IndexError()
 
@@ -38,6 +46,8 @@ class MutableAgent:
             return self.dimensions
         if key == 2:
             return self.init_positions
+        if isinstance(key, slice):
+            return list(self)[key]
         raise IndexError()
 
     def __repr__(self):
