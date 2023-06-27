@@ -20,6 +20,10 @@ optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
 
 ### Changed
 
+- Optimization return type changed ([#5](https://github.com/HugoFara/pylinkage/issues/5)):
+  - ``trials_and_error_optimization`` return an array of ``MutableAgent``.
+  - ``particle_swarm_optimization`` return an array of one ``Agent``.
+  - It should not be a breaking change for most users.
 - Changes to the "history" style.
   - It is no longer a global variable in example scripts.
   - It was in format iterations[dimensions, score], now it is a standard iterations[score, dimensions, initial pos].
@@ -48,7 +52,7 @@ iteration.
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
 
-## Deprecated
+### Deprecated
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
 
@@ -77,7 +81,7 @@ when they should only print a message (intended behavior).
 - Fixed many typos in documentation as well as in code.
 - The ``TestPSO.test_convergence`` is now faster on average, and when it fails in the first time, it launches a bigger 
 test.
-- Minor lintings in the demo file ``docs/example/fourbar_linkage.py``.
+- Minor linting in the demo file ``docs/example/fourbar_linkage.py``.
 
 ### Deprecated in 0.5.3
 

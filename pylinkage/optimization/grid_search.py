@@ -9,6 +9,7 @@ import itertools
 import numpy as np
 import tqdm
 from .utils import generate_bounds
+from ..collections import MutableAgent
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
@@ -44,13 +45,13 @@ def sequential_variator(center, divisions, bounds):
     bounds : tuple[tuple[float], tuple[float]]
         2-uple of minimal then maximal bounds.
 
-    Returns
-    -------
-    generator
+    Yields
+    ------
+    float
         Each element is the list of floats with little variations.
 
     """
-    # In the first place w go decreasing order to lower bound
+    # In the first place, we go in decreasing order to lower bound
     fall = np.linspace(center, bounds[0], int(divisions / 2))
     # We only look at one index over 2
     for dim in fall[::2]:
@@ -84,9 +85,9 @@ def fast_variator(divisions, bounds):
     bounds : tuple[tuple[float], tuple[float]]
         2-uple of minimal then maximal bounds.
 
-    Returns
-    -------
-    generator
+    Yields
+    ------
+    float
         An iterable of all the dimension combinations.
 
     See Also
@@ -151,7 +152,7 @@ def trials_and_errors_optimization(
 
     Returns
     -------
-    results : tuple[tuple[float, tuple[float], tuple[tuple[float]]]]
+    results : list of MutableAgent
         3-uplet of score, dimensions and initial position for each Linkage to
         return. Its size is {n_results}.
 
@@ -167,7 +168,7 @@ def trials_and_errors_optimization(
 
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
-    results = [[None, [], []] for _ in range(n_results)]
+    results = [MutableAgent() for _ in range(n_results)]
     prev = [i.coord() for i in linkage.joints]
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
@@ -177,41 +178,35 @@ def trials_and_errors_optimization(
         "best dimensions": []
     }
     if 'sequential' in kwargs and kwargs['sequential']:
-        variator = sequential_variator(center, divisions, bounds)
+        variations_generator = sequential_variator(center, divisions, bounds)
     else:
-        variator = fast_variator(divisions, bounds)
+        variations_generator = fast_variator(divisions, bounds)
     if 'order_relation' in kwargs:
         order_relation = kwargs['order_relation']
     else:
         order_relation = max
     verbose = 'verbose' in kwargs and kwargs['verbose']
     # Iterable of all possible dimensions
-    variations = tqdm.tqdm(
-        variator,
+    pbar = tqdm.tqdm(
+        variations_generator,
         desc='Trials and errors optimization',
         total=divisions ** len(center),
         postfix=postfix,
         disable=not verbose
     )
-    for dim in variations:
+    for dim in pbar:
         # Check performances
-        score = eval_func(linkage, dim, prev)
-        for r in results:
-            if r[0] is None or order_relation(r[0], score) != r[0]:
-                r[0] = score
-                r[1] = dim.copy()
-                r[2] = prev.copy()
+        new_score = eval_func(linkage, dim, prev)
+        for result in results:
+            if result.score is None or order_relation(result.score, new_score) != result.score:
+                result[:] = new_score, dim.copy(), prev.copy()
                 if verbose:
                     postfix.update({
                         "best score": results[0][0],
                         "best dimensions": results[0][1]
                     })
-                    variations.set_postfix(postfix)
+                    pbar.set_postfix(postfix)
                 break
-        if score and False:
-            # Save initial positions if score not null, for further
-            # computations
-            prev = [k.coord() for k in linkage.joints]
     if verbose:
         print(
             "Trials and errors optimization finished. "

@@ -5,8 +5,8 @@ Created on Fri Mar 8, 13:51:45 2019.
 
 @author: HugoFara
 """
-# Particle swarm optimization
 from pyswarms.single.local_best import LocalBestPSO
+from ..collections import Agent
 
 
 def particle_swarm_optimization(
@@ -109,4 +109,4 @@ def particle_swarm_optimization(
         iters,
         verbose=verbose
     )
-    return [(score, constraints, joint_pos)]
+    return [Agent(score, constraints, joint_pos)]
