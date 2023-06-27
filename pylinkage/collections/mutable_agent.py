@@ -1,4 +1,4 @@
-class MutableAgent(list):
+class MutableAgent:
     """
     A custom class that is mutable, subscriptable, and supports index assignment.
 
@@ -9,7 +9,6 @@ class MutableAgent(list):
     init_positions: tuple
 
     def __init__(self, score=None, dimensions=None, init_position=None):
-        super().__init__((score, dimensions, init_position))
         self.score = score
         self.dimensions = dimensions
         self.init_positions = init_position
@@ -32,15 +31,14 @@ class MutableAgent(list):
         """
         Allow subscripting.
         """
-        if isinstance(key, int):
-            # If the key is an integer, treat it as an index.
-            if key == 0:
-                return self.score
-            if key == 1:
-                return self.dimensions
-            if key == 2:
-                return self.init_positions
-            raise IndexError()
+        # If the key is an integer, treat it as an index.
+        if key == 0:
+            return self.score
+        if key == 1:
+            return self.dimensions
+        if key == 2:
+            return self.init_positions
+        raise IndexError()
 
     def __repr__(self):
         return f"Agent(score={self.score}, dimensions={self.dimensions}, init_positions={self.init_positions})"
