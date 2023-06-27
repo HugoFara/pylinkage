@@ -1,11 +1,10 @@
 """
 Classes that represent the main interface with the library.
 """
-
-from .linkage import (
+from .joint import (
     Static,
     Pivot,
     Crank,
-    Fixed,
-    Linkage,
+    Fixed
 )
+from .linkage import Linkage

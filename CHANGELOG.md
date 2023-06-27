@@ -28,7 +28,11 @@ iteration.
 - ``repr_polar_swarm`` reload frame only when a new buildable linkage is generated.
   - This makes the display much faster.
   - For each iteration, you may see linkages that do not exist anymore.
-- Folders reorganization: ``pylinkage/linkage.py`` goes to ``pylinkage/interface/linkage.py``.
+- Folders reorganization: 
+  - ``pylinkage/linkage.py`` goes to ``pylinkage/interface/``.
+    - Joints definition are in ``pylinkage/interface/joint.py``.
+    - Linkage definition is in ``pylinkage/interface/linkage.py``.
+  - From the user perspective, no change (execution *may* be a bit faster)
 
 ### Fixed
 
