@@ -1,4 +1,9 @@
-"""Implementation of a grid search optimization for reference only."""
+"""
+Implementation of a grid search optimization.
+
+It should be used for reference only as the search space
+will almost certainly be too big.
+"""
 import math
 import itertools
 import numpy as np
@@ -37,7 +42,7 @@ def sequential_variator(center, divisions, bounds):
         Elements that should vary.
     divisions : int
         Number of subdivisions between `bounds`.
-    bounds : tuple[tuple[float]]
+    bounds : tuple[tuple[float], tuple[float]]
         2-uple of minimal then maximal bounds.
 
     Returns
@@ -67,7 +72,7 @@ def sequential_variator(center, divisions, bounds):
 
 def fast_variator(divisions, bounds):
     """
-    Return an iterable of all possibles variations of elements.
+    Return an iterable of elements' all possibles variations.
 
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
 
@@ -77,7 +82,7 @@ def fast_variator(divisions, bounds):
     ----------
     divisions : int
         Number of subdivisions between `bounds`.
-    bounds : tuple[tuple[float]]
+    bounds : tuple[tuple[float], tuple[float]]
         2-uple of minimal then maximal bounds.
 
     Returns
@@ -205,8 +210,6 @@ def trials_and_errors_optimization(
     if verbose:
         print(
             "Trials and errors optimization finished. "
-            "Best score: {}, best dimensions: {}".format(
-                *results[0][:2]
-            )
+            f"Best score: {results[0][0]}, best dimensions: {results[0][1]}"
         )
     return results

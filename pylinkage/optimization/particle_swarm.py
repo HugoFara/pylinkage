@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-The optimizer module proposing different optimization algorithms.
-
-The output of these functions is generally dimensions of linkages.
+Implementation of a particle swarm optimization.
 
 Created on Fri Mar 8, 13:51:45 2019.
 
