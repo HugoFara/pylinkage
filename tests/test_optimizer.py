@@ -2,7 +2,6 @@ import unittest
 import numpy as np
 
 import pylinkage as pl
-from pylinkage import optimizer as opti
 from pylinkage import optimization
 from pylinkage.optimization.grid_search import fast_variator, sequential_variator
 from pylinkage.utility import kinematic_minimization
@@ -113,14 +112,14 @@ class TestPSO(unittest.TestCase):
             "order_relation": min,
             "verbose": False
         }
-        score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
+        score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         if score > delta:
             # Try again with more agents
             opti_kwargs.update({
                 "n_particles": 50,
                 "iters": 100,
             })
-            score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
+            score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         # Do not apply optimization problems
         self.assertAlmostEqual(score, 0.0, delta=delta)
 

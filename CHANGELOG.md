@@ -38,6 +38,7 @@ iteration.
   - New package ``pylinkage/optimization/`` 
     - ``pylinkage/optimizer.py`` split and inserted in.
     - Trials-and-errors related functions goes to ``grid_search.py``.
+    - Particle swarm optimization is at ``particle_swarm.py``.
     - New file ``utils.py`` for ``generate_bounds``.
   - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)

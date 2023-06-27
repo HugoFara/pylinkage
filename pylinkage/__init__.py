@@ -30,10 +30,10 @@ from .interface import (
     Fixed,
     Linkage
 )
-from .optimizer import particle_swarm_optimization
 from .optimization import (
     generate_bounds,
-    trials_and_errors_optimization
+    trials_and_errors_optimization,
+    particle_swarm_optimization
 )
 from .utility import (
     kinematic_default_test,
