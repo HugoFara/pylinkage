@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from pylinkage.geometry import bounding_box
 
-from .exceptions import UnbuildableError
-from .linkage import Crank, Fixed, Static, Pivot
+from .interface.exceptions import UnbuildableError
+from .interface import Crank, Fixed, Static, Pivot
 
 # List of animations
 ANIMATIONS = []

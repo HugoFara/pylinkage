@@ -21,17 +21,19 @@ from .geometry import (
     intersection,
     bounding_box,
 )
-from .linkage import (
+from .interface import (
+    UnbuildableError,
+    HypostaticError,
     Static,
     Pivot,
     Crank,
     Fixed,
-    Linkage,
+    Linkage
 )
-from .optimizer import (
+from .optimization import (
     generate_bounds,
     trials_and_errors_optimization,
-    particle_swarm_optimization,
+    particle_swarm_optimization
 )
 from .utility import (
     kinematic_default_test,
@@ -43,10 +45,6 @@ from .visualizer import (
     plot_kinematic_linkage,
     show_linkage,
     swarm_tiled_repr,
-)
-from .exceptions import (
-    UnbuildableError,
-    HypostaticError
 )
 
 __version__ = "0.5.3"

@@ -1,8 +1,9 @@
 import unittest
 import numpy as np
 
-from pylinkage import linkage as pl
-from pylinkage import optimizer as opti
+import pylinkage as pl
+from pylinkage import optimization
+from pylinkage.optimization.grid_search import fast_variator, sequential_variator
 from pylinkage.utility import kinematic_minimization
 
 
@@ -41,7 +42,7 @@ class TestGenerateBounds(unittest.TestCase):
     def test_function(self):
         """Test is the function runs simply."""
         center = [1, 2, 3]
-        bounds = opti.generate_bounds(center=center, min_ratio=2, max_factor=2)
+        bounds = optimization.generate_bounds(center=center, min_ratio=2, max_factor=2)
         self.assertTrue(np.all(bounds[0] == [.5, 1, 1.5]))
         self.assertTrue(np.all(bounds[1] == [2, 4, 6]))
 
@@ -65,11 +66,11 @@ class TestVariator(unittest.TestCase):
         bounds = ([0], [3])
         for divisions in (1, 2, 3, 5, 6, 13, 30):
             length = sum(
-                1 for _ in opti.sequential_variator(sequence, divisions, bounds)
+                1 for _ in sequential_variator(sequence, divisions, bounds)
             )
             self.assertAlmostEqual(length, divisions, delta=1)
             length = sum(
-                1 for _ in opti.fast_variator(divisions, bounds)
+                1 for _ in fast_variator(divisions, bounds)
             )
             self.assertAlmostEqual(length, divisions)
 
@@ -79,8 +80,8 @@ class TestTrialsAndErrors(unittest.TestCase):
 
     def test_convergence(self):
         """Test if the output after some iterations is improved."""
-        bounds = opti.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
-        score, dimensions, coord = opti.trials_and_errors_optimization(
+        bounds = optimization.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
+        score, dimensions, coord = optimization.trials_and_errors_optimization(
             eval_func=fitness_func,
             linkage=self.linkage,
             divisions=10,
@@ -111,14 +112,14 @@ class TestPSO(unittest.TestCase):
             "order_relation": min,
             "verbose": False
         }
-        score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
+        score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         if score > delta:
             # Try again with more agents
             opti_kwargs.update({
                 "n_particles": 50,
                 "iters": 100,
             })
-            score, dimensions, coord = opti.particle_swarm_optimization(**opti_kwargs)[0]
+            score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         # Do not apply optimization problems
         self.assertAlmostEqual(score, 0.0, delta=delta)
 

@@ -12,9 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
 based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
 - ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
+- ``collections.Agent`` and ``collections.MutableAgent`` are two new classes that should standardize the format of 
+optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
+  - ``Agent`` is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.
+  - ``MutableAgent`` is mutable. It may be deprecated/removed if ``Agent`` is satisfactory.
+- Very basic tests cases for a Linkage.
 
 ### Changed
 
+- Optimization return type changed ([#5](https://github.com/HugoFara/pylinkage/issues/5)):
+  - ``trials_and_error_optimization`` return an array of ``MutableAgent``.
+  - ``particle_swarm_optimization`` return an array of one ``Agent``.
+  - It should not be a breaking change for most users.
 - Changes to the "history" style.
   - It is no longer a global variable in example scripts.
   - It was in format iterations[dimensions, score], now it is a standard iterations[score, dimensions, initial pos].
@@ -24,11 +33,28 @@ iteration.
 - ``repr_polar_swarm`` reload frame only when a new buildable linkage is generated.
   - This makes the display much faster.
   - For each iteration, you may see linkages that do not exist anymore.
+- Folders reorganization: 
+  - New package ``pylinkage/interface/``: 
+    - ``pylinkage/linkage.py`` separated and inserted in this package.
+      - Joints definition are in ``joint.py``.
+      - Linkage definition is in ``linkage.py``.
+    - ``pylinkage/exceptions.py`` go to ``interface/``.
+  - New package ``pylinkage/optimization/`` 
+    - ``pylinkage/optimizer.py`` split and inserted in.
+    - Trials-and-errors related functions goes to ``grid_search.py``.
+    - Particle swarm optimization is at ``particle_swarm.py``.
+    - New file ``utils.py`` for ``generate_bounds``.
+  - Tests follow the same renaming.
+  - From the user perspective, no change (execution *may* be a bit faster)
 
 ### Fixed
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
+
+### Deprecated
+
+- Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
 
 ## [0.5.3] - 2023-06-23
 
@@ -55,7 +81,7 @@ when they should only print a message (intended behavior).
 - Fixed many typos in documentation as well as in code.
 - The ``TestPSO.test_convergence`` is now faster on average, and when it fails in the first time, it launches a bigger 
 test.
-- Minor lintings in the demo file ``docs/example/fourbar_linkage.py``.
+- Minor linting in the demo file ``docs/example/fourbar_linkage.py``.
 
 ### Deprecated in 0.5.3
 
