@@ -9,7 +9,7 @@ Created on Fri Apr 16 17:19:47 2021
 import unittest
 from math import sqrt
 from pylinkage.exceptions import UnbuildableError
-from pylinkage.linkage import Pivot, Fixed
+from pylinkage.interface.joint import Pivot, Fixed
 
 
 class TestPivot(unittest.TestCase):
