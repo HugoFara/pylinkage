@@ -21,13 +21,7 @@ from .geometry import (
     intersection,
     bounding_box,
 )
-from .linkage import (
-    Static,
-    Pivot,
-    Crank,
-    Fixed,
-    Linkage,
-)
+from .interface import *
 from .optimizer import (
     generate_bounds,
     trials_and_errors_optimization,
