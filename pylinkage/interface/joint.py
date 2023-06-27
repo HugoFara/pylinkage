@@ -4,7 +4,7 @@ Definition of the different joints used for pylinkage.
 import abc
 import warnings
 from math import atan2
-from ..exceptions import HypostaticError, UnbuildableError
+from .exceptions import HypostaticError, UnbuildableError
 from ..geometry import sqr_dist, circle_intersect, cyl_to_cart
 
 

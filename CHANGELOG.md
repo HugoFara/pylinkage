@@ -30,10 +30,16 @@ iteration.
   - This makes the display much faster.
   - For each iteration, you may see linkages that do not exist anymore.
 - Folders reorganization: 
-  - ``pylinkage/linkage.py`` goes to ``pylinkage/interface/``.
-    - Joints definition are in ``pylinkage/interface/joint.py``.
-    - Linkage definition is in ``pylinkage/interface/linkage.py``.
-    - Tests follow the same renaming.
+  - New package ``pylinkage/interface/``: 
+    - ``pylinkage/linkage.py`` separated and inserted in this package.
+      - Joints definition are in ``joint.py``.
+      - Linkage definition is in ``linkage.py``.
+    - ``pylinkage/exceptions.py`` go to ``interface/``.
+  - New package ``pylinkage/optimization/`` 
+    - ``pylinkage/optimizer.py`` split and inserted in.
+    - Trials-and-errors related functions goes to ``grid_search.py``.
+    - New file ``utils.py`` for ``generate_bounds``.
+  - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)
 
 ### Fixed

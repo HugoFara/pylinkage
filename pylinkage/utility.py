@@ -5,7 +5,8 @@ Created on Mon Jul 12 00:00:01 2021.
 
 @author: HugoFara
 """
-from pylinkage.exceptions import UnbuildableError
+from pylinkage.interface.exceptions import UnbuildableError
+
 
 def kinematic_default_test(func, error_penalty):
     """
