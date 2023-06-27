@@ -32,6 +32,7 @@ iteration.
   - ``pylinkage/linkage.py`` goes to ``pylinkage/interface/``.
     - Joints definition are in ``pylinkage/interface/joint.py``.
     - Linkage definition is in ``pylinkage/interface/linkage.py``.
+    - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)
 
 ### Fixed
