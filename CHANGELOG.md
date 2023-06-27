@@ -48,6 +48,10 @@ iteration.
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
 
+## Deprecated
+
+- Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
+
 ## [0.5.3] - 2023-06-23
 
 ### Added in 0.5.3

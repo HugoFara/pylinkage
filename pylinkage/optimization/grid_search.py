@@ -7,21 +7,20 @@ will almost certainly be too big.
 import math
 import itertools
 import numpy as np
+import tqdm
 from .utils import generate_bounds
-try:
-    from tqdm import tqdm
-except ModuleNotFoundError:
-    tqdm = None
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
-    """Wrapper for tqdm, that let you specify if you want verbosity."""
-    if verbose and tqdm:
-        for i in tqdm(iterable, *args, **kwargs):
-            yield i
-    else:
-        for i in iterable:
-            yield i
+    """
+    Wrapper for tqdm, that let you specify if you want verbosity.
+
+    .. deprecated:: 0.6.0
+          `tqdm_verbosity` will be removed in pylinkage 0.6.0, as tqdm can be
+            disabled with the argument disable=True.
+    """
+    for i in tqdm.tqdm(iterable, disable=not verbose, *args, **kwargs):
+        yield i
 
 
 def sequential_variator(center, divisions, bounds):
@@ -173,7 +172,10 @@ def trials_and_errors_optimization(
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.
-    postfix = ["best score", None, "best dimensions", []]
+    postfix = {
+        "best score": None,
+        "best dimensions": []
+    }
     if 'sequential' in kwargs and kwargs['sequential']:
         variator = sequential_variator(center, divisions, bounds)
     else:
@@ -183,13 +185,13 @@ def trials_and_errors_optimization(
     else:
         order_relation = max
     verbose = 'verbose' in kwargs and kwargs['verbose']
-    # An iterable of all possible dimensions
-    variations = tqdm_verbosity(
-        iterable=variator,
+    # Iterable of all possible dimensions
+    variations = tqdm.tqdm(
+        variator,
+        desc='Trials and errors optimization',
         total=divisions ** len(center),
-        desc='trials_and_errors_optimization',
         postfix=postfix,
-        verbose=verbose,
+        disable=not verbose
     )
     for dim in variations:
         # Check performances
@@ -200,8 +202,11 @@ def trials_and_errors_optimization(
                 r[1] = dim.copy()
                 r[2] = prev.copy()
                 if verbose:
-                    postfix[1] = results[0][0]
-                    postfix[3] = results[0][1]
+                    postfix.update({
+                        "best score": results[0][0],
+                        "best dimensions": results[0][1]
+                    })
+                    variations.set_postfix(postfix)
                 break
         if score and False:
             # Save initial positions if score not null, for further
