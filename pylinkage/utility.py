@@ -5,6 +5,8 @@ Created on Mon Jul 12 00:00:01 2021.
 
 @author: HugoFara
 """
+import warnings
+
 from pylinkage.interface.exceptions import UnbuildableError
 
 
@@ -93,3 +95,58 @@ def kinematic_minimization(func):
     
     """
     return kinematic_default_test(func, float('inf'))
+
+
+def bounding_box(locus):
+    """Compute the bounding box of a locus.
+
+    :param locus: A list of points or any iterable with the same structure.
+    :type locus: list[tuple[float]]
+
+    :returns: Bounding box as (y_min, x_max, y_max, x_min).
+    :rtype: tuple[float, float, float, float]
+    """
+    y_min = float('inf')
+    x_min = float('inf')
+    y_max = -float('inf')
+    x_max = -float('inf')
+    for point in locus:
+        y_min = min(y_min, point[1])
+        x_min = min(x_min, point[0])
+        y_max = max(y_max, point[1])
+        x_max = max(x_max, point[0])
+    return y_min, x_max, y_max, x_min
+
+
+def movement_bounding_box(loci):
+    """
+    Bounding box for a group of loci.
+
+    :param loci:
+
+    :rtype: tuple[float, float, float, float]
+
+    """
+    bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
+    for locus in loci:
+        new_bb = bounding_box(locus)
+        bb = (
+            min(new_bb[0], bb[0]), max(new_bb[1], bb[1]),
+            max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
+        )
+    return bb
+
+
+def movement_bounding_bow(loci):
+    """
+    Bounding box for a group of loci.
+
+    :param loci:
+
+    :rtype: tuple[float, float, float, float]
+
+    .. deprecated :: 0.6.0
+        Was replaced by :func:`movement_bounding_box`, will be removed in 0.7.0.
+    """
+    warnings.warn("movement_bounding_bow is deprecated, please use movement_bounding_box")
+    return movement_bounding_box(loci)

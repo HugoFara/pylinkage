@@ -18,8 +18,7 @@ from .geometry import (
     norm,
     cyl_to_cart,
     circle_intersect,
-    intersection,
-    bounding_box,
+    intersection
 )
 from .interface import (
     UnbuildableError,
@@ -39,6 +38,7 @@ from .utility import (
     kinematic_default_test,
     kinematic_maximization,
     kinematic_minimization,
+    bounding_box
 )
 from .visualizer import (
     plot_static_linkage,

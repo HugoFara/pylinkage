@@ -7,12 +7,9 @@ Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
-import warnings
-
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from pylinkage.geometry import bounding_box
-
+from .utility import movement_bounding_box
 from .interface.exceptions import UnbuildableError
 from .interface import Crank, Fixed, Static, Pivot
 
@@ -192,40 +189,6 @@ def plot_kinematic_linkage(
         frames=frames, blit=True, interval=interval, repeat=True,
         save_count=frames)
     return animation
-
-
-def movement_bounding_box(loci):
-    """
-    Bounding box for a group of loci.
-
-    :param loci:
-
-    :rtype: tuple[float, float, float, float]
-
-    """
-    bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
-    for locus in loci:
-        new_bb = bounding_box(locus)
-        bb = (
-            min(new_bb[0], bb[0]), max(new_bb[1], bb[1]),
-            max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
-        )
-    return bb
-
-
-def movement_bounding_bow(loci):
-    """
-    Bounding box for a group of loci.
-
-    :param loci:
-
-    :rtype: tuple[float, float, float, float]
-
-    .. deprecated :: 0.6.0
-        Was replaced by :func:`movement_bounding_box`, will be removed in 0.7.0.
-    """
-    warnings.warn("movement_bounding_bow is deprecated, please use movement_bounding_box")
-    return movement_bounding_box(loci)
 
 
 def show_linkage(
