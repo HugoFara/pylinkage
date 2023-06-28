@@ -14,13 +14,10 @@ import pylinkage as pl
 
 
 def define_linkage():
-    """
-    Define a simple four-bar linkage.
+    """Define a simple four-bar linkage.
 
-    Returns
-    -------
-    Linkage
-        A demo four-bar linkage.
+    :return: A demo four-bar linkage.
+    :rtype: pylinkage.Linkage
     """
     # Main motor
     crank = pl.Crank(
@@ -47,19 +44,21 @@ def define_linkage():
 
 @pl.kinematic_minimization
 def quadrant_fitness(loci, **kwargs):
-    """
-    Return how fit the locus is to describe a quarter of circle.
-
+    """Return how fit the locus is to describe a quarter of circle.
+    
     It is a minimization problem and the theoretical best score is 0.
 
-    Returns
-    -------
-    float
-        Sum of square distances between tip locus bounding box and a defined
+    :param loci: Successive positions of joints
+    :type loci: tuple[tuple[tuple[float, float]]]
+    :param **kwargs:
+    :return: Sum of square distances between tip locus bounding box and a defined
         square.
+    :rtype: float
+
+    
     """
     # Locus of the Joint "pin" must in linkage order
-    tip_locus = tuple(x[-1] for x in loci)
+    tip_locus = list(x[-1] for x in loci)
     # We get the bounding box
     curr_bb = pl.bounding_box(tip_locus)
     # Reference bounding box in order (min_y, max_x, max_y, min_x)
@@ -69,13 +68,7 @@ def quadrant_fitness(loci, **kwargs):
 
 
 def main():
-    """
-    Define and optimize a demo linkage.
-
-    Returns
-    -------
-    None
-    """
+    """Define and optimize a demo linkage."""
     my_linkage = define_linkage()
     # Visualization
     pl.show_linkage(my_linkage)

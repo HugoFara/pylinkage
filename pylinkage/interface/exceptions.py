@@ -31,7 +31,7 @@ class UnbuildableError(Exception):
 
 
 class HypostaticError(Exception):
-    """Exception when the system can be solved in multiple ways."""
+    """The system is under-constrained and multiple solutions may exist."""
 
     def __init__(self, linkage, message='The system is hypo-static!'):
         self.linkage = linkage

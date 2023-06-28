@@ -8,7 +8,11 @@ from pylinkage.utility import kinematic_minimization
 
 
 def prepare_linkage():
-    """Return a simple four-bar linkage."""
+    """Simple four-bar linkage.
+
+    :returns: A four-bar linkage
+    :rtype: pylinkage.Linkage
+    """
     # Static points in space, belonging to the frame
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
@@ -22,11 +26,12 @@ def prepare_linkage():
 
 @kinematic_minimization
 def fitness_func(loci, **kwargs):
-    """
-    Return if the tip can go to the point (3, 1).
+    """Return if the tip can go to the point (3, 1).
 
-    Notes
-    -----
+    :param loci: 
+    :param **kwargs: 
+
+    .. notes
     It is a minimization problem.
     The best possible score is 0.
     The worst score is float('inf').
@@ -59,11 +64,12 @@ class TestEvaluation(unittest.TestCase):
 
 
 class TestVariator(unittest.TestCase):
+    """Test case for the variation creators."""
 
     def test_length(self):
         """Test that the length is about the number of subdivisions."""
         sequence = [1]
-        bounds = ([0], [3])
+        bounds = ((0, ), (3, ))
         for divisions in (1, 2, 3, 5, 6, 13, 30):
             length = sum(
                 1 for _ in sequential_variator(sequence, divisions, bounds)
@@ -76,6 +82,7 @@ class TestVariator(unittest.TestCase):
 
 
 class TestTrialsAndErrors(unittest.TestCase):
+    """Tests for the trials and errors optimization."""
     linkage = prepare_linkage()
 
     def test_convergence(self):

@@ -19,11 +19,12 @@ from .joint import (
 
 
 class Linkage:
-    """
-    A linkage is a set of Joint objects.
-
+    """A linkage is a set of Joint objects.
+    
     It is defined as a kinematic linkage.
     Coordinates are given relative to its own base.
+
+
     """
 
     __slots__ = "name", "joints", "_cranks", "_solve_order"
@@ -32,17 +33,14 @@ class Linkage:
         """
         Define a linkage, a set of joints.
 
-        Arguments
-        ---------
-        joints : list[Joint]
-            All Joint to be part of the linkage
-        order : list[Joint]
-            Sequence to manually define resolution order for each step.
-            It should be a subset of joints.
-            Automatic computed order is experimental! The default is None.
-        name : str, optional
-            Human-readable name for the Linkage. If None, take the value
-            str(id(self)). The default is None.
+        :param joints: All Joint to be part of the linkage.
+        :param order: Sequence to manually define resolution order for each step.
+        It should be a subset of joints.
+        Automatic computed order is experimental!
+        (Default value = None).
+        :param name: Human-readable name for the Linkage.
+        If None, take the value str(id(self)).
+        (Default value = None).
         """
         self.name = name
         if name is None:
@@ -87,16 +85,15 @@ class Linkage:
         return self._solve_order
 
     def rebuild(self, pos=None):
-        """
-        Redefine linkage joints and given initial positions to joints.
+        """Redefine linkage joints and given initial positions to joints.
 
-        Parameters
-        ----------
-        pos : tuple[tuple[int]]
-            Initial positions for each joint in self.joints.
+        :param pos: Initial positions for each joint in self.joints.
             Coordinates do not need to be precise, they will allow us the best
             fitting position between all possible positions satisfying
-            constraints.
+            constraints. (Default value = None)
+        :type pos: tuple[tuple[int]]
+
+        
         """
         if not hasattr(self, '_solve_order'):
             self.__find_solving_order__()
@@ -112,7 +109,11 @@ class Linkage:
         return [j.coord() for j in self.joints]
 
     def set_coords(self, coords):
-        """Set coordinates for all joints of the linkage."""
+        """Set coordinates for all joints of the linkage.
+
+        :param coords: 
+
+        """
         for joint, coord in zip(self.joints, coords):
             joint.set_coord(coord)
 
@@ -145,24 +146,20 @@ class Linkage:
         return 3 * (solids - 1) - kinematic_undetermined + mobilities
 
     def step(self, iterations=None, dt=1):
-        """
+        """Make a step of the linkage.
 
-        Make a step of the linkage.
-
-        Parameters
-        ----------
-        iterations : int, optional
+        :param iterations:
             Number of iterations to run across.
             If None, the default is self.get_rotation_period().
-        dt : int, optional
-            Amount of rotation to turn the cranks by.
-            All cranks rotate by their self.angle * dt. The default is 1.
+            (Default value = None)
+        :type iterations: int
+        :param dt: Amount of rotation to turn the cranks by.
+        All cranks rotate by their self.angle * dt. The default is 1.
+        (Default value = 1)
+        :type dt: float
 
-        Yields
-        ------
-        generator
-            Iterable of the joints' coordinates.
-
+        :returns: Iterable of the joints' coordinates.
+        :rtype: Generator[tuple[float, float]]
         """
         if iterations is None:
             iterations = self.get_rotation_period()
@@ -175,19 +172,14 @@ class Linkage:
             yield tuple(j.coord() for j in self.joints)
 
     def get_num_constraints(self, flat=True):
-        """
-        Return numeric constraints of this linkage.
+        """Numeric constraints of this linkage.
 
-        Parameters
-        ----------
-        flat : bool
-            Whether to force one-dimensional representation of constraints.
+        :param flat: Whether to force one-dimensional representation of constraints.
             The default is True.
+        :type flat: bool
 
-        Returns
-        -------
-        constraints : list
-            List of geometric constraints.
+        :returns: List of geometric constraints.
+        :rtype: list
         """
         constraints = []
         for joint in self.joints:
@@ -198,21 +190,18 @@ class Linkage:
         return constraints
 
     def set_num_constraints(self, constraints, flat=True):
-        """
-        Set numeric constraints for this linkage.
-
+        """Set numeric constraints for this linkage.
+        
         Numeric constraints are distances or angles between joints.
 
-        Parameters
-        ----------
-        constraints : sequence
-            Sequence of constraints to pass to the joints.
-        flat : bool
-            If True, constraints should be a one-dimensional sequence of floats.
-            If False, constraints should be a sequence of tuples of digits.
-            Each element will be passed to the set_constraints method of each
-            corresponding Joint.
-            The default is True.
+        :param constraints: Sequence of constraints to pass to the joints.
+        :type constraints: Iterable
+        :param flat: If True, constraints should be a one-dimensional sequence of floats.
+        If False, constraints should be a sequence of tuples of digits.
+        Each element will be passed to the set_constraints method of each
+        corresponding Joint.
+        (Default value = True)
+        :type flat: bool
         """
         if flat:
             # Is in charge of redistributing constraints
@@ -229,15 +218,13 @@ class Linkage:
                 joint.set_constraints(*constraint)
 
     def get_rotation_period(self):
-        """
-        Return the number of iterations to finish in the previous state.
-
+        """The number of iterations to finish in the previous state.
+        
         Formally, it is the common denominator of all crank periods.
 
-        Returns
-        -------
-        Number of iterations with dt=1.
 
+        :returns: Number of iterations with dt=1.
+        :rtype: int
         """
         periods = 1
         for j in self.joints:
@@ -247,21 +234,17 @@ class Linkage:
         return periods
 
     def set_completely(self, dimensions, positions, flat=True):
-        """
-        Set both dimension and initial positions.
+        """Set both dimension and initial positions.
 
-        Parameters
-        ----------
-        dimensions : tuple of float or tuple of tuple of float
-            List of dimensions.
-        positions : tuple of float
-        flat : bool, optional
-            If the dimensions are in "flat mode".
+        :param dimensions: List of dimensions.
+        :type dimensions: tuple[float] | tuple[tuple[float, float]]
+        :param positions: Initial positions
+        :type positions: tuple[tuple[float, float]]
+        :param flat: If the dimensions are in "flat mode".
             The default is True.
+        :type flat: bool
 
-        Returns
-        -------
-
+        
         """
         self.set_num_constraints(dimensions, flat=flat)
         self.set_coords(positions)

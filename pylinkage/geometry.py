@@ -13,10 +13,13 @@ import math
 
 
 def dist_builtin(point1, point2):
-    """
-    Euclidian distance between two 2D points.
-
+    """Euclidian distance between two 2D points.
+    
     Legacy built-in unoptimized equivalent of math.dist in Python 3.8.
+
+    :param point1: 
+    :param point2: 
+
     """
     return math.sqrt(
         (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
@@ -31,28 +34,33 @@ else:
 
 
 def sqr_dist(point1, point2):
-    """
-    Square of the distance between two points.
-
+    """Square of the distance between two points.
+    
     Faster than dist.
+
+    :param point1: 
+    :param point2: 
+
     """
     return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
 
 
 def norm(vec):
-    """Return the norm of a 2-dimensional vector."""
+    """
+
+    :param vec: 
+
+    """
     return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
 
 def cyl_to_cart(radius, theta, ori=(0, 0)):
-    """
-    Convert polar coordinates into cartesian.
+    """Convert polar coordinates into cartesian.
 
-    Arguments
-    ---------
-    radius: distance from ori
-    theta: angle is the angle starting from abscissa axis
-    ori: origin point.
+    :param radius: distance from ori
+    :param theta: angle is the angle starting from abscissa axis
+    :param ori: origin point (Default value = (0)).
+
     """
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
 
@@ -76,16 +84,20 @@ def __secant_circles_intersections__(distance, dist_x, dist_y, mid_dist,
 
 def circle_intersect(circle1, circle2, tol=0.0):
     """
-    Return the intersections between two circles.
+    Get the intersections of two circles.
 
     Transcription of a Matt Woodhead program, method provided by Paul Bourke,
     1997. http://paulbourke.net/geometry/circlesphere/.
 
-    Arguments
-    ---------
-    circle1: first circle, sequence of (abscissa, ordinate, radius)
-    circle2: second circle, sequence of (abscissa, ordinate, radius)
-    tol: distance under which two points are considered equal.
+    :param circle1: first circle
+    :type circle1: tuple[float, float, float]
+    :param circle2: second circle
+    :type circle2: tuple[float, float, float]
+    :param tol: distance under which two points are considered equal (Default value = 0.0)
+    :type tol: float
+    :returns: the intersections of two circles
+    :rtype: tuple[int] | tuple[int, float] | tuple[int, float, float]
+
     """
     x_1, y_1, radius1 = circle1
     x_2, y_2, radius2 = circle2
@@ -126,11 +138,17 @@ def circle_intersect(circle1, circle2, tol=0.0):
 
 
 def intersection(obj_1, obj_2, tol=0.0):
-    """
-    Return intersection between two objects (points or circles).
+    """Intersection of two arbitrary objects.
 
-    Return nothing of no intersection.
-    tol: absolute tolerance to use if provided.
+    The input objects should points or circles.
+
+    :param obj_1: 
+    :param obj_2: 
+    :param tol: absolute tolerance to use if provided.
+    (Default value = 0.0)
+    :returns: The intersection
+    :rtype: None | tuple[float, float]
+
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:
@@ -148,29 +166,3 @@ def intersection(obj_1, obj_2, tol=0.0):
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:
         return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)
-
-
-def bounding_box(locus):
-    """
-    Compute the bounding box of a locus.
-
-    Parameters
-    ----------
-    locus : list[tuple[float]]
-        A list of points or any iterable with the same structure.
-
-    Returns
-    -------
-    tuple[float]
-        Bounding box as (y_min, x_max, y_max, x_min).
-    """
-    y_min = float('inf')
-    x_min = float('inf')
-    y_max = -float('inf')
-    x_max = -float('inf')
-    for point in locus:
-        y_min = min(y_min, point[1])
-        x_min = min(x_min, point[0])
-        y_max = max(y_max, point[1])
-        x_max = max(x_max, point[0])
-    return y_min, x_max, y_max, x_min

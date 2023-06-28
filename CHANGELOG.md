@@ -46,6 +46,7 @@ iteration.
     - New file ``utils.py`` for ``generate_bounds``.
   - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)
+- Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
 
 ### Fixed
 
@@ -55,6 +56,7 @@ iteration.
 ### Deprecated
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
+- ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
 
 ## [0.5.3] - 2023-06-23
 

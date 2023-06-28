@@ -9,8 +9,7 @@ Created on Mon Jun 14, 12:13:58 2021.
 """
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
-from pylinkage.geometry import bounding_box
-
+from .utility import movement_bounding_box
 from .interface.exceptions import UnbuildableError
 from .interface import Crank, Fixed, Static, Pivot
 
@@ -27,7 +26,11 @@ COLOR_SWITCHER = {
 
 
 def _get_color(joint):
-    """Search in COLOR_SWITCHER for the corresponding color."""
+    """Search in COLOR_SWITCHER for the corresponding color.
+
+    :param joint: 
+
+    """
     for joint_type, color in COLOR_SWITCHER.items():
         if isinstance(joint, joint_type):
             return color
@@ -38,27 +41,21 @@ def plot_static_linkage(
         linkage, axis, loci, locus_highlights=None,
         show_legend=False
 ):
-    """
-    Plot a linkage without movement.
+    """Plot a linkage without movement.
 
-    Parameters
-    ----------
-    linkage : Linkage
-        The linkage you want to see.
-    axis : Artist
-        The graph we should draw on.
-    loci : sequence
-        List of list of coordinates. They will be plotted.
-    locus_highlights : list, optional
-        If a list, should be a list of list of coordinates you want to see
+    :param linkage: The linkage you want to see.
+    :type linkage: Linkage
+    :param axis: The graph we should draw on.
+    :type axis: Artist
+    :param loci: List of list of coordinates. They will be plotted.
+    :type loci: Iterable
+    :param locus_highlights: If a list, should be a list of list of coordinates you want to see
         highlighted. The default is None.
-    show_legend : bool, optional
-        To add an automatic legend to the graph. The default is False.
+    :type locus_highlights: list
+    :param show_legend: To add an automatic legend to the graph. The default is False.
+    :type show_legend: bool
 
-    Returns
-    -------
-    None.
-
+    
     """
     axis.set_aspect('equal')
     axis.grid(True)
@@ -110,25 +107,19 @@ def plot_static_linkage(
 
 
 def update_animated_plot(linkage, index, images, loci):
-    """
-    Modify im, instead of recreating it to make the animation run faster.
+    """Modify im, instead of recreating it to make the animation run faster.
 
-    Parameters
-    ----------
-    linkage : TYPE
-        DESCRIPTION.
-    index : int
-        Frame index.
-    images : list of images Artists
-        Artist to be modified.
-    loci : list
-        list of loci.
+    :param linkage: DESCRIPTION.
+    :type linkage: TYPE
+    :param index: Frame index.
+    :type index: int
+    :param images: Artist to be modified.
+    :type images: list of images Artists
+    :param loci: list of loci.
+    :type loci: list
 
-    Returns
-    -------
-    im : list of images Artists
-        Updated version.
-
+    :returns: Updated version
+    :rtype: list[Artists]
     """
     image = iter(images)
     locus = loci[index]
@@ -161,28 +152,22 @@ def plot_kinematic_linkage(
         frames=100,
         interval=40
 ):
-    """
-    Plot a linkage with an animation.
+    """Plot a linkage with an animation.
 
-    Parameters
-    ----------
-    linkage : pylinkage.linkage.Linkage
-        DESCRIPTION.
-    fig : matplotlib.figure.Figure
-        Figure to support the axes.
-    axis : matplotlib.axes._subplots.AxesSubplot
-        The subplot to draw on.
-    loci : list
-        list of list of coordinates.
-    frames : int, optional
-        Number of frames to draw the linkage on. The default is 100.
-    interval : float, optional
-        Delay between frames in milliseconds. The default is 40 (24 fps).
+    :param linkage: DESCRIPTION.
+    :type linkage: pylinkage.linkage.Linkage
+    :param fig: Figure to support the axes.
+    :type fig: matplotlib.figure.Figure
+    :param axis: The subplot to draw on.
+    :type axis: matplotlib.axes._subplots.AxesSubplot
+    :param loci: list of list of coordinates.
+    :type loci: list
+    :param frames: Number of frames to draw the linkage on. The default is 100.
+    :type frames: int
+    :param interval: Delay between frames in milliseconds. The default is 40 (24 fps).
+    :type interval: float
 
-    Returns
-    -------
-    None.
-
+    
     """
     axis.set_aspect('equal')
     axis.set_title("Animation")
@@ -206,18 +191,6 @@ def plot_kinematic_linkage(
     return animation
 
 
-def movement_bounding_bow(loci):
-    """Return the general bounding box of a group of loci."""
-    bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
-    for locus in loci:
-        new_bb = bounding_box(locus)
-        bb = (
-            min(new_bb[0], bb[0]), max(new_bb[1], bb[1]),
-            max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
-        )
-    return bb
-
-
 def show_linkage(
         linkage,
         save=False,
@@ -229,38 +202,32 @@ def show_linkage(
         duration=5,
         fps=24
 ):
-    """
-    Display results as an animated drawing.
+    """Display results as an animated drawing.
 
-    Parameters
-    ----------
-    linkage : pylinkage.linkage.Linkage
-        The Linkage you want to draw.
-    save : bool, optional
-        To save the animation. The default is False.
-    prev : list, optional
-        Previous coordinates to use for linkage. The default is None.
-    loci : list, optional
-        list of loci. The default is None.
-    points : int, optional
-        Number of points to draw for a crank revolution.
+    :param linkage: The Linkage you want to draw.
+    :type linkage: pylinkage.linkage.Linkage
+    :param save: To save the animation. The default is False.
+    :type save: bool
+    :param prev: Previous coordinates to use for linkage. The default is None.
+    :type prev: list
+    :param loci: list of loci. The default is None.
+    :type loci: list
+    :param points: Number of points to draw for a crank revolution.
         Useless when loci are set.
         The default is 100.
-    iteration_factor : float, optional
-        A simple way to subdivide the movement. The real number of points
+    :type points: int
+    :param iteration_factor: A simple way to subdivide the movement. The real number of points
         will be points * iteration_factor. The default is 1.
-    title : str, optional
-        Figure title. The default is str(len(ani)).
-    duration : float, optional
-        Animation duration (in seconds). The default is 5.
-    fps : float, optional
-        Number of frames per second for the output video.
+    :type iteration_factor: float
+    :param title: Figure title. The default is str(len(ani)).
+    :type title: str
+    :param duration: Animation duration (in seconds). The default is 5.
+    :type duration: float
+    :param fps: Number of frames per second for the output video.
         The default is 24.
+    :type fps: int
 
-    Returns
-    -------
-    None.
-
+    
     """
     # Define initial positions
     linkage.rebuild(prev)
@@ -281,7 +248,7 @@ def show_linkage(
     ax1 = fig.add_subplot(1, 2, 1)
     ax2 = fig.add_subplot(1, 2, 2)
 
-    linkage_bb = movement_bounding_bow(loci)
+    linkage_bb = movement_bounding_box(loci)
     # We introduce a relative padding of 20%
     padding = (
         (linkage_bb[2] - linkage_bb[0]) ** 2
@@ -314,33 +281,27 @@ def swarm_tiled_repr(
     points=12,
     iteration_factor=1
 ):
-    """
-    Show all the linkages in a swarm in tiled mode.
+    """Show all the linkages in a swarm in tiled mode.
 
-    Parameters
-    ----------
-    linkage : pylinkage.linkage.Linkage
-        The original Linkage that will be MODIFIED.
-    swarm : list
-        Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
+    :param linkage: The original Linkage that will be MODIFIED.
+    :type linkage: pylinkage.linkage.Linkage
+    :param swarm: Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
         positions).
-    fig : matplotlib.figure.Figure
-        Figure to support the axes.
-    axes : matplotlib.axes._subplots.AxesSubplot
-        The subplot to draw on.
-    points : int, optional
-        Number of steps to use for each Linkage. The default is 12.
-    iteration_factor : float, optional
-        A simple way to subdivide the movement. The real number of points
+    :type swarm: list
+    :param fig: Figure to support the axes.
+    :type fig: matplotlib.figure.Figure
+    :param axes: The subplot to draw on.
+    :type axes: matplotlib.axes._subplots.AxesSubplot
+    :param points: Number of steps to use for each Linkage. The default is 12.
+    :type points: int
+    :param iteration_factor: A simple way to subdivide the movement. The real number of points
         will be points * iteration_factor. The default is 1.
-    dimension_func : callable, optional
-        If you want a special formatting of dimensions from agents before
-        passing them to the linkage.
+    :type iteration_factor: float
+    :param dimension_func: If you want a special formatting of dimensions from agents before
+        passing them to the linkage. (Default value = None)
+    :type dimension_func: callable, optional
 
-    Returns
-    -------
-    None.
-
+    
     """
     fig.suptitle("Iteration: {}, best score: {}".format(swarm[0], max(agent[0] for agent in swarm[1])))
     for i, agent in enumerate(swarm[1]):
