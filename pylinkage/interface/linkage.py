@@ -34,13 +34,16 @@ class Linkage:
         Define a linkage, a set of joints.
 
         :param joints: All Joint to be part of the linkage.
+        :type joints: Iterable[Joint]
         :param order: Sequence to manually define resolution order for each step.
-        It should be a subset of joints.
-        Automatic computed order is experimental!
-        (Default value = None).
+            It should be a subset of joints.
+            Automatic computed order is experimental!
+            (Default value = None).
+        :type order: Iterable[Joint]
         :param name: Human-readable name for the Linkage.
-        If None, take the value str(id(self)).
-        (Default value = None).
+            If None, take the value str(id(self)).
+            (Default value = None).
+        :type name: str
         """
         self.name = name
         if name is None:
@@ -148,14 +151,13 @@ class Linkage:
     def step(self, iterations=None, dt=1):
         """Make a step of the linkage.
 
-        :param iterations:
-            Number of iterations to run across.
+        :param iterations: Number of iterations to run across.
             If None, the default is self.get_rotation_period().
             (Default value = None)
         :type iterations: int
         :param dt: Amount of rotation to turn the cranks by.
-        All cranks rotate by their self.angle * dt. The default is 1.
-        (Default value = 1)
+            All cranks rotate by their self.angle * dt. The default is 1.
+            (Default value = 1)
         :type dt: float
 
         :returns: Iterable of the joints' coordinates.
@@ -197,10 +199,10 @@ class Linkage:
         :param constraints: Sequence of constraints to pass to the joints.
         :type constraints: Iterable
         :param flat: If True, constraints should be a one-dimensional sequence of floats.
-        If False, constraints should be a sequence of tuples of digits.
-        Each element will be passed to the set_constraints method of each
-        corresponding Joint.
-        (Default value = True)
+            If False, constraints should be a sequence of tuples of digits.
+            Each element will be passed to the set_constraints method of each
+            corresponding Joint.
+            (Default value = True)
         :type flat: bool
         """
         if flat:

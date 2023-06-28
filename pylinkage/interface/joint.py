@@ -63,7 +63,8 @@ class Joint(abc.ABC):
     def set_coord(self, *args):
         """Take a sequence or two scalars, and assign them to object x, y.
 
-        :param *args: 
+        :param args: Coordinates to set, either as two elements or as a tuple of 2 elements
+        :type args: tuple[float, float] | tuple[tuple[float, float]]
 
         """
         if len(args) == 1:
@@ -120,7 +121,7 @@ class Static(Joint):
     def set_constraints(self, *args):
         """Do nothing, for consistency only.
 
-        :param *args:
+        :param args: Unused
 
         """
         pass
@@ -430,8 +431,10 @@ class Crank(Joint):
     def set_constraints(self, distance=None, *args):
         """Set geometric constraints, only self.r is affected.
 
-        :param distance:  (Default value = None)
-        :param *args: 
+        :param distance: Distance from the reference point.
+            (Default value = None)
+        :type distance: float
+        :param args: Unused, but preserves the object structure.
 
         """
         self.r = distance or self.r

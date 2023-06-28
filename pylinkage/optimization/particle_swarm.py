@@ -63,10 +63,10 @@ def particle_swarm_optimization(
         The default is max.
     :type order_relation: Callable(float, float) -> float
     :param verbose: The optimization state will be printed in the console if True.
-        The default is True.
+        (Default value = True).
     :type verbose: bool
-    :param **kwargs: keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
-    :type **kwargs: dict
+    :param kwargs: keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
+    :type kwargs: dict
 
     :returns: List of 3 elements: best score, best dimensions and initial positions.
     :rtype: Agent

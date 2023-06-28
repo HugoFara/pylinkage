@@ -21,8 +21,8 @@ def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
 
     :param iterable: 
     :param verbose:  (Default value = True)
-    :param *args: Ordered args to pass to tqdm
-    :param **kwargs: Keyword args for tqdm
+    :param args: Ordered args to pass to tqdm
+    :param kwargs: Keyword args for tqdm
 
     """
     for i in tqdm.tqdm(iterable, disable=not verbose, *args, **kwargs):
@@ -111,31 +111,30 @@ def trials_and_errors_optimization(
     :param linkage: Linkage to evaluate.
     :type linkage: pylinkage.linkage.Linkage
     :param parameters: Parameters that will be modified. Geometric constraints.
-        If not, it will be assigned tuple(linkage.get_num_constraints()).
-        The default is None.
-    :type parameters: list, optional
+                       If not, it will be assigned tuple(linkage.get_num_constraints()).
+                       The default is None.
+    :type parameters: list
     :param n_results: Number of the best candidates to return. The default is 10.
-    :type n_results: int, optional
+    :type n_results: int
     :param divisions: Number of subdivisions between bounds. The default is 5.
-    :type divisions: int, optional
-    :param **kwargs: Extra arguments for the optimization.
-        bounds : tuple[tuple], optional
-            A 2-uple (tuple of two elements), containing the minimal and maximal
-            bounds. If None, we will use parameters as a center.
-            The default is None.
-        order_relation : callable, optional
-            A function of two arguments, should return the best score of two
+    :type divisions: int
+    :param kwargs:
+        - Extra arguments for the optimization.
+        - bounds : A 2-uple (tuple of two elements), containing the minimal and maximal bounds.
+            If None, we will use parameters as a center.
+            (Default value = None).
+        - order_relation : A function of two arguments, should return the best score of two
             scores. Common examples are `min`, `max`, `abs`.
-            The default is `max`.
-        verbose : bool, optional
-            The number of combinations will be printed in console if `True`.
-            The default is `True`.
-        sequential : bool
-            If True, two consecutive linkages will have a small variation.
-    :type **kwargs: dict, optional
+            (Default value = :func:`max`).
+        - verbose : The number of combinations will be printed in console if `True`.
+            (Default value = True).
+        - sequential : If True, two consecutive linkages will have a small variation.
+
+    :type kwargs: dict
 
     :returns: 3-uplet of score, dimensions and initial position for each Linkage to
-        return. Its size is {n_results}.
+        return.
+        Its size is {n_results}.
     :rtype: list[MutableAgent]
     """
     if parameters is None:
