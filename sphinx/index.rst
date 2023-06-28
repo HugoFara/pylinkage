@@ -18,8 +18,8 @@ Welcome to pylinkage's documentation!
    :caption: Modules
 
    api/geometry
-   api/linkage
-   api/optimizer
+   api/interface
+   api/optimization
    api/utility
    api/visualizer
    api/collections
