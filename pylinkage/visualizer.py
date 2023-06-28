@@ -7,6 +7,8 @@ Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
+import warnings
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from pylinkage.geometry import bounding_box
@@ -192,13 +194,13 @@ def plot_kinematic_linkage(
     return animation
 
 
-def movement_bounding_bow(loci):
+def movement_bounding_box(loci):
     """
     Bounding box for a group of loci.
 
     :param loci:
 
-    :rtype: tuple[float, float, flaot, float]
+    :rtype: tuple[float, float, float, float]
 
     """
     bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
@@ -209,6 +211,21 @@ def movement_bounding_bow(loci):
             max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
         )
     return bb
+
+
+def movement_bounding_bow(loci):
+    """
+    Bounding box for a group of loci.
+
+    :param loci:
+
+    :rtype: tuple[float, float, float, float]
+
+    .. deprecated :: 0.6.0
+        Was replaced by :func:`movement_bounding_box`, will be removed in 0.7.0.
+    """
+    warnings.warn("movement_bounding_bow is deprecated, please use movement_bounding_box")
+    return movement_bounding_box(loci)
 
 
 def show_linkage(
@@ -245,7 +262,7 @@ def show_linkage(
     :type duration: float
     :param fps: Number of frames per second for the output video.
         The default is 24.
-    :type fps: float
+    :type fps: int
 
     
     """
@@ -268,7 +285,7 @@ def show_linkage(
     ax1 = fig.add_subplot(1, 2, 1)
     ax2 = fig.add_subplot(1, 2, 2)
 
-    linkage_bb = movement_bounding_bow(loci)
+    linkage_bb = movement_bounding_box(loci)
     # We introduce a relative padding of 20%
     padding = (
         (linkage_bb[2] - linkage_bb[0]) ** 2
