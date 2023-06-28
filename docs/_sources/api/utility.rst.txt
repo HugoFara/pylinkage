@@ -2,8 +2,8 @@
 utility
 =======
 
-Various functions to help you handling linkages
-===============================================
+Various functions to help you handle linkages
+=============================================
 .. automodule:: pylinkage.utility
    :members:
    :undoc-members:

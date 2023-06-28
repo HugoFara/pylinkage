@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="visualizer" href="visualizer.html" />
-    <link rel="prev" title="optimizer" href="optimizer.html" /> 
+    <link rel="prev" title="optimization" href="optimization.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,19 +50,22 @@
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="linkage.html">linkage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimizer.html">optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">utility</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.utility">Various functions to help you handling linkages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.utility">Various functions to help you handle linkages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.bounding_box"><code class="docutils literal notranslate"><span class="pre">bounding_box()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.kinematic_default_test"><code class="docutils literal notranslate"><span class="pre">kinematic_default_test()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.kinematic_maximization"><code class="docutils literal notranslate"><span class="pre">kinematic_maximization()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.kinematic_minimization"><code class="docutils literal notranslate"><span class="pre">kinematic_minimization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.movement_bounding_bow"><code class="docutils literal notranslate"><span class="pre">movement_bounding_bow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.utility.movement_bounding_box"><code class="docutils literal notranslate"><span class="pre">movement_bounding_box()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -98,10 +101,27 @@
   <section id="utility">
 <h1>utility<a class="headerlink" href="#utility" title="Permalink to this heading"></a></h1>
 <section id="module-pylinkage.utility">
-<span id="various-functions-to-help-you-handling-linkages"></span><h2>Various functions to help you handling linkages<a class="headerlink" href="#module-pylinkage.utility" title="Permalink to this heading"></a></h2>
+<span id="various-functions-to-help-you-handle-linkages"></span><h2>Various functions to help you handle linkages<a class="headerlink" href="#module-pylinkage.utility" title="Permalink to this heading"></a></h2>
 <p>The utility module provides various useful functions.</p>
 <p>Created on Mon Jul 12 00:00:01 2021.</p>
 <p>&#64;author: HugoFara</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.utility.bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.utility.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.utility.bounding_box" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the bounding box of a locus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>locus</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – A list of points or any iterable with the same structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float, float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.utility.kinematic_default_test">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.utility.</span></span><span class="sig-name descname"><span class="pre">kinematic_default_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_penalty</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.utility.kinematic_default_test" title="Permalink to this definition"></a></dt>
@@ -111,7 +131,7 @@ decorated function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – Fitness function to be decorated.</p></li>
+<li><p><strong>func</strong> (<em>Callable</em>) – Fitness function to be decorated.</p></li>
 <li><p><strong>error_penalty</strong> (<em>float</em>) – Penalty value for unbuildable linkage. Common values include
 float(‘inf’) and 0.</p></li>
 </ul>
@@ -127,7 +147,7 @@ float(‘inf’) and 0.</p></li>
 decorated function. In case of error, the penalty value is -float(‘inf’)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – Fitness function to be decorated.</p>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – Fitness function to be decorated.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -140,7 +160,38 @@ decorated function. In case of error, the penalty value is -float(‘inf’)</p>
 decorated function. In case of error, the penalty value is float(‘inf’)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – Fitness function to be decorated.</p>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – Fitness function to be decorated.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.utility.movement_bounding_bow">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.utility.</span></span><span class="sig-name descname"><span class="pre">movement_bounding_bow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.utility.movement_bounding_bow" title="Permalink to this definition"></a></dt>
+<dd><p>Bounding box for a group of loci.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>loci</strong> – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[float, float, float, float]</p>
+</dd>
+</dl>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.6.0: </span>Was replaced by <a class="reference internal" href="#pylinkage.utility.movement_bounding_box" title="pylinkage.utility.movement_bounding_box"><code class="xref py py-func docutils literal notranslate"><span class="pre">movement_bounding_box()</span></code></a>, will be removed in 0.7.0.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.utility.movement_bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.utility.</span></span><span class="sig-name descname"><span class="pre">movement_bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.utility.movement_bounding_box" title="Permalink to this definition"></a></dt>
+<dd><p>Bounding box for a group of loci.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>loci</strong> – </p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[float, float, float, float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -152,7 +203,7 @@ decorated function. In case of error, the penalty value is float(‘inf’)</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="optimizer.html" class="btn btn-neutral float-left" title="optimizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="optimization.html" class="btn btn-neutral float-left" title="optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="visualizer.html" class="btn btn-neutral float-right" title="visualizer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

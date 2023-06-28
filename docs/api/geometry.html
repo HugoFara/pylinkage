@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="linkage" href="linkage.html" />
+    <link rel="next" title="interface" href="interface.html" />
     <link rel="prev" title="Changelog" href="../changeloglink.html" /> 
 </head>
 
@@ -51,7 +51,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">geometry</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.geometry">Base module for geometric abstractions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.geometry.bounding_box"><code class="docutils literal notranslate"><span class="pre">bounding_box()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.geometry.circle_intersect"><code class="docutils literal notranslate"><span class="pre">circle_intersect()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.geometry.cyl_to_cart"><code class="docutils literal notranslate"><span class="pre">cyl_to_cart()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.geometry.dist_builtin"><code class="docutils literal notranslate"><span class="pre">dist_builtin()</span></code></a></li>
@@ -62,11 +61,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="linkage.html">linkage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimizer.html">optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utility.html">utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -108,35 +107,24 @@
 <p>Created on Wed May 5, 17:34:45 2021.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.geometry.bounding_box">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.bounding_box" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the bounding box of a locus.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>locus</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – A list of points or any iterable with the same structure.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.circle_intersect">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">circle_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.circle_intersect" title="Permalink to this definition"></a></dt>
-<dd><p>Return the intersections between two circles.</p>
+<dd><p>Get the intersections of two circles.</p>
 <p>Transcription of a Matt Woodhead program, method provided by Paul Bourke,
 1997. <a class="reference external" href="http://paulbourke.net/geometry/circlesphere/">http://paulbourke.net/geometry/circlesphere/</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>circle1</strong> (<em>first circle</em><em>, </em><em>sequence</em><em> of </em><em>(</em><em>abscissa</em><em>, </em><em>ordinate</em><em>, </em><em>radius</em><em>)</em>) – </p></li>
-<li><p><strong>circle2</strong> (<em>second circle</em><em>, </em><em>sequence</em><em> of </em><em>(</em><em>abscissa</em><em>, </em><em>ordinate</em><em>, </em><em>radius</em><em>)</em>) – </p></li>
-<li><p><strong>tol</strong> (<em>distance under which two points are considered equal.</em>) – </p></li>
+<li><p><strong>circle1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – first circle</p></li>
+<li><p><strong>circle2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – second circle</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – distance under which two points are considered equal (Default value = 0.0)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the intersections of two circles</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[int] | tuple[int, float] | tuple[int, float, float]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -148,9 +136,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>radius</strong> (<em>distance from ori</em>) – </p></li>
-<li><p><strong>theta</strong> (<em>angle is the angle starting from abscissa axis</em>) – </p></li>
-<li><p><strong>ori</strong> (<em>origin point.</em>) – </p></li>
+<li><p><strong>radius</strong> – distance from ori</p></li>
+<li><p><strong>theta</strong> – angle is the angle starting from abscissa axis</p></li>
+<li><p><strong>ori</strong> – origin point (Default value = (0)).</p></li>
 </ul>
 </dd>
 </dl>
@@ -161,20 +149,46 @@
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">dist_builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.dist_builtin" title="Permalink to this definition"></a></dt>
 <dd><p>Euclidian distance between two 2D points.</p>
 <p>Legacy built-in unoptimized equivalent of math.dist in Python 3.8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – </p></li>
+<li><p><strong>point2</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.intersection">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.intersection" title="Permalink to this definition"></a></dt>
-<dd><p>Return intersection between two objects (points or circles).</p>
-<p>Return nothing of no intersection.
-tol: absolute tolerance to use if provided.</p>
+<dd><p>Intersection of two arbitrary objects.</p>
+<p>The input objects should be points or circles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – First point or circle</p></li>
+<li><p><strong>obj_2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Second point or circle</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – absolute tolerance to use if provided. (Default value = 0.0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The intersection found, if any</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float] | tuple[float, float, float] | None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.norm">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.norm" title="Permalink to this definition"></a></dt>
-<dd><p>Return the norm of a 2-dimensional vector.</p>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vec</strong> – </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -182,6 +196,14 @@ tol: absolute tolerance to use if provided.</p>
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">sqr_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.sqr_dist" title="Permalink to this definition"></a></dt>
 <dd><p>Square of the distance between two points.</p>
 <p>Faster than dist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – </p></li>
+<li><p><strong>point2</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -192,7 +214,7 @@ tol: absolute tolerance to use if provided.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../changeloglink.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="linkage.html" class="btn btn-neutral float-right" title="linkage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="interface.html" class="btn btn-neutral float-right" title="interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
