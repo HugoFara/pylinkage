@@ -17,6 +17,9 @@ optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
   - ``Agent`` is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.
   - ``MutableAgent`` is mutable. It may be deprecated/removed if ``Agent`` is satisfactory.
 - Very basic tests cases for a Linkage.
+- Some run configuration files added *for users of PyCharm*:
+  - Run all tests with "All Tests".
+  - Regenerate documentation with "Sphinx Documentation".
 
 ### Changed
 

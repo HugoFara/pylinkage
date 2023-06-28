@@ -16,7 +16,10 @@ You will need to have your own fork for this project if you want to submit pull 
 
 ## Testing
 
-We use unittest. Just run ``python3 -m unittest discover .`` from the main folder.
+We use unittest. You can use it in two ways:
+
+* Just run ``python3 -m unittest discover .`` from the main folder.
+* For users of PyCharm, use the "All Tests" configuration.
 
 ## Release
 
