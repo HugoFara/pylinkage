@@ -1,10 +1,10 @@
-=========
-optimizer
-=========
+============
+optimization
+============
 
-Trials-and-errors and PSO optomizers
-====================================
-.. automodule:: pylinkage.optimizer
+Optimization package
+====================
+.. automodule:: pylinkage.optimization
    :members:
    :undoc-members:
    :show-inheritance:

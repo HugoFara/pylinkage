@@ -140,15 +140,17 @@ def circle_intersect(circle1, circle2, tol=0.0):
 def intersection(obj_1, obj_2, tol=0.0):
     """Intersection of two arbitrary objects.
 
-    The input objects should points or circles.
+    The input objects should be points or circles.
 
-    :param obj_1: 
-    :param obj_2: 
-    :param tol: absolute tolerance to use if provided.
-    (Default value = 0.0)
-    :returns: The intersection
-    :rtype: None | tuple[float, float]
+    :param obj_1: First point or circle
+    :type obj_1: tuple[float, float] | tuple[float, float, float]
+    :param obj_2: Second point or circle
+    :type obj_2: tuple[float, float] | tuple[float, float, float]
+    :param tol: absolute tolerance to use if provided. (Default value = 0.0)
+    :type tol: float
 
+    :returns: The intersection found, if any
+    :rtype: tuple[float, float] | tuple[float, float, float] | None
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:

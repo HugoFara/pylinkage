@@ -1,10 +1,10 @@
-=======
-linkage
-=======
+=========
+interface
+=========
 
 Joint and Linkage definition
 ============================
-.. automodule:: pylinkage.linkage
+.. automodule:: pylinkage.interface
    :members:
    :undoc-members:
    :show-inheritance:

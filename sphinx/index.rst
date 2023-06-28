@@ -22,7 +22,7 @@ Welcome to pylinkage's documentation!
    api/optimizer
    api/utility
    api/visualizer
-   api/exceptions
+   api/collections
 
 .. toctree::
    :maxdepth: 2
