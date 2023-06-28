@@ -11,8 +11,10 @@ from pylinkage.geometry import circle_intersect
 
 
 class TestCircles(unittest.TestCase):
+    """Tests for circles."""
 
     def test_no_inter(self):
+        """Test two circles not intersecting."""
         c1 = (2., 5, 1)
         c2 = (2, 5., 1.0)
         inter = circle_intersect(c1, c2)
@@ -20,6 +22,7 @@ class TestCircles(unittest.TestCase):
         self.assertEqual(inter[0], 3)
 
     def test_radius_ineq(self):
+        """Test two concentric circles of different radi."""
         c1 = (2., 5, 1)
         c2 = (2, 5., 1.4)
         inter = circle_intersect(c1, c2)

@@ -6,6 +6,7 @@ import pylinkage as pl
 
 
 class TestLinkage(unittest.TestCase):
+    """Test cases for linkages."""
     def __init__(self, method_name):
         super().__init__(method_name)
         # Main motor
@@ -23,6 +24,7 @@ class TestLinkage(unittest.TestCase):
         )
 
     def test_definition(self):
+        """Test if a linkage can be defined."""
         # Linkage definition
         my_linkage = pl.Linkage(
             joints=[self.crank, self.pin],
