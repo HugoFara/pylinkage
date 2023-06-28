@@ -46,6 +46,7 @@ iteration.
     - New file ``utils.py`` for ``generate_bounds``.
   - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)
+  - ``source/`` renamed to ``sphinx/`` because it was confusing and only for Sphinx configuration.
 - Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
 
 ### Fixed
