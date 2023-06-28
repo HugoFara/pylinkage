@@ -60,10 +60,14 @@ INIT_COORD = (
 
 
 def param2dimensions(param=DIMENSIONS, flat=False):
-    """
-    Parameters are written in short form due to symmetry.
+    """Expand dimensions them to fit in strider.set_num_constraints.
 
-    This function expands them to fit in strider.set_num_constraints.
+    Dimensions parameters are written in short form due to symmetry.
+
+    :param param: Short form for dimensions (Default value = DIMENSIONS)
+    :param flat: If the output should be a flat list (Default value = False)
+
+    :return: Expanded dimensions
     """
     out = (
         # Static joints (A and Y)
@@ -88,15 +92,14 @@ def param2dimensions(param=DIMENSIONS, flat=False):
 
 
 def complete_strider(constraints, prev):
-    """
-    Take two sequences to define strider linkage.
+    """Take two sequences to define strider linkage.
 
-    Parameters
-    ----------
-    constraints : Union[tuple[float], tuple[tuple[float]]]
-        The sequence of geometrical constraints
-    prev : tuple[tuple[float]]
-        Coordinates to set by default.
+    :param constraints: The sequence of geometrical constraints.
+    :type constraints: tuple[float] | tuple[tuple[float]]
+    :param prev: Coordinates to set by default.
+    :type prev: tuple[tuple[float, float]]
+
+    
     """
     linka = {
         # Fixed points (mechanism body)
@@ -141,18 +144,17 @@ def complete_strider(constraints, prev):
 
 
 def sym_stride_evaluator(linkage, dims, pos):
-    """
-    Give score to each dimension set for symmetric strider.
+    """Give score to each dimension set for symmetric strider.
 
-    Parameters
-    ----------
-    linkage : Linkage
-    dims : tuple
-    pos : tuple
+    :param linkage: Input linkage
+    :type linkage: pylinkage.Linkage
+    :param dims: Dimensions
+    :type dims: tuple
+    :param pos: Initial positions
+    :type pos: tuple
 
-    Returns
-    -------
-
+    :return: Score
+    :rtype: float
     """
     linkage.set_completely(param2dimensions(dims, flat=True), pos)
     points = 12
@@ -176,30 +178,39 @@ def sym_stride_evaluator(linkage, dims, pos):
 
 
 def history_saver(evaluator, history, linkage, dims, pos):
+    """
+    Save the history to a list.
+
+    :param evaluator: Evaluation function
+    :param history: History list
+    :param linkage: Input linkage
+    :param dims: Dimensions
+    :param pos: Initial positions
+
+    """
     score = evaluator(linkage, dims, pos)
     history.append((score, list(dims), pos))
     return score
-
 
 
 def view_swarm_polar(
     linkage, dims=DIMENSIONS, save_each=0, age=300,
     iters=400
 ):
-    """
-    Draw an animation of the swarm in a polar graph.
+    """Draw an animation of the swarm in a polar graph.
 
-    Parameters
-    ----------
-    linkage : Linkage
-    dims : Sized
-    save_each : int | None
-    age : int
-    iters : int
+    :param linkage: Input linkage
+    :type linkage: pylinkage.Linkage
+    :param dims: Dimensions (Default value = DIMENSIONS)
+    :type dims: Sized
+    :param save_each: To save the linkage state (Default value = 0)
+    :type save_each: int | None
+    :param age: Number of agents (Default value = 300)
+    :type age: int
+    :param iters: NUmber of iterations (Default value = 400)
+    :type iters: int
 
-    Returns
-    -------
-
+    
     """
     history = []
     out = pl.particle_swarm_optimization(
@@ -217,6 +228,7 @@ def view_swarm_polar(
     artists = []
 
     def init_polar_repr():
+        """Set the axis for the polar representation."""
         ax = fig.add_subplot(111, projection='polar')
         artists.extend(
             [ax.plot([], [], lw=.5, animated=False)[0] for _ in range(age)]
@@ -230,7 +242,11 @@ def view_swarm_polar(
         return artists
 
     def repr_polar_swarm(current_swarm):
-        """Represent a swarm in a polar graph."""
+        """Represent a swarm in a polar graph.
+
+        :param current_swarm: Swarm of agents
+
+        """
         t = np.linspace(0, 2 * np.pi, len(current_swarm[1][0][1]) + 2)[:-1]
         for line, agent in zip(artists, current_swarm[1]):
             line.set_data(t, agent[1] + [agent[0]])
@@ -272,20 +288,20 @@ def view_swarm_tiled(
     linkage, dims=DIMENSIONS, save_each=0, age=300,
     iters=400
 ):
-    """
-    Represent the final state of the best linkages. Currently broken.
+    """Represent the final state of the best linkages.
 
-    Parameters
-    ----------
-    linkage : Linkage
-    dims : Sized
-    save_each : int | None
-    age : int
-    iters : int
+    :param linkage: Linkage to edit
+    :type linkage: Linkage
+    :param dims: Dimensions (Default value = DIMENSIONS)
+    :type dims: Sized
+    :param save_each: Period of state save (Default value = 0)
+    :type save_each: int | None
+    :param age: Number of agents (Default value = 300)
+    :type age: int
+    :param iters: NUmber of iterations (Default value = 400)
+    :type iters: int
 
-    Returns
-    -------
-
+    
     """
     history = []
 
@@ -342,37 +358,32 @@ def swarm_optimizer(
     linkage, dims=DIMENSIONS, show=False, save_each=0, age=300,
     iters=400, *args
 ):
-    """
-    Optimize linkage geometrically using PSO.
+    """Optimize linkage geometrically using PSO.
 
-    Parameters
-    ----------
-    linkage : pylinkage.linkage.Linkage
-        The linkage to optimize.
-    dims : list[float], optional
-        The dimensions that should vary. The default is param.
-    show : int, optional
-        Type of visualization.
+    :param linkage: The linkage to optimize.
+    :type linkage: pylinkage.linkage.Linkage
+    :param dims: The dimensions that should vary.
+    (Default value = DIMENSIONS).
+    :type dims: list[float]
+    :param show: Type of visualization.
         - 0 for None
         - 1 for polar graph
         - 2 for tiled 2D representation
         The default is False.
-    save_each : int, optional
-        If show is 0, save the image each {save_each} frame. The default is 0.
-    age : int, optional
-        Number of agents to simulate. The default is 300.
-    iters : int, optional
-        Number of iterations to run through. The default is 400.
-    blind_ite : int, optional
-        Number of iterations without evaluation. The default is 200.
-    *args : list
-        Arguments to pass to the particle swarm optimization.
+    :type show: int
+    :param save_each: If show is 0, save the image each {save_each} frame. The default is 0.
+    :type save_each: int
+    :param age: Number of agents to simulate. The default is 300.
+    :type age: int
+    :param iters: Number of iterations to run through. The default is 400.
+    :type iters: int
+    :param blind_ite: Number of iterations without evaluation. The default is 200.
+    :type blind_ite: int
+    :param *args: Arguments to pass to the particle swarm optimization.
+    :type *args: list
 
-    Returns
-    -------
-    list
-        List of best fit linkages.
-
+    :return: List of fittest linkages.
+    :rtype: list
     """
     print("Initial dimensions:", dims)
 
@@ -417,7 +428,15 @@ def swarm_optimizer(
 
 
 def show_optimized(linkage, data, n_show=10, duration=5, symmetric=True):
-    """Show the optimized linkages."""
+    """Show the optimized linkages.
+
+    :param linkage: Linkage to modify.
+    :param data: Linkage data
+    :param n_show: Number of linkages to show (Default value = 10)
+    :param duration: Duration of each animation (Default value = 5)
+    :param symmetric: If the input dimensions should be symmetric (Default value = True)
+
+    """
     for datum in data[:min(len(data), n_show)]:
         if datum[0] <= 0:
             continue
@@ -431,14 +450,12 @@ def show_optimized(linkage, data, n_show=10, duration=5, symmetric=True):
 
 
 def main():
-    """
-    Build and optimize a strider linkage.
-
+    """Build and optimize a strider linkage.
+    
     You can find it at https://www.diywalkers.com/strider-linkage-plans.html
 
-    Returns
-    -------
 
+    
     """
     strider = complete_strider(param2dimensions(DIMENSIONS), INIT_COORD)
     print(
