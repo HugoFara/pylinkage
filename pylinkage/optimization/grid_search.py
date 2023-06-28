@@ -16,13 +16,13 @@ def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
     """Wrapper for tqdm, that let you specify if you want verbosity.
     
     .. deprecated:: 0.6.0
-          `tqdm_verbosity` will be removed in pylinkage 0.6.0, as tqdm can be
+          `tqdm_verbosity` will be removed in pylinkage 0.7.0, as tqdm can be
             disabled with the argument disable=True.
 
     :param iterable: 
     :param verbose:  (Default value = True)
-    :param *args: 
-    :param **kwargs: 
+    :param *args: Ordered args to pass to tqdm
+    :param **kwargs: Keyword args for tqdm
 
     """
     for i in tqdm.tqdm(iterable, disable=not verbose, *args, **kwargs):
@@ -46,8 +46,8 @@ def sequential_variator(center, divisions, bounds):
     :type divisions: int
     :param bounds: 2-uple of minimal then maximal bounds.
     :type bounds: tuple[tuple[float], tuple[float]]
-    :yields: Each element is the list of floats with little variations.
-    :ytype: float
+    :returns: An iterable of all the dimension combinations.
+    :rtype: Generator[float]
     """
     # In the first place, we go in decreasing order to lower bound
     fall = np.linspace(center, bounds[0], int(divisions / 2))
@@ -79,8 +79,8 @@ def fast_variator(divisions, bounds):
     :type divisions: int
     :param bounds: 2-uple of minimal then maximal bounds.
     :type bounds: tuple[tuple[float], tuple[float]]
-    :yields: An iterable of all the dimension combinations.
-    :ytype: float:
+    :returns: An iterable of all the dimension combinations.
+    :rtype: Generator[float]
     """
     lists = (
         iter(np.linspace(low, high, divisions))

@@ -33,17 +33,14 @@ class Linkage:
         """
         Define a linkage, a set of joints.
 
-        Arguments
-        ---------
-        joints : list[Joint]
-            All Joint to be part of the linkage
-        order : list[Joint]
-            Sequence to manually define resolution order for each step.
-            It should be a subset of joints.
-            Automatic computed order is experimental! The default is None.
-        name : str, optional
-            Human-readable name for the Linkage. If None, take the value
-            str(id(self)). The default is None.
+        :param joints: All Joint to be part of the linkage.
+        :param order: Sequence to manually define resolution order for each step.
+        It should be a subset of joints.
+        Automatic computed order is experimental!
+        (Default value = None).
+        :param name: Human-readable name for the Linkage.
+        If None, take the value str(id(self)).
+        (Default value = None).
         """
         self.name = name
         if name is None:

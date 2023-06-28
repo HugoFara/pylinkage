@@ -94,7 +94,7 @@ def circle_intersect(circle1, circle2, tol=0.0):
     :param circle2: second circle
     :type circle2: tuple[float, float, float]
     :param tol: distance under which two points are considered equal (Default value = 0.0)
-    :type circle1: float
+    :type tol: float
     :returns: the intersections of two circles
     :rtype: tuple[int] | tuple[int, float] | tuple[int, float, float]
 
