@@ -13,43 +13,41 @@ from ..collections import MutableAgent
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
-    """
-    Wrapper for tqdm, that let you specify if you want verbosity.
-
+    """Wrapper for tqdm, that let you specify if you want verbosity.
+    
     .. deprecated:: 0.6.0
           `tqdm_verbosity` will be removed in pylinkage 0.6.0, as tqdm can be
             disabled with the argument disable=True.
+
+    :param iterable: 
+    :param verbose:  (Default value = True)
+    :param *args: 
+    :param **kwargs: 
+
     """
     for i in tqdm.tqdm(iterable, disable=not verbose, *args, **kwargs):
         yield i
 
 
 def sequential_variator(center, divisions, bounds):
-    """
-    Return an iterable of each possible variation for the elements.
-
+    """Return an iterable of each possible variation for the elements.
+    
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
-
+    
     Because linkage is not tolerant to violent changes, the order of output
     for the coefficients is very important.
-
+    
     The coefficient is in order: middle → min (step 2), min → middle (step 2),
     middle → max (step 1), so that there is no huge variation.
 
-    Parameters
-    ----------
-    center : sequence of float
-        Elements that should vary.
-    divisions : int
-        Number of subdivisions between `bounds`.
-    bounds : tuple[tuple[float], tuple[float]]
-        2-uple of minimal then maximal bounds.
-
-    Yields
-    ------
-    float
-        Each element is the list of floats with little variations.
-
+    :param center: Elements that should vary.
+    :type center: Iterable[float]
+    :param divisions: Number of subdivisions between `bounds`.
+    :type divisions: int
+    :param bounds: 2-uple of minimal then maximal bounds.
+    :type bounds: tuple[tuple[float], tuple[float]]
+    :yields: Each element is the list of floats with little variations.
+    :ytype: float
     """
     # In the first place, we go in decreasing order to lower bound
     fall = np.linspace(center, bounds[0], int(divisions / 2))
@@ -71,28 +69,18 @@ def sequential_variator(center, divisions, bounds):
 
 
 def fast_variator(divisions, bounds):
-    """
-    Return an iterable of elements' all possibles variations.
-
+    """Return an iterable of elements' all possibles variations.
+    
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
-
+    
     Here the order in the variations is not important.
 
-    Parameters
-    ----------
-    divisions : int
-        Number of subdivisions between `bounds`.
-    bounds : tuple[tuple[float], tuple[float]]
-        2-uple of minimal then maximal bounds.
-
-    Yields
-    ------
-    float
-        An iterable of all the dimension combinations.
-
-    See Also
-    --------
-
+    :param divisions: Number of subdivisions between `bounds`.
+    :type divisions: int
+    :param bounds: 2-uple of minimal then maximal bounds.
+    :type bounds: tuple[tuple[float], tuple[float]]
+    :yields: An iterable of all the dimension combinations.
+    :ytype: float:
     """
     lists = (
         iter(np.linspace(low, high, divisions))
@@ -110,32 +98,27 @@ def trials_and_errors_optimization(
         divisions=5,
         **kwargs
 ):
-    """
-    Return the list of dimensions optimizing eval_func.
-
+    """Return the list of dimensions optimizing eval_func.
+    
     Each dimension set has a score, which is added in an array of n_results
     results, contains the linkages with the best scores in a maximization problem
     by default.
 
-    Parameters
-    ----------
-    eval_func : callable
-        Evaluation function.
+    :param eval_func: Evaluation function.
         Input: (linkage, num_constraints, initial_coordinates).
         Output: score (float)
-    linkage : pylinkage.linkage.Linkage
-        Linkage to evaluate.
-    parameters : list, optional
-        Parameters that will be modified. Geometric constraints.
+    :type eval_func: Callable
+    :param linkage: Linkage to evaluate.
+    :type linkage: pylinkage.linkage.Linkage
+    :param parameters: Parameters that will be modified. Geometric constraints.
         If not, it will be assigned tuple(linkage.get_num_constraints()).
         The default is None.
-    n_results : int, optional
-        Number of the best candidates to return. The default is 10.
-    divisions : int, optional
-        Number of subdivisions between bounds. The default is 5.
-    **kwargs : dict, optional
-        Extra arguments for the optimization.
-
+    :type parameters: list, optional
+    :param n_results: Number of the best candidates to return. The default is 10.
+    :type n_results: int, optional
+    :param divisions: Number of subdivisions between bounds. The default is 5.
+    :type divisions: int, optional
+    :param **kwargs: Extra arguments for the optimization.
         bounds : tuple[tuple], optional
             A 2-uple (tuple of two elements), containing the minimal and maximal
             bounds. If None, we will use parameters as a center.
@@ -149,13 +132,11 @@ def trials_and_errors_optimization(
             The default is `True`.
         sequential : bool
             If True, two consecutive linkages will have a small variation.
+    :type **kwargs: dict, optional
 
-    Returns
-    -------
-    results : list of MutableAgent
-        3-uplet of score, dimensions and initial position for each Linkage to
+    :returns: 3-uplet of score, dimensions and initial position for each Linkage to
         return. Its size is {n_results}.
-
+    :rtype: list[MutableAgent]
     """
     if parameters is None:
         center = np.array(linkage.get_num_constraints())

@@ -9,9 +9,8 @@ from ..geometry import sqr_dist, circle_intersect, cyl_to_cart
 
 
 class Joint(abc.ABC):
-    """
-    Geometric constraint expressed by two joints.
-
+    """Geometric constraint expressed by two joints.
+    
     Abstract class should always be inherited.
     """
 
@@ -62,7 +61,11 @@ class Joint(abc.ABC):
         return self.x, self.y
 
     def set_coord(self, *args):
-        """Take a sequence or two scalars, and assign them to object x, y."""
+        """Take a sequence or two scalars, and assign them to object x, y.
+
+        :param *args: 
+
+        """
         if len(args) == 1:
             self.x, self.y = args[0]
         else:
@@ -84,9 +87,8 @@ class Joint(abc.ABC):
 
 
 class Static(Joint):
-    """
-    Special case of Joint that should not move.
-
+    """Special case of Joint that should not move.
+    
     Mostly used for the frame.
     """
 
@@ -116,15 +118,27 @@ class Static(Joint):
         return tuple()
 
     def set_constraints(self, *args):
-        """Do nothing, for consistency only."""
+        """Do nothing, for consistency only.
+
+        :param *args:
+
+        """
         pass
 
     def set_anchor0(self, joint):
-        """First joint anchor."""
+        """First joint anchor.
+
+        :param joint: 
+
+        """
         self.joint0 = joint
 
     def set_anchor1(self, joint):
-        """Second joint anchor."""
+        """Second joint anchor.
+
+        :param joint: 
+
+        """
         self.joint1 = joint
 
 
@@ -162,9 +176,8 @@ class Fixed(Joint):
         self.r = distance
 
     def reload(self):
-        """
-        Compute point coordinates.
-
+        """Compute point coordinates.
+        
         We know point position relative to its two parents, which gives a local
         space.
         We know the orientation of local space, so we can solve the
@@ -187,16 +200,31 @@ class Fixed(Joint):
         return self.r, self.angle
 
     def set_constraints(self, distance=None, angle=None):
-        """Set geometric constraints."""
+        """Set geometric constraints.
+
+        :param distance:  (Default value = None)
+        :param angle:  (Default value = None)
+
+        """
         self.r, self.angle = distance or self.r, angle or self.angle
 
     def set_anchor0(self, joint, distance=None, angle=None):
-        """First joint anchor and characteristics."""
+        """First joint anchor and characteristics.
+
+        :param joint: 
+        :param distance:  (Default value = None)
+        :param angle:  (Default value = None)
+
+        """
         self.joint0 = joint
         self.set_constraints(distance, angle)
 
     def set_anchor1(self, joint):
-        """Second joint anchor."""
+        """Second joint anchor.
+
+        :param joint: 
+
+        """
         self.joint1 = joint
 
 
@@ -242,7 +270,11 @@ class Pivot(Joint):
         """
         Return the first link between self and parent as a circle.
 
-        Circle is a tuple (abscisse, ordinate, radius).
+        :param joint: Parent joint
+        :type joint: Joint
+        :returns: Circle is a tuple (abscisse, ordinate, radius).
+        :rtype: tuple[float, float, float]
+
         """
         if self.joint0 is joint:
             return joint.x, joint.y, self.r0
@@ -299,43 +331,36 @@ class Pivot(Joint):
         return self.r0, self.r1
 
     def set_constraints(self, distance0=None, distance1=None):
-        """Set geometric constraints."""
+        """Set geometric constraints.
+
+        :param distance0:  (Default value = None)
+        :param distance1:  (Default value = None)
+
+        """
         self.r0, self.r1 = distance0 or self.r0, distance1 or self.r1
 
     def set_anchor0(self, joint, distance=None):
-        """
-        Set the first anchor for this Joint.
+        """Set the first anchor for this Joint.
 
-        Parameters
-        ----------
-        joint : Union[Joint, tuple[float]]
-            The joint to use as anchor.
-        distance : float, optional
-            Distance to keep constant from the anchor. The default is None.
+        :param joint: The joint to use as anchor.
+        :type joint: Joint | tuple[float]
+        :param distance: Distance to keep constant from the anchor. The default is None.
+        :type distance: float
 
-        Returns
-        -------
-        None.
-
+        
         """
         self.joint0 = joint
         self.set_constraints(distance0=distance)
 
     def set_anchor1(self, joint, distance=None):
-        """
-        Set the second anchor for this Joint.
+        """Set the second anchor for this Joint.
 
-        Parameters
-        ----------
-        joint : Union[Joint, tuple[float]]
-            The joint to use as anchor.
-        distance : float, optional
-            Distance to keep constant from the anchor. The default is None.
+        :param joint: The joint to use as anchor.
+        :type joint: Joint | tuple[float]
+        :param distance: Distance to keep constant from the anchor. The default is None.
+        :type distance: float
 
-        Returns
-        -------
-        None.
-
+        
         """
         self.joint1 = joint
         self.set_constraints(distance1=distance)
@@ -378,7 +403,12 @@ class Crank(Joint):
         self.r, self.angle = distance, angle
 
     def reload(self, dt=1):
-        """Make a step of crank."""
+        """Make a step of crank.
+
+        :param dt: Fraction of step to do (Default value = 1)
+        :type dt: float
+
+        """
         if self.joint0 is None:
             return
         if None in self.joint0.coord():
@@ -398,10 +428,20 @@ class Crank(Joint):
         return (self.r,)
 
     def set_constraints(self, distance=None, *args):
-        """Set geometric constraints, only self.r is affected."""
+        """Set geometric constraints, only self.r is affected.
+
+        :param distance:  (Default value = None)
+        :param *args: 
+
+        """
         self.r = distance or self.r
 
     def set_anchor0(self, joint, distance=None):
-        """First joint anchor and fixed distance."""
+        """First joint anchor and fixed distance.
+
+        :param joint:
+        :param distance:  (Default value = None)
+
+        """
         self.joint0 = joint
         self.set_constraints(distance=distance)

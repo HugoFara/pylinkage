@@ -9,33 +9,31 @@ from pylinkage.interface.exceptions import UnbuildableError
 
 
 def kinematic_default_test(func, error_penalty):
-    """
-    Standard run for any linkage before a complete fitness evaluation.
-
+    """Standard run for any linkage before a complete fitness evaluation.
+    
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function.
 
-    Parameters
-    ----------
-        func : callable
-            Fitness function to be decorated.
-        error_penalty : float
-            Penalty value for unbuildable linkage. Common values include
+    :param func: Fitness function to be decorated.
+    :type func: Callable
+    :param error_penalty: Penalty value for unbuildable linkage. Common values include
             float('inf') and 0.
+    :type error_penalty: float
+
+    
     """
     def wrapper(linkage, params, init_pos=None):
-        """
-        Decorated function.
+        """Decorated function.
 
-        Parameters
-        ----------
-        linkage : pylinkage.linkage.Linkage
-            The linkage to optimize.
-        params : tuple[float]
-            Geometric constraints to pass to linkage.set_num_constraints.
-        init_pos : tuple[tuple[float]]
-            List of initial positions for the joints. If None it will be
-            redefined at each successful iteration. The default is None.
+        :param linkage: The linkage to optimize.
+        :type linkage: pylinkage.linkage.Linkage
+        :param params: Geometric constraints to pass to linkage.set_num_constraints.
+        :type params: tuple[float]
+        :param init_pos: List of initial positions for the joints. If None it will be
+            redefined at each successful iteration. (Default value = None)
+        :type init_pos: tuple[tuple[float]]
+
+        
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
@@ -60,7 +58,7 @@ def kinematic_default_test(func, error_penalty):
         except UnbuildableError:
             return error_penalty
         else:
-            # We redefine initial position if requested
+            # We redefine the initial position if requested
             if init_pos is None:
                 init_pos = linkage.get_coords()
             return func(
@@ -68,31 +66,30 @@ def kinematic_default_test(func, error_penalty):
             )
     return wrapper
 
-def kinematic_maximization(func):
-    """
-    Standard run for any linkage before a complete fitness evaluation.
 
+def kinematic_maximization(func):
+    """Standard run for any linkage before a complete fitness evaluation.
+    
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is -float('inf')
 
-    Parameters
-    ----------
-        func : callable
-            Fitness function to be decorated.
+    :param func: Fitness function to be decorated.
+    :type func: Callable
+
+    
     """
     return kinematic_default_test(func, -float('inf'))
 
 
 def kinematic_minimization(func):
-    """
-    Standard run for any linkage before a complete fitness evaluation.
-
+    """Standard run for any linkage before a complete fitness evaluation.
+    
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is float('inf')
 
-    Parameters
-    ----------
-        func : callable
-            Fitness function to be decorated.
+    :param func: Fitness function to be decorated.
+    :type func: Callable
+
+    
     """
     return kinematic_default_test(func, float('inf'))
