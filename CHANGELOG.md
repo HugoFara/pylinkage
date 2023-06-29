@@ -56,6 +56,7 @@ iteration.
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
+- ``Pivot.reload`` was returning arbitrary point when we had an infinity of solutions. 
 
 ### Deprecated
 

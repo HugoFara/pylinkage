@@ -260,7 +260,15 @@ class Pivot(Joint):
         self.r0, self.r1 = distance0, distance1
 
     def __get_joint_as_circle__(self, index):
-        """Return reference as (ref.x, ref.y, ref.distance)."""
+        """
+        A circle representing the reference anchor as (ref.x, ref.y, ref.distance).
+
+        :param index: Get circle from the first of the second anchor.
+        :type index: int
+
+        :return: Constraint as a circle
+        :rtype: tuple[float, float, float]
+        """
         if index == 0:
             return self.joint0.x, self.joint0.y, self.r0
         if index == 1:
@@ -309,8 +317,9 @@ class Pivot(Joint):
             if coco[0] == 1:
                 self.x, self.y = coco[1]
             elif coco[0] == 2:
-                if sqr_dist(self.coord(), coco[1]
-                            ) < sqr_dist(self.coord(), coco[2]):
+                if sqr_dist(
+                    self.coord(), coco[1]
+                ) < sqr_dist(self.coord(), coco[2]):
                     self.x, self.y = coco[1]
                 else:
                     self.x, self.y = coco[2]
@@ -320,12 +329,8 @@ class Pivot(Joint):
                     "solutions, position will be arbitrary"
                 )
                 # We project position on circle of possible positions
-                vect = (
-                    (j-i) / abs(j-i) for i, j in zip(coco[1], self.coord())
-                )
-                self.x, self.y = [
-                    i + j * coco[1][2] for i, j in zip(coco[1], vect)
-                ]
+                angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
+                self.x, self.y = cyl_to_cart(self.r0, angle, self.joint0.coord())
 
     def get_constraints(self):
         """Return the two constraining distances of this joint."""
