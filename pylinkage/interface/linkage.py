@@ -12,10 +12,10 @@ from math import gcd, tau
 from .exceptions import HypostaticError
 from .joint import (
     Static,
-    Pivot,
     Crank,
     Fixed
 )
+from .revolute_joint import Pivot
 
 
 class Linkage:

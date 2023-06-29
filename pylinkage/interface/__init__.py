@@ -7,8 +7,8 @@ from .exceptions import (
 )
 from .joint import (
     Static,
-    Pivot,
     Crank,
     Fixed
 )
+from .revolute_joint import Pivot
 from .linkage import Linkage

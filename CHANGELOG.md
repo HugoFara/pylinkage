@@ -40,6 +40,7 @@ iteration.
   - New package ``pylinkage/interface/``: 
     - ``pylinkage/linkage.py`` separated and inserted in this package.
       - Joints definition are in ``joint.py``.
+      - Revolute joint definition in ``revolute_joint.py``.
       - Linkage definition is in ``linkage.py``.
     - ``pylinkage/exceptions.py`` go to ``interface/``.
   - New package ``pylinkage/optimization/`` 

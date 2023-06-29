@@ -11,6 +11,16 @@ Joint definition
    :private-members:
    :special-members: __init__
 
+
+Revolute joint definition
+=========================
+.. automodule:: pylinkage.interface.revolute_joint
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
+   :special-members: __init__
+
 Linkage definition
 ==================
 .. automodule:: pylinkage.interface.linkage

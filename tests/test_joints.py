@@ -9,7 +9,8 @@ Created on Fri Apr 16 17:19:47 2021
 import unittest
 import math
 from pylinkage import UnbuildableError
-from pylinkage.interface.joint import Pivot, Fixed
+from pylinkage.interface.joint import Fixed
+from pylinkage.interface.revolute_joint import Pivot
 
 
 class TestPivot(unittest.TestCase):
