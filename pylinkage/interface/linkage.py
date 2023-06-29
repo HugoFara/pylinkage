@@ -15,7 +15,7 @@ from .joint import (
     Crank,
     Fixed
 )
-from .revolute_joint import Pivot
+from .revolute_joint import Revolute
 
 
 class Linkage:
@@ -136,7 +136,7 @@ class Linkage:
             elif isinstance(j, Crank):
                 solids += 1
                 kinematic_undetermined += 2
-            elif isinstance(j, Pivot):
+            elif isinstance(j, Revolute):
                 solids += 1
                 # A Pivot Joint creates at least two pivots
                 kinematic_undetermined += 4
@@ -213,7 +213,7 @@ class Linkage:
                     pass
                 elif isinstance(joint, Crank):
                     joint.set_constraints(next(dispatcher))
-                elif isinstance(joint, (Fixed, Pivot)):
+                elif isinstance(joint, (Fixed, Revolute)):
                     joint.set_constraints(next(dispatcher), next(dispatcher))
         else:
             for joint, constraint in zip(self.joints, constraints):

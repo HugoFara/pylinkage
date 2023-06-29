@@ -119,8 +119,8 @@ def complete_strider(constraints, prev):
         "C": pl.Crank(joint0=linka["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)")
     })
     linka.update({
-        "D": pl.Pivot(joint0=linka["B_p"], joint1=linka["C"], name="Left knee link (D)"),
-        "E": pl.Pivot(joint0=linka["B"], joint1=linka["C"], name="Right knee link (E)")
+        "D": pl.Revolute(joint0=linka["B_p"], joint1=linka["C"], name="Left knee link (D)"),
+        "E": pl.Revolute(joint0=linka["B"], joint1=linka["C"], name="Right knee link (E)")
     })
     linka.update({
         # F is fixed relative to C and E
@@ -129,8 +129,8 @@ def complete_strider(constraints, prev):
         "G": pl.Fixed(joint0=linka["C"], joint1=linka["D"], name='Right ankle link (G)')
     })
     linka.update({
-        "H": pl.Pivot(joint0=linka["D"], joint1=linka["F"], name="Left foot (H)"),
-        "I": pl.Pivot(joint0=linka["E"], joint1=linka["G"], name="Right foot (I)")
+        "H": pl.Revolute(joint0=linka["D"], joint1=linka["F"], name="Left foot (H)"),
+        "I": pl.Revolute(joint0=linka["E"], joint1=linka["G"], name="Right foot (I)")
     })
     # Mechanism definition
     strider = pl.Linkage(

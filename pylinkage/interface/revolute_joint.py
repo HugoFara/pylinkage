@@ -12,32 +12,45 @@ from .exceptions import UnbuildableError
 from .joint import Joint
 
 
-class Pivot(Joint):
-    """Center of pivot joint."""
+class Revolute(Joint):
+    """Center of a revolute joint."""
 
     __slots__ = "r0", "r1"
 
-    def __init__(self, x=0, y=0, joint0=None, joint1=None, distance0=None,
-                 distance1=None, name=None):
+    def __init__(
+            self,
+            x=0,
+            y=0,
+            joint0=None,
+            joint1=None,
+            distance0=None,
+            distance1=None,
+            name=None
+    ):
         """
         Set point position, parents, and if it is fixed for this turn.
 
-        Arguments
-        ---------
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
-        joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
-        joint1 : Union[Joint, tuple[float]], optional
-            Other pivot joint linked. The default is None.
-        distance0 : float, optional
-            Distance from joint0 to the current Joint. The default is None.
-        distance1 : float, optional
-            Distance from joint1 to the current Joint. The default is None.
+        :param x: Position on the horizontal axis.
+            (Default value = 0).
+        :type x: float
+        :param y: Position on vertical axis.
+            (Default value = 0).
+        :type y: float
+        :param joint0: Linked pivot joint 0 (geometric constraints).
+            (Default value = None).
+        :type joint0: Joint
+        :param joint1: Linked pivot joint 1 (geometric constraints).
+            (Default value = None).
+        :type joint1: Joint
+        :param distance0: Distance from joint0 to the current Joint.
+            (Default value = None).
+        :type distance0: float
+        :param distance1: Distance from joint1 to the current Joint.
+            (Default value = None).
+        :type distance1: float
+        :param name: Friendly name for human readability.
+            (Default value = None).
+        :type name: str
         """
         super().__init__(x, y, joint0, joint1, name)
         self.r0, self.r1 = distance0, distance1
@@ -62,9 +75,9 @@ class Pivot(Joint):
         """
         Return the first link between self and parent as a circle.
 
-        :param joint: Parent joint
+        :param joint: Parent joint you want to use
         :type joint: Joint
-        :returns: Circle is a tuple (abscisse, ordinate, radius).
+        :returns: Circle is a tuple (abscissa, ordinate, radius).
         :rtype: tuple[float, float, float]
 
         """
@@ -122,8 +135,10 @@ class Pivot(Joint):
     def set_constraints(self, distance0=None, distance1=None):
         """Set geometric constraints.
 
-        :param distance0:  (Default value = None)
-        :param distance1:  (Default value = None)
+        :param distance0: Distance to the first reference (Default value = None)
+        :type distance0: float
+        :param distance1: Distance to the second reference (Default value = None)
+        :type distance1: float
 
         """
         self.r0, self.r1 = distance0 or self.r0, distance1 or self.r1
@@ -153,3 +168,59 @@ class Pivot(Joint):
         """
         self.joint1 = joint
         self.set_constraints(distance1=distance)
+
+
+class Pivot(Revolute):
+    """
+    Revolute Joint definition.
+
+    .. deprecated :: 0.6.0
+        This class has been de@recated in favor of `Revolute` which has a standard name.
+        It will be removed in PyLinkage 0.7.0.
+    """
+
+    def __init__(
+            self,
+            x=0,
+            y=0,
+            joint0=None,
+            joint1=None,
+            distance0=None,
+            distance1=None,
+            name=None
+    ):
+        """
+        Set point position, parents, and if it is fixed for this turn.
+
+        :param x: Position on the horizontal axis.
+            (Default value = 0).
+        :type x: float
+        :param y: Position on vertical axis.
+            (Default value = 0).
+        :type y: float
+        :param joint0: Linked pivot joint 0 (geometric constraints).
+            (Default value = None).
+        :type joint0: Joint
+        :param joint1: Linked pivot joint 1 (geometric constraints).
+            (Default value = None).
+        :type joint1: Joint
+        :param distance0: Distance from joint0 to the current Joint.
+            (Default value = None).
+        :type distance0: float
+        :param distance1: Distance from joint1 to the current Joint.
+            (Default value = None).
+        :type distance1: float
+        :param name: Friendly name for human readability.
+            (Default value = None).
+        :type name: str
+        """
+        warnings.warn("The Pivot class is deprecated in favor of the Revolute class.")
+        super().__init__(
+            x=x,
+            y=y,
+            joint0=joint0,
+            joint1=joint1,
+            distance0=distance0,
+            distance1=distance1,
+            name=name
+        )

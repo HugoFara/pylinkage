@@ -10,5 +10,5 @@ from .joint import (
     Crank,
     Fixed
 )
-from .revolute_joint import Pivot
+from .revolute_joint import Revolute, Pivot
 from .linkage import Linkage

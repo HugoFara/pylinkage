@@ -24,6 +24,7 @@ from .interface import (
     UnbuildableError,
     HypostaticError,
     Static,
+    Revolute,
     Pivot,
     Crank,
     Fixed,

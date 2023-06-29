@@ -63,6 +63,9 @@ iteration.
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
 - ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
+- The ``Pivot`` class is deprecated in favor of the ``Revolute`` class. 
+The name "Pivot joint" is not standard. 
+Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 
 ## [0.5.3] - 2023-06-23
 

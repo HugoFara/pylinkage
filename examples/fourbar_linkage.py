@@ -27,7 +27,7 @@ def define_linkage():
         name="B"
     )
     # Close the loop
-    pin = pl.Pivot(
+    pin = pl.Revolute(
         3, 2,
         joint0=crank, joint1=(3, 0),
         distance0=3, distance1=1, name="C"
