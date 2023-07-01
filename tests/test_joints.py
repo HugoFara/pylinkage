@@ -26,7 +26,7 @@ class TestPivot(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (.5, math.sqrt(.75)))
+        self.assertEqual((.5, math.sqrt(.75)), pivot3.coord())
 
     def test_under_intersect(self):
         """Under intersect test."""
@@ -36,7 +36,7 @@ class TestPivot(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (.5, -math.sqrt(.75)))
+        self.assertEqual((.5, -math.sqrt(.75)), pivot3.coord())
 
     def test_limit_intersect(self):
         """Test system almost breaking."""
@@ -46,7 +46,7 @@ class TestPivot(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (1, 0))
+        self.assertEqual((1, 0), pivot3.coord())
 
     def test_no_intersect(self):
         """Test system almost breaking."""
@@ -72,7 +72,7 @@ class TestRevolute(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (.5, math.sqrt(.75)))
+        self.assertEqual((.5, math.sqrt(.75)), pivot3.coord())
 
     def test_under_intersect(self):
         """Under intersect test."""
@@ -82,7 +82,7 @@ class TestRevolute(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (.5, -math.sqrt(.75)))
+        self.assertEqual((.5, -math.sqrt(.75)), pivot3.coord())
 
     def test_limit_intersect(self):
         """Test system almost breaking."""
@@ -92,7 +92,7 @@ class TestRevolute(unittest.TestCase):
             distance0=1, distance1=1
         )
         pivot3.reload()
-        self.assertEqual(pivot3.coord(), (1, 0))
+        self.assertEqual((1, 0), pivot3.coord())
 
     def test_no_intersect(self):
         """Test system almost breaking."""
@@ -117,7 +117,7 @@ class TestFixed(unittest.TestCase):
             joint0=self.pivot1, joint1=pivot2, angle=0, distance=1
         )
         fixed.reload()
-        self.assertEqual(fixed.coord(), (1, 0))
+        self.assertEqual((1, 0), fixed.coord())
 
 
 if __name__ == '__main__':

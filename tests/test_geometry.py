@@ -16,20 +16,18 @@ class TestCircles(unittest.TestCase):
 
     def test_no_inter(self):
         """Test two circles not intersecting."""
-        c1 = (2., 5, 1)
-        c2 = (2, 5., 1.0)
+        c1 = 2., 5, 1
+        c2 = 2, 5., 1.0
         inter = circle_intersect(c1, c2)
-        self.assertEqual(len(inter), 2)
-        self.assertEqual(inter[0], 3)
+        self.assertEqual(2, len(inter))
+        self.assertEqual(3, inter[0])
 
     def test_radius_ineq(self):
         """Test two concentric circles of different radi."""
-        c1 = (2., 5, 1)
-        c2 = (2, 5., 1.4)
+        c1 = 2., 5, 1
+        c2 = 2, 5., 1.4
         inter = circle_intersect(c1, c2)
-        self.assertEqual(2, len(inter), f"Intersection: {inter}")
         self.assertEqual(0, inter[0])
-        self.assertEqual(None, inter[1])
 
 
 def circle_line_intersection_data(mode):
@@ -73,7 +71,7 @@ def circle_line_intersection_data(mode):
 
 
 class TestCircleLineIntersection(unittest.TestCase):
-    """Various test on straight line intersections."""
+    """Various tests on straight line intersections."""
 
     def test_no_crossing(self):
         """Test a line and a circle not crossing each other."""

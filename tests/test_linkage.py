@@ -31,7 +31,7 @@ class TestLinkage(unittest.TestCase):
             order=[self.crank, self.pin],
             name="My four-bar linkage"
         )
-        self.assertTupleEqual(my_linkage.joints, (self.crank, self.pin))
+        self.assertTupleEqual((self.crank, self.pin), my_linkage.joints)
 
 
 if __name__ == '__main__':
