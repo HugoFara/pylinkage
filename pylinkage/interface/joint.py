@@ -3,8 +3,10 @@ Definition of the different joints used for pylinkage.
 """
 import abc
 from math import atan2
-from ..geometry import cyl_to_cart
-from .exceptions import HypostaticError
+from ..geometry import (
+    sqr_dist, cyl_to_cart, circle_line_intersection, line_from_points
+)
+from .exceptions import HypostaticError, UnbuildableError
 
 
 class Joint(abc.ABC):
@@ -309,3 +311,66 @@ class Crank(Joint):
         """
         self.joint0 = joint
         self.set_constraints(distance=distance)
+
+
+class Linear(Joint):
+    """Define a point constrained by a prismatic pair and a revolute pair."""
+
+    __slots__ = "r0", "joint2"
+
+    def __init__(
+            self, x=0, y=0,
+            joint0=None, joint1=None, joint2=None,
+            distance0=None, name=None
+    ):
+        """
+        Set point position, parents, and if it is fixed for this turn.
+
+        Arguments
+        ---------
+        x : float, optional
+            Position on horizontal axis. The default is 0.
+        y : float, optional
+            Position on vertical axis. The default is O.
+        name : str, optional
+            Friendly name for human readability. The default is None.
+        joint0 : Union[Joint, tuple[float]], optional
+            Linked pivot joint 1 (geometric constraints). The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            First joint or point defining the axis. The default is None.
+        joint1 : Union[Joint, tuple[float]], optional
+            Second joint or point defining the axis. The default is None.
+        distance0 : float, optional
+            Distance from joint0 to the current Joint. The default is None.
+        """
+        super().__init__(x, y, joint0, joint1, name)
+        self.r0 = distance0
+        self.joint2 = joint2
+
+    def reload(self):
+        """Compute position of pivot joint, with the three linked joints."""
+        positions = circle_line_intersection(
+            (*self.joint0.coord(), self.r0),
+            line_from_points(self.joint1.coord(), self.joint2.coord())
+        )
+        if len(positions) == 0:
+            raise UnbuildableError(self)
+        elif len(positions) == 1:
+            self.x, self.y = positions[0]
+        else:
+            # Got to the nearer point
+            if (
+                    sqr_dist(self.coord(), positions[0]) <
+                    sqr_dist(self.coord(), positions[1])
+            ):
+                self.x, self.y = positions[0]
+            else:
+                self.x, self.y = positions[1]
+
+    def get_constraints(self):
+        """Return the only distance constraint for this joint."""
+        return tuple([self.r0])
+
+    def set_constraints(self, distance0=None):
+        """Set the only distance constraint for this joint."""
+        self.r0 = distance0 or self.r0

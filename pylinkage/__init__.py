@@ -25,6 +25,7 @@ from .interface import (
     HypostaticError,
     Static,
     Revolute,
+    Linear,
     Pivot,
     Crank,
     Fixed,
