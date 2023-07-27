@@ -34,7 +34,7 @@ extensions = [
     # Use docstrings
     'sphinx.ext.autodoc',
     # Useful for markdown integration
-    'm2r2',
+    'myst_parser',
     'sphinx.ext.githubpages'
 ]
 

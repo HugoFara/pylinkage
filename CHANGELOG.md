@@ -54,8 +54,11 @@ iteration.
   - From the user perspective, no change (execution *may* be a bit faster)
   - ``source/`` renamed to ``sphinx/`` because it was confusing and only for Sphinx configuration.
 - Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
-- ``__secant_circles_intersections__`` renamed to
-``secant_circles_intersections`` in ``geometry.py``.
+- ``__secant_circles_intersections__`` renamed to ``secant_circles_intersections`` in 
+``geometry.py``.
+- Documenation:
+  - Markdown-to-reST conversion is handled by [MyST](https://myst-parser.readthedocs.io/en/latest/index.html), previously [m2r2](https://pypi.org/project/m2r2/).
+  - sphinx updated to 7.1.0.
 
 ### Fixed
 
@@ -69,12 +72,16 @@ iteration.
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
 - ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
-- The ``Pivot`` class is deprecated in favor of the ``Revolute`` class. 
+- The ``Pivot`` class is deprecated in favor of the ``Revolute`` class.
 The name "Pivot joint" is not standard. 
 Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
-- The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage`` 
-(linkage.py)
+- The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage``
+(linkage.py).
 
+### Security
+
+- sphinx was updated to 6+ had a security issue because of the version of jQuery used. 
+We now use sphinx 7.1.0. 
 
 ## [0.5.3] - 2023-06-23
 
