@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>interface &mdash; pylinkage 0.5.3 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -89,19 +91,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Joint.y"><code class="docutils literal notranslate"><span class="pre">Joint.y</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.interface.joint.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.__init__"><code class="docutils literal notranslate"><span class="pre">Pivot.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot._abc_impl"><code class="docutils literal notranslate"><span class="pre">Pivot._abc_impl</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.circle"><code class="docutils literal notranslate"><span class="pre">Pivot.circle()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.get_constraints"><code class="docutils literal notranslate"><span class="pre">Pivot.get_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.r0"><code class="docutils literal notranslate"><span class="pre">Pivot.r0</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.r1"><code class="docutils literal notranslate"><span class="pre">Pivot.r1</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.reload"><code class="docutils literal notranslate"><span class="pre">Pivot.reload()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Pivot.set_anchor0()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Pivot.set_anchor1()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Pivot.set_constraints"><code class="docutils literal notranslate"><span class="pre">Pivot.set_constraints()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#pylinkage.interface.joint.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Static.__init__"><code class="docutils literal notranslate"><span class="pre">Static.__init__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Static._abc_impl"><code class="docutils literal notranslate"><span class="pre">Static._abc_impl</span></code></a></li>
@@ -110,6 +99,29 @@
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Static.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor0()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Static.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor1()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.joint.Static.set_constraints"><code class="docutils literal notranslate"><span class="pre">Static.set_constraints()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.interface.revolute_joint">Revolute joint definition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Pivot.__init__"><code class="docutils literal notranslate"><span class="pre">Pivot.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Pivot._abc_impl"><code class="docutils literal notranslate"><span class="pre">Pivot._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Pivot.r0"><code class="docutils literal notranslate"><span class="pre">Pivot.r0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Pivot.r1"><code class="docutils literal notranslate"><span class="pre">Pivot.r1</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute"><code class="docutils literal notranslate"><span class="pre">Revolute</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.__init__"><code class="docutils literal notranslate"><span class="pre">Revolute.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute._abc_impl"><code class="docutils literal notranslate"><span class="pre">Revolute._abc_impl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.circle"><code class="docutils literal notranslate"><span class="pre">Revolute.circle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.get_constraints"><code class="docutils literal notranslate"><span class="pre">Revolute.get_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.r0"><code class="docutils literal notranslate"><span class="pre">Revolute.r0</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.r1"><code class="docutils literal notranslate"><span class="pre">Revolute.r1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.reload"><code class="docutils literal notranslate"><span class="pre">Revolute.reload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Revolute.set_anchor0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Revolute.set_anchor1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute.set_constraints"><code class="docutils literal notranslate"><span class="pre">Revolute.set_constraints()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -157,6 +169,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
 </ul>
 
         </div>
@@ -184,21 +197,21 @@
            <div itemprop="articleBody">
              
   <section id="interface">
-<h1>interface<a class="headerlink" href="#interface" title="Permalink to this heading"></a></h1>
+<h1>interface<a class="headerlink" href="#interface" title="Link to this heading"></a></h1>
 <section id="module-pylinkage.interface.joint">
-<span id="joint-definition"></span><h2>Joint definition<a class="headerlink" href="#module-pylinkage.interface.joint" title="Permalink to this heading"></a></h2>
+<span id="joint-definition"></span><h2>Joint definition<a class="headerlink" href="#module-pylinkage.interface.joint" title="Link to this heading"></a></h2>
 <p>Definition of the different joints used for pylinkage.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
 <p>Define a crank joint.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.__init__" title="Link to this definition"></a></dt>
 <dd><p>Define a crank (circular motor).</p>
 <section id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h3>
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">float, optional</span></dt><dd><p>initial horizontal position, won’t be used thereafter.
 The default is None.</p>
@@ -218,35 +231,35 @@ The default is None.</p>
 </dl>
 </section>
 <section id="returns">
-<h3>Returns<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h3>
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
 <p>None.</p>
 </section>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Crank._abc_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Crank._abc_impl" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#pylinkage.interface.joint.Crank.angle" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#pylinkage.interface.joint.Crank.angle" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.get_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.get_constraints" title="Link to this definition"></a></dt>
 <dd><p>Return the distance to the center of rotation.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.r">
-<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#pylinkage.interface.joint.Crank.r" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#pylinkage.interface.joint.Crank.r" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.reload" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.reload" title="Link to this definition"></a></dt>
 <dd><p>Make a step of crank.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -257,12 +270,12 @@ The default is None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.set_anchor0" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.set_anchor0" title="Link to this definition"></a></dt>
 <dd><p>First joint anchor and fixed distance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> – </p></li>
+<li><p><strong>joint</strong></p></li>
 <li><p><strong>distance</strong> – (Default value = None)</p></li>
 </ul>
 </dd>
@@ -271,7 +284,7 @@ The default is None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Crank.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.set_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Crank.set_constraints" title="Link to this definition"></a></dt>
 <dd><p>Set geometric constraints, only self.r is affected.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -288,15 +301,15 @@ The default is None.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
 <p>Define a joint using parents locations only, with no ambiguity.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create a point, of position fully defined by its two references.</p>
 <section id="arguments">
-<h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this heading"></a></h3>
+<h3>Arguments<a class="headerlink" href="#arguments" title="Link to this heading"></a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">float, optional</span></dt><dd><p>Position on horizontal axis. The default is 0.</p>
 </dd>
@@ -320,28 +333,28 @@ order. The default is None.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Fixed._abc_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Fixed._abc_impl" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.angle">
-<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.angle" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">angle</span></span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.angle" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.get_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.get_constraints" title="Link to this definition"></a></dt>
 <dd><p>Return the constraining distance and angle parameters.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.r">
-<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.r" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.r" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.reload" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.reload" title="Link to this definition"></a></dt>
 <dd><p>Compute point coordinates.</p>
 <p>We know point position relative to its two parents, which gives a local
 space.
@@ -352,12 +365,12 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_anchor0" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_anchor0" title="Link to this definition"></a></dt>
 <dd><p>First joint anchor and characteristics.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> – </p></li>
+<li><p><strong>joint</strong></p></li>
 <li><p><strong>distance</strong> – (Default value = None)</p></li>
 <li><p><strong>angle</strong> – (Default value = None)</p></li>
 </ul>
@@ -367,18 +380,18 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_anchor1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_anchor1" title="Link to this definition"></a></dt>
 <dd><p>Second joint anchor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – </p>
+<dd class="field-odd"><p><strong>joint</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Fixed.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Fixed.set_constraints" title="Link to this definition"></a></dt>
 <dd><p>Set geometric constraints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,16 +407,16 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Joint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Joint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
 <p>Geometric constraint expressed by two joints.</p>
 <p>Abstract class should always be inherited.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.__init__" title="Link to this definition"></a></dt>
 <dd><p>Create Joint.</p>
 <section id="id1">
-<h3>Arguments<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<h3>Arguments<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <dl class="simple">
 <dt>x<span class="classifier">float, optional</span></dt><dd><p>Position on horizontal axis. The default is 0.</p>
 </dd>
@@ -421,45 +434,45 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Joint._abc_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Joint._abc_impl" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.coord">
-<span class="sig-name descname"><span class="pre">coord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.coord" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coord</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.coord" title="Link to this definition"></a></dt>
 <dd><p>Return cartesian coordinates.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.get_constraints">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.get_constraints" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.get_constraints" title="Link to this definition"></a></dt>
 <dd><p>Return geometric constraints applying to this Joint.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.joint0">
-<span class="sig-name descname"><span class="pre">joint0</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.joint0" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">joint0</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.joint0" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.joint1">
-<span class="sig-name descname"><span class="pre">joint1</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.joint1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">joint1</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.joint1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.set_constraints">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.set_constraints" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.set_constraints" title="Link to this definition"></a></dt>
 <dd><p>Set geometric constraints applying to this Joint.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.set_coord">
-<span class="sig-name descname"><span class="pre">set_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.set_coord" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Joint.set_coord" title="Link to this definition"></a></dt>
 <dd><p>Take a sequence or two scalars, and assign them to object x, y.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -470,143 +483,25 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.x">
-<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.x" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.x" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Joint.y">
-<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.y" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#pylinkage.interface.joint.Joint.y" title="Link to this definition"></a></dt>
 <dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
-<p>Center of pivot joint.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Set point position, parents, and if it is fixed for this turn.</p>
-<section id="id2">
-<h3>Arguments<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
-<dl class="simple">
-<dt>x<span class="classifier">float, optional</span></dt><dd><p>Position on horizontal axis. The default is 0.</p>
-</dd>
-<dt>y<span class="classifier">float, optional</span></dt><dd><p>Position on vertical axis. The default is O.</p>
-</dd>
-<dt>name<span class="classifier">str, optional</span></dt><dd><p>Friendly name for human readability. The default is None.</p>
-</dd>
-<dt>joint0<span class="classifier">Union[Joint, tuple[float]], optional</span></dt><dd><p>Linked pivot joint 1 (geometric constraints). The default is None.</p>
-</dd>
-<dt>joint1<span class="classifier">Union[Joint, tuple[float]], optional</span></dt><dd><p>Other pivot joint linked. The default is None.</p>
-</dd>
-<dt>distance0<span class="classifier">float, optional</span></dt><dd><p>Distance from joint0 to the current Joint. The default is None.</p>
-</dd>
-<dt>distance1<span class="classifier">float, optional</span></dt><dd><p>Distance from joint1 to the current Joint. The default is None.</p>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Pivot._abc_impl" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.circle">
-<span class="sig-name descname"><span class="pre">circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.circle" title="Permalink to this definition"></a></dt>
-<dd><p>Return the first link between self and parent as a circle.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Parent joint</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Circle is a tuple (abscisse, ordinate, radius).</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[float, float, float]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.get_constraints" title="Permalink to this definition"></a></dt>
-<dd><p>Return the two constraining distances of this joint.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.r0">
-<span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.r0" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.r1">
-<span class="sig-name descname"><span class="pre">r1</span></span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.r1" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.reload" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the position of pivot joint, use the two linked joints.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.set_anchor0" title="Permalink to this definition"></a></dt>
-<dd><p>Set the first anchor for this Joint.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a><em> | </em><em>tuple</em><em>[</em><em>float</em><em>]</em>) – The joint to use as anchor.</p></li>
-<li><p><strong>distance</strong> (<em>float</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.set_anchor1" title="Permalink to this definition"></a></dt>
-<dd><p>Set the second anchor for this Joint.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a><em> | </em><em>tuple</em><em>[</em><em>float</em><em>]</em>) – The joint to use as anchor.</p></li>
-<li><p><strong>distance</strong> (<em>float</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.interface.joint.Pivot.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Pivot.set_constraints" title="Permalink to this definition"></a></dt>
-<dd><p>Set geometric constraints.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>distance0</strong> – (Default value = None)</p></li>
-<li><p><strong>distance1</strong> – (Default value = None)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.joint.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
 <p>Special case of Joint that should not move.</p>
 <p>Mostly used for the frame.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.__init__" title="Link to this definition"></a></dt>
 <dd><p>A Static joint is a point in space to use as anchor by other joints.</p>
 <p>It is NOT a kind of joint as viewed in engineering terms!</p>
 <dl class="simple">
@@ -621,46 +516,46 @@ whole. Local space is defined by link[0] as the origin and
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static._abc_impl">
-<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Static._abc_impl" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.joint.Static._abc_impl" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.get_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.get_constraints" title="Link to this definition"></a></dt>
 <dd><p>Return an empty tuple.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.reload" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.reload" title="Link to this definition"></a></dt>
 <dd><p>Do nothing, for consistency only.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_anchor0" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_anchor0" title="Link to this definition"></a></dt>
 <dd><p>First joint anchor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – </p>
+<dd class="field-odd"><p><strong>joint</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_anchor1" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_anchor1" title="Link to this definition"></a></dt>
 <dd><p>Second joint anchor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – </p>
+<dd class="field-odd"><p><strong>joint</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.joint.Static.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.joint.Static.set_constraints" title="Link to this definition"></a></dt>
 <dd><p>Do nothing, for consistency only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -672,21 +567,198 @@ whole. Local space is defined by link[0] as the origin and
 </dd></dl>
 
 </section>
+<section id="module-pylinkage.interface.revolute_joint">
+<span id="revolute-joint-definition"></span><h2>Revolute joint definition<a class="headerlink" href="#module-pylinkage.interface.revolute_joint" title="Link to this heading"></a></h2>
+<p>Definition of a revolute joint.</p>
+<p>It is also called pin joint or hinge joint, and used to be
+called a pivot joint in this project.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Pivot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.revolute_joint.</span></span><span class="sig-name descname"><span class="pre">Pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Pivot" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.revolute_joint.Revolute" title="pylinkage.interface.revolute_joint.Revolute"><code class="xref py py-class docutils literal notranslate"><span class="pre">Revolute</span></code></a></p>
+<p>Revolute Joint definition.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.6.0: </span>This class has been <a class="reference external" href="mailto:de&#37;&#52;&#48;recated">de<span>&#64;</span>recated</a> in favor of <cite>Revolute</cite> which has a standard name.
+It will be removed in PyLinkage 0.7.0.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Pivot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Pivot.__init__" title="Link to this definition"></a></dt>
+<dd><p>Set point position, parents, and if it is fixed for this turn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – Position on the horizontal axis.
+(Default value = 0).</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – Position on vertical axis.
+(Default value = 0).</p></li>
+<li><p><strong>joint0</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Linked pivot joint 0 (geometric constraints).
+(Default value = None).</p></li>
+<li><p><strong>joint1</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Linked pivot joint 1 (geometric constraints).
+(Default value = None).</p></li>
+<li><p><strong>distance0</strong> (<em>float</em>) – Distance from joint0 to the current Joint.
+(Default value = None).</p></li>
+<li><p><strong>distance1</strong> (<em>float</em>) – Distance from joint1 to the current Joint.
+(Default value = None).</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Friendly name for human readability.
+(Default value = None).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Pivot._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.revolute_joint.Pivot._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Pivot.r0">
+<span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Pivot.r0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Pivot.r1">
+<span class="sig-name descname"><span class="pre">r1</span></span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Pivot.r1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.revolute_joint.</span></span><span class="sig-name descname"><span class="pre">Revolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
+<p>Center of a revolute joint.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.__init__" title="Link to this definition"></a></dt>
+<dd><p>Set point position, parents, and if it is fixed for this turn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – Position on the horizontal axis.
+(Default value = 0).</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – Position on vertical axis.
+(Default value = 0).</p></li>
+<li><p><strong>joint0</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Linked pivot joint 0 (geometric constraints).
+(Default value = None).</p></li>
+<li><p><strong>joint1</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Linked pivot joint 1 (geometric constraints).
+(Default value = None).</p></li>
+<li><p><strong>distance0</strong> (<em>float</em>) – Distance from joint0 to the current Joint.
+(Default value = None).</p></li>
+<li><p><strong>distance1</strong> (<em>float</em>) – Distance from joint1 to the current Joint.
+(Default value = None).</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Friendly name for human readability.
+(Default value = None).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute._abc_impl">
+<span class="sig-name descname"><span class="pre">_abc_impl</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_abc._abc_data</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute._abc_impl" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.circle">
+<span class="sig-name descname"><span class="pre">circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.circle" title="Link to this definition"></a></dt>
+<dd><p>Return the first link between self and parent as a circle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a>) – Parent joint you want to use</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Circle is a tuple (abscissa, ordinate, radius).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.get_constraints">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Return the two constraining distances of this joint.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.r0">
+<span class="sig-name descname"><span class="pre">r0</span></span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.r0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.r1">
+<span class="sig-name descname"><span class="pre">r1</span></span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.r1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.reload" title="Link to this definition"></a></dt>
+<dd><p>Compute the position of pivot joint, use the two linked joints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.set_anchor0">
+<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.set_anchor0" title="Link to this definition"></a></dt>
+<dd><p>Set the first anchor for this Joint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a><em> | </em><em>tuple</em><em>[</em><em>float</em><em>]</em>) – The joint to use as anchor.</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.set_anchor1">
+<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.set_anchor1" title="Link to this definition"></a></dt>
+<dd><p>Set the second anchor for this Joint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joint</strong> (<a class="reference internal" href="#pylinkage.interface.joint.Joint" title="pylinkage.interface.joint.Joint"><em>Joint</em></a><em> | </em><em>tuple</em><em>[</em><em>float</em><em>]</em>) – The joint to use as anchor.</p></li>
+<li><p><strong>distance</strong> (<em>float</em>) – Distance to keep constant from the anchor. The default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.interface.revolute_joint.Revolute.set_constraints">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.revolute_joint.Revolute.set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Set geometric constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distance0</strong> (<em>float</em>) – Distance to the first reference (Default value = None)</p></li>
+<li><p><strong>distance1</strong> (<em>float</em>) – Distance to the second reference (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-pylinkage.interface.linkage">
-<span id="linkage-definition"></span><h2>Linkage definition<a class="headerlink" href="#module-pylinkage.interface.linkage" title="Permalink to this heading"></a></h2>
+<span id="linkage-definition"></span><h2>Linkage definition<a class="headerlink" href="#module-pylinkage.interface.linkage" title="Link to this heading"></a></h2>
 <p>The linkage module defines useful classes for linkage definition.</p>
 <p>Created on Fri Apr 16, 16:39:21 2021.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.linkage.</span></span><span class="sig-name descname"><span class="pre">Linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.linkage.</span></span><span class="sig-name descname"><span class="pre">Linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A linkage is a set of Joint objects.</p>
 <p>It is defined as a kinematic linkage.
 Coordinates are given relative to its own base.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.__init__" title="Link to this definition"></a></dt>
 <dd><p>Define a linkage, a set of joints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -706,23 +778,23 @@ If None, take the value str(id(self)).
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage._cranks">
-<span class="sig-name descname"><span class="pre">_cranks</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage._cranks" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_cranks</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage._cranks" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage._solve_order">
-<span class="sig-name descname"><span class="pre">_solve_order</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage._solve_order" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_solve_order</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage._solve_order" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.get_coords">
-<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_coords" title="Link to this definition"></a></dt>
 <dd><p>Return the positions of each element in the system.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.get_num_constraints">
-<span class="sig-name descname"><span class="pre">get_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_num_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_num_constraints" title="Link to this definition"></a></dt>
 <dd><p>Numeric constraints of this linkage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -740,7 +812,7 @@ The default is True.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.get_rotation_period">
-<span class="sig-name descname"><span class="pre">get_rotation_period</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_rotation_period" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_rotation_period</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.get_rotation_period" title="Link to this definition"></a></dt>
 <dd><p>The number of iterations to finish in the previous state.</p>
 <p>Formally, it is the common denominator of all crank periods.</p>
 <dl class="field-list simple">
@@ -755,23 +827,23 @@ The default is True.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.hyperstaticity">
-<span class="sig-name descname"><span class="pre">hyperstaticity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.hyperstaticity" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hyperstaticity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.hyperstaticity" title="Link to this definition"></a></dt>
 <dd><p>Return the hyperstaticity (over-constrainment) degree of the linkage in 2D.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.joints">
-<span class="sig-name descname"><span class="pre">joints</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.joints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">joints</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.joints" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.name" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.rebuild">
-<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.rebuild" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.rebuild" title="Link to this definition"></a></dt>
 <dd><p>Redefine linkage joints and given initial positions to joints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -785,7 +857,7 @@ constraints. (Default value = None)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.set_completely">
-<span class="sig-name descname"><span class="pre">set_completely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_completely" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_completely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_completely" title="Link to this definition"></a></dt>
 <dd><p>Set both dimension and initial positions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -801,18 +873,18 @@ The default is True.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.set_coords">
-<span class="sig-name descname"><span class="pre">set_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_coords" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_coords" title="Link to this definition"></a></dt>
 <dd><p>Set coordinates for all joints of the linkage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>coords</strong> – </p>
+<dd class="field-odd"><p><strong>coords</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.set_num_constraints">
-<span class="sig-name descname"><span class="pre">set_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_num_constraints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.set_num_constraints" title="Link to this definition"></a></dt>
 <dd><p>Set numeric constraints for this linkage.</p>
 <p>Numeric constraints are distances or angles between joints.</p>
 <dl class="field-list simple">
@@ -831,7 +903,7 @@ corresponding Joint.
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.linkage.Linkage.step">
-<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.step" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.linkage.Linkage.step" title="Link to this definition"></a></dt>
 <dd><p>Make a step of the linkage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -857,30 +929,30 @@ All cranks rotate by their self.angle * dt. The default is 1.
 
 </section>
 <section id="module-pylinkage.interface.exceptions">
-<span id="exceptions"></span><h2>Exceptions<a class="headerlink" href="#module-pylinkage.interface.exceptions" title="Permalink to this heading"></a></h2>
+<span id="exceptions"></span><h2>Exceptions<a class="headerlink" href="#module-pylinkage.interface.exceptions" title="Link to this heading"></a></h2>
 <p>The exceptions module is a simple quick way to access the built-in exceptions.</p>
 <p>Created on Wed Jun 16, 15:20:06 2021.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="pylinkage.interface.exceptions.HypostaticError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.exceptions.</span></span><span class="sig-name descname"><span class="pre">HypostaticError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'The</span> <span class="pre">system</span> <span class="pre">is</span> <span class="pre">hypo-static!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.HypostaticError" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.exceptions.</span></span><span class="sig-name descname"><span class="pre">HypostaticError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'The</span> <span class="pre">system</span> <span class="pre">is</span> <span class="pre">hypo-static!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.HypostaticError" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>The system is under-constrained and multiple solutions may exist.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.exceptions.HypostaticError.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'The</span> <span class="pre">system</span> <span class="pre">is</span> <span class="pre">hypo-static!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.HypostaticError.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'The</span> <span class="pre">system</span> <span class="pre">is</span> <span class="pre">hypo-static!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.HypostaticError.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="pylinkage.interface.exceptions.UnbuildableError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnbuildableError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Unable</span> <span class="pre">to</span> <span class="pre">solve</span> <span class="pre">constraints'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.UnbuildableError" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.interface.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnbuildableError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Unable</span> <span class="pre">to</span> <span class="pre">solve</span> <span class="pre">constraints'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.UnbuildableError" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Should be raised when the constraints cannot be solved.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.interface.exceptions.UnbuildableError.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Unable</span> <span class="pre">to</span> <span class="pre">solve</span> <span class="pre">constraints'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.UnbuildableError.__init__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Unable</span> <span class="pre">to</span> <span class="pre">solve</span> <span class="pre">constraints'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.interface.exceptions.UnbuildableError.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

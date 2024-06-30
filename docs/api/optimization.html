@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>optimization &mdash; pylinkage 0.5.3 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -78,6 +80,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
 </ul>
 
         </div>
@@ -105,15 +108,15 @@
            <div itemprop="articleBody">
              
   <section id="optimization">
-<h1>optimization<a class="headerlink" href="#optimization" title="Permalink to this heading"></a></h1>
+<h1>optimization<a class="headerlink" href="#optimization" title="Link to this heading"></a></h1>
 <section id="module-pylinkage.optimization.grid_search">
-<span id="trials-and-errors-grid-search"></span><h2>Trials and errors (grid search)<a class="headerlink" href="#module-pylinkage.optimization.grid_search" title="Permalink to this heading"></a></h2>
+<span id="trials-and-errors-grid-search"></span><h2>Trials and errors (grid search)<a class="headerlink" href="#module-pylinkage.optimization.grid_search" title="Link to this heading"></a></h2>
 <p>Implementation of a grid search optimization.</p>
 <p>It should be used for reference only as the search space
 will almost certainly be too big.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.grid_search.fast_variator">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">fast_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.fast_variator" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">fast_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.fast_variator" title="Link to this definition"></a></dt>
 <dd><p>Return an iterable of elements’ all possibles variations.</p>
 <p>Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).</p>
 <p>Here the order in the variations is not important.</p>
@@ -135,7 +138,7 @@ will almost certainly be too big.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.grid_search.sequential_variator">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">sequential_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.sequential_variator" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">sequential_variator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.sequential_variator" title="Link to this definition"></a></dt>
 <dd><p>Return an iterable of each possible variation for the elements.</p>
 <p>Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).</p>
 <p>Because linkage is not tolerant to violent changes, the order of output
@@ -161,7 +164,7 @@ middle → max (step 1), so that there is no huge variation.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.grid_search.tqdm_verbosity">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">tqdm_verbosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.tqdm_verbosity" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">tqdm_verbosity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.tqdm_verbosity" title="Link to this definition"></a></dt>
 <dd><p>Wrapper for tqdm, that let you specify if you want verbosity.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version 0.6.0: </span><cite>tqdm_verbosity</cite> will be removed in pylinkage 0.7.0, as tqdm can be
@@ -170,7 +173,7 @@ middle → max (step 1), so that there is no huge variation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>iterable</strong> – </p></li>
+<li><p><strong>iterable</strong></p></li>
 <li><p><strong>verbose</strong> – (Default value = True)</p></li>
 <li><p><strong>args</strong> – Ordered args to pass to tqdm</p></li>
 <li><p><strong>kwargs</strong> – Keyword args for tqdm</p></li>
@@ -181,7 +184,7 @@ middle → max (step 1), so that there is no huge variation.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.grid_search.trials_and_errors_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.trials_and_errors_optimization" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.grid_search.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_results</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.grid_search.trials_and_errors_optimization" title="Link to this definition"></a></dt>
 <dd><p>Return the list of dimensions optimizing eval_func.</p>
 <p>Each dimension set has a score, which is added in an array of n_results
 results, contains the linkages with the best scores in a maximization problem
@@ -235,13 +238,13 @@ Its size is {n_results}.</p>
 
 </section>
 <section id="module-pylinkage.optimization.particle_swarm">
-<span id="particle-swarm-optimization"></span><h2>Particle Swarm Optimization<a class="headerlink" href="#module-pylinkage.optimization.particle_swarm" title="Permalink to this heading"></a></h2>
+<span id="particle-swarm-optimization"></span><h2>Particle Swarm Optimization<a class="headerlink" href="#module-pylinkage.optimization.particle_swarm" title="Link to this heading"></a></h2>
 <p>Implementation of a particle swarm optimization.</p>
 <p>Created on Fri Mar 8, 13:51:45 2019.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.particle_swarm.particle_swarm_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.particle_swarm.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_particles=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leader=3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follower=0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inertia=0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbors=17</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iters=200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.particle_swarm.particle_swarm_optimization" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.particle_swarm.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_particles=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leader=3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">follower=0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inertia=0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbors=17</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iters=200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_relation=&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.particle_swarm.particle_swarm_optimization" title="Link to this definition"></a></dt>
 <dd><p>Particle Swarm Optimization wrapper for pyswarms.</p>
 <p>This function is a simple wrapper to optimize a linkage using PSO. It will
 mainly call the LocalBestPSO function from pyswarms.single.</p>
@@ -287,11 +290,11 @@ The default is max.</p></li>
 
 </section>
 <section id="module-pylinkage.optimization.utils">
-<span id="utility"></span><h2>Utility<a class="headerlink" href="#module-pylinkage.optimization.utils" title="Permalink to this heading"></a></h2>
+<span id="utility"></span><h2>Utility<a class="headerlink" href="#module-pylinkage.optimization.utils" title="Link to this heading"></a></h2>
 <p>Utility for optimization.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.utils.generate_bounds">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.utils.</span></span><span class="sig-name descname"><span class="pre">generate_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.utils.generate_bounds" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.utils.</span></span><span class="sig-name descname"><span class="pre">generate_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_ratio</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.utils.generate_bounds" title="Link to this definition"></a></dt>
 <dd><p>Simple function to generate bounds from a linkage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
