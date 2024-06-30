@@ -31,6 +31,7 @@ Welcome to pylinkage's documentation!
    Source Code <https://github.com/HugoFara/pylinkage>
    Download on PyPi <https://pypi.org/project/pylinkage/>
    Get Support <https://github.com/HugoFara/pylinkage/issues>
+   Code of Conduct <code_of_conductlink.rst>
 
 .. include:: readmelink.rst
 
