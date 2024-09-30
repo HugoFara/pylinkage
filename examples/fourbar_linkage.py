@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-The fourbar_linkage module demonstrates the functionalities of pylinkage.
+The fourbar_linkage module demonstrates the features of pylinkage.
 
-It is not intended to be imported in another project, but fell welcome to
-copy-paste chunks of code.
+It is not intended to be imported in another project,
+but feel welcome to copy-paste chunks of code.
 
 Created on Sat Jun 19, 12:32:37 2021.
 
