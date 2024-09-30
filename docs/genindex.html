@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; pylinkage 0.5.3 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=08553120"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -58,6 +60,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conductlink.html">Code of Conduct</a></li>
 </ul>
 
         </div>
@@ -126,11 +129,13 @@
 </li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Joint.__init__">(pylinkage.interface.joint.Joint method)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.__init__">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.__init__">(pylinkage.interface.joint.Static method)</a>
 </li>
         <li><a href="api/interface.html#pylinkage.interface.linkage.Linkage.__init__">(pylinkage.interface.linkage.Linkage method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Pivot.__init__">(pylinkage.interface.revolute_joint.Pivot method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.__init__">(pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -142,9 +147,11 @@
 </li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Joint._abc_impl">(pylinkage.interface.joint.Joint attribute)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot._abc_impl">(pylinkage.interface.joint.Pivot attribute)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static._abc_impl">(pylinkage.interface.joint.Static attribute)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Pivot._abc_impl">(pylinkage.interface.revolute_joint.Pivot attribute)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute._abc_impl">(pylinkage.interface.revolute_joint.Revolute attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/interface.html#pylinkage.interface.linkage.Linkage._cranks">_cranks (pylinkage.interface.linkage.Linkage attribute)</a>
@@ -183,7 +190,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.circle">circle() (pylinkage.interface.joint.Pivot method)</a>
+      <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.circle">circle() (pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       <li><a href="api/geometry.html#pylinkage.geometry.circle_intersect">circle_intersect() (in module pylinkage.geometry)</a>
 </li>
@@ -234,9 +241,9 @@
 </li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Joint.get_constraints">(pylinkage.interface.joint.Joint method)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.get_constraints">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.get_constraints">(pylinkage.interface.joint.Static method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.get_constraints">(pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -331,6 +338,8 @@
 </li>
         <li><a href="api/interface.html#module-pylinkage.interface.linkage">pylinkage.interface.linkage</a>
 </li>
+        <li><a href="api/interface.html#module-pylinkage.interface.revolute_joint">pylinkage.interface.revolute_joint</a>
+</li>
         <li><a href="api/optimization.html#module-pylinkage.optimization.grid_search">pylinkage.optimization.grid_search</a>
 </li>
         <li><a href="api/optimization.html#module-pylinkage.optimization.particle_swarm">pylinkage.optimization.particle_swarm</a>
@@ -374,7 +383,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/optimization.html#pylinkage.optimization.particle_swarm.particle_swarm_optimization">particle_swarm_optimization() (in module pylinkage.optimization.particle_swarm)</a>
 </li>
-      <li><a href="api/interface.html#pylinkage.interface.joint.Pivot">Pivot (class in pylinkage.interface.joint)</a>
+      <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Pivot">Pivot (class in pylinkage.interface.revolute_joint)</a>
 </li>
       <li><a href="api/visualizer.html#pylinkage.visualizer.plot_kinematic_linkage">plot_kinematic_linkage() (in module pylinkage.visualizer)</a>
 </li>
@@ -425,6 +434,13 @@
 </li>
       </ul></li>
       <li>
+    pylinkage.interface.revolute_joint
+
+      <ul>
+        <li><a href="api/interface.html#module-pylinkage.interface.revolute_joint">module</a>
+</li>
+      </ul></li>
+      <li>
     pylinkage.optimization.grid_search
 
       <ul>
@@ -471,10 +487,18 @@
         <li><a href="api/interface.html#pylinkage.interface.joint.Fixed.r">(pylinkage.interface.joint.Fixed attribute)</a>
 </li>
       </ul></li>
-      <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.r0">r0 (pylinkage.interface.joint.Pivot attribute)</a>
+      <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Pivot.r0">r0 (pylinkage.interface.revolute_joint.Pivot attribute)</a>
+
+      <ul>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.r0">(pylinkage.interface.revolute_joint.Revolute attribute)</a>
 </li>
-      <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.r1">r1 (pylinkage.interface.joint.Pivot attribute)</a>
+      </ul></li>
+      <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Pivot.r1">r1 (pylinkage.interface.revolute_joint.Pivot attribute)</a>
+
+      <ul>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.r1">(pylinkage.interface.revolute_joint.Revolute attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/interface.html#pylinkage.interface.linkage.Linkage.rebuild">rebuild() (pylinkage.interface.linkage.Linkage method)</a>
@@ -484,11 +508,13 @@
       <ul>
         <li><a href="api/interface.html#pylinkage.interface.joint.Fixed.reload">(pylinkage.interface.joint.Fixed method)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.reload">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.reload">(pylinkage.interface.joint.Static method)</a>
 </li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.reload">(pylinkage.interface.revolute_joint.Revolute method)</a>
+</li>
       </ul></li>
+      <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute">Revolute (class in pylinkage.interface.revolute_joint)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -504,17 +530,17 @@
       <ul>
         <li><a href="api/interface.html#pylinkage.interface.joint.Fixed.set_anchor0">(pylinkage.interface.joint.Fixed method)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.set_anchor0">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.set_anchor0">(pylinkage.interface.joint.Static method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.set_anchor0">(pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       </ul></li>
       <li><a href="api/interface.html#pylinkage.interface.joint.Fixed.set_anchor1">set_anchor1() (pylinkage.interface.joint.Fixed method)</a>
 
       <ul>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.set_anchor1">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.set_anchor1">(pylinkage.interface.joint.Static method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.set_anchor1">(pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       </ul></li>
       <li><a href="api/interface.html#pylinkage.interface.linkage.Linkage.set_completely">set_completely() (pylinkage.interface.linkage.Linkage method)</a>
@@ -526,9 +552,9 @@
 </li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Joint.set_constraints">(pylinkage.interface.joint.Joint method)</a>
 </li>
-        <li><a href="api/interface.html#pylinkage.interface.joint.Pivot.set_constraints">(pylinkage.interface.joint.Pivot method)</a>
-</li>
         <li><a href="api/interface.html#pylinkage.interface.joint.Static.set_constraints">(pylinkage.interface.joint.Static method)</a>
+</li>
+        <li><a href="api/interface.html#pylinkage.interface.revolute_joint.Revolute.set_constraints">(pylinkage.interface.revolute_joint.Revolute method)</a>
 </li>
       </ul></li>
   </ul></td>

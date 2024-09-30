@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>geometry &mdash; pylinkage 0.5.3 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -72,6 +74,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
 </ul>
 
         </div>
@@ -99,16 +102,16 @@
            <div itemprop="articleBody">
              
   <section id="geometry">
-<h1>geometry<a class="headerlink" href="#geometry" title="Permalink to this heading"></a></h1>
+<h1>geometry<a class="headerlink" href="#geometry" title="Link to this heading"></a></h1>
 <section id="module-pylinkage.geometry">
-<span id="base-module-for-geometric-abstractions"></span><h2>Base module for geometric abstractions<a class="headerlink" href="#module-pylinkage.geometry" title="Permalink to this heading"></a></h2>
+<span id="base-module-for-geometric-abstractions"></span><h2>Base module for geometric abstractions<a class="headerlink" href="#module-pylinkage.geometry" title="Link to this heading"></a></h2>
 <p>The geometry module provides general geometry functions.</p>
 <p>It is used extensively, so each function should be highly optimized.</p>
 <p>Created on Wed May 5, 17:34:45 2021.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.circle_intersect">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">circle_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.circle_intersect" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">circle_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.circle_intersect" title="Link to this definition"></a></dt>
 <dd><p>Get the intersections of two circles.</p>
 <p>Transcription of a Matt Woodhead program, method provided by Paul Bourke,
 1997. <a class="reference external" href="http://paulbourke.net/geometry/circlesphere/">http://paulbourke.net/geometry/circlesphere/</a>.</p>
@@ -121,17 +124,25 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the intersections of two circles</p>
+<dd class="field-even"><p><p>the intersections of two circles. Can be:</p>
+<ul class="simple">
+<li><p>(0, ) when no intersection.</p></li>
+<li><p>(1, (float, float)) if the intersection is one point.</p></li>
+<li><p>(2, (float, float), (float, float)) for two points of intersection.</p></li>
+<li><p>(3, (float, float, float)) if the intersection is a circle.</p></li>
+</ul>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple[int] | tuple[int, float] | tuple[int, float, float]</p>
+<dd class="field-odd"><p>tuple[int] | tuple[int, tuple[float, float]] |</p>
 </dd>
 </dl>
+<p>tuple[int, tuple[float, float], tuple[float, float]] | tuple[int, tuple[float, float, float]]</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.cyl_to_cart">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">cyl_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.cyl_to_cart" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">cyl_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.cyl_to_cart" title="Link to this definition"></a></dt>
 <dd><p>Convert polar coordinates into cartesian.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -146,14 +157,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.dist_builtin">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">dist_builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.dist_builtin" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">dist_builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.dist_builtin" title="Link to this definition"></a></dt>
 <dd><p>Euclidian distance between two 2D points.</p>
 <p>Legacy built-in unoptimized equivalent of math.dist in Python 3.8.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>point1</strong> – </p></li>
-<li><p><strong>point2</strong> – </p></li>
+<li><p><strong>point1</strong></p></li>
+<li><p><strong>point2</strong></p></li>
 </ul>
 </dd>
 </dl>
@@ -161,7 +172,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.intersection">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.intersection" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.intersection" title="Link to this definition"></a></dt>
 <dd><p>Intersection of two arbitrary objects.</p>
 <p>The input objects should be points or circles.</p>
 <dl class="field-list simple">
@@ -183,24 +194,24 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.norm">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.norm" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.norm" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>vec</strong> – </p>
+<dd class="field-odd"><p><strong>vec</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.sqr_dist">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">sqr_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.sqr_dist" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.</span></span><span class="sig-name descname"><span class="pre">sqr_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.sqr_dist" title="Link to this definition"></a></dt>
 <dd><p>Square of the distance between two points.</p>
 <p>Faster than dist.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>point1</strong> – </p></li>
-<li><p><strong>point2</strong> – </p></li>
+<li><p><strong>point1</strong></p></li>
+<li><p><strong>point2</strong></p></li>
 </ul>
 </dd>
 </dl>
