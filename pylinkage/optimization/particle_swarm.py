@@ -68,8 +68,8 @@ def particle_swarm_optimization(
     :param kwargs: keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
     :type kwargs: dict
 
-    :returns: List of 3 elements: best score, best dimensions and initial positions.
-    :rtype: Agent
+    :returns: List of Agents: best score, best dimensions and initial positions.
+    :rtype: List[Agent]
     """
     if dimensions is None:
         dimensions = len(tuple(linkage.get_num_constraints()))

@@ -38,10 +38,10 @@ class Revolute(Joint):
         :type y: float
         :param joint0: Linked pivot joint 0 (geometric constraints).
             (Default value = None).
-        :type joint0: Joint
+        :type joint0: Joint | tuple
         :param joint1: Linked pivot joint 1 (geometric constraints).
             (Default value = None).
-        :type joint1: Joint
+        :type joint1: Joint | tuple
         :param distance0: Distance from joint0 to the current Joint.
             (Default value = None).
         :type distance0: float

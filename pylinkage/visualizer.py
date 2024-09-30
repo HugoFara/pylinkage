@@ -195,8 +195,11 @@ def plot_kinematic_linkage(
         func=lambda index: update_animated_plot(
             linkage, index % len(loci), images, loci
         ),
-        frames=frames, blit=True, interval=interval, repeat=True,
-        save_count=frames)
+        frames=frames,
+        blit=True,
+        interval=interval,
+        repeat=True
+    )
     return animation
 
 
@@ -218,7 +221,7 @@ def show_linkage(
     :param save: To save the animation. The default is False.
     :type save: bool
     :param prev: Previous coordinates to use for linkage. The default is None.
-    :type prev: list
+    :type prev: list | tuple
     :param loci: list of loci. The default is None.
     :type loci: list
     :param points: Number of points to draw for a crank revolution.
