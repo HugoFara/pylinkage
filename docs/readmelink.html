@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pylinkage &mdash; pylinkage 0.5.3 documentation</title>
@@ -173,7 +173,7 @@ when the <code class="docutils literal notranslate"><span class="pre">pin</span>
 
 <span class="c1"># Let&#39;s use the result in our linkage!</span>
 <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="c1"># Dimensions</span>
-<span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span> <span class="c1"># Intial position</span>
+<span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span> <span class="c1"># Initial position</span>
 
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
@@ -301,7 +301,7 @@ It is a common problem if you want to build a <a class="reference external" href
 <span class="n">init_pos</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
 
 <span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimizastion</span>
-<span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">fitness_func</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">_kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return how fit the locus is to describe a quarter of circle.</span>
 
@@ -385,15 +385,24 @@ Here are the principles:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py">linkage.py</a> this module describes joints and linkages</p>
 <ul>
-<li><p>Due to the geometric approach, joints (instances of <code class="docutils literal notranslate"><span class="pre">Joint</span></code> object) are defined without links.</p></li>
+<li><p>Due to the geometric approach, joints (instances of <code class="docutils literal notranslate"><span class="pre">Joint</span></code> object)
+are defined without links.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> class that will make your code shorter.</p></li>
 </ul>
 </li>
 <li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/optimizer.py">optimizer.py</a> proposes three optimizations based on three techniques:</p>
 <ul>
-<li><p>The “exhaustive” optimization (<code class="docutils literal notranslate"><span class="pre">exhaustive_optimization</span></code> function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.</p></li>
-<li><p>The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.</p></li>
-<li><p>PSO using <a class="reference external" href="https://github.com/ljvmiranda921/pyswarms">PySwarms</a>. We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.</p></li>
+<li><p>The “exhaustive” optimization (<code class="docutils literal notranslate"><span class="pre">exhaustive_optimization</span></code> function)
+is a simple grid search optimization method,
+consisting or trying sequentially all positions.
+It is here for demonstration purposes only,
+and you should not use it if you are looking for an efficient technique.</p></li>
+<li><p>The built-in Particle Swarm Optimizer (PSO).
+I started with it, so it offers a large set of useful options for linkage optimization.
+However, it is here for legacy purposes, and is much shorter than the PySwarms module.</p></li>
+<li><p>PSO using <a class="reference external" href="https://github.com/ljvmiranda921/pyswarms">PySwarms</a>.
+We provide a wrapper function to PySwarm from ljvmiranda921,
+that will progressively be extended.</p></li>
 </ul>
 </li>
 <li><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/pylinkage/visualizer.py">visualizer.py</a> can make graphic illustrations of your linkage using matplotlib.</p>

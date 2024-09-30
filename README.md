@@ -74,7 +74,7 @@ score, position, coord = pl.particle_swarm_optimization(
 
 # Let's use the result in our linkage!
 my_linkage.set_num_constraints(constraints) # Dimensions
-my_linkage.set_coords(init_pos) # Intial position
+my_linkage.set_coords(init_pos) # Initial position
 
 pl.show_linkage(my_linkage)
 ```
@@ -224,7 +224,7 @@ Our objective function, often called the fitness function, is the following:
 init_pos = my_linkage.get_coords()
 
 @pl.kinematic_minimizastion
-def fitness_func(loci, **kwargs):
+def fitness_func(loci, **_kwargs):
     """
     Return how fit the locus is to describe a quarter of circle.
 
@@ -311,12 +311,21 @@ With a bit of imagination, you have a wonderful windshield wiper!
 
 As of today, we segment the code in main three parts:
 * [linkage.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py) this module describes joints and linkages 
-  * Due to the geometric approach, joints (instances of ``Joint`` object) are defined without links. 
+  * Due to the geometric approach, joints (instances of ``Joint`` object)
+  are defined without links. 
   * The ``Linkage`` class that will make your code shorter.
 * [optimizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
-  * The "exhaustive" optimization (``exhaustive_optimization`` function) is a simple grid search optimization method, consisting or trying sequencially all positions. It is here for demonstration purposes only, and you should not use it if you are looking for an efficient technique.
-  * The built-in Particle Swarm Optimizer (PSO). I started with it, so it offers a large set of useful options for linkage optimization. However, it is here for legacy purposes, and is much short than the PySwarms module.
-  * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms). We provide a wrapper function to PySwarm from ljvmiranda921, that will progressively be extended.
+  * The "exhaustive" optimization (``exhaustive_optimization`` function)
+  is a simple grid search optimization method,
+  consisting or trying sequentially all positions.
+  It is here for demonstration purposes only,
+  and you should not use it if you are looking for an efficient technique.
+  * The built-in Particle Swarm Optimizer (PSO).
+  I started with it, so it offers a large set of useful options for linkage optimization.
+  However, it is here for legacy purposes, and is much shorter than the PySwarms module.
+  * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms).
+  We provide a wrapper function to PySwarm from ljvmiranda921,
+  that will progressively be extended.
 * [visualizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
   * It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.
 
