@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from .utility import movement_bounding_box
 from .interface.exceptions import UnbuildableError
-from .interface import Crank, Fixed, Static, Linear, Pivot, Revolute
+from .interface import Crank, Fixed, Static, Pivot
+from .joints import Revolute, Linear
 
 # List of animations
 ANIMATIONS = []

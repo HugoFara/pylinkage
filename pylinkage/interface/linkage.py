@@ -15,7 +15,7 @@ from .joint import (
     Crank,
     Fixed
 )
-from .revolute_joint import Revolute
+from ..joints import Revolute
 
 
 class Linkage:

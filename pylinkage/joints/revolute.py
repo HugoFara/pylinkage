@@ -7,12 +7,12 @@ called a pivot joint in this project.
 import warnings
 from math import atan2
 
-from ..geometry import sqr_dist, circle_intersect, cyl_to_cart
-from .exceptions import UnbuildableError
-from .joint import Joint
+from .. import geometry as pl_geom
+from ..interface import exceptions as pl_exceptions
+from ..interface import joint as pl_joint
 
 
-class Revolute(Joint):
+class Revolute(pl_joint.Joint):
     """Center of a revolute joint."""
 
     __slots__ = "r0", "r1"
@@ -94,7 +94,7 @@ class Revolute(Joint):
         # Fixed joint as reference. In links, we only keep fixed objects
         ref = tuple(x for x in self.__get_joints__() if None not in x.coord())
         if len(ref) == 0:
-            # Don't modify coordinates (irrelevant)
+            # Don't change coordinates (irrelevant)
             return
         if len(ref) == 1:
             warnings.warn(
@@ -104,29 +104,24 @@ class Revolute(Joint):
             )
         elif len(ref) == 2:
             # Most common case, optimized here
-            coco = circle_intersect(
+            intersections = pl_geom.circle_intersect(
                 self.__get_joint_as_circle__(0),
                 self.__get_joint_as_circle__(1)
             )
-            if coco[0] == 0:
-                raise UnbuildableError(self)
-            if coco[0] == 1:
-                self.x, self.y = coco[1]
-            elif coco[0] == 2:
-                if sqr_dist(
-                        self.coord(), coco[1]
-                ) < sqr_dist(self.coord(), coco[2]):
-                    self.x, self.y = coco[1]
-                else:
-                    self.x, self.y = coco[2]
-            elif coco[0] == 3:
+            if intersections[0] == 0:
+                raise pl_exceptions.UnbuildableError(self)
+            if intersections[0] == 1:
+                self.x, self.y = intersections[1]
+            elif intersections[0] == 2:
+                self.x, self.y = pl_geom.get_nearest_point(self.coord(), intersections[1], intersections[2])
+            elif intersections[0] == 3:
                 warnings.warn(
                     f"Joint {self.name} has an infinite number of"
                     "solutions, position will be arbitrary"
                 )
                 # We project position on circle of possible positions
                 angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
-                self.x, self.y = cyl_to_cart(self.r0, angle, self.joint0.coord())
+                self.x, self.y = pl_geom.cyl_to_cart(self.r0, angle, self.joint0.coord())
 
     def get_constraints(self):
         """Return the two constraining distances of this joint."""
@@ -163,8 +158,6 @@ class Revolute(Joint):
         :type joint: Joint | tuple[float]
         :param distance: Distance to keep constant from the anchor. The default is None.
         :type distance: float
-
-
         """
         self.joint1 = joint
         self.set_constraints(distance1=distance)
@@ -180,14 +173,14 @@ class Pivot(Revolute):
     """
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            joint0=None,
-            joint1=None,
-            distance0=None,
-            distance1=None,
-            name=None
+        self,
+        x=0,
+        y=0,
+        joint0=None,
+        joint1=None,
+        distance0=None,
+        distance1=None,
+        name=None
     ):
         """
         Set point position, parents, and if it is fixed for this turn.
