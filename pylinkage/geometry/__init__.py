@@ -8,3 +8,7 @@ from .core import (
     norm,
     cyl_to_cart,
 )
+from secants import (
+    circle_intersect,
+    intersection,
+)

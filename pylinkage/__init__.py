@@ -37,9 +37,7 @@ from .joints import (
 from .optimization import (
     generate_bounds,
     trials_and_errors_optimization,
-    particle_swarm_optimization
-)
-from .utility import (
+    particle_swarm_optimization,
     kinematic_default_test,
     kinematic_maximization,
     kinematic_minimization,
