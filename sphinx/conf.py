@@ -33,6 +33,7 @@ release = '0.5.3'
 extensions = [
     # Use docstrings
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
     # Useful for markdown integration
     'myst_parser',
     'sphinx.ext.githubpages'

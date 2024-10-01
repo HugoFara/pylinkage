@@ -17,12 +17,7 @@ Welcome to pylinkage's documentation!
    :maxdepth: 2
    :caption: Modules
 
-   api/geometry
-   api/interface
-   api/optimization
-   api/utility
-   api/visualizer
-   api/collections
+   api/modules
 
 .. toctree::
    :maxdepth: 2

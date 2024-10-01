@@ -307,27 +307,19 @@ So we made something that says it works, let's verify it:
 With a bit of imagination, you have a wonderful windshield wiper!
 
 
-## Structure
+## Code with PyLinkage 
 
-As of today, we segment the code in main three parts:
-* [linkage.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/linkage.py) this module describes joints and linkages 
-  * Due to the geometric approach, joints (instances of ``Joint`` object)
-  are defined without links. 
-  * The ``Linkage`` class that will make your code shorter.
-* [optimizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/optimizer.py) proposes three optimizations based on three techniques:
-  * The "exhaustive" optimization (``exhaustive_optimization`` function)
-  is a simple grid search optimization method,
-  consisting or trying sequentially all positions.
-  It is here for demonstration purposes only,
-  and you should not use it if you are looking for an efficient technique.
-  * The built-in Particle Swarm Optimizer (PSO).
-  I started with it, so it offers a large set of useful options for linkage optimization.
-  However, it is here for legacy purposes, and is much shorter than the PySwarms module.
-  * PSO using [PySwarms](https://github.com/ljvmiranda921/pyswarms).
-  We provide a wrapper function to PySwarm from ljvmiranda921,
-  that will progressively be extended.
-* [visualizer.py](https://github.com/HugoFara/pylinkage/blob/main/pylinkage/visualizer.py) can make graphic illustrations of your linkage using matplotlib.
-  * It is also used to visualize your n-dimensional swarm, which is not supported by PySwarms.
+The idea of pylinkage is "one-linkage-one-file".
+The idea is that you reuse the same structure for linkage declaration,
+in order to make things easy to follow.
+Of course, you can adapt the project to your needs, but I recommend the following approach:
+
+1. Declare your joints (any ``Joint`` defined in the ``pylinkage/joints`` package).
+2. Arrange joints together in a ``Linkage`` (see the ``pylinkage/linkage`` package).
+3. (optional) Manually simulate your linkage.
+As we use kinematic planar linkages, constraints are solved as 2D geometry (``pylinkage/geometry``).
+4. Optimize your ``Linkage`` with ``pylinkage/optimization``.
+5. View the result with ``pylinkage/visualizar``.
 
 ## Requirements
 
