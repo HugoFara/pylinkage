@@ -2,7 +2,7 @@
 Static joint definition file.
 """
 
-from ..interface import joint as pl_joint
+from . import joint as pl_joint
 
 
 class Static(pl_joint.Joint):

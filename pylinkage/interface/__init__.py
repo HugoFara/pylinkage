@@ -6,12 +6,13 @@ from .exceptions import (
     HypostaticError,
     NotCompletelyDefinedError,
 )
-from .joint import Static
 from ..joints import (
+    Static,
     Revolute,
     Crank,
     Linear,
     Fixed,
 )
+# Will be deleted in next major release
 from ..joints.revolute import Pivot
 from .linkage import Linkage

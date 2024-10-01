@@ -3,7 +3,7 @@ Crank joint definition.
 """
 from math import atan2
 
-from ..interface import joint as pl_joint
+from . import joint as pl_joint
 from .. import geometry as pl_geom
 from ..interface import exceptions as pl_exceptions
 

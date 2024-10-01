@@ -23,7 +23,7 @@ from .geometry import (
 from .interface import (
     UnbuildableError,
     HypostaticError,
-    Static,
+    NotCompletelyDefinedError,
     Pivot,
     Linkage,
 )
@@ -32,6 +32,7 @@ from .joints import (
     Fixed,
     Linear,
     Revolute,
+    Static,
 )
 from .optimization import (
     generate_bounds,

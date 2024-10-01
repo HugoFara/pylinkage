@@ -10,8 +10,7 @@ Created on Fri Apr 16, 16:39:21 2021.
 import warnings
 from math import gcd, tau
 from .exceptions import HypostaticError
-from .joint import Static
-from ..joints import (Revolute, Fixed, Crank)
+from ..joints import (Revolute, Fixed, Crank, Static)
 
 
 class Linkage:

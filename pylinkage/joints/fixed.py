@@ -5,7 +5,7 @@ import math
 
 from .. import geometry as pl_geom
 from ..interface import exceptions as pl_exceptions
-from ..interface import joint as pl_joint
+from . import joint as pl_joint
 
 
 class Fixed(pl_joint.Joint):
