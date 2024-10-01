@@ -9,20 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
-based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
-- ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
-- ``collections.Agent`` and ``collections.MutableAgent`` are two new classes that should standardize the format of 
+- New joint: the ``Linear`` joint!
+- New sub-package: collections. 
+``collections.Agent`` and ``collections.MutableAgent`` are two new classes that should standardize the format of 
 optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
   - ``Agent`` is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.
   - ``MutableAgent`` is mutable. It may be deprecated/removed if ``Agent`` is satisfactory.
-- Very basic tests cases for a Linkage.
+- New sub-package: geometry.
+  - It introduces two new functions ``line_from_points`` and ``circle_line_intersection``.
+- New examples:
+  - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake), 
+  based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
+  - ``examples/inverted_stroke_engine.py`` is a demo of a [four-stroke engine](https://en.wikipedia.org/wiki/Four-stroke_engine) featuring a Linear joint.
+- ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
+- New exception ``NotCompletelyDefinedError``, when a joint is reloading but its anchor coordinates are set to None.
 - Some run configuration files added *for users of PyCharm*:
   - Run all tests with "All Tests".
   - Regenerate documentation with "Sphinx Documentation".
-- The ``Linear`` joint is here! His geometric model was of course implemented.
-- ``line_from_points`` and ``circle_line_intersection``.
-- New exception ``NotCompletelyDefinedError``, when a joint is reloading but its anchor coordinates are set to None.
 
 ### Changed
 
@@ -39,13 +42,12 @@ iteration.
 - ``repr_polar_swarm`` reload frame only when a new buildable linkage is generated.
   - This makes the display much faster.
   - For each iteration, you may see linkages that do not exist anymore.
-- Folders reorganization: 
-  - New package ``pylinkage/interface/``: 
+- Folders reorganization:
+  - The ``geometry`` module is now a package (``pylinkage/geometry``)
+  - New package ``pylinkage/linkage``: 
     - ``pylinkage/linkage.py`` separated and inserted in this package.
-      - Joints definition are in ``joint.py``.
-      - Revolute joint definition in ``revolute_joint.py``.
-      - Linkage definition is in ``linkage.py``.
-    - ``pylinkage/exceptions.py`` go to ``interface/``.
+  - New package: ``pylinkage/joints``
+    - Joints definition are in respective files.
   - New package ``pylinkage/optimization/`` 
     - ``pylinkage/optimizer.py`` split and inserted in.
     - Trials-and-errors related functions goes to ``grid_search.py``.
@@ -56,7 +58,7 @@ iteration.
   - ``source/`` renamed to ``sphinx/`` because it was confusing and only for Sphinx configuration.
 - Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
 - ``__secant_circles_intersections__`` renamed to
-``secant_circles_intersections`` in ``geometry.py``.
+``secant_circles_intersections`` (in ``pylinkage/geometry/secants.py``).
 
 ### Fixed
 
@@ -71,7 +73,7 @@ iteration.
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
 - ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
 - The ``Pivot`` class is deprecated in favor of the ``Revolute`` class. 
-The name "Pivot joint" is not standard. 
+The name "Pivot joint" is not standard.
 Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 - The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage`` 
 (linkage.py)
