@@ -18,14 +18,14 @@ class Revolute(pl_joint.Joint):
     __slots__ = "r0", "r1"
 
     def __init__(
-            self,
-            x=0,
-            y=0,
-            joint0=None,
-            joint1=None,
-            distance0=None,
-            distance1=None,
-            name=None
+        self,
+        x=0,
+        y=0,
+        joint0=None,
+        joint1=None,
+        distance0=None,
+        distance1=None,
+        name=None
     ):
         """
         Set point position, parents, and if it is fixed for this turn.
@@ -145,8 +145,6 @@ class Revolute(pl_joint.Joint):
         :type joint: Joint | tuple[float]
         :param distance: Distance to keep constant from the anchor. The default is None.
         :type distance: float
-
-
         """
         self.joint0 = joint
         self.set_constraints(distance0=distance)

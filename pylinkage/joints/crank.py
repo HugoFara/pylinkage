@@ -25,28 +25,20 @@ class Crank(pl_joint.Joint):
         """
         Define a crank (circular motor).
 
-        Parameters
-        ----------
-        x : float, optional
-            initial horizontal position, won't be used thereafter.
+        :param x: Initial horizontal position, won't be used thereafter.
             The default is None.
-        y : float, optional
-            initial vertical position. The default is None.
-        joint0 : Union[Joint, tuple[float]], optional
-            first reference joint. The default is None.
-        distance : float, optional
-            distance to keep between joint0 and self. The default is None.
-        angle : float, optional
-            It is the angle (horizontal axis, joint0, self).
+        :type x: float | None
+        :param y: Initial vertical position. The default is None.
+        :type y: float | None
+        :param joint0: First reference joint. The default is None.
+        :type joint0: pylinkage.Joint | tuple[float, float] | None
+        :param distance: Distance to keep between joint0 and self. The default is None.
+        :type distance: float | None
+        :param angle: It is the angle (horizontal axis, joint0, self).
             Should be in radian and in trigonometric order.
             The default is None.
-        name : str, optional
-            user-friendly name. The default is None.
-
-        Returns
-        -------
-        None.
-
+        :type angle: float | None
+        :param str | None name: Human-readable name. The default is None.
         """
         super().__init__(x, y, joint0, name=name)
         self.r, self.angle = distance, angle
@@ -56,7 +48,6 @@ class Crank(pl_joint.Joint):
 
         :param dt: Fraction of steps to take (Default value = 1)
         :type dt: float
-
         """
         if self.joint0 is None:
             return

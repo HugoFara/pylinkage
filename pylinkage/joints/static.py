@@ -17,14 +17,10 @@ class Static(pl_joint.Joint):
         """
         A Static joint is a point in space to use as anchor by other joints.
 
-        It is NOT a kind of joint as viewed in engineering terms!
-
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
+        :param float x: Position on horizontal axis. The default is 0.
+        :param float y: Position on vertical axis. The default is 0.
+        :param name: Friendly name for human readability. The default is None.
+        :type name: str | None
         """
         super().__init__(x, y, name=name)
 
@@ -40,22 +36,19 @@ class Static(pl_joint.Joint):
         """Do nothing, for consistency only.
 
         :param args: Unused
-
         """
         pass
 
     def set_anchor0(self, joint):
         """First joint anchor.
 
-        :param joint:
-
+        :param Joint joint: Other joint to join with.
         """
         self.joint0 = joint
 
     def set_anchor1(self, joint):
         """Second joint anchor.
 
-        :param joint:
-
+        :param Joint joint: Other joint to join with.
         """
         self.joint1 = joint

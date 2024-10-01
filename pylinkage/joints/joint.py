@@ -12,7 +12,7 @@ def joint_syntax_parser(joint):
     :type joint: Joint | tuple[float, float] | None
 
     :return: New static joint definition if possible, or None.
-    :rtype: Static | None
+    :rtype: Joint | Static | None
     """
     if joint is None or isinstance(joint, Joint):
         return joint
