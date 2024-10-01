@@ -25,11 +25,11 @@ from .interface import (
     HypostaticError,
     Static,
     Pivot,
-    Crank,
-    Fixed,
-    Linkage
+    Linkage,
 )
 from .joints import (
+    Crank,
+    Fixed,
     Linear,
     Revolute,
 )

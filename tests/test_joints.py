@@ -10,8 +10,7 @@ import unittest
 import math
 
 from pylinkage import UnbuildableError
-from pylinkage.interface.joint import Fixed
-from pylinkage.joints import Revolute
+from pylinkage.joints import Revolute, Fixed
 
 
 class TestPivot(unittest.TestCase):
