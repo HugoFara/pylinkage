@@ -10,6 +10,7 @@ Created on Wed May 5, 17:34:45 2021.
 @author: HugoFara
 """
 import math
+import warnings
 
 
 def dist_builtin(point1, point2):
@@ -34,15 +35,33 @@ else:
 
 
 def sqr_dist(point1, point2):
-    """Square of the distance between two points.
+    """
+    Square of the distance between two points.
 
     Faster than dist.
 
-    :param point1:
-    :param point2:
+    :param tuple[float, float] point1: First point to compare
+    :param tuple[float, float] point2: Second point
 
+    :return float: Computed distance
     """
     return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
+
+
+def get_nearest_point(reference_point, first_point, second_point):
+    """
+    Return the point closer to the reference.
+
+    :param tuple[float, float] reference_point: Point to compare to
+    :param tuple[float, float] first_point: First point candidate
+    :param tuple[float, float] second_point: Second point candidate
+    :return tuple[float, float]: Either first point or second point
+    """
+    if reference_point == first_point or reference_point == second_point:
+        return reference_point
+    if sqr_dist(reference_point, first_point) < sqr_dist(reference_point, second_point):
+        return first_point
+    return second_point
 
 
 def norm(vec):
@@ -147,75 +166,144 @@ def circle_intersect(circle1, circle2, tol=0.0):
     return 1, projected
 
 
-def line_from_points(point0, point1):
+def line_from_points(first_point, second_point):
     """
-    Return a cartesian equation of a line joining two points.
+    A cartesian equation of the line joining two points.
 
-    Arguments
-    ---------
-    point0 : (float, float)
-        On point of the line.
-    point1 : (float, float)
-        Another point on the line.
-
-    Returns
-    -------
-    (float, float, float)
-    A cartesian equation of this line.
+    :param tuple[float, float] first_point: One point of the line.
+    :param tuple[float, float] second_point: Another point on the line.
+    :return tuple[float, float, float]: A cartesian equation of this line.
     """
+    if first_point == second_point:
+        warnings.warn("Cannot choose a line, inputs points are the same!")
+        return 0, 0, 0
     director = (
-        point1[0] - point0[0],
-        point1[1] - point0[1]
+        second_point[0] - first_point[0],
+        second_point[1] - first_point[1]
     )
     # The barycenter should give more precision
     mean = (
-        (point0[0] + point1[0]) / 2,
-        (point0[1] + point1[1]) / 2
+        (first_point[0] + second_point[0]) / 2,
+        (first_point[1] + second_point[1]) / 2
     )
-    equilibrium = director[1] * mean[0] - director[0] * mean[1]
+    equilibrium = mean[0] * director[1] - mean[1] * director[0]
     return -director[1], director[0], equilibrium
+
+
+def circle_line_from_points_intersection(circle, first_point, second_point):
+    """
+    Intersection(s) of a circle and a line defined by two points.
+
+    :param circle: Sequence of (abscissa, ordinate, radius)
+    :type circle: tuple[float, float, float]
+    :param tuple[float, float] first_point: One point of the line.
+    :param tuple[float, float] second_point: Another point on the line.
+
+    :return: Either 0, 1 or two intersection points, the first elements indicates the intersection type.
+    :rtype: tuple | tuple[tuple[float, float]] | tuple[tuple[float, float], tuple[float, float]]
+    """
+    # Move axis to circle center
+    first_point = first_point[0] - circle[0], first_point[1] - circle[1]
+    second_point = second_point[0] - circle[0], second_point[1] - circle[1]
+
+    dx, dy = second_point[0] - first_point[0], second_point[1] - first_point[1]
+
+    dr2 = dx ** 2 + dy ** 2
+
+    cross = first_point[0] * second_point[1] - second_point[0] * first_point[1]
+
+    discriminant = circle[2] ** 2 * dr2 - cross ** 2
+
+    if 0 > discriminant:
+        # no intersection
+        return tuple()
+
+    reduced = cross / dr2, math.sqrt(discriminant) / dr2
+
+    if discriminant == 0:
+        # Tangent line
+        return ((reduced[0] * dy + circle[0], -reduced[0] * dx + circle[1]), )
+
+    # discriminant > 0, two intersections
+    return (
+        (
+            reduced[0] * dy - (1 if dy >= 0 else -1) * dx * reduced[1] + circle[0],
+            -reduced[0] * dx - abs(dy) * reduced[1] + circle[1]
+        ),
+        (
+            reduced[0] * dy + (1 if dy >= 0 else -1) * dx * reduced[1] + circle[0],
+            -reduced[0] * dx + abs(dy) * reduced[1] + circle[1]
+        )
+    )
 
 
 def circle_line_intersection(circle, line):
     """
     Return the intersection between a line and a circle.
 
+    From https://mathworld.wolfram.com/Circle-LineIntersection.html
+
     Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
 
-    Arguments
-    ---------
-    circle : (float, float, float)
-        Sequence of (abscisse, ordinate, radius)
-    line : (float, float, float)
-        Cartesian equation of a line.
+    :param circle: Sequence of (abscissa, ordinate, radius)
+    :type circle: [float, float, float]
+    :param line: Cartesian equation of a line.
+    :type line: [float, float, float]
 
-    Returns
-    -------
-    (None, ) or ((float, float), ) or ((float, float), (float, float))
-    The first int gives the intersection type
-
+    :return: Nothing, one or two intersections. The first int gives the intersection type.
+    :rtype: (None, ) or ((float, float), ) or ((float, float), (float, float))
     """
+    # Find two points on the line
+    if line[1] != 0:
+        first_point = 0, - line[2] / line[1]
+        second_point = 1, - (line[2] + line[0]) / line[1]
+    else:
+        first_point = - line[2] / line[0], 0
+        second_point = - (line[2] + line[1]) / line[0], 1
+
+    return circle_line_from_points_intersection(circle, first_point, second_point)
+
+    # Move axis to circle center
+    first_point = first_point[0] - circle[0], first_point[1] - circle[1]
+    second_point = second_point[0] - circle[0], second_point[1] - circle[1]
+
+    new_line = line_from_points(first_point, second_point)
+
+
+    D, dr2, dx, dy = line[2], line[0] ** 2 + line[1] ** 2, line[1], -line[0]
+
+
+
     a, b, c = line
     x0, y0, r = circle
-    discriminant = a ** 2 * r ** 2 - a ** 2 * x0 ** 2 - 2 * a * b * x0 * y0 - 2 * a * c * x0 + b ** 2 * r ** 2 - b ** 2 * y0 ** 2 - 2 * b * c * y0 - c ** 2
-    A = a ** 2 + b ** 2
+    discriminant = (
+            a ** 2 * r ** 2 -
+            a ** 2 * x0 ** 2 -
+            2 * a * b * x0 * y0 -
+            2 * a * c * x0 +
+            b ** 2 * r ** 2 -
+            b ** 2 * y0 ** 2 -
+            2 * b * c * y0 -
+            c ** 2
+    )
+    sqr_ab = a ** 2 + b ** 2
     if discriminant < 0:
         return tuple()
     if discriminant == 0:
         return tuple([(
-            -(b * ( -(-a ** 2 * y0 + a * b * x0 + b * c) / A) + c) / a,
-            - (-a ** 2 * y0 + a * b * x0 + b * c) / A
+            -(b * (-(-a ** 2 * y0 + a * b * x0 + b * c) / sqr_ab) + c) / a,
+            - (-a ** 2 * y0 + a * b * x0 + b * c) / sqr_ab
         )])
 
-    s_discri = math.sqrt(discriminant)
+    s_discriminant = math.sqrt(discriminant)
     return (
         (
-            -(b * (a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
-            a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
+            -(b * (a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
+            a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
          ),
         (
-            -(b * (-a * s_discri / A - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
-            -a * s_discri / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
+            -(b * (-a * s_discriminant / sqr_ab - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
+            -a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
         )
     )
 
@@ -294,4 +382,4 @@ def bounding_box(locus):
         x_min = min(x_min, point[0])
         y_max = max(y_max, point[1])
         x_max = max(x_max, point[0])
-    return (y_min, x_max, y_max, x_min)
+    return y_min, x_max, y_max, x_min

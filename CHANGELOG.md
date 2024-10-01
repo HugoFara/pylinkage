@@ -22,6 +22,7 @@ optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
   - Regenerate documentation with "Sphinx Documentation".
 - The ``Linear`` joint is here! His geometric model was of course implemented.
 - ``line_from_points`` and ``circle_line_intersection``.
+- New exception ``NotCompletelyDefinedError``, when a joint is reloading but its anchor coordinates are set to None.
 
 ### Changed
 

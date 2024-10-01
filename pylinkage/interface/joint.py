@@ -3,14 +3,31 @@ Definition of the different joints used for pylinkage.
 """
 import abc
 from math import atan2
+
 from ..geometry import (
-    sqr_dist, cyl_to_cart, circle_line_intersection, line_from_points
+    cyl_to_cart, circle_line_from_points_intersection, get_nearest_point
 )
-from .exceptions import HypostaticError, UnbuildableError
+from .exceptions import HypostaticError, UnbuildableError, NotCompletelyDefinedError
+
+
+def joint_syntax_parser(joint):
+    """
+    Syntactic parser that understand a joint definition.
+
+    :param joint: Input joint definition to be parsed.
+    :type joint: Joint | tuple[float, float] | None
+
+    :return: New static joint definition if possible, or None.
+    :rtype: Static | None
+    """
+    if joint is None or isinstance(joint, Joint):
+        return joint
+    return Static(*joint)
 
 
 class Joint(abc.ABC):
-    """Geometric constraint expressed by two joints.
+    """
+    Geometric constraint expressed by two joints.
     
     Abstract class should always be inherited.
     """
@@ -19,30 +36,22 @@ class Joint(abc.ABC):
 
     def __init__(self, x=0, y=0, joint0=None, joint1=None, name=None):
         """
-        Create Joint.
+        Create a Joint abstract object.
 
-        Arguments
-        ---------
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
-        joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
-        joint1 : Union[Joint, tuple[float]], optional
-            Other pivot joint linked. The default is None.
+        :param x: Position on horizontal axis. The default is 0.
+        :type x: float | None
+        :param y: Position on vertical axis. The default is O.
+        :type y: float | None
+        :param name: Friendly name for human readability. Will default to object if None.
+        :type name: str | None
+        :param joint0: First linked joint (geometric constraints). The default is None.
+        :type joint0: Joint | tuple[float, float] | None
+        :param joint1: Other revolute joint linked. The default is None.
+        :type joint1: Joint | tuple[float, float] | None
         """
         self.x, self.y = x, y
-        if joint0 is None or isinstance(joint0, Joint):
-            self.joint0 = joint0
-        else:
-            self.joint0 = Static(*joint0)
-        if joint1 is None or isinstance(joint1, Joint):
-            self.joint1 = joint1
-        else:
-            self.joint1 = Static(*joint1)
+        self.joint0 = joint_syntax_parser(joint0)
+        self.joint1 = joint_syntax_parser(joint1)
         self.name = name
         if name is None:
             self.name = str(id(self))
@@ -58,7 +67,11 @@ class Joint(abc.ABC):
         return self.joint0, self.joint1
 
     def coord(self):
-        """Return cartesian coordinates."""
+        """
+        Return cartesian coordinates.
+
+        :rtype: tuple[float | None, float | None]
+        """
         return self.x, self.y
 
     def set_coord(self, *args):
@@ -163,9 +176,9 @@ class Fixed(Joint):
         name : str, optional
             Friendly name for human readability. The default is None.
         joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
+            Linked revolute joint 1 (geometric constraints). The default is None.
         joint1 : Union[Joint, tuple[float]], optional
-            Other pivot joint linked. The default is None.
+            Other revolute joint linked. The default is None.
         distance : float, optional
             Distance to keep constant between joint0 and self. The default is
             None.
@@ -235,8 +248,15 @@ class Crank(Joint):
 
     __slots__ = "r", "angle"
 
-    def __init__(self, x=None, y=None, joint0=None,
-                 distance=None, angle=None, name=None):
+    def __init__(
+        self,
+        x=None,
+        y=None,
+        joint0=None,
+        distance=None,
+        angle=None,
+        name=None
+    ):
         """
         Define a crank (circular motor).
 
@@ -269,7 +289,7 @@ class Crank(Joint):
     def reload(self, dt=1):
         """Make a step of crank.
 
-        :param dt: Fraction of step to do (Default value = 1)
+        :param dt: Fraction of steps to take (Default value = 1)
         :type dt: float
 
         """
@@ -314,63 +334,70 @@ class Crank(Joint):
 
 
 class Linear(Joint):
-    """Define a point constrained by a prismatic pair and a revolute pair."""
+    """Define a point constrained by a prismatic joint and a revolute joint."""
 
-    __slots__ = "r0", "joint2"
+    __slots__ = "revolute_radius", "joint2"
 
     def __init__(
-            self, x=0, y=0,
-            joint0=None, joint1=None, joint2=None,
-            distance0=None, name=None
+        self,
+        x=0,
+        y=0,
+        joint0=None,
+        joint1=None,
+        joint2=None,
+        revolute_radius=None,
+        name=None
     ):
         """
         Set point position, parents, and if it is fixed for this turn.
 
-        Arguments
-        ---------
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
-        joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
-        joint1 : Union[Joint, tuple[float]], optional
-            First joint or point defining the axis. The default is None.
-        joint1 : Union[Joint, tuple[float]], optional
-            Second joint or point defining the axis. The default is None.
-        distance0 : float, optional
-            Distance from joint0 to the current Joint. The default is None.
+        :param x: Position on horizontal axis. The default is 0.
+        :type x: float | None
+        :param y: Position on vertical axis. The default is 0.
+        :type y: float | None
+        :param joint0: Linked revolute joint 1 (geometric constraints). The default is None.
+        :type joint0: Joint | tuple[float, float]
+        :param joint1: First joint or point defining the axis. The default is None.
+        :type joint1: Joint | tuple[float, float]
+        :param joint2: Second joint or point defining the axis. The default is None.
+        :type joint2: Joint | tuple[float, float]
+        :param revolute_radius: Distance from joint0 to the current Joint. The default is None.
+        :type revolute_radius: float | None
+        :param name: Friendly name for human readability. The default is None.
+        :type name: str | None
         """
         super().__init__(x, y, joint0, joint1, name)
-        self.r0 = distance0
-        self.joint2 = joint2
+        self.revolute_radius = revolute_radius
+        self.joint2 = joint_syntax_parser(joint2)
 
     def reload(self):
-        """Compute position of pivot joint, with the three linked joints."""
-        positions = circle_line_intersection(
-            (*self.joint0.coord(), self.r0),
-            line_from_points(self.joint1.coord(), self.joint2.coord())
+        """Compute position of revolute joint, with the three linked joints."""
+        if self.joint0 is None:
+            raise NotCompletelyDefinedError(self, "joint0 is not defined")
+        positions_circle = (*self.joint0.coord(), self.revolute_radius)
+        if None in positions_circle:
+            raise UnbuildableError(
+                self,
+                message="Joint has missing constraints. "
+                        "Current constraints are " + str(positions_circle)
+            )
+        positions = circle_line_from_points_intersection(
+            positions_circle,
+            self.joint1.coord(),
+            self.joint2.coord()
         )
         if len(positions) == 0:
             raise UnbuildableError(self)
         elif len(positions) == 1:
             self.x, self.y = positions[0]
         else:
-            # Got to the nearer point
-            if (
-                    sqr_dist(self.coord(), positions[0]) <
-                    sqr_dist(self.coord(), positions[1])
-            ):
-                self.x, self.y = positions[0]
-            else:
-                self.x, self.y = positions[1]
+            # Got to the nearest point
+            self.x, self.y = get_nearest_point(self.coord(), positions[0], positions[1])
 
     def get_constraints(self):
         """Return the only distance constraint for this joint."""
-        return tuple([self.r0])
+        return tuple([self.revolute_radius])
 
     def set_constraints(self, distance0=None):
         """Set the only distance constraint for this joint."""
-        self.r0 = distance0 or self.r0
+        self.revolute_radius = distance0 or self.revolute_radius
