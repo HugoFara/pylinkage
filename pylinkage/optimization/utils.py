@@ -1,5 +1,13 @@
-"""Utility for optimization."""
+"""
+This utility module provides various useful functions for optimization.
+
+Created on Mon Jul 12 00:00:01 2021.
+
+@author: HugoFara
+"""
 import numpy as np
+
+from ..linkage.analysis import kinematic_default_test
 
 
 def generate_bounds(center, min_ratio=5, max_factor=5):
@@ -20,3 +28,31 @@ def generate_bounds(center, min_ratio=5, max_factor=5):
     """
     np_center = np.array(center)
     return np_center / min_ratio, np_center * max_factor
+
+
+def kinematic_maximization(func):
+    """Standard run for any linkage before a complete fitness evaluation.
+
+    This decorator makes a kinematic simulation, before passing the loci to the
+    decorated function. In case of error, the penalty value is -float('inf')
+
+    :param func: Fitness function to be decorated.
+    :type func: Callable
+
+
+    """
+    return kinematic_default_test(func, -float('inf'))
+
+
+def kinematic_minimization(func):
+    """Standard run for any linkage before a complete fitness evaluation.
+
+    This decorator makes a kinematic simulation, before passing the loci to the
+    decorated function. In case of error, the penalty value is float('inf')
+
+    :param func: Fitness function to be decorated.
+    :type func: Callable
+
+
+    """
+    return kinematic_default_test(func, float('inf'))

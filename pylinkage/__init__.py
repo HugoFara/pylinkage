@@ -20,12 +20,15 @@ from .geometry import (
     circle_intersect,
     intersection
 )
-from .interface import (
+from .exceptions import (
     UnbuildableError,
     HypostaticError,
     NotCompletelyDefinedError,
-    Pivot,
+)
+from .linkage import (
     Linkage,
+    kinematic_default_test,
+    bounding_box,
 )
 from .joints import (
     Crank,
@@ -34,16 +37,13 @@ from .joints import (
     Revolute,
     Static,
 )
+from .joints.revolute import Pivot
 from .optimization import (
     generate_bounds,
     trials_and_errors_optimization,
-    particle_swarm_optimization
-)
-from .utility import (
-    kinematic_default_test,
+    particle_swarm_optimization,
     kinematic_maximization,
     kinematic_minimization,
-    bounding_box
 )
 from .visualizer import (
     plot_static_linkage,

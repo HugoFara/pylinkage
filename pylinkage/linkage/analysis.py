@@ -1,18 +1,12 @@
 """
-The utility module provides various useful functions.
-
-Created on Mon Jul 12 00:00:01 2021.
-
-@author: HugoFara
+Analysis tools for linkages.
 """
-import warnings
-
-from pylinkage.interface.exceptions import UnbuildableError
+from ..exceptions import UnbuildableError
 
 
 def kinematic_default_test(func, error_penalty):
     """Standard run for any linkage before a complete fitness evaluation.
-    
+
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function.
 
@@ -22,8 +16,9 @@ def kinematic_default_test(func, error_penalty):
             float('inf') and 0.
     :type error_penalty: float
 
-    
+
     """
+
     def wrapper(linkage, params, init_pos=None):
         """Decorated function.
 
@@ -35,7 +30,7 @@ def kinematic_default_test(func, error_penalty):
             redefined at each successful iteration. (Default value = None)
         :type init_pos: tuple[tuple[float]]
 
-        
+        :return Callable: New optimization function wrapper
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
@@ -66,35 +61,8 @@ def kinematic_default_test(func, error_penalty):
             return func(
                 linkage=linkage, params=params, init_pos=init_pos, loci=loci
             )
+
     return wrapper
-
-
-def kinematic_maximization(func):
-    """Standard run for any linkage before a complete fitness evaluation.
-    
-    This decorator makes a kinematic simulation, before passing the loci to the
-    decorated function. In case of error, the penalty value is -float('inf')
-
-    :param func: Fitness function to be decorated.
-    :type func: Callable
-
-    
-    """
-    return kinematic_default_test(func, -float('inf'))
-
-
-def kinematic_minimization(func):
-    """Standard run for any linkage before a complete fitness evaluation.
-    
-    This decorator makes a kinematic simulation, before passing the loci to the
-    decorated function. In case of error, the penalty value is float('inf')
-
-    :param func: Fitness function to be decorated.
-    :type func: Callable
-
-    
-    """
-    return kinematic_default_test(func, float('inf'))
 
 
 def bounding_box(locus):
@@ -135,18 +103,3 @@ def movement_bounding_box(loci):
             max(new_bb[2], bb[2]), min(new_bb[3], bb[3])
         )
     return bb
-
-
-def movement_bounding_bow(loci):
-    """
-    Bounding box for a group of loci.
-
-    :param loci:
-
-    :rtype: tuple[float, float, float, float]
-
-    .. deprecated :: 0.6.0
-        Was replaced by :func:`movement_bounding_box`, will be removed in 0.7.0.
-    """
-    warnings.warn("movement_bounding_bow is deprecated, please use movement_bounding_box")
-    return movement_bounding_box(loci)

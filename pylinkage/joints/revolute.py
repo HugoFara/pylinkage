@@ -8,7 +8,7 @@ import warnings
 from math import atan2
 
 from .. import geometry as pl_geom
-from ..interface import exceptions as pl_exceptions
+from .. import exceptions as pl_exceptions
 from . import joint as pl_joint
 
 
@@ -113,7 +113,9 @@ class Revolute(pl_joint.Joint):
             if intersections[0] == 1:
                 self.x, self.y = intersections[1]
             elif intersections[0] == 2:
-                self.x, self.y = pl_geom.get_nearest_point(self.coord(), intersections[1], intersections[2])
+                self.x, self.y = pl_geom.core.get_nearest_point(
+                    self.coord(), intersections[1], intersections[2]
+                )
             elif intersections[0] == 3:
                 warnings.warn(
                     f"Joint {self.name} has an infinite number of"
