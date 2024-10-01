@@ -138,7 +138,7 @@ class Linkage:
                 kinematic_undetermined += 2
             elif isinstance(j, Revolute):
                 solids += 1
-                # A Pivot Joint creates at least two pivots
+                # A Revolute Joint creates at least two revolute joints
                 kinematic_undetermined += 4
                 if not hasattr(j, 'joint1') or j.joint1 is None:
                     mobilities += 1

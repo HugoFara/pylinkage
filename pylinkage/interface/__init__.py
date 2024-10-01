@@ -10,7 +10,6 @@ from .joint import (
     Static,
     Crank,
     Fixed,
-    Linear
 )
-from .revolute_joint import Revolute, Pivot
+from ..joints.revolute import Revolute, Pivot
 from .linkage import Linkage
