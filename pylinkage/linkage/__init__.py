@@ -1,18 +1,8 @@
 """
-Classes that represent the main interface with the library.
+Definition and analysis of a linkage as a dynamic set of joints.
 """
-from ..exceptions import (
-    UnbuildableError,
-    HypostaticError,
-    NotCompletelyDefinedError,
-)
-from ..joints import (
-    Static,
-    Revolute,
-    Crank,
-    Linear,
-    Fixed,
-)
-# Will be deleted in next major release
-from ..joints.revolute import Pivot
 from .linkage import Linkage
+from .analysis import (
+    kinematic_default_test,
+    bounding_box,
+)

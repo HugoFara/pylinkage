@@ -10,7 +10,7 @@ Created on Mon Jun 14, 12:13:58 2021.
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-from ..optimization.utils import movement_bounding_box
+from ..linkage.analysis import movement_bounding_box
 from ..exceptions import UnbuildableError
 from ..joints import Crank, Static
 from .static import plot_static_linkage

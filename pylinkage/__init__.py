@@ -25,7 +25,11 @@ from .exceptions import (
     HypostaticError,
     NotCompletelyDefinedError,
 )
-from .linkage import Linkage
+from .linkage import (
+    Linkage,
+    kinematic_default_test,
+    bounding_box,
+)
 from .joints import (
     Crank,
     Fixed,
@@ -38,10 +42,8 @@ from .optimization import (
     generate_bounds,
     trials_and_errors_optimization,
     particle_swarm_optimization,
-    kinematic_default_test,
     kinematic_maximization,
     kinematic_minimization,
-    bounding_box
 )
 from .visualizer import (
     plot_static_linkage,

@@ -4,7 +4,7 @@ import numpy as np
 import pylinkage as pl
 from pylinkage import optimization
 from pylinkage.optimization.grid_search import fast_variator, sequential_variator
-from pylinkage.utility import kinematic_minimization
+from pylinkage.optimization.utils import kinematic_minimization
 
 
 def prepare_linkage():
