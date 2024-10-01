@@ -20,13 +20,12 @@ from .geometry import (
     circle_intersect,
     intersection
 )
-from .interface import (
+from .exceptions import (
     UnbuildableError,
     HypostaticError,
     NotCompletelyDefinedError,
-    Pivot,
-    Linkage,
 )
+from .linkage import Linkage
 from .joints import (
     Crank,
     Fixed,
@@ -34,6 +33,7 @@ from .joints import (
     Revolute,
     Static,
 )
+from .joints.revolute import Pivot
 from .optimization import (
     generate_bounds,
     trials_and_errors_optimization,

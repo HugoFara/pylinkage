@@ -10,11 +10,11 @@ Created on Mon Jun 14, 12:13:58 2021.
 import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 
-from .utility import movement_bounding_box
-from .interface.exceptions import UnbuildableError
-from .joints import Crank, Static
-from .visualizer import plot_static_linkage
-from .visualizer.core import _get_color
+from ..optimization.utils import movement_bounding_box
+from ..exceptions import UnbuildableError
+from ..joints import Crank, Static
+from .static import plot_static_linkage
+from .core import _get_color
 
 # List of animations
 ANIMATIONS = []

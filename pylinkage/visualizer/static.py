@@ -4,7 +4,7 @@ Static (not animated) visualization.
 
 from .core import _get_color
 from ..joints import (Fixed, Revolute, Linear)
-from ..interface import Pivot
+from ..joints.revolute import Pivot
 
 
 def plot_static_linkage(

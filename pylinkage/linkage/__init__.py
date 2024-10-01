@@ -1,7 +1,7 @@
 """
 Classes that represent the main interface with the library.
 """
-from .exceptions import (
+from ..exceptions import (
     UnbuildableError,
     HypostaticError,
     NotCompletelyDefinedError,

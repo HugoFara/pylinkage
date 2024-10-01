@@ -9,7 +9,7 @@ import warnings
 
 import numpy as np
 
-from pylinkage.interface.exceptions import UnbuildableError
+from ..exceptions import UnbuildableError
 
 
 def generate_bounds(center, min_ratio=5, max_factor=5):

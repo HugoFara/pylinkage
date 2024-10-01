@@ -5,7 +5,7 @@ from math import atan2
 
 from . import joint as pl_joint
 from .. import geometry as pl_geom
-from ..interface import exceptions as pl_exceptions
+from .. import exceptions as pl_exceptions
 
 
 class Crank(pl_joint.Joint):

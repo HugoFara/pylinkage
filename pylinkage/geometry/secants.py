@@ -11,7 +11,7 @@ Created on Wed May 5, 17:34:45 2021.
 """
 import math
 
-from .geometry.core import dist
+from .core import dist
 
 
 def secant_circles_intersections(

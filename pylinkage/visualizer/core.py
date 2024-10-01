@@ -1,7 +1,7 @@
 """
 Core features for visualization.
 """
-from ..interface import Pivot
+from ..joints.revolute import Pivot
 from ..joints import (
     Revolute,
     Linear,

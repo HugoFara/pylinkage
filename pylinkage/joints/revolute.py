@@ -8,7 +8,7 @@ import warnings
 from math import atan2
 
 from .. import geometry as pl_geom
-from ..interface import exceptions as pl_exceptions
+from .. import exceptions as pl_exceptions
 from . import joint as pl_joint
 
 
