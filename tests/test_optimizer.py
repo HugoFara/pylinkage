@@ -17,7 +17,7 @@ def prepare_linkage():
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
     # Close the loop
-    pin = pl.Pivot(
+    pin = pl.Revolute(
         0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1
     )
     # Linkage definition
@@ -28,8 +28,8 @@ def prepare_linkage():
 def fitness_func(loci, **kwargs):
     """Return if the tip can go to the point (3, 1).
 
-    :param loci: 
-    :param **kwargs: 
+    :param loci:
+    :param kwargs:
 
     .. notes
     It is a minimization problem.
@@ -60,7 +60,7 @@ class TestEvaluation(unittest.TestCase):
     def test_score(self):
         """Test if score is well returned."""
         score = fitness_func(self.linkage, self.constraints)
-        self.assertAlmostEqual(score, 1, delta=.1)
+        self.assertAlmostEqual(1, score, delta=.1)
 
 
 class TestVariator(unittest.TestCase):
@@ -97,7 +97,7 @@ class TestTrialsAndErrors(unittest.TestCase):
             order_relation=min,
             verbose=False,
         )[0]
-        self.assertAlmostEqual(score, 0.0, delta=0.3)
+        self.assertAlmostEqual(0.0, score, delta=0.3)
 
 
 class TestPSO(unittest.TestCase):
@@ -128,7 +128,7 @@ class TestPSO(unittest.TestCase):
             })
             score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         # Do not apply optimization problems
-        self.assertAlmostEqual(score, 0.0, delta=delta)
+        self.assertAlmostEqual(0.0, score, delta=delta)
 
 
 if __name__ == '__main__':

@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 from .utility import movement_bounding_box
 from .interface.exceptions import UnbuildableError
-from .interface import Crank, Fixed, Static, Pivot, Revolute
+from .interface import Crank, Fixed, Static, Pivot
+from .joints import Revolute, Linear
 
 # List of animations
 ANIMATIONS = []
@@ -22,14 +23,15 @@ COLOR_SWITCHER = {
     Crank: 'g',
     Fixed: 'r',
     Pivot: 'b',
-    Revolute: 'b'
+    Revolute: 'b',
+    Linear: 'orange'
 }
 
 
 def _get_color(joint):
     """Search in COLOR_SWITCHER for the corresponding color.
 
-    :param joint: 
+    :param joint:
 
     """
     for joint_type, color in COLOR_SWITCHER.items():
@@ -56,7 +58,7 @@ def plot_static_linkage(
     :param show_legend: To add an automatic legend to the graph. The default is False.
     :type show_legend: bool
 
-    
+
     """
     axis.set_aspect('equal')
     axis.grid(True)
@@ -84,13 +86,20 @@ def plot_static_linkage(
             **plot_kwargs
         )
         # Then second parent
-        if isinstance(joint, (Crank, Static)):
-            continue
-        par_pos = joint.joint1.coord()
-        axis.plot(
-            [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-            **plot_kwargs
-        )
+        if isinstance(joint, (Fixed, Pivot, Revolute)):
+            par_pos = joint.joint1.coord()
+            axis.plot(
+                [par_pos[0], pos[0]], [par_pos[1], pos[1]],
+                **plot_kwargs
+            )
+        elif isinstance(joint, Linear):
+            # Different ordering
+            par_pos = joint.joint2.coord()
+            other_pos = joint.joint1.coord()
+            axis.plot(
+                [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],
+                **plot_kwargs
+            )
 
     # Highlight for specific loci
     if locus_highlights:
@@ -168,7 +177,7 @@ def plot_kinematic_linkage(
     :param interval: Delay between frames in milliseconds. The default is 40 (24 fps).
     :type interval: float
 
-    
+
     """
     axis.set_aspect('equal')
     axis.set_title("Animation")
@@ -187,8 +196,11 @@ def plot_kinematic_linkage(
         func=lambda index: update_animated_plot(
             linkage, index % len(loci), images, loci
         ),
-        frames=frames, blit=True, interval=interval, repeat=True,
-        save_count=frames)
+        frames=frames,
+        blit=True,
+        interval=interval,
+        repeat=True
+    )
     return animation
 
 
@@ -210,7 +222,7 @@ def show_linkage(
     :param save: To save the animation. The default is False.
     :type save: bool
     :param prev: Previous coordinates to use for linkage. The default is None.
-    :type prev: list
+    :type prev: list | tuple
     :param loci: list of loci. The default is None.
     :type loci: list
     :param points: Number of points to draw for a crank revolution.
@@ -228,7 +240,7 @@ def show_linkage(
         The default is 24.
     :type fps: int
 
-    
+
     """
     # Define initial positions
     linkage.rebuild(prev)
@@ -302,7 +314,7 @@ def swarm_tiled_repr(
         passing them to the linkage. (Default value = None)
     :type dimension_func: callable, optional
 
-    
+
     """
     fig.suptitle("Iteration: {}, best score: {}".format(swarm[0], max(agent[0] for agent in swarm[1])))
     for i, agent in enumerate(swarm[1]):

@@ -36,7 +36,7 @@ import pylinkage as pl
 # Main motor
 crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1)
 # Close the loop
-pin = pl.Pivot(
+pin = pl.Revolute(
     3, 2, joint0=crank, joint1=(3, 0), 
     distance0=3, distance1=1
 )
@@ -108,7 +108,7 @@ The pin will be created on the position of the parent, which is the head of the 
 Now we add a pin joint to close the kinematic loop.
 
 ```python
-pin = pl.Pivot(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
+pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
 ```
 
 In human language, here is what is happening:
@@ -127,7 +127,7 @@ then we keep the intersection closer to the previous position as the solution.
 Wait! A linkage with a single motor and only one pin joint? That doesn't make sense!
 : Behind the curtain, many joints are created on the fly. 
 When you define a ``Crank`` joint, it creates a motor **and** a pin joint on the crank's link head. 
-For a ``Pivot`` joint, it creates **3 pin joints**: one on each of its parents' positions, and one its position, 
+For a ``Revolute`` joint, it creates **3 pin joints**: one on each of its parents' positions, and one its position, 
 which forms a deformable triangle. 
 This is why pylinkage is so short to write.
 
@@ -159,7 +159,7 @@ import pylinkage as pl
 # Main motor
 crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1)
 # Close the loop
-pin = pl.Pivot(
+pin = pl.Revolute(
     3, 2, joint0=crank, joint1=(3, 0), 
     distance0=3, distance1=1
 )
@@ -195,7 +195,7 @@ Last recap, rearranging names:
 # Main motor
 crank = pl.Crank(0, 1, joint0=(0, 0), angle=.31, distance=1, name="B")
 # Close the loop
-pin = pl.Pivot(
+pin = pl.Revolute(
     3, 2, joint0=crank, joint1=(3, 0), 
     distance0=3, distance1=1, name="C"
 )

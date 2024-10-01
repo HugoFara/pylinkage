@@ -3,12 +3,29 @@ Definition of the different joints used for pylinkage.
 """
 import abc
 from math import atan2
+
 from ..geometry import cyl_to_cart
 from .exceptions import HypostaticError
 
 
+def joint_syntax_parser(joint):
+    """
+    Syntactic parser that understand a joint definition.
+
+    :param joint: Input joint definition to be parsed.
+    :type joint: Joint | tuple[float, float] | None
+
+    :return: New static joint definition if possible, or None.
+    :rtype: Static | None
+    """
+    if joint is None or isinstance(joint, Joint):
+        return joint
+    return Static(*joint)
+
+
 class Joint(abc.ABC):
-    """Geometric constraint expressed by two joints.
+    """
+    Geometric constraint expressed by two joints.
     
     Abstract class should always be inherited.
     """
@@ -17,30 +34,22 @@ class Joint(abc.ABC):
 
     def __init__(self, x=0, y=0, joint0=None, joint1=None, name=None):
         """
-        Create Joint.
+        Create a Joint abstract object.
 
-        Arguments
-        ---------
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
-        joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
-        joint1 : Union[Joint, tuple[float]], optional
-            Other pivot joint linked. The default is None.
+        :param x: Position on horizontal axis. The default is 0.
+        :type x: float | None
+        :param y: Position on vertical axis. The default is O.
+        :type y: float | None
+        :param name: Friendly name for human readability. Will default to object if None.
+        :type name: str | None
+        :param joint0: First linked joint (geometric constraints). The default is None.
+        :type joint0: Joint | tuple[float, float] | None
+        :param joint1: Other revolute joint linked. The default is None.
+        :type joint1: Joint | tuple[float, float] | None
         """
         self.x, self.y = x, y
-        if joint0 is None or isinstance(joint0, Joint):
-            self.joint0 = joint0
-        else:
-            self.joint0 = Static(*joint0)
-        if joint1 is None or isinstance(joint1, Joint):
-            self.joint1 = joint1
-        else:
-            self.joint1 = Static(*joint1)
+        self.joint0 = joint_syntax_parser(joint0)
+        self.joint1 = joint_syntax_parser(joint1)
         self.name = name
         if name is None:
             self.name = str(id(self))
@@ -56,7 +65,11 @@ class Joint(abc.ABC):
         return self.joint0, self.joint1
 
     def coord(self):
-        """Return cartesian coordinates."""
+        """
+        Return cartesian coordinates.
+
+        :rtype: tuple[float | None, float | None]
+        """
         return self.x, self.y
 
     def set_coord(self, *args):
@@ -161,9 +174,9 @@ class Fixed(Joint):
         name : str, optional
             Friendly name for human readability. The default is None.
         joint0 : Union[Joint, tuple[float]], optional
-            Linked pivot joint 1 (geometric constraints). The default is None.
+            Linked revolute joint 1 (geometric constraints). The default is None.
         joint1 : Union[Joint, tuple[float]], optional
-            Other pivot joint linked. The default is None.
+            Other revolute joint linked. The default is None.
         distance : float, optional
             Distance to keep constant between joint0 and self. The default is
             None.
@@ -233,8 +246,15 @@ class Crank(Joint):
 
     __slots__ = "r", "angle"
 
-    def __init__(self, x=None, y=None, joint0=None,
-                 distance=None, angle=None, name=None):
+    def __init__(
+        self,
+        x=None,
+        y=None,
+        joint0=None,
+        distance=None,
+        angle=None,
+        name=None
+    ):
         """
         Define a crank (circular motor).
 
@@ -267,7 +287,7 @@ class Crank(Joint):
     def reload(self, dt=1):
         """Make a step of crank.
 
-        :param dt: Fraction of step to do (Default value = 1)
+        :param dt: Fraction of steps to take (Default value = 1)
         :type dt: float
 
         """

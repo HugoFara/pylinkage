@@ -17,7 +17,7 @@ class TestLinkage(unittest.TestCase):
             name="B"
         )
         # Close the loop
-        self.pin = pl.Pivot(
+        self.pin = pl.Revolute(
             3, 2,
             joint0=self.crank, joint1=(3, 0),
             distance0=3, distance1=1, name="C"
@@ -31,7 +31,7 @@ class TestLinkage(unittest.TestCase):
             order=[self.crank, self.pin],
             name="My four-bar linkage"
         )
-        self.assertTupleEqual(my_linkage.joints, (self.crank, self.pin))
+        self.assertTupleEqual((self.crank, self.pin), my_linkage.joints)
 
 
 if __name__ == '__main__':

@@ -11,11 +11,11 @@ class TestAgent(unittest.TestCase):
         dimensions = np.random.rand(np.random.randint(10))
         init_positions = np.random.rand(np.random.randint(10))
         agent = Agent(score, dimensions, init_positions)
-        self.assertEqual(agent.score, score)
-        self.assertTupleEqual(tuple(agent.dimensions), tuple(dimensions))
-        self.assertTupleEqual(tuple(agent.init_positions), tuple(init_positions))
+        self.assertEqual(score, agent.score)
+        self.assertTupleEqual(tuple(dimensions), tuple(agent.dimensions))
+        self.assertTupleEqual(tuple(init_positions), tuple(agent.init_positions))
         for i, val in enumerate([dimensions, init_positions]):
-            self.assertTupleEqual(tuple(agent[i + 1]), tuple(val))
+            self.assertTupleEqual(tuple(val), tuple(agent[i + 1]))
 
 
 class TestMutableAgent(unittest.TestCase):
@@ -27,10 +27,10 @@ class TestMutableAgent(unittest.TestCase):
         init_positions = np.random.rand(np.random.randint(10))
         agent = MutableAgent(score, dimensions, init_positions)
         self.assertEqual(agent.score, score)
-        self.assertTupleEqual(tuple(agent.dimensions), tuple(dimensions))
-        self.assertTupleEqual(tuple(agent.init_positions), tuple(init_positions))
+        self.assertTupleEqual(tuple(dimensions), tuple(agent.dimensions))
+        self.assertTupleEqual(tuple(init_positions), tuple(agent.init_positions))
         for i, val in enumerate([dimensions, init_positions]):
-            self.assertTupleEqual(tuple(agent[i + 1]), tuple(val))
+            self.assertTupleEqual(tuple(val), tuple(agent[i + 1]))
 
     def test_assignment(self):
         """Assignment test of a MutableAgent object."""
@@ -42,7 +42,7 @@ class TestMutableAgent(unittest.TestCase):
             agent[i] = val
         self.assertEqual(agent[0], score)
         for i, val in enumerate([dimensions, init_positions]):
-            self.assertTupleEqual(tuple(agent[i + 1]), tuple(val))
+            self.assertTupleEqual(tuple(val), tuple(agent[i + 1]))
 
 
 if __name__ == '__main__':

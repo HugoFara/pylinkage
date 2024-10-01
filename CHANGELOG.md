@@ -20,6 +20,9 @@ optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
 - Some run configuration files added *for users of PyCharm*:
   - Run all tests with "All Tests".
   - Regenerate documentation with "Sphinx Documentation".
+- The ``Linear`` joint is here! His geometric model was of course implemented.
+- ``line_from_points`` and ``circle_line_intersection``.
+- New exception ``NotCompletelyDefinedError``, when a joint is reloading but its anchor coordinates are set to None.
 
 ### Changed
 
@@ -52,12 +55,16 @@ iteration.
   - From the user perspective, no change (execution *may* be a bit faster)
   - ``source/`` renamed to ``sphinx/`` because it was confusing and only for Sphinx configuration.
 - Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
+- ``__secant_circles_intersections__`` renamed to
+``secant_circles_intersections`` in ``geometry.py``.
 
 ### Fixed
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
-- ``Pivot.reload`` was returning arbitrary point when we had an infinity of solutions. 
+- ``Pivot.reload`` was returning arbitrary point when we had an infinity of solutions.
+- The highlighted locus was sometimes buggy in ``plot_static_linkage`` in 
+``visualizer.py``.
 
 ### Deprecated
 
@@ -66,6 +73,9 @@ iteration.
 - The ``Pivot`` class is deprecated in favor of the ``Revolute`` class. 
 The name "Pivot joint" is not standard. 
 Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
+- The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage`` 
+(linkage.py)
+
 
 ## [0.5.3] - 2023-06-23
 
@@ -103,8 +113,8 @@ It will no longer be tested, use it at your own risks!
 
 ### Added in 0.5.2
 
-- You can see the best score and the best dimensions updating in 
-  ``trials_and_errors_optimization``.
+ - You can see the best score and best dimensions updating in 
+   ``trials_and_errors_optimization``.
 
 ### Changed in 0.5.2
 

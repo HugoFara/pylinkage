@@ -24,11 +24,14 @@ from .interface import (
     UnbuildableError,
     HypostaticError,
     Static,
-    Revolute,
     Pivot,
     Crank,
     Fixed,
     Linkage
+)
+from .joints import (
+    Linear,
+    Revolute,
 )
 from .optimization import (
     generate_bounds,

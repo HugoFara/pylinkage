@@ -101,7 +101,7 @@ def bounding_box(locus):
     """Compute the bounding box of a locus.
 
     :param locus: A list of points or any iterable with the same structure.
-    :type locus: list[tuple[float]]
+    :type locus: list[tuple[float, float]] | tuple[tuple[float, float]]
 
     :returns: Bounding box as (y_min, x_max, y_max, x_min).
     :rtype: tuple[float, float, float, float]
