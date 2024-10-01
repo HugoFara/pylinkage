@@ -14,10 +14,11 @@ Welcome to pylinkage's documentation!
    changeloglink
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Modules
+   :maxdepth: 3
+   :caption: Packages
 
    api/modules
+   tests/modules
 
 .. toctree::
    :maxdepth: 2

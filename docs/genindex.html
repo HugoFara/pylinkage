@@ -46,9 +46,10 @@
 <li class="toctree-l1"><a class="reference internal" href="readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -144,10 +145,18 @@
 </li>
       <li><a href="api/pylinkage.geometry.html#pylinkage.geometry.secants.circle_line_from_points_intersection">circle_line_from_points_intersection() (in module pylinkage.geometry.secants)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.geometry.html#pylinkage.geometry.secants.circle_line_intersection">circle_line_intersection() (in module pylinkage.geometry.secants)</a>
 </li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.circle_line_intersection_data">circle_line_intersection_data() (in module tests.geometry.test_geometry)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestEvaluation.constraints">constraints (tests.optimization.test_optimizer.TestEvaluation attribute)</a>
+
+      <ul>
+        <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestPSO.constraints">(tests.optimization.test_optimizer.TestPSO attribute)</a>
+</li>
+      </ul></li>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.joint.Joint.coord">coord() (pylinkage.joints.joint.Joint method)</a>
 </li>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.crank.Crank">Crank (class in pylinkage.joints.crank)</a>
@@ -278,12 +287,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.geometry.html#pylinkage.geometry.core.line_from_points">line_from_points() (in module pylinkage.geometry.core)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.linear.Linear">Linear (class in pylinkage.joints.linear)</a>
 </li>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage">Linkage (class in pylinkage.linkage.linkage)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestEvaluation.linkage">linkage (tests.optimization.test_optimizer.TestEvaluation attribute)</a>
+
+      <ul>
+        <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestPSO.linkage">(tests.optimization.test_optimizer.TestPSO attribute)</a>
+</li>
+        <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestTrialsAndErrors.linkage">(tests.optimization.test_optimizer.TestTrialsAndErrors attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -294,6 +311,8 @@
     module
 
       <ul>
+        <li><a href="api/pylinkage.html#module-pylinkage">pylinkage</a>
+</li>
         <li><a href="api/pylinkage.collections.html#module-pylinkage.collections">pylinkage.collections</a>
 </li>
         <li><a href="api/pylinkage.collections.html#module-pylinkage.collections.agent">pylinkage.collections.agent</a>
@@ -336,9 +355,35 @@
 </li>
         <li><a href="api/pylinkage.optimization.html#module-pylinkage.optimization.utils">pylinkage.optimization.utils</a>
 </li>
+        <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer">pylinkage.visualizer</a>
+</li>
+        <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.animated">pylinkage.visualizer.animated</a>
+</li>
         <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.core">pylinkage.visualizer.core</a>
 </li>
         <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.static">pylinkage.visualizer.static</a>
+</li>
+        <li><a href="tests/tests.html#module-tests">tests</a>
+</li>
+        <li><a href="tests/tests.collections.html#module-tests.collections">tests.collections</a>
+</li>
+        <li><a href="tests/tests.collections.html#module-tests.collections.test_collections">tests.collections.test_collections</a>
+</li>
+        <li><a href="tests/tests.geometry.html#module-tests.geometry">tests.geometry</a>
+</li>
+        <li><a href="tests/tests.geometry.html#module-tests.geometry.test_geometry">tests.geometry.test_geometry</a>
+</li>
+        <li><a href="tests/tests.joints.html#module-tests.joints">tests.joints</a>
+</li>
+        <li><a href="tests/tests.joints.html#module-tests.joints.test_joints">tests.joints.test_joints</a>
+</li>
+        <li><a href="tests/tests.linkage.html#module-tests.linkage">tests.linkage</a>
+</li>
+        <li><a href="tests/tests.linkage.html#module-tests.linkage.test_linkage">tests.linkage.test_linkage</a>
+</li>
+        <li><a href="tests/tests.optimization.html#module-tests.optimization">tests.optimization</a>
+</li>
+        <li><a href="tests/tests.optimization.html#module-tests.optimization.test_optimizer">tests.optimization.test_optimizer</a>
 </li>
       </ul></li>
   </ul></td>
@@ -375,8 +420,27 @@
 </li>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.revolute.Pivot">Pivot (class in pylinkage.joints.revolute)</a>
 </li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestFixed.pivot1">pivot1 (tests.joints.test_joints.TestFixed attribute)</a>
+
+      <ul>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot.pivot1">(tests.joints.test_joints.TestPivot attribute)</a>
+</li>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute.pivot1">(tests.joints.test_joints.TestRevolute attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.animated.plot_kinematic_linkage">plot_kinematic_linkage() (in module pylinkage.visualizer.animated)</a>
+</li>
       <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.static.plot_static_linkage">plot_static_linkage() (in module pylinkage.visualizer.static)</a>
 </li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.prepare_linkage">prepare_linkage() (in module tests.optimization.test_optimizer)</a>
+</li>
+      <li>
+    pylinkage
+
+      <ul>
+        <li><a href="api/pylinkage.html#module-pylinkage">module</a>
+</li>
+      </ul></li>
       <li>
     pylinkage.collections
 
@@ -447,6 +511,8 @@
         <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.fixed">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pylinkage.joints.joint
 
@@ -454,8 +520,6 @@
         <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.joint">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pylinkage.joints.linear
 
@@ -524,6 +588,20 @@
 
       <ul>
         <li><a href="api/pylinkage.optimization.html#module-pylinkage.optimization.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    pylinkage.visualizer
+
+      <ul>
+        <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer">module</a>
+</li>
+      </ul></li>
+      <li>
+    pylinkage.visualizer.animated
+
+      <ul>
+        <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.animated">module</a>
 </li>
       </ul></li>
       <li>
@@ -622,8 +700,6 @@
       </ul></li>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.set_completely">set_completely() (pylinkage.linkage.linkage.Linkage method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.crank.Crank.set_constraints">set_constraints() (pylinkage.joints.crank.Crank method)</a>
 
       <ul>
@@ -640,11 +716,15 @@
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.set_constraints">(pylinkage.joints.static.Static method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.joints.html#pylinkage.joints.joint.Joint.set_coord">set_coord() (pylinkage.joints.joint.Joint method)</a>
 </li>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.set_coords">set_coords() (pylinkage.linkage.linkage.Linkage method)</a>
 </li>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.set_num_constraints">set_num_constraints() (pylinkage.linkage.linkage.Linkage method)</a>
+</li>
+      <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.animated.show_linkage">show_linkage() (in module pylinkage.visualizer.animated)</a>
 </li>
       <li><a href="api/pylinkage.geometry.html#pylinkage.geometry.core.sqr_dist">sqr_dist() (in module pylinkage.geometry.core)</a>
 </li>
@@ -656,16 +736,179 @@
       </ul></li>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.step">step() (pylinkage.linkage.linkage.Linkage method)</a>
 </li>
+      <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.animated.swarm_tiled_repr">swarm_tiled_repr() (in module pylinkage.visualizer.animated)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/pylinkage.optimization.html#pylinkage.optimization.grid_search.tqdm_verbosity">tqdm_verbosity() (in module pylinkage.optimization.grid_search)</a>
+      <li><a href="tests/tests.collections.html#tests.collections.test_collections.TestMutableAgent.test_assignment">test_assignment() (tests.collections.test_collections.TestMutableAgent method)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot.test_buildable">test_buildable() (tests.joints.test_joints.TestPivot method)</a>
+
+      <ul>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute.test_buildable">(tests.joints.test_joints.TestRevolute method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestPSO.test_convergence">test_convergence() (tests.optimization.test_optimizer.TestPSO method)</a>
+
+      <ul>
+        <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestTrialsAndErrors.test_convergence">(tests.optimization.test_optimizer.TestTrialsAndErrors method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircleLineIntersection.test_crossing">test_crossing() (tests.geometry.test_geometry.TestCircleLineIntersection method)</a>
+</li>
+      <li><a href="tests/tests.collections.html#tests.collections.test_collections.TestAgent.test_definition">test_definition() (tests.collections.test_collections.TestAgent method)</a>
+
+      <ul>
+        <li><a href="tests/tests.collections.html#tests.collections.test_collections.TestMutableAgent.test_definition">(tests.collections.test_collections.TestMutableAgent method)</a>
+</li>
+        <li><a href="tests/tests.linkage.html#tests.linkage.test_linkage.TestLinkage.test_definition">(tests.linkage.test_linkage.TestLinkage method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestGenerateBounds.test_function">test_function() (tests.optimization.test_optimizer.TestGenerateBounds method)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestVariator.test_length">test_length() (tests.optimization.test_optimizer.TestVariator method)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot.test_limit_intersect">test_limit_intersect() (tests.joints.test_joints.TestPivot method)</a>
+
+      <ul>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute.test_limit_intersect">(tests.joints.test_joints.TestRevolute method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircleLineIntersection.test_no_crossing">test_no_crossing() (tests.geometry.test_geometry.TestCircleLineIntersection method)</a>
+</li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircles.test_no_inter">test_no_inter() (tests.geometry.test_geometry.TestCircles method)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot.test_no_intersect">test_no_intersect() (tests.joints.test_joints.TestPivot method)</a>
+
+      <ul>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute.test_no_intersect">(tests.joints.test_joints.TestRevolute method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestFixed.test_pos">test_pos() (tests.joints.test_joints.TestFixed method)</a>
+</li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircles.test_radius_ineq">test_radius_ineq() (tests.geometry.test_geometry.TestCircles method)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestEvaluation.test_score">test_score() (tests.optimization.test_optimizer.TestEvaluation method)</a>
+</li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircleLineIntersection.test_tangent">test_tangent() (tests.geometry.test_geometry.TestCircleLineIntersection method)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot.test_under_intersect">test_under_intersect() (tests.joints.test_joints.TestPivot method)</a>
+
+      <ul>
+        <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute.test_under_intersect">(tests.joints.test_joints.TestRevolute method)</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.collections.html#tests.collections.test_collections.TestAgent">TestAgent (class in tests.collections.test_collections)</a>
+</li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircleLineIntersection">TestCircleLineIntersection (class in tests.geometry.test_geometry)</a>
+</li>
+      <li><a href="tests/tests.geometry.html#tests.geometry.test_geometry.TestCircles">TestCircles (class in tests.geometry.test_geometry)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestEvaluation">TestEvaluation (class in tests.optimization.test_optimizer)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestFixed">TestFixed (class in tests.joints.test_joints)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestGenerateBounds">TestGenerateBounds (class in tests.optimization.test_optimizer)</a>
+</li>
+      <li><a href="tests/tests.linkage.html#tests.linkage.test_linkage.TestLinkage">TestLinkage (class in tests.linkage.test_linkage)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tests/tests.collections.html#tests.collections.test_collections.TestMutableAgent">TestMutableAgent (class in tests.collections.test_collections)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestPivot">TestPivot (class in tests.joints.test_joints)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestPSO">TestPSO (class in tests.optimization.test_optimizer)</a>
+</li>
+      <li><a href="tests/tests.joints.html#tests.joints.test_joints.TestRevolute">TestRevolute (class in tests.joints.test_joints)</a>
+</li>
+      <li>
+    tests
+
+      <ul>
+        <li><a href="tests/tests.html#module-tests">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.collections
+
+      <ul>
+        <li><a href="tests/tests.collections.html#module-tests.collections">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.collections.test_collections
+
+      <ul>
+        <li><a href="tests/tests.collections.html#module-tests.collections.test_collections">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.geometry
+
+      <ul>
+        <li><a href="tests/tests.geometry.html#module-tests.geometry">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.geometry.test_geometry
+
+      <ul>
+        <li><a href="tests/tests.geometry.html#module-tests.geometry.test_geometry">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.joints
+
+      <ul>
+        <li><a href="tests/tests.joints.html#module-tests.joints">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.joints.test_joints
+
+      <ul>
+        <li><a href="tests/tests.joints.html#module-tests.joints.test_joints">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.linkage
+
+      <ul>
+        <li><a href="tests/tests.linkage.html#module-tests.linkage">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.linkage.test_linkage
+
+      <ul>
+        <li><a href="tests/tests.linkage.html#module-tests.linkage.test_linkage">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.optimization
+
+      <ul>
+        <li><a href="tests/tests.optimization.html#module-tests.optimization">module</a>
+</li>
+      </ul></li>
+      <li>
+    tests.optimization.test_optimizer
+
+      <ul>
+        <li><a href="tests/tests.optimization.html#module-tests.optimization.test_optimizer">module</a>
+</li>
+      </ul></li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestTrialsAndErrors">TestTrialsAndErrors (class in tests.optimization.test_optimizer)</a>
+</li>
+      <li><a href="tests/tests.optimization.html#tests.optimization.test_optimizer.TestVariator">TestVariator (class in tests.optimization.test_optimizer)</a>
+</li>
+      <li><a href="api/pylinkage.optimization.html#pylinkage.optimization.grid_search.tqdm_verbosity">tqdm_verbosity() (in module pylinkage.optimization.grid_search)</a>
+</li>
       <li><a href="api/pylinkage.optimization.html#pylinkage.optimization.grid_search.trials_and_errors_optimization">trials_and_errors_optimization() (in module pylinkage.optimization.grid_search)</a>
 </li>
   </ul></td>
@@ -675,6 +918,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.html#pylinkage.exceptions.UnbuildableError">UnbuildableError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.animated.update_animated_plot">update_animated_plot() (in module pylinkage.visualizer.animated)</a>
 </li>
   </ul></td>
 </tr></table>

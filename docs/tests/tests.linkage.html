@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>interface &mdash; pylinkage 0.5.3 documentation</title>
+  <title>tests.linkage package &mdash; pylinkage 0.5.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="optimization" href="optimization.html" />
-    <link rel="prev" title="geometry" href="geometry.html" /> 
+    <link rel="next" title="tests.optimization package" href="tests.optimization.html" />
+    <link rel="prev" title="tests.joints package" href="tests.joints.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -49,20 +49,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#joint-definition">Joint definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#revolute-joint-definition">Revolute joint definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#linkage-definition">Linkage definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">tests</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tests.html">tests package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="tests.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="tests.collections.html">tests.collections package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.geometry.html">tests.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.joints.html">tests.joints package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">tests.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tests.optimization.html">tests.optimization package</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utility.html">utility</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#module-tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -86,9 +90,11 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">interface</li>
+          <li class="breadcrumb-item"><a href="modules.html">tests</a></li>
+          <li class="breadcrumb-item"><a href="tests.html">tests package</a></li>
+      <li class="breadcrumb-item active">tests.linkage package</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/interface.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tests/tests.linkage.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,19 +102,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="interface">
-<h1>interface<a class="headerlink" href="#interface" title="Link to this heading"></a></h1>
-<section id="joint-definition">
-<h2>Joint definition<a class="headerlink" href="#joint-definition" title="Link to this heading"></a></h2>
+  <section id="tests-linkage-package">
+<h1>tests.linkage package<a class="headerlink" href="#tests-linkage-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="revolute-joint-definition">
-<h2>Revolute joint definition<a class="headerlink" href="#revolute-joint-definition" title="Link to this heading"></a></h2>
+<section id="module-tests.linkage.test_linkage">
+<span id="tests-linkage-test-linkage-module"></span><h2>tests.linkage.test_linkage module<a class="headerlink" href="#module-tests.linkage.test_linkage" title="Link to this heading"></a></h2>
+<p>Test cases for a Linkage.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.linkage.test_linkage.TestLinkage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.linkage.test_linkage.</span></span><span class="sig-name descname"><span class="pre">TestLinkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.linkage.test_linkage.TestLinkage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test cases for linkages.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.linkage.test_linkage.TestLinkage.test_definition">
+<span class="sig-name descname"><span class="pre">test_definition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.linkage.test_linkage.TestLinkage.test_definition" title="Link to this definition"></a></dt>
+<dd><p>Test if a linkage can be defined.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="linkage-definition">
-<h2>Linkage definition<a class="headerlink" href="#linkage-definition" title="Link to this heading"></a></h2>
-</section>
-<section id="exceptions">
-<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading"></a></h2>
+<section id="module-tests.linkage">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.linkage" title="Link to this heading"></a></h2>
 </section>
 </section>
 
@@ -116,8 +133,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="geometry.html" class="btn btn-neutral float-left" title="geometry" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="optimization.html" class="btn btn-neutral float-right" title="optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tests.joints.html" class="btn btn-neutral float-left" title="tests.joints package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.optimization.html" class="btn btn-neutral float-right" title="tests.optimization package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

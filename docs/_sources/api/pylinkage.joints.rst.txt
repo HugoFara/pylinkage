@@ -52,14 +52,6 @@ pylinkage.joints.static module
    :undoc-members:
    :show-inheritance:
 
-pylinkage.joints.utils module
------------------------------
-
-.. automodule:: pylinkage.joints.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 

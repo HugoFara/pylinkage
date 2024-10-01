@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.geometry package &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">tests.geometry package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tests/tests.geometry.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tests-geometry-package">
+<h1>tests.geometry package<a class="headerlink" href="#tests-geometry-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-tests.geometry.test_geometry">
+<span id="tests-geometry-test-geometry-module"></span><h2>tests.geometry.test_geometry module<a class="headerlink" href="#module-tests.geometry.test_geometry" title="Link to this heading"></a></h2>
+<p>Created on Thu Apr 15, 13:26:42 2021</p>
+<p>&#64;author: HugoFara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircleLineIntersection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.geometry.test_geometry.</span></span><span class="sig-name descname"><span class="pre">TestCircleLineIntersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircleLineIntersection" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Various tests on straight line intersections.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircleLineIntersection.test_crossing">
+<span class="sig-name descname"><span class="pre">test_crossing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircleLineIntersection.test_crossing" title="Link to this definition"></a></dt>
+<dd><p>Test a straight line crossing a circle twice.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircleLineIntersection.test_no_crossing">
+<span class="sig-name descname"><span class="pre">test_no_crossing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircleLineIntersection.test_no_crossing" title="Link to this definition"></a></dt>
+<dd><p>Test a line and a circle not crossing each other.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircleLineIntersection.test_tangent">
+<span class="sig-name descname"><span class="pre">test_tangent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircleLineIntersection.test_tangent" title="Link to this definition"></a></dt>
+<dd><p>Test a straight line tangent to a circle.</p>
+<p>This is a dangerous test, so we only want a success rate over 90%.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircles">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.geometry.test_geometry.</span></span><span class="sig-name descname"><span class="pre">TestCircles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircles" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Tests for circles.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircles.test_no_inter">
+<span class="sig-name descname"><span class="pre">test_no_inter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircles.test_no_inter" title="Link to this definition"></a></dt>
+<dd><p>Test two circles not intersecting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.TestCircles.test_radius_ineq">
+<span class="sig-name descname"><span class="pre">test_radius_ineq</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.TestCircles.test_radius_ineq" title="Link to this definition"></a></dt>
+<dd><p>Test two concentric circles of different radi.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tests.geometry.test_geometry.circle_line_intersection_data">
+<span class="sig-prename descclassname"><span class="pre">tests.geometry.test_geometry.</span></span><span class="sig-name descname"><span class="pre">circle_line_intersection_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.geometry.test_geometry.circle_line_intersection_data" title="Link to this definition"></a></dt>
+<dd><p>Prepare the data for testing.</p>
+<section id="arguments">
+<h3>Arguments<a class="headerlink" href="#arguments" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>mode<span class="classifier">int</span></dt><dd><p>Desired number of intersections between the circle and the line.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>((float, float, float), (float, float, float))</dt><dd><p>A circle and a line crossing {mode} times</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+</section>
+<section id="module-tests.geometry">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.geometry" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
