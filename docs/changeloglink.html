@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="geometry" href="api/geometry.html" />
+    <link rel="next" title="joints" href="api/joints.html" />
     <link rel="prev" title="Pylinkage" href="readmelink.html" /> 
 </head>
 
@@ -121,10 +121,9 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="api/joints.html">joints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/interface.html">interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/utility.html">utility</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/collections.html">collections</a></li>
 </ul>
@@ -170,17 +169,29 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">examples/strider.py</span></code> from <a class="reference external" href="https://github.com/HugoFara/leggedsnake">leggedsnake</a>,
-based on the <a class="reference external" href="https://www.diywalkers.com/strider-linkage-plans.html">Strider Linkage</a>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Linkage.set_completely</span></code> is a new method combining both <code class="docutils literal notranslate"><span class="pre">Linkage.set_num_constraints</span></code> and <code class="docutils literal notranslate"><span class="pre">Linkage.set_coords</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">collections.Agent</span></code> and <code class="docutils literal notranslate"><span class="pre">collections.MutableAgent</span></code> are two new classes that should standardize the format of
+<li><p>New joint: the <code class="docutils literal notranslate"><span class="pre">Linear</span></code> joint!</p></li>
+<li><p>New sub-package: collections.
+<code class="docutils literal notranslate"><span class="pre">collections.Agent</span></code> and <code class="docutils literal notranslate"><span class="pre">collections.MutableAgent</span></code> are two new classes that should standardize the format of
 optimization, related to (<a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/5">#5</a>).</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Agent</span></code> is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">MutableAgent</span></code> is mutable. It may be deprecated/removed if <code class="docutils literal notranslate"><span class="pre">Agent</span></code> is satisfactory.</p></li>
 </ul>
 </li>
-<li><p>Very basic tests cases for a Linkage.</p></li>
+<li><p>New sub-package: geometry.</p>
+<ul>
+<li><p>It introduces two new functions <code class="docutils literal notranslate"><span class="pre">line_from_points</span></code> and <code class="docutils literal notranslate"><span class="pre">circle_line_intersection</span></code>.</p></li>
+</ul>
+</li>
+<li><p>New examples:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/strider.py</span></code> from <a class="reference external" href="https://github.com/HugoFara/leggedsnake">leggedsnake</a>,
+based on the <a class="reference external" href="https://www.diywalkers.com/strider-linkage-plans.html">Strider Linkage</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/inverted_stroke_engine.py</span></code> is a demo of a <a class="reference external" href="https://en.wikipedia.org/wiki/Four-stroke_engine">four-stroke engine</a> featuring a Linear joint.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Linkage.set_completely</span></code> is a new method combining both <code class="docutils literal notranslate"><span class="pre">Linkage.set_num_constraints</span></code> and <code class="docutils literal notranslate"><span class="pre">Linkage.set_coords</span></code>.</p></li>
+<li><p>New exception <code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code>, when a joint is reloading but its anchor coordinates are set to None.</p></li>
 <li><p>Some run configuration files added <em>for users of PyCharm</em>:</p>
 <ul>
 <li><p>Run all tests with “All Tests”.</p></li>
@@ -216,16 +227,15 @@ iteration.</p></li>
 </li>
 <li><p>Folders reorganization:</p>
 <ul>
-<li><p>New package <code class="docutils literal notranslate"><span class="pre">pylinkage/interface/</span></code>:</p>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module is now a package (<code class="docutils literal notranslate"><span class="pre">pylinkage/geometry</span></code>)</p></li>
+<li><p>New package <code class="docutils literal notranslate"><span class="pre">pylinkage/linkage</span></code>:</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage/linkage.py</span></code> separated and inserted in this package.</p>
-<ul>
-<li><p>Joints definition are in <code class="docutils literal notranslate"><span class="pre">joint.py</span></code>.</p></li>
-<li><p>Revolute joint definition in <code class="docutils literal notranslate"><span class="pre">revolute_joint.py</span></code>.</p></li>
-<li><p>Linkage definition is in <code class="docutils literal notranslate"><span class="pre">linkage.py</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage/linkage.py</span></code> separated and inserted in this package.</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage/exceptions.py</span></code> go to <code class="docutils literal notranslate"><span class="pre">interface/</span></code>.</p></li>
+<li><p>New package: <code class="docutils literal notranslate"><span class="pre">pylinkage/joints</span></code></p>
+<ul>
+<li><p>Joints definition are in respective files.</p></li>
 </ul>
 </li>
 <li><p>New package <code class="docutils literal notranslate"><span class="pre">pylinkage/optimization/</span></code></p>
@@ -242,6 +252,8 @@ iteration.</p></li>
 </ul>
 </li>
 <li><p>Transition from Numpydoc to reST for docstrings (<a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/12">#12</a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__secant_circles_intersections__</span></code> renamed to
+<code class="docutils literal notranslate"><span class="pre">secant_circles_intersections</span></code> (in <code class="docutils literal notranslate"><span class="pre">pylinkage/geometry/secants.py</span></code>).</p></li>
 </ul>
 </section>
 <section id="fixed">
@@ -250,6 +262,8 @@ iteration.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">swarm_tiled_repr</span></code> in <code class="docutils literal notranslate"><span class="pre">visualizer.py</span></code> was wrongly assigning dimensions.</p></li>
 <li><p>Setting <code class="docutils literal notranslate"><span class="pre">locus_highlight</span></code> in <code class="docutils literal notranslate"><span class="pre">plot_static_linkage</span></code> would result in an error.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Pivot.reload</span></code> was returning arbitrary point when we had an infinity of solutions.</p></li>
+<li><p>The highlighted locus was sometimes buggy in <code class="docutils literal notranslate"><span class="pre">plot_static_linkage</span></code> in
+<code class="docutils literal notranslate"><span class="pre">visualizer.py</span></code>.</p></li>
 </ul>
 </section>
 <section id="deprecated">
@@ -260,6 +274,8 @@ iteration.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Pivot</span></code> class is deprecated in favor of the <code class="docutils literal notranslate"><span class="pre">Revolute</span></code> class.
 The name “Pivot joint” is not standard.
 Related to <a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/13">#13</a>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">hyperstaticity</span></code> method is renamed <code class="docutils literal notranslate"><span class="pre">indeterminacy</span></code> in <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>
+(linkage.py)</p></li>
 </ul>
 </section>
 </section>
@@ -312,7 +328,7 @@ It will no longer be tested, use it at your own risks!</p></li>
 <section id="added-in-0-5-2">
 <h3>Added in 0.5.2<a class="headerlink" href="#added-in-0-5-2" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p>You can see the best score and the best dimensions updating in
+<li><p>You can see the best score and best dimensions updating in
 <code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization</span></code>.</p></li>
 </ul>
 </section>
@@ -601,7 +617,7 @@ and exhaustive optimization.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="readmelink.html" class="btn btn-neutral float-left" title="Pylinkage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="api/geometry.html" class="btn btn-neutral float-right" title="geometry" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api/joints.html" class="btn btn-neutral float-right" title="joints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

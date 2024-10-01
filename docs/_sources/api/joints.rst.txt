@@ -1,0 +1,16 @@
+======
+joints
+======
+
+Joints definition
+=================
+
+.. autosummary::
+    :toctree: generated
+
+    crank
+    fixed
+    joint
+    linear
+    revolute
+    static

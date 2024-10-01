@@ -20,9 +20,7 @@
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="collections" href="collections.html" />
-    <link rel="prev" title="utility" href="utility.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,24 +48,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interface.html">interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utility.html">utility</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">visualizer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.visualizer">Simple plotter for your linkages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer._get_color"><code class="docutils literal notranslate"><span class="pre">_get_color()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.plot_kinematic_linkage"><code class="docutils literal notranslate"><span class="pre">plot_kinematic_linkage()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.plot_static_linkage"><code class="docutils literal notranslate"><span class="pre">plot_static_linkage()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.show_linkage"><code class="docutils literal notranslate"><span class="pre">show_linkage()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.swarm_tiled_repr"><code class="docutils literal notranslate"><span class="pre">swarm_tiled_repr()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.visualizer.update_animated_plot"><code class="docutils literal notranslate"><span class="pre">update_animated_plot()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pylinkage.html">pylinkage package</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -103,137 +85,15 @@
              
   <section id="visualizer">
 <h1>visualizer<a class="headerlink" href="#visualizer" title="Link to this heading"></a></h1>
-<section id="module-pylinkage.visualizer">
-<span id="simple-plotter-for-your-linkages"></span><h2>Simple plotter for your linkages<a class="headerlink" href="#module-pylinkage.visualizer" title="Link to this heading"></a></h2>
-<p>The visualizer module makes visualization of linkages easy using matplotlib.</p>
-<p>Created on Mon Jun 14, 12:13:58 2021.</p>
-<p>&#64;author: HugoFara</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer._get_color">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">_get_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer._get_color" title="Link to this definition"></a></dt>
-<dd><p>Search in COLOR_SWITCHER for the corresponding color.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer.plot_kinematic_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_kinematic_linkage" title="Link to this definition"></a></dt>
-<dd><p>Plot a linkage with an animation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – DESCRIPTION.</p></li>
-<li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – Figure to support the axes.</p></li>
-<li><p><strong>axis</strong> (<em>matplotlib.axes._subplots.AxesSubplot</em>) – The subplot to draw on.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of list of coordinates.</p></li>
-<li><p><strong>frames</strong> (<em>int</em>) – Number of frames to draw the linkage on. The default is 100.</p></li>
-<li><p><strong>interval</strong> (<em>float</em>) – Delay between frames in milliseconds. The default is 40 (24 fps).</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer.plot_static_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.plot_static_linkage" title="Link to this definition"></a></dt>
-<dd><p>Plot a linkage without movement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<a class="reference internal" href="interface.html#pylinkage.interface.linkage.Linkage" title="pylinkage.interface.linkage.Linkage"><em>Linkage</em></a>) – The linkage you want to see.</p></li>
-<li><p><strong>axis</strong> (<em>Artist</em>) – The graph we should draw on.</p></li>
-<li><p><strong>loci</strong> (<em>Iterable</em>) – List of list of coordinates. They will be plotted.</p></li>
-<li><p><strong>locus_highlights</strong> (<em>list</em>) – If a list, should be a list of list of coordinates you want to see
-highlighted. The default is None.</p></li>
-<li><p><strong>show_legend</strong> (<em>bool</em>) – To add an automatic legend to the graph. The default is False.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer.show_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.show_linkage" title="Link to this definition"></a></dt>
-<dd><p>Display results as an animated drawing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – The Linkage you want to draw.</p></li>
-<li><p><strong>save</strong> (<em>bool</em>) – To save the animation. The default is False.</p></li>
-<li><p><strong>prev</strong> (<em>list</em>) – Previous coordinates to use for linkage. The default is None.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of loci. The default is None.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – Number of points to draw for a crank revolution.
-Useless when loci are set.
-The default is 100.</p></li>
-<li><p><strong>iteration_factor</strong> (<em>float</em>) – A simple way to subdivide the movement. The real number of points
-will be points * iteration_factor. The default is 1.</p></li>
-<li><p><strong>title</strong> (<em>str</em>) – Figure title. The default is str(len(ani)).</p></li>
-<li><p><strong>duration</strong> (<em>float</em>) – Animation duration (in seconds). The default is 5.</p></li>
-<li><p><strong>fps</strong> (<em>int</em>) – Number of frames per second for the output video.
-The default is 24.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer.swarm_tiled_repr">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.swarm_tiled_repr" title="Link to this definition"></a></dt>
-<dd><p>Show all the linkages in a swarm in tiled mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – The original Linkage that will be MODIFIED.</p></li>
-<li><p><strong>swarm</strong> (<em>list</em>) – Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
-positions).</p></li>
-<li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – Figure to support the axes.</p></li>
-<li><p><strong>axes</strong> (<em>matplotlib.axes._subplots.AxesSubplot</em>) – The subplot to draw on.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – Number of steps to use for each Linkage. The default is 12.</p></li>
-<li><p><strong>iteration_factor</strong> (<em>float</em>) – A simple way to subdivide the movement. The real number of points
-will be points * iteration_factor. The default is 1.</p></li>
-<li><p><strong>dimension_func</strong> (<em>callable</em><em>, </em><em>optional</em>) – If you want a special formatting of dimensions from agents before
-passing them to the linkage. (Default value = None)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.visualizer.update_animated_plot">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">update_animated_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.update_animated_plot" title="Link to this definition"></a></dt>
-<dd><p>Modify im, instead of recreating it to make the animation run faster.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
-<li><p><strong>index</strong> (<em>int</em>) – Frame index.</p></li>
-<li><p><strong>images</strong> (<em>list</em><em> of </em><em>images Artists</em>) – Artist to be modified.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of loci.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Updated version</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[Artists]</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="simple-plotter-for-your-linkages">
+<h2>Simple plotter for your linkages<a class="headerlink" href="#simple-plotter-for-your-linkages" title="Link to this heading"></a></h2>
 </section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="utility.html" class="btn btn-neutral float-left" title="utility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="collections.html" class="btn btn-neutral float-right" title="collections" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

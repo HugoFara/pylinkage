@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>collections &mdash; pylinkage 0.5.3 documentation</title>
+  <title>pylinkage.collections package &mdash; pylinkage 0.5.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -20,9 +20,7 @@
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Contributor Covenant Code of Conduct" href="../code_of_conductlink.html" />
-    <link rel="prev" title="visualizer" href="visualizer.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,28 +48,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Modules</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="joints.html">joints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">collections</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.collections.agent">Agent</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.collections.agent.Agent"><code class="docutils literal notranslate"><span class="pre">Agent</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-pylinkage.collections.mutable_agent">MutableAgent</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pylinkage.collections.mutable_agent.MutableAgent"><code class="docutils literal notranslate"><span class="pre">MutableAgent</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.collections.mutable_agent.MutableAgent.__init__"><code class="docutils literal notranslate"><span class="pre">MutableAgent.__init__()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.collections.mutable_agent.MutableAgent.dimensions"><code class="docutils literal notranslate"><span class="pre">MutableAgent.dimensions</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.collections.mutable_agent.MutableAgent.init_positions"><code class="docutils literal notranslate"><span class="pre">MutableAgent.init_positions</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pylinkage.collections.mutable_agent.MutableAgent.score"><code class="docutils literal notranslate"><span class="pre">MutableAgent.score</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -95,9 +77,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">collections</li>
+      <li class="breadcrumb-item active">pylinkage.collections package</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/collections.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/pylinkage.collections.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -105,10 +87,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="collections">
-<h1>collections<a class="headerlink" href="#collections" title="Link to this heading"></a></h1>
+  <section id="pylinkage-collections-package">
+<h1>pylinkage.collections package<a class="headerlink" href="#pylinkage-collections-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
 <section id="module-pylinkage.collections.agent">
-<span id="agent"></span><h2>Agent<a class="headerlink" href="#module-pylinkage.collections.agent" title="Link to this heading"></a></h2>
+<span id="pylinkage-collections-agent-module"></span><h2>pylinkage.collections.agent module<a class="headerlink" href="#module-pylinkage.collections.agent" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.collections.agent.Agent">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.collections.agent.</span></span><span class="sig-name descname"><span class="pre">Agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_positions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.collections.agent.Agent" title="Link to this definition"></a></dt>
@@ -119,18 +104,13 @@
 
 </section>
 <section id="module-pylinkage.collections.mutable_agent">
-<span id="mutableagent"></span><h2>MutableAgent<a class="headerlink" href="#module-pylinkage.collections.mutable_agent" title="Link to this heading"></a></h2>
+<span id="pylinkage-collections-mutable-agent-module"></span><h2>pylinkage.collections.mutable_agent module<a class="headerlink" href="#module-pylinkage.collections.mutable_agent" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.collections.mutable_agent.</span></span><span class="sig-name descname"><span class="pre">MutableAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A custom class that is mutable, subscriptable, and supports index assignment.</p>
 <p>You should only use it as a dictionary of 3 elements. No backward compatibility guaranty on other use cases.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent.__init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent.dimensions">
 <span class="sig-name descname"><span class="pre">dimensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent.dimensions" title="Link to this definition"></a></dt>
@@ -149,15 +129,16 @@
 </dd></dl>
 
 </section>
+<section id="module-pylinkage.collections">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.collections" title="Link to this heading"></a></h2>
+<p>Package for collection objects.</p>
+</section>
 </section>
 
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="visualizer.html" class="btn btn-neutral float-left" title="visualizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../code_of_conductlink.html" class="btn btn-neutral float-right" title="Contributor Covenant Code of Conduct" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

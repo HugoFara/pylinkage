@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylinkage.geometry package &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="joints.html">joints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pylinkage.geometry package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/pylinkage.geometry.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pylinkage-geometry-package">
+<h1>pylinkage.geometry package<a class="headerlink" href="#pylinkage-geometry-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pylinkage.geometry.core">
+<span id="pylinkage-geometry-core-module"></span><h2>pylinkage.geometry.core module<a class="headerlink" href="#module-pylinkage.geometry.core" title="Link to this heading"></a></h2>
+<p>Basic geometry features.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.cyl_to_cart">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">cyl_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ori</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.cyl_to_cart" title="Link to this definition"></a></dt>
+<dd><p>Convert polar coordinates into cartesian.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> – distance from ori</p></li>
+<li><p><strong>theta</strong> – angle is the angle starting from abscissa axis</p></li>
+<li><p><strong>ori</strong> – origin point (Default value = (0)).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.dist_builtin">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">dist_builtin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.dist_builtin" title="Link to this definition"></a></dt>
+<dd><p>Euclidian distance between two 2D points.</p>
+<p>Legacy built-in unoptimized equivalent of <cite>math.dist</cite> in Python 3.8.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – First point</p></li>
+<li><p><strong>point2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Second point</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.get_nearest_point">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">get_nearest_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.get_nearest_point" title="Link to this definition"></a></dt>
+<dd><p>Return the point closer to the reference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reference_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Point to compare to</p></li>
+<li><p><strong>first_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – First point candidate</p></li>
+<li><p><strong>second_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Second point candidate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple[float, float]<span class="colon">:</span></dt>
+<dd class="field-even"><p>Either first point or second point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.line_from_points">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">line_from_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.line_from_points" title="Link to this definition"></a></dt>
+<dd><p>A cartesian equation of the line joining two points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – One point of the line.</p></li>
+<li><p><strong>second_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Another point on the line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return tuple[float, float, float]<span class="colon">:</span></dt>
+<dd class="field-even"><p>A cartesian equation of this line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.norm">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.norm" title="Link to this definition"></a></dt>
+<dd><p>Return the norm of a 2-dimensional vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vec</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Vector to get norm from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.core.sqr_dist">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.core.</span></span><span class="sig-name descname"><span class="pre">sqr_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.core.sqr_dist" title="Link to this definition"></a></dt>
+<dd><p>Square of the distance between two points.</p>
+<p>Faster than dist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – First point to compare</p></li>
+<li><p><strong>point2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Second point</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return float<span class="colon">:</span></dt>
+<dd class="field-even"><p>Computed distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.geometry.secants">
+<span id="pylinkage-geometry-secants-module"></span><h2>pylinkage.geometry.secants module<a class="headerlink" href="#module-pylinkage.geometry.secants" title="Link to this heading"></a></h2>
+<p>The geometry module provides general geometry functions.</p>
+<p>It is used extensively, so each function should be highly optimized.</p>
+<p>Created on Wed May 5, 17:34:45 2021.</p>
+<p>&#64;author: HugoFara</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.bounding_box" title="Link to this definition"></a></dt>
+<dd><p>Compute the bounding box of a locus.</p>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>locus<span class="classifier">list[tuple[float]]</span></dt><dd><p>A list of point or any iterable with the same structure.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h3>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt>tuple[float]</dt><dd><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.circle_intersect">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">circle_intersect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circle2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.circle_intersect" title="Link to this definition"></a></dt>
+<dd><p>Get the intersections of two circles.</p>
+<p>Transcription of a Matt Woodhead program, method provided by Paul Bourke,
+1997. <a class="reference external" href="http://paulbourke.net/geometry/circlesphere/">http://paulbourke.net/geometry/circlesphere/</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circle1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – first circle</p></li>
+<li><p><strong>circle2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – second circle</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – distance under which two points are considered equal (Default value = 0.0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>the intersections of two circles. Can be:</p>
+<ul class="simple">
+<li><p>(0, ) when no intersection.</p></li>
+<li><p>(1, (float, float)) if the intersection is one point.</p></li>
+<li><p>(2, (float, float), (float, float)) for two points of intersection.</p></li>
+<li><p>(3, (float, float, float)) if the intersection is a circle.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[int] | tuple[int, tuple[float, float]] |</p>
+</dd>
+</dl>
+<p>tuple[int, tuple[float, float], tuple[float, float]] | tuple[int, tuple[float, float, float]]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.circle_line_from_points_intersection">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">circle_line_from_points_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">second_point</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.circle_line_from_points_intersection" title="Link to this definition"></a></dt>
+<dd><p>Intersection(s) of a circle and a line defined by two points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circle</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Sequence of (abscissa, ordinate, radius)</p></li>
+<li><p><strong>first_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – One point of the line.</p></li>
+<li><p><strong>second_point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Another point on the line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Either 0, 1 or two intersection points, the first elements indicates the intersection type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple | tuple[tuple[float, float]] | tuple[tuple[float, float], tuple[float, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.circle_line_intersection">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">circle_line_intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.circle_line_intersection" title="Link to this definition"></a></dt>
+<dd><p>Return the intersection between a line and a circle.</p>
+<p>From <a class="reference external" href="https://mathworld.wolfram.com/Circle-LineIntersection.html">https://mathworld.wolfram.com/Circle-LineIntersection.html</a></p>
+<p>Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circle</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Sequence of (abscissa, ordinate, radius)</p></li>
+<li><p><strong>line</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Cartesian equation of a line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nothing, one or two intersections. The length of the tuple gives the intersection type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple | tuple[tuple[float, float]] | tuple[tuple[float, float], tuple[float, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.intersection">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">intersection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.intersection" title="Link to this definition"></a></dt>
+<dd><p>Intersection of two arbitrary objects.</p>
+<p>The input objects should be points or circles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj_1</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – First point or circle</p></li>
+<li><p><strong>obj_2</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Second point or circle</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) – absolute tolerance to use if provided. (Default value = 0.0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The intersection found, if any</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float] | tuple[float, float, float] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.geometry.secants.secant_circles_intersections">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">secant_circles_intersections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mid_dist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.secant_circles_intersections" title="Link to this definition"></a></dt>
+<dd><p>Return the TWO intersections of secant circles.</p>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.geometry">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.geometry" title="Link to this heading"></a></h2>
+<p>Basic geometry package.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

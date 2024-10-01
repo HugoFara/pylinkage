@@ -4,7 +4,7 @@ geometry
 
 Base module for geometric abstractions
 ======================================
-.. automodule:: pylinkage.geometry
+.. autosummary:: pylinkage.geometry
    :members:
    :undoc-members:
    :show-inheritance:

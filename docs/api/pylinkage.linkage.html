@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylinkage.linkage package &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="joints.html">joints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">pylinkage.linkage package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/pylinkage.linkage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pylinkage-linkage-package">
+<h1>pylinkage.linkage package<a class="headerlink" href="#pylinkage-linkage-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pylinkage.linkage.analysis">
+<span id="pylinkage-linkage-analysis-module"></span><h2>pylinkage.linkage.analysis module<a class="headerlink" href="#module-pylinkage.linkage.analysis" title="Link to this heading"></a></h2>
+<p>Analysis tools for linkages.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analysis.bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.analysis.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.analysis.bounding_box" title="Link to this definition"></a></dt>
+<dd><p>Compute the bounding box of a locus.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>locus</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em>) – A list of points or any iterable with the same structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float, float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analysis.kinematic_default_test">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.analysis.</span></span><span class="sig-name descname"><span class="pre">kinematic_default_test</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_penalty</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.analysis.kinematic_default_test" title="Link to this definition"></a></dt>
+<dd><p>Standard run for any linkage before a complete fitness evaluation.</p>
+<p>This decorator makes a kinematic simulation, before passing the loci to the
+decorated function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>Callable</em>) – Fitness function to be decorated.</p></li>
+<li><p><strong>error_penalty</strong> (<em>float</em>) – Penalty value for unbuildable linkage. Common values include
+float(‘inf’) and 0.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analysis.movement_bounding_box">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.analysis.</span></span><span class="sig-name descname"><span class="pre">movement_bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.analysis.movement_bounding_box" title="Link to this definition"></a></dt>
+<dd><p>Bounding box for a group of loci.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>loci</strong></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[float, float, float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.linkage.linkage">
+<span id="pylinkage-linkage-linkage-module"></span><h2>pylinkage.linkage.linkage module<a class="headerlink" href="#module-pylinkage.linkage.linkage" title="Link to this heading"></a></h2>
+<p>The linkage module defines useful classes for linkage definition.</p>
+<p>Created on Fri Apr 16, 16:39:21 2021.</p>
+<p>&#64;author: HugoFara</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.linkage.</span></span><span class="sig-name descname"><span class="pre">Linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A linkage is a set of Joint objects.</p>
+<p>It is defined as a kinematic linkage.
+Coordinates are given relative to its own base.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_coords">
+<span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_coords" title="Link to this definition"></a></dt>
+<dd><p>Return the positions of each element in the system.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_num_constraints">
+<span class="sig-name descname"><span class="pre">get_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_num_constraints" title="Link to this definition"></a></dt>
+<dd><p>Numeric constraints of this linkage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>flat</strong> (<em>bool</em>) – Whether to force one-dimensional representation of constraints.
+The default is True.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of geometric constraints.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_rotation_period">
+<span class="sig-name descname"><span class="pre">get_rotation_period</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_rotation_period" title="Link to this definition"></a></dt>
+<dd><p>The number of iterations to finish in the previous state.</p>
+<p>Formally, it is the common denominator of all crank periods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of iterations with dt=1.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.hyperstaticity">
+<span class="sig-name descname"><span class="pre">hyperstaticity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.hyperstaticity" title="Link to this definition"></a></dt>
+<dd><p>Return the hyperstaticity (over-constrainment) degree of the linkage in 2D.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.joints">
+<span class="sig-name descname"><span class="pre">joints</span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.joints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.rebuild">
+<span class="sig-name descname"><span class="pre">rebuild</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.rebuild" title="Link to this definition"></a></dt>
+<dd><p>Redefine linkage joints and given initial positions to joints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pos</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Initial positions for each joint in self.joints.
+Coordinates do not need to be precise, they will allow us the best
+fitting position between all possible positions satisfying
+constraints. (Default value = None)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.set_completely">
+<span class="sig-name descname"><span class="pre">set_completely</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.set_completely" title="Link to this definition"></a></dt>
+<dd><p>Set both dimension and initial positions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimensions</strong> (<em>tuple</em><em>[</em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em>) – List of dimensions.</p></li>
+<li><p><strong>positions</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Initial positions</p></li>
+<li><p><strong>flat</strong> (<em>bool</em>) – If the dimensions are in “flat mode”.
+The default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.set_coords">
+<span class="sig-name descname"><span class="pre">set_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.set_coords" title="Link to this definition"></a></dt>
+<dd><p>Set coordinates for all joints of the linkage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>coords</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.set_num_constraints">
+<span class="sig-name descname"><span class="pre">set_num_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.set_num_constraints" title="Link to this definition"></a></dt>
+<dd><p>Set numeric constraints for this linkage.</p>
+<p>Numeric constraints are distances or angles between joints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>constraints</strong> (<em>Iterable</em>) – Sequence of constraints to pass to the joints.</p></li>
+<li><p><strong>flat</strong> (<em>bool</em>) – If True, constraints should be a one-dimensional sequence of floats.
+If False, constraints should be a sequence of tuples of digits.
+Each element will be passed to the set_constraints method of each
+corresponding Joint.
+(Default value = True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.step" title="Link to this definition"></a></dt>
+<dd><p>Make a step of the linkage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iterations</strong> (<em>int</em>) – Number of iterations to run across.
+If None, the default is self.get_rotation_period().
+(Default value = None)</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – Amount of rotation to turn the cranks by.
+All cranks rotate by their self.angle * dt. The default is 1.
+(Default value = 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterable of the joints’ coordinates.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Generator[tuple[float, float]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.linkage">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.linkage" title="Link to this heading"></a></h2>
+<p>Definition and analysis of a linkage as a dynamic set of joints.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
