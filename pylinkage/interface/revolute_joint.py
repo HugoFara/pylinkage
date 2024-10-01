@@ -36,10 +36,10 @@ class Revolute(Joint):
         :param y: Position on vertical axis.
             (Default value = 0).
         :type y: float
-        :param joint0: Linked pivot joint 0 (geometric constraints).
+        :param joint0: Linked revolute joint 0 (geometric constraints).
             (Default value = None).
         :type joint0: Joint | tuple
-        :param joint1: Linked pivot joint 1 (geometric constraints).
+        :param joint1: Linked revolute joint 1 (geometric constraints).
             (Default value = None).
         :type joint1: Joint | tuple
         :param distance0: Distance from joint0 to the current Joint.
@@ -88,7 +88,7 @@ class Revolute(Joint):
         raise ValueError(f'{joint} is not in joints of {self}')
 
     def reload(self):
-        """Compute the position of pivot joint, use the two linked joints."""
+        """Compute the position of revolute joint, use the two linked joints."""
         if self.joint0 is None:
             return
         # Fixed joint as reference. In links, we only keep fixed objects
@@ -98,7 +98,7 @@ class Revolute(Joint):
             return
         if len(ref) == 1:
             warnings.warn(
-                "Unable to set coordinates of pivot joint {}:"
+                "Unable to set coordinates of revolute joint {}:"
                 "Only one constraint is set."
                 "Coordinates unchanged".format(self.name)
             )

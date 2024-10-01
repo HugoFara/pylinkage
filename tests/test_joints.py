@@ -16,12 +16,12 @@ from pylinkage.interface.revolute_joint import Revolute, Pivot
 class TestPivot(unittest.TestCase):
     """Test Pivot Joint."""
 
-    pivot1 = Pivot(0, 0)
+    pivot1 = Revolute(0, 0)
 
     def test_buildable(self):
         """Upper intersect test."""
-        pivot2 = Pivot(1, 0)
-        pivot3 = Pivot(
+        pivot2 = Revolute(1, 0)
+        pivot3 = Revolute(
             y=1, joint0=self.pivot1, joint1=pivot2,
             distance0=1, distance1=1
         )
@@ -30,8 +30,8 @@ class TestPivot(unittest.TestCase):
 
     def test_under_intersect(self):
         """Under intersect test."""
-        pivot2 = Pivot(1, 0)
-        pivot3 = Pivot(
+        pivot2 = Revolute(1, 0)
+        pivot3 = Revolute(
             y=-1, joint0=self.pivot1, joint1=pivot2,
             distance0=1, distance1=1
         )
@@ -40,8 +40,8 @@ class TestPivot(unittest.TestCase):
 
     def test_limit_intersect(self):
         """Test system almost breaking."""
-        pivot2 = Pivot(2, 0)
-        pivot3 = Pivot(
+        pivot2 = Revolute(2, 0)
+        pivot3 = Revolute(
             y=1, joint0=self.pivot1, joint1=pivot2,
             distance0=1, distance1=1
         )
@@ -50,8 +50,8 @@ class TestPivot(unittest.TestCase):
 
     def test_no_intersect(self):
         """Test system almost breaking."""
-        pivot2 = Pivot(0, 3)
-        pivot3 = Pivot(
+        pivot2 = Revolute(0, 3)
+        pivot3 = Revolute(
             y=1, joint0=self.pivot1, joint1=pivot2,
             distance0=1, distance1=1
         )
@@ -108,11 +108,11 @@ class TestRevolute(unittest.TestCase):
 class TestFixed(unittest.TestCase):
     """Test Fixed_Joint."""
 
-    pivot1 = Pivot(0, 0)
+    pivot1 = Revolute(0, 0)
 
     def test_pos(self):
         """Test Fixed_Joint positioning."""
-        pivot2 = Pivot(1, 0)
+        pivot2 = Revolute(1, 0)
         fixed = Fixed(
             joint0=self.pivot1, joint1=pivot2, angle=0, distance=1
         )

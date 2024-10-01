@@ -246,12 +246,12 @@ def circle_line_intersection(circle, line):
     Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
 
     :param circle: Sequence of (abscissa, ordinate, radius)
-    :type circle: [float, float, float]
+    :type circle: tuple[float, float, float]
     :param line: Cartesian equation of a line.
-    :type line: [float, float, float]
+    :type line: tuple[float, float, float]
 
-    :return: Nothing, one or two intersections. The first int gives the intersection type.
-    :rtype: (None, ) or ((float, float), ) or ((float, float), (float, float))
+    :return: Nothing, one or two intersections. The length of the tuple gives the intersection type.
+    :rtype: tuple | tuple[tuple[float, float]] | tuple[tuple[float, float], tuple[float, float]]
     """
     # Find two points on the line
     if line[1] != 0:
@@ -262,68 +262,6 @@ def circle_line_intersection(circle, line):
         second_point = - (line[2] + line[1]) / line[0], 1
 
     return circle_line_from_points_intersection(circle, first_point, second_point)
-
-    # Move axis to circle center
-    first_point = first_point[0] - circle[0], first_point[1] - circle[1]
-    second_point = second_point[0] - circle[0], second_point[1] - circle[1]
-
-    new_line = line_from_points(first_point, second_point)
-
-
-    D, dr2, dx, dy = line[2], line[0] ** 2 + line[1] ** 2, line[1], -line[0]
-
-
-
-    a, b, c = line
-    x0, y0, r = circle
-    discriminant = (
-            a ** 2 * r ** 2 -
-            a ** 2 * x0 ** 2 -
-            2 * a * b * x0 * y0 -
-            2 * a * c * x0 +
-            b ** 2 * r ** 2 -
-            b ** 2 * y0 ** 2 -
-            2 * b * c * y0 -
-            c ** 2
-    )
-    sqr_ab = a ** 2 + b ** 2
-    if discriminant < 0:
-        return tuple()
-    if discriminant == 0:
-        return tuple([(
-            -(b * (-(-a ** 2 * y0 + a * b * x0 + b * c) / sqr_ab) + c) / a,
-            - (-a ** 2 * y0 + a * b * x0 + b * c) / sqr_ab
-        )])
-
-    s_discriminant = math.sqrt(discriminant)
-    return (
-        (
-            -(b * (a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
-            a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
-         ),
-        (
-            -(b * (-a * s_discriminant / sqr_ab - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)) + c) / a,
-            -a * s_discriminant / (a ** 2 + b ** 2) - (-a ** 2 * y0 + a * b * x0 + b * c) / (a ** 2 + b ** 2)
-        )
-    )
-
-
-    # We want to solve an equation of the type au²+bu+c=0
-    a = sqr_dist(joint1.coord(), joint2.coord())
-    b = 2 * (
-        (joint2.x - joint1.x) * (joint1.x - joint0.x) +
-        (joint2.y - joint1.y) * (joint1.y - joint0.y)
-    )
-    c = (
-            self.joint0.x ** 2 + self.joint0.y ** 2 +
-            self.joint1.x ** 2 + self.joint1.y ** 2 -
-            2 * (
-                    self.joint0.x * self.joint1.x +
-                    self.joint0.y * self.joint1.y
-            ) - self.distance0 ** 2
-    )
-    if b ** 2 < 4 * a * c:
-        raise UnbuildableError(self)
 
 
 def intersection(obj_1, obj_2, tol=0.0):

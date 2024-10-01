@@ -17,7 +17,7 @@ class TestLinkage(unittest.TestCase):
             name="B"
         )
         # Close the loop
-        self.pin = pl.Pivot(
+        self.pin = pl.Revolute(
             3, 2,
             joint0=self.crank, joint1=(3, 0),
             distance0=3, distance1=1, name="C"

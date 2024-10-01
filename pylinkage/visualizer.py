@@ -85,7 +85,7 @@ def plot_static_linkage(
             **plot_kwargs
         )
         # Then second parent
-        if isinstance(joint, (Fixed, Pivot)):
+        if isinstance(joint, (Fixed, Pivot, Revolute)):
             par_pos = joint.joint1.coord()
             axis.plot(
                 [par_pos[0], pos[0]], [par_pos[1], pos[1]],
