@@ -1,7 +1,7 @@
 """
 Definition of a linear joint.
 """
-from ..interface import joint as pl_joint
+from . import joint as pl_joint
 from ..interface import exceptions as pl_exceptions
 from .. import geometry as geom
 

@@ -23,15 +23,16 @@ from .geometry import (
 from .interface import (
     UnbuildableError,
     HypostaticError,
-    Static,
+    NotCompletelyDefinedError,
     Pivot,
-    Crank,
-    Fixed,
-    Linkage
+    Linkage,
 )
 from .joints import (
+    Crank,
+    Fixed,
     Linear,
     Revolute,
+    Static,
 )
 from .optimization import (
     generate_bounds,
