@@ -6,6 +6,7 @@ from .core import (
     sqr_dist,
     norm,
     cyl_to_cart,
+    get_nearest_point,
 )
 from .secants import (
     circle_intersect,
