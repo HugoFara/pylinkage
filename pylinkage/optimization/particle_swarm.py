@@ -6,7 +6,7 @@ Created on Fri Mar 8, 13:51:45 2019.
 @author: HugoFara
 """
 from pyswarms.single.local_best import LocalBestPSO
-from ..collections import Agent
+from .collections import Agent
 
 
 def particle_swarm_optimization(

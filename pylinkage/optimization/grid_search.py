@@ -9,7 +9,7 @@ import itertools
 import numpy as np
 import tqdm
 from .utils import generate_bounds
-from ..collections import MutableAgent
+from .collections import MutableAgent
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
