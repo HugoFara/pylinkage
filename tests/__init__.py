@@ -3,3 +3,8 @@
 """
 Test cases with unittest.
 """
+from . import geometry
+from . import joints
+from . import linkage
+from . import optimization
+from .optimization import collections

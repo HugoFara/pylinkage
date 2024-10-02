@@ -43,6 +43,7 @@ from .optimization import (
     particle_swarm_optimization,
     kinematic_maximization,
     kinematic_minimization,
+    collections,
 )
 from .visualizer import (
     plot_static_linkage,
