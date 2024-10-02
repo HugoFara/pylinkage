@@ -18,6 +18,7 @@ Welcome to pylinkage's documentation!
    :caption: Packages
 
    api/modules
+   examples/modules
    tests/modules
 
 .. toctree::

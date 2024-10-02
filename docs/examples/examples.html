@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>examples package &mdash; pylinkage 0.5.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=08553120"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="tests" href="../tests/modules.html" />
+    <link rel="prev" title="examples" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">examples package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-examples.fourbar_linkage">examples.fourbar_linkage module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples.fourbar_linkage.define_linkage"><code class="docutils literal notranslate"><span class="pre">define_linkage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.fourbar_linkage.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-examples.inverted_stroke_engine">examples.inverted_stroke_engine module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples.inverted_stroke_engine.create_stroke_engine_linkage"><code class="docutils literal notranslate"><span class="pre">create_stroke_engine_linkage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.inverted_stroke_engine.view_linkage"><code class="docutils literal notranslate"><span class="pre">view_linkage()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-examples.strider">examples.strider module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.LAP_PER_SECOND"><code class="docutils literal notranslate"><span class="pre">LAP_PER_SECOND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.complete_strider"><code class="docutils literal notranslate"><span class="pre">complete_strider()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.history_saver"><code class="docutils literal notranslate"><span class="pre">history_saver()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.param2dimensions"><code class="docutils literal notranslate"><span class="pre">param2dimensions()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.show_optimized"><code class="docutils literal notranslate"><span class="pre">show_optimized()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.swarm_optimizer"><code class="docutils literal notranslate"><span class="pre">swarm_optimizer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.sym_stride_evaluator"><code class="docutils literal notranslate"><span class="pre">sym_stride_evaluator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.view_swarm_polar"><code class="docutils literal notranslate"><span class="pre">view_swarm_polar()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#examples.strider.view_swarm_tiled"><code class="docutils literal notranslate"><span class="pre">view_swarm_tiled()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-examples">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">examples</a></li>
+      <li class="breadcrumb-item active">examples package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples-package">
+<h1>examples package<a class="headerlink" href="#examples-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-examples.fourbar_linkage">
+<span id="examples-fourbar-linkage-module"></span><h2>examples.fourbar_linkage module<a class="headerlink" href="#module-examples.fourbar_linkage" title="Link to this heading"></a></h2>
+<p>The fourbar_linkage module demonstrates the features of pylinkage.</p>
+<p>It is not intended to be imported in another project,
+but feel welcome to copy-paste chunks of code.</p>
+<p>Created on Sat Jun 19, 12:32:37 2021.</p>
+<p>&#64;author: HugoFara</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.fourbar_linkage.define_linkage">
+<span class="sig-prename descclassname"><span class="pre">examples.fourbar_linkage.</span></span><span class="sig-name descname"><span class="pre">define_linkage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#examples.fourbar_linkage.define_linkage" title="Link to this definition"></a></dt>
+<dd><p>Define a simple four-bar linkage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A demo four-bar linkage.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>pylinkage.Linkage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.fourbar_linkage.main">
+<span class="sig-prename descclassname"><span class="pre">examples.fourbar_linkage.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#examples.fourbar_linkage.main" title="Link to this definition"></a></dt>
+<dd><p>Define and optimize a demo linkage.</p>
+</dd></dl>
+
+</section>
+<section id="module-examples.inverted_stroke_engine">
+<span id="examples-inverted-stroke-engine-module"></span><h2>examples.inverted_stroke_engine module<a class="headerlink" href="#module-examples.inverted_stroke_engine" title="Link to this heading"></a></h2>
+<p>An inverted four-stroke engine, that converts a rotary motion into a linear one.</p>
+<p>See: <a class="reference external" href="https://en.wikipedia.org/wiki/Four-stroke_engine">https://en.wikipedia.org/wiki/Four-stroke_engine</a> for details</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.inverted_stroke_engine.create_stroke_engine_linkage">
+<span class="sig-prename descclassname"><span class="pre">examples.inverted_stroke_engine.</span></span><span class="sig-name descname"><span class="pre">create_stroke_engine_linkage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#examples.inverted_stroke_engine.create_stroke_engine_linkage" title="Link to this definition"></a></dt>
+<dd><p>Create an inverted stroke engine linkage.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.inverted_stroke_engine.view_linkage">
+<span class="sig-prename descclassname"><span class="pre">examples.inverted_stroke_engine.</span></span><span class="sig-name descname"><span class="pre">view_linkage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#examples.inverted_stroke_engine.view_linkage" title="Link to this definition"></a></dt>
+<dd><p>View a stroke engine linkage in action</p>
+</dd></dl>
+
+</section>
+<section id="module-examples.strider">
+<span id="examples-strider-module"></span><h2>examples.strider module<a class="headerlink" href="#module-examples.strider" title="Link to this heading"></a></h2>
+<p>Kinematic Strider linkage, a type of walking linkage.</p>
+<p>The original linkage can be found at
+<a class="reference external" href="https://www.diywalkers.com/strider-linkage-plans.html">https://www.diywalkers.com/strider-linkage-plans.html</a></p>
+<dl class="py data">
+<dt class="sig sig-object py" id="examples.strider.LAP_PER_SECOND">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">LAP_PER_SECOND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#examples.strider.LAP_PER_SECOND" title="Link to this definition"></a></dt>
+<dd><p>Parameters that can change without changing joints between objects.</p>
+<p>Can be distance between joints, or an angle.
+Units are given relative to crank length, which is normalized to 1.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.complete_strider">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">complete_strider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.complete_strider" title="Link to this definition"></a></dt>
+<dd><p>Take two sequences to define strider linkage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>constraints</strong> (<em>tuple</em><em>[</em><em>float</em><em>] </em><em>| </em><em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>]</em><em>]</em>) – The sequence of geometrical constraints.</p></li>
+<li><p><strong>prev</strong> (<em>tuple</em><em>[</em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em>) – Coordinates to set by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return pylinkage.Linkage<span class="colon">:</span></dt>
+<dd class="field-even"><p>A strider linkage</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.history_saver">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">history_saver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evaluator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.history_saver" title="Link to this definition"></a></dt>
+<dd><p>Save the history to a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evaluator</strong> – Evaluation function</p></li>
+<li><p><strong>history</strong> – History list</p></li>
+<li><p><strong>linkage</strong> – Input linkage</p></li>
+<li><p><strong>dims</strong> – Dimensions</p></li>
+<li><p><strong>pos</strong> – Initial positions</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.main">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.main" title="Link to this definition"></a></dt>
+<dd><p>Build and optimize a strider linkage.</p>
+<p>You can find it at <a class="reference external" href="https://www.diywalkers.com/strider-linkage-plans.html">https://www.diywalkers.com/strider-linkage-plans.html</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.param2dimensions">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">param2dimensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0.7853981633974483,</span> <span class="pre">1.8,</span> <span class="pre">2.6,</span> <span class="pre">1.4,</span> <span class="pre">3.3415926535897933,</span> <span class="pre">2.5,</span> <span class="pre">1.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.param2dimensions" title="Link to this definition"></a></dt>
+<dd><p>Expand dimensions them to fit in strider.set_num_constraints.</p>
+<p>Dimensions parameters are written in short form due to symmetry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – Short form for dimensions (Default value = DIMENSIONS)</p></li>
+<li><p><strong>flat</strong> – If the output should be a flat list (Default value = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Expanded dimensions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.show_optimized">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">show_optimized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.show_optimized" title="Link to this definition"></a></dt>
+<dd><p>Show the optimized linkages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage</strong> – Linkage to modify.</p></li>
+<li><p><strong>data</strong> – Linkage data</p></li>
+<li><p><strong>n_show</strong> – Number of linkages to show (Default value = 10)</p></li>
+<li><p><strong>duration</strong> – Duration of each animation (Default value = 5)</p></li>
+<li><p><strong>symmetric</strong> – If the input dimensions should be symmetric (Default value = True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.swarm_optimizer">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">swarm_optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0.7853981633974483,</span> <span class="pre">1.8,</span> <span class="pre">2.6,</span> <span class="pre">1.4,</span> <span class="pre">3.3415926535897933,</span> <span class="pre">2.5,</span> <span class="pre">1.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_each</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_agents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.swarm_optimizer" title="Link to this definition"></a></dt>
+<dd><p>Optimize linkage geometrically using PSO.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – The linkage to optimize.</p></li>
+<li><p><strong>dimensions</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – The dimensions that should vary. Default value = DIMENSIONS.</p></li>
+<li><p><strong>show</strong> (<em>int</em>) – Type of visualization. The default is 0.
+- 0 to avoid any visualization
+- 1 for polar graph
+- 2 for tiled 2D representation</p></li>
+<li><p><strong>save_each</strong> (<em>int</em>) – If show is 0, save the image each {save_each} frame. The default is 0.</p></li>
+<li><p><strong>n_agents</strong> (<em>int</em>) – Number of agents to simulate. The default is 300.</p></li>
+<li><p><strong>n_iterations</strong> (<em>int</em>) – Number of iterations to run through. The default is 400.</p></li>
+<li><p><strong>args</strong> (<em>list</em>) – Arguments to pass to the particle swarm optimization.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of fittest linkages.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.sym_stride_evaluator">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">sym_stride_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_positions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.sym_stride_evaluator" title="Link to this definition"></a></dt>
+<dd><p>Give score to each dimension set for symmetric strider.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage</strong> (<em>pylinkage.Linkage</em>) – Input linkage</p></li>
+<li><p><strong>dimensions</strong> (<em>tuple</em>) – Dimensions</p></li>
+<li><p><strong>initial_positions</strong> (<em>tuple</em>) – Initial positions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Score</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.view_swarm_polar">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">view_swarm_polar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0.7853981633974483,</span> <span class="pre">1.8,</span> <span class="pre">2.6,</span> <span class="pre">1.4,</span> <span class="pre">3.3415926535897933,</span> <span class="pre">2.5,</span> <span class="pre">1.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_each</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_agents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.view_swarm_polar" title="Link to this definition"></a></dt>
+<dd><p>Draw an animation of the swarm in a polar graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage</strong> (<em>pylinkage.Linkage</em>) – Input linkage</p></li>
+<li><p><strong>dimensions</strong> (<em>Sized</em>) – Dimensions (Default value = DIMENSIONS)</p></li>
+<li><p><strong>save_each</strong> (<em>int</em><em> | </em><em>None</em>) – To save the linkage state (Default value = 0)</p></li>
+<li><p><strong>n_agents</strong> (<em>int</em>) – Number of agents (Default value = 300)</p></li>
+<li><p><strong>n_iterations</strong> (<em>int</em>) – NUmber of iterations (Default value = 400)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="examples.strider.view_swarm_tiled">
+<span class="sig-prename descclassname"><span class="pre">examples.strider.</span></span><span class="sig-name descname"><span class="pre">view_swarm_tiled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(2,</span> <span class="pre">0.7853981633974483,</span> <span class="pre">1.8,</span> <span class="pre">2.6,</span> <span class="pre">1.4,</span> <span class="pre">3.3415926535897933,</span> <span class="pre">2.5,</span> <span class="pre">1.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_each</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_agents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#examples.strider.view_swarm_tiled" title="Link to this definition"></a></dt>
+<dd><p>Represent the final state of the best linkages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>linkage</strong> (<a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage" title="pylinkage.linkage.linkage.Linkage"><em>Linkage</em></a>) – Linkage to edit</p></li>
+<li><p><strong>dimensions</strong> (<em>Sized</em>) – Dimensions (Default value = DIMENSIONS)</p></li>
+<li><p><strong>save_each</strong> (<em>int</em><em> | </em><em>None</em>) – Period of state save (Default value = 0)</p></li>
+<li><p><strong>n_agents</strong> (<em>int</em>) – Number of agents (Default value = 300)</p></li>
+<li><p><strong>n_iterations</strong> (<em>int</em>) – NUmber of iterations (Default value = 400)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-examples">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-examples" title="Link to this heading"></a></h2>
+<p>This package feature some simple modules to demonstrate the capabilities of pylinkage.</p>
+<p>Created on Sat Jun 26 17:29:26 2021.</p>
+<p>&#64;author: HugoFara.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tests/modules.html" class="btn btn-neutral float-right" title="tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

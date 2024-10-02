@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="joints" href="api/joints.html" />
+    <link rel="next" title="pylinkage" href="api/modules.html" />
     <link rel="prev" title="Pylinkage" href="readmelink.html" /> 
 </head>
 
@@ -53,6 +53,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated">Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">[0.5.3] - 2023-06-23</a><ul>
@@ -119,13 +120,11 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/joints.html">joints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api/collections.html">collections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/modules.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -170,8 +169,8 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>New joint: the <code class="docutils literal notranslate"><span class="pre">Linear</span></code> joint!</p></li>
-<li><p>New sub-package: collections.
-<code class="docutils literal notranslate"><span class="pre">collections.Agent</span></code> and <code class="docutils literal notranslate"><span class="pre">collections.MutableAgent</span></code> are two new classes that should standardize the format of
+<li><p>New sub-package: optimization.collections.
+<code class="docutils literal notranslate"><span class="pre">optimization.collections.Agent</span></code> and <code class="docutils literal notranslate"><span class="pre">optimization.collections.MutableAgent</span></code> are two new classes that should standardize the format of
 optimization, related to (<a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/5">#5</a>).</p>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Agent</span></code> is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.</p></li>
@@ -270,12 +269,18 @@ iteration.</p></li>
 <h3>Deprecated<a class="headerlink" href="#deprecated" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>Using <code class="docutils literal notranslate"><span class="pre">tqdm_verbosity</span></code> is deprecated in favor of using <code class="docutils literal notranslate"><span class="pre">disable=True</span></code> in a tqdm object.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">movement_bounding_bow</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">movement_bounding_box</span></code> (typo in function name).</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">Pivot</span></code> class is deprecated in favor of the <code class="docutils literal notranslate"><span class="pre">Revolute</span></code> class.
 The name “Pivot joint” is not standard.
 Related to <a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/13">#13</a>.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">hyperstaticity</span></code> method is renamed <code class="docutils literal notranslate"><span class="pre">indeterminacy</span></code> in <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>
 (linkage.py)</p></li>
+</ul>
+</section>
+<section id="removed">
+<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Drops support for Python 3.7 and 3.8 as both versions reached end-of-life.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">movement_bounding_bow</span></code> is replaced by <code class="docutils literal notranslate"><span class="pre">movement_bounding_box</span></code> (typo in function name).</p></li>
 </ul>
 </section>
 </section>
@@ -617,7 +622,7 @@ and exhaustive optimization.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="readmelink.html" class="btn btn-neutral float-left" title="Pylinkage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="api/joints.html" class="btn btn-neutral float-right" title="joints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api/modules.html" class="btn btn-neutral float-right" title="pylinkage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

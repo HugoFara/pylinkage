@@ -41,7 +41,6 @@ def circle_intersect(circle1, circle2, tol=0.0):
     :type tol: float
 
     :returns: the intersections of two circles. Can be:
-
         - (0, ) when no intersection.
         - (1, (float, float)) if the intersection is one point.
         - (2, (float, float), (float, float)) for two points of intersection.

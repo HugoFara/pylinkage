@@ -20,7 +20,9 @@
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage.geometry package" href="pylinkage.geometry.html" />
+    <link rel="prev" title="pylinkage package" href="pylinkage.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,13 +49,28 @@
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="joints.html">joints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pylinkage.collections package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html">pylinkage.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html">pylinkage.joints package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -77,6 +94,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pylinkage</a></li>
+          <li class="breadcrumb-item"><a href="pylinkage.html">pylinkage package</a></li>
       <li class="breadcrumb-item active">pylinkage.collections package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/pylinkage.collections.rst.txt" rel="nofollow"> View page source</a>
@@ -94,40 +113,9 @@
 </section>
 <section id="module-pylinkage.collections.agent">
 <span id="pylinkage-collections-agent-module"></span><h2>pylinkage.collections.agent module<a class="headerlink" href="#module-pylinkage.collections.agent" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pylinkage.collections.agent.Agent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.collections.agent.</span></span><span class="sig-name descname"><span class="pre">Agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_positions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.collections.agent.Agent" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pylinkage.collections.agent.Agent" title="pylinkage.collections.agent.Agent"><code class="xref py py-class docutils literal notranslate"><span class="pre">Agent</span></code></a></p>
-<p>A class that uniformizes a linkage optimization.</p>
-<p>It is roughly a namedtuple with preassigned fields.</p>
-</dd></dl>
-
 </section>
 <section id="module-pylinkage.collections.mutable_agent">
 <span id="pylinkage-collections-mutable-agent-module"></span><h2>pylinkage.collections.mutable_agent module<a class="headerlink" href="#module-pylinkage.collections.mutable_agent" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.collections.mutable_agent.</span></span><span class="sig-name descname"><span class="pre">MutableAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A custom class that is mutable, subscriptable, and supports index assignment.</p>
-<p>You should only use it as a dictionary of 3 elements. No backward compatibility guaranty on other use cases.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent.dimensions">
-<span class="sig-name descname"><span class="pre">dimensions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent.dimensions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent.init_positions">
-<span class="sig-name descname"><span class="pre">init_positions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span></em><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent.init_positions" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.collections.mutable_agent.MutableAgent.score">
-<span class="sig-name descname"><span class="pre">score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.collections.mutable_agent.MutableAgent.score" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-pylinkage.collections">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.collections" title="Link to this heading"></a></h2>
@@ -138,7 +126,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pylinkage.html" class="btn btn-neutral float-left" title="pylinkage package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pylinkage.geometry.html" class="btn btn-neutral float-right" title="pylinkage.geometry package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

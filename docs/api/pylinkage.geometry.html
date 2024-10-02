@@ -20,7 +20,9 @@
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage.joints package" href="pylinkage.joints.html" />
+    <link rel="prev" title="pylinkage.collections package" href="pylinkage.collections.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,13 +49,28 @@
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="joints.html">joints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">geometry</a></li>
-<li class="toctree-l1"><a class="reference internal" href="optimization.html">optimization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualizer.html">visualizer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="collections.html">collections</a></li>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.collections.html">pylinkage.collections package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pylinkage.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html">pylinkage.joints package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -77,6 +94,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pylinkage</a></li>
+          <li class="breadcrumb-item"><a href="pylinkage.html">pylinkage package</a></li>
       <li class="breadcrumb-item active">pylinkage.geometry package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/pylinkage.geometry.rst.txt" rel="nofollow"> View page source</a>
@@ -194,8 +213,6 @@
 <span id="pylinkage-geometry-secants-module"></span><h2>pylinkage.geometry.secants module<a class="headerlink" href="#module-pylinkage.geometry.secants" title="Link to this heading"></a></h2>
 <p>The geometry module provides general geometry functions.</p>
 <p>It is used extensively, so each function should be highly optimized.</p>
-<p>Created on Wed May 5, 17:34:45 2021.</p>
-<p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.geometry.secants.bounding_box">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.geometry.secants.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.geometry.secants.bounding_box" title="Link to this definition"></a></dt>
@@ -231,14 +248,11 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>the intersections of two circles. Can be:</p>
-<ul class="simple">
-<li><p>(0, ) when no intersection.</p></li>
-<li><p>(1, (float, float)) if the intersection is one point.</p></li>
-<li><p>(2, (float, float), (float, float)) for two points of intersection.</p></li>
-<li><p>(3, (float, float, float)) if the intersection is a circle.</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>the intersections of two circles. Can be:
+- (0, ) when no intersection.
+- (1, (float, float)) if the intersection is one point.
+- (2, (float, float), (float, float)) for two points of intersection.
+- (3, (float, float, float)) if the intersection is a circle.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple[int] | tuple[int, tuple[float, float]] |</p>
@@ -328,7 +342,10 @@
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pylinkage.collections.html" class="btn btn-neutral float-left" title="pylinkage.collections package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pylinkage.joints.html" class="btn btn-neutral float-right" title="pylinkage.joints package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
