@@ -54,4 +54,4 @@ from .visualizer import (
 # For compatibility only, geometry.dist is deprecated
 from math import dist
 
-__version__ = "0.5.3"
+__version__ = "0.6.0"
