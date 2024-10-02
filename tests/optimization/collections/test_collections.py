@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from pylinkage.collections import Agent, MutableAgent
+from pylinkage.optimization.collections import Agent, MutableAgent
 
 
 class TestAgent(unittest.TestCase):
