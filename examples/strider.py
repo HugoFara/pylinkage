@@ -372,7 +372,7 @@ def view_swarm_tiled(
 def swarm_optimizer(
     linkage,
     dimensions=DIMENSIONS,
-    show=False,
+    show=0,
     save_each=0,
     n_agents=300,
     n_iterations=400,
@@ -382,14 +382,12 @@ def swarm_optimizer(
 
     :param linkage: The linkage to optimize.
     :type linkage: pylinkage.linkage.Linkage
-    :param dimensions: The dimensions that should vary.
-    (Default value = DIMENSIONS).
+    :param dimensions: The dimensions that should vary. Default value = DIMENSIONS.
     :type dimensions: list[float]
-    :param show: Type of visualization.
-        - 0 for None
+    :param show: Type of visualization. The default is 0.
+        - 0 to avoid any visualization
         - 1 for polar graph
         - 2 for tiled 2D representation
-        The default is False.
     :type show: int
     :param save_each: If show is 0, save the image each {save_each} frame. The default is 0.
     :type save_each: int
