@@ -4,14 +4,8 @@
 The geometry module provides general geometry functions.
 
 It is used extensively, so each function should be highly optimized.
-
-Created on Wed May 5, 17:34:45 2021.
-
-@author: HugoFara
 """
 import math
-
-from .core import dist
 
 
 def secant_circles_intersections(
@@ -186,7 +180,7 @@ def intersection(obj_1, obj_2, tol=0.0):
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:
-        if obj_1 == obj_2 or tol and dist(obj_1, obj_2) <= tol:
+        if obj_1 == obj_2 or tol and math.dist(obj_1, obj_2) <= tol:
             return obj_1
         return
     # Two circles
@@ -194,7 +188,7 @@ def intersection(obj_1, obj_2, tol=0.0):
         return circle_intersect(obj_1, obj_2)[1:]
     # Point and circle
     if len(obj_1) == 2 and len(obj_2) == 3:
-        if dist(obj_1, obj_2[:2]) - obj_2[2] <= tol:
+        if math.dist(obj_1, obj_2[:2]) - obj_2[2] <= tol:
             return obj_1
         return
     # Circle and point

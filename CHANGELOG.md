@@ -71,12 +71,16 @@ iteration.
 ### Deprecated
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
-- ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
 - The ``Pivot`` class is deprecated in favor of the ``Revolute`` class. 
 The name "Pivot joint" is not standard.
 Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 - The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage`` 
 (linkage.py)
+
+### Removed
+
+- Drops support for Python 3.7 and 3.8 as both versions reached end-of-life.
+- ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
 
 
 ## [0.5.3] - 2023-06-23

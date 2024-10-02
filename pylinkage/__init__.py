@@ -13,7 +13,6 @@ Created on Thu Jun 10 21:30:52 2021
 """
 
 from .geometry import (
-    dist,
     sqr_dist,
     norm,
     cyl_to_cart,
@@ -51,5 +50,7 @@ from .visualizer import (
     show_linkage,
     swarm_tiled_repr,
 )
+# For compatibility only, geometry.dist is deprecated
+from math import dist
 
 __version__ = "0.5.3"

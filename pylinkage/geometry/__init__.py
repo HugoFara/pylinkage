@@ -3,7 +3,6 @@ Basic geometry package.
 """
 
 from .core import (
-    dist,
     sqr_dist,
     norm,
     cyl_to_cart,
@@ -14,3 +13,5 @@ from .secants import (
     circle_line_from_points_intersection,
     intersection,
 )
+# For compatibility only, geometry.core.dist is deprecated
+from math import dist
