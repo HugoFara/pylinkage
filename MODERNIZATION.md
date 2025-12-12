@@ -36,7 +36,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "mypy>=1.0.0", "ruff>=0.4.0"]
+dev = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "mypy>=1.0.0", "ruff>=0.4.0", "hypothesis>=6.0.0"]
 docs = ["sphinx>=7.4.2", "sphinx-rtd-theme>=2.0.0", "myst-parser>=3.0.1"]
 
 [tool.uv]
@@ -445,12 +445,12 @@ def circle_intersect(c1, r1, c2, r2):
 - [x] Annotate visualizer modules (`core.py`, `static.py`, `animated.py`)
 - [x] Fix `joints/static.py` type annotations and signature compatibility
 
-### Phase 3: Test Coverage
+### Phase 3: Test Coverage (COMPLETED)
 
-- [ ] Add visualizer tests
-- [ ] Add integration tests
-- [ ] Reach 70% coverage
-- [ ] Add property-based testing with hypothesis
+- [x] Add visualizer tests (`tests/visualizer/test_visualizer.py`)
+- [x] Add integration tests (`tests/integration/test_integration.py`)
+- [x] Reach 70% coverage (achieved 82%)
+- [x] Add property-based testing with hypothesis (`tests/geometry/test_geometry_hypothesis.py`)
 
 ### Phase 4: API Enhancements
 
