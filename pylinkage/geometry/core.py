@@ -1,9 +1,9 @@
 """
 Basic geometry features.
 """
+import math
 import sys
 import warnings
-import math
 
 
 def dist_builtin(point1, point2):

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 The visualizer module makes visualization of linkages easy using matplotlib.
 
@@ -7,14 +6,14 @@ Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
-import matplotlib.pyplot as plt
 import matplotlib.animation as anim
+import matplotlib.pyplot as plt
 
-from ..linkage.analysis import movement_bounding_box
 from ..exceptions import UnbuildableError
 from ..joints import Crank, Static
-from .static import plot_static_linkage
+from ..linkage.analysis import movement_bounding_box
 from .core import _get_color
+from .static import plot_static_linkage
 
 # List of animations
 ANIMATIONS = []
@@ -220,7 +219,7 @@ def swarm_tiled_repr(
 
 
     """
-    fig.suptitle("Iteration: {}, best score: {}".format(swarm[0], max(agent[0] for agent in swarm[1])))
+    fig.suptitle(f"Iteration: {swarm[0]}, best score: {max(agent[0] for agent in swarm[1])}")
     for i, agent in enumerate(swarm[1]):
         dimensions = agent[1]
         if dimension_func is None:

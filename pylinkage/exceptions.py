@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 The exceptions module is a simple quick way to access the built-in exceptions.
 

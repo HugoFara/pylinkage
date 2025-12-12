@@ -1,2 +1,1 @@
-from . import test_optimizer
-from . import collections
+from . import collections, test_optimizer

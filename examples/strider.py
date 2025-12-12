@@ -5,8 +5,8 @@ The original linkage can be found at
 https://www.diywalkers.com/strider-linkage-plans.html
 """
 
-import matplotlib.pyplot as plt
 import matplotlib.animation as anim
+import matplotlib.pyplot as plt
 import numpy as np
 
 import pylinkage as pl
@@ -226,7 +226,7 @@ def view_swarm_polar(
         bounds=BOUNDS, dimensions=len(dimensions)
     )
 
-    fig = plt.figure(f"Swarm in polar graph")
+    fig = plt.figure("Swarm in polar graph")
     fig.suptitle(f"Final best score: {-out[0][0]:.2f}")
     formatted_history = [
         history[i:i + n_agents] for i in range(0, len(history), n_agents)
@@ -426,7 +426,7 @@ def swarm_optimizer(
                     par = {}
                     for k in range(len(dim[j][0])):
                         par[DIM_NAMES[k]] = dim[j][0][k]
-                    f.write('{}\n{}\n{}\n'.format(par, dim[j][1], dim[j][2]))
+                    f.write(f'{par}\n{dim[j][1]}\n{dim[j][2]}\n')
                     f.write('----\n')
                 f.close()
     else:

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 The linkage module defines useful classes for linkage definition.
 
@@ -9,8 +8,9 @@ Created on Fri Apr 16, 16:39:21 2021.
 """
 import warnings
 from math import gcd, tau
+
 from ..exceptions import HypostaticError
-from ..joints import (Revolute, Fixed, Crank, Static)
+from ..joints import Crank, Fixed, Revolute, Static
 
 
 class Linkage:
@@ -67,10 +67,7 @@ class Linkage:
                 if isinstance(j, Static) or j in solvable:
                     continue
                 if j.joint0 in solvable:
-                    if isinstance(j, Crank):
-                        solvable.append(j)
-                        solved_in_pass = True
-                    elif j.joint1 in solvable:
+                    if isinstance(j, Crank) or j.joint1 in solvable:
                         solvable.append(j)
                         solved_in_pass = True
         if len(solvable) < len(self.joints):

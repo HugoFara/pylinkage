@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 The fourbar_linkage module demonstrates the features of pylinkage.
 

@@ -52,9 +52,7 @@ class Joint(abc.ABC):
 
     def __repr__(self):
         """Represent an object with class name, coordinates, name and state."""
-        return "{}(x={}, y={}, name={})".format(
-            self.__class__.__name__, self.x, self.y, self.name
-        )
+        return f"{self.__class__.__name__}(x={self.x}, y={self.y}, name={self.name})"
 
     def __get_joints__(self):
         """Return constraint joints as a tuple."""

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 PyLinkage is a module to create, optimize and visualize linkages.
 
@@ -12,23 +11,15 @@ Created on Thu Jun 10 21:30:52 2021
 @author: HugoFara
 """
 
-from .geometry import (
-    sqr_dist,
-    norm,
-    cyl_to_cart,
-    circle_intersect,
-    intersection
-)
+# For compatibility only, geometry.dist is deprecated
+from math import dist
+
 from .exceptions import (
-    UnbuildableError,
     HypostaticError,
     NotCompletelyDefinedError,
+    UnbuildableError,
 )
-from .linkage import (
-    Linkage,
-    kinematic_default_test,
-    bounding_box,
-)
+from .geometry import circle_intersect, cyl_to_cart, intersection, norm, sqr_dist
 from .joints import (
     Crank,
     Fixed,
@@ -37,21 +28,24 @@ from .joints import (
     Static,
 )
 from .joints.revolute import Pivot
+from .linkage import (
+    Linkage,
+    bounding_box,
+    kinematic_default_test,
+)
 from .optimization import (
+    collections,
     generate_bounds,
-    trials_and_errors_optimization,
-    particle_swarm_optimization,
     kinematic_maximization,
     kinematic_minimization,
-    collections,
+    particle_swarm_optimization,
+    trials_and_errors_optimization,
 )
 from .visualizer import (
-    plot_static_linkage,
     plot_kinematic_linkage,
+    plot_static_linkage,
     show_linkage,
     swarm_tiled_repr,
 )
-# For compatibility only, geometry.dist is deprecated
-from math import dist
 
 __version__ = "0.6.0"

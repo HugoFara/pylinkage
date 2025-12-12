@@ -3,8 +3,8 @@ Fixed joint.
 """
 import math
 
-from .. import geometry as pl_geom
 from .. import exceptions as pl_exceptions
+from .. import geometry as pl_geom
 from . import joint as pl_joint
 
 

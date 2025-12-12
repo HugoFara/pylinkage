@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 The geometry module provides general geometry functions.
 
@@ -112,7 +111,7 @@ def circle_line_from_points_intersection(circle, first_point, second_point):
 
     discriminant = circle[2] ** 2 * dr2 - cross ** 2
 
-    if 0 > discriminant:
+    if discriminant < 0:
         # no intersection
         return tuple()
 

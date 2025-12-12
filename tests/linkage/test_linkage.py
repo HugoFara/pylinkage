@@ -2,6 +2,7 @@
 Test cases for a Linkage.
 """
 import unittest
+
 import pylinkage as pl
 
 

@@ -7,8 +7,8 @@ called a pivot joint in this project.
 import warnings
 from math import atan2
 
-from .. import geometry as pl_geom
 from .. import exceptions as pl_exceptions
+from .. import geometry as pl_geom
 from . import joint as pl_joint
 
 
@@ -98,9 +98,9 @@ class Revolute(pl_joint.Joint):
             return
         if len(ref) == 1:
             warnings.warn(
-                "Unable to set coordinates of revolute joint {}:"
+                f"Unable to set coordinates of revolute joint {self.name}:"
                 "Only one constraint is set."
-                "Coordinates unchanged".format(self.name)
+                "Coordinates unchanged"
             )
         elif len(ref) == 2:
             # Most common case, optimized here

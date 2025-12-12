@@ -1,14 +1,14 @@
 """
 Core features for visualization.
 """
-from ..joints.revolute import Pivot
 from ..joints import (
-    Revolute,
-    Linear,
     Crank,
     Fixed,
+    Linear,
+    Revolute,
     Static,
 )
+from ..joints.revolute import Pivot
 
 # Colors to use for plotting
 COLOR_SWITCHER = {

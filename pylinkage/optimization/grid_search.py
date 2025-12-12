@@ -4,12 +4,14 @@ Implementation of a grid search optimization.
 It should be used for reference only as the search space
 will almost certainly be too big.
 """
-import math
 import itertools
+import math
+
 import numpy as np
 import tqdm
-from .utils import generate_bounds
+
 from .collections import MutableAgent
+from .utils import generate_bounds
 
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):

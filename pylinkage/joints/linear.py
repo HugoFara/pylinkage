@@ -1,9 +1,9 @@
 """
 Definition of a linear joint.
 """
-from . import joint as pl_joint
 from .. import exceptions as pl_exceptions
 from .. import geometry as geom
+from . import joint as pl_joint
 
 
 class Linear(pl_joint.Joint):

@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Fri Apr 16 17:19:47 2021
 
 @author: HugoFara
 """
 
-import unittest
 import math
+import unittest
 
 from pylinkage import UnbuildableError
-from pylinkage.joints import Revolute, Fixed
+from pylinkage.joints import Fixed, Revolute
 
 
 class TestPivot(unittest.TestCase):

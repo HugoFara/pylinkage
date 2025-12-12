@@ -2,9 +2,9 @@
 Static (not animated) visualization.
 """
 
-from .core import _get_color
-from ..joints import (Fixed, Revolute, Linear)
+from ..joints import Fixed, Linear, Revolute
 from ..joints.revolute import Pivot
+from .core import _get_color
 
 
 def plot_static_linkage(
