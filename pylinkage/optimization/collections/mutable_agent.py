@@ -1,6 +1,6 @@
 class MutableAgent:
     """A custom class that is mutable, subscriptable, and supports index assignment.
-    
+
     You should only use it as a dictionary of 3 elements. No backward compatibility guaranty on other use cases.
 
 

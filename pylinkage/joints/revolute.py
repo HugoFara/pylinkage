@@ -100,7 +100,8 @@ class Revolute(pl_joint.Joint):
             warnings.warn(
                 f"Unable to set coordinates of revolute joint {self.name}:"
                 "Only one constraint is set."
-                "Coordinates unchanged"
+                "Coordinates unchanged",
+                stacklevel=2,
             )
         elif len(ref) == 2:
             # Most common case, optimized here
@@ -119,7 +120,8 @@ class Revolute(pl_joint.Joint):
             elif intersections[0] == 3:
                 warnings.warn(
                     f"Joint {self.name} has an infinite number of"
-                    "solutions, position will be arbitrary"
+                    "solutions, position will be arbitrary",
+                    stacklevel=2,
                 )
                 # We project position on circle of possible positions
                 angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
@@ -207,7 +209,10 @@ class Pivot(Revolute):
             (Default value = None).
         :type name: str
         """
-        warnings.warn("The Pivot class is deprecated in favor of the Revolute class.")
+        warnings.warn(
+            "The Pivot class is deprecated in favor of the Revolute class.",
+            stacklevel=2,
+        )
         super().__init__(
             x=x,
             y=y,

@@ -2,7 +2,6 @@
 Basic geometry features.
 """
 import math
-import sys
 import warnings
 
 
@@ -20,11 +19,7 @@ def dist_builtin(point1, point2):
     )
 
 
-if sys.version_info >= (3, 8, 0):
-    dist = math.dist
-else:
-    warnings.warn('Unable to import dist from math. Using built-in function.')
-    dist = dist_builtin
+dist = math.dist
 
 
 def sqr_dist(point1, point2):
@@ -50,7 +45,7 @@ def get_nearest_point(reference_point, first_point, second_point):
     :param tuple[float, float] second_point: Second point candidate
     :return tuple[float, float]: Either first point or second point
     """
-    if reference_point == first_point or reference_point == second_point:
+    if reference_point in (first_point, second_point):
         return reference_point
     if sqr_dist(reference_point, first_point) < sqr_dist(reference_point, second_point):
         return first_point
@@ -86,7 +81,10 @@ def line_from_points(first_point, second_point):
     :return tuple[float, float, float]: A cartesian equation of this line.
     """
     if first_point == second_point:
-        warnings.warn("Cannot choose a line, inputs points are the same!")
+        warnings.warn(
+            "Cannot choose a line, inputs points are the same!",
+            stacklevel=2,
+        )
         return 0, 0, 0
     director = (
         second_point[0] - first_point[0],

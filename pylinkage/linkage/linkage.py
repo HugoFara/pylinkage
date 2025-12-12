@@ -15,7 +15,7 @@ from ..joints import Crank, Fixed, Revolute, Static
 
 class Linkage:
     """A linkage is a set of Joint objects.
-    
+
     It is defined as a kinematic linkage.
     Coordinates are given relative to its own base.
 
@@ -56,7 +56,8 @@ class Linkage:
         """Find solving order automatically (experimental)."""
         # TODO : test it
         warnings.warn(
-            "Automatic solving order is still in experimental stage!"
+            "Automatic solving order is still in experimental stage!",
+            stacklevel=2,
         )
         solvable = [j for j in self.joints if isinstance(j, Static)]
         # True of new joints where added in the current pass
@@ -66,10 +67,9 @@ class Linkage:
             for j in self.joints:
                 if isinstance(j, Static) or j in solvable:
                     continue
-                if j.joint0 in solvable:
-                    if isinstance(j, Crank) or j.joint1 in solvable:
-                        solvable.append(j)
-                        solved_in_pass = True
+                if j.joint0 in solvable and (isinstance(j, Crank) or j.joint1 in solvable):
+                    solvable.append(j)
+                    solved_in_pass = True
         if len(solvable) < len(self.joints):
             raise HypostaticError(
                 'Unable to determine automatic order!'
@@ -87,8 +87,6 @@ class Linkage:
             fitting position between all possible positions satisfying
             constraints. (Default value = None)
         :type pos: tuple[tuple[int]]
-
-        
         """
         if not hasattr(self, '_solve_order'):
             self.__find_solving_order__()
@@ -106,8 +104,7 @@ class Linkage:
     def set_coords(self, coords):
         """Set coordinates for all joints of the linkage.
 
-        :param coords: 
-
+        :param coords: Joint coordinates.
         """
         for joint, coord in zip(self.joints, coords):
             joint.set_coord(coord)
@@ -116,7 +113,8 @@ class Linkage:
         """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D."""
         # TODO : test it
         warnings.warn(
-            "The hyperstaticity method is in experimental stage! Results should be double-checked!"
+            "The hyperstaticity method is in experimental stage! Results should be double-checked!",
+            stacklevel=2,
         )
         # We have at least the frame
         solids = 1
@@ -185,7 +183,7 @@ class Linkage:
 
     def set_num_constraints(self, constraints, flat=True):
         """Set numeric constraints for this linkage.
-        
+
         Numeric constraints are distances or angles between joints.
 
         :param constraints: Sequence of constraints to pass to the joints.
@@ -213,7 +211,7 @@ class Linkage:
 
     def get_rotation_period(self):
         """The number of iterations to finish in the previous state.
-        
+
         Formally, it is the common denominator of all crank periods.
 
 
@@ -237,8 +235,6 @@ class Linkage:
         :param flat: If the dimensions are in "flat mode".
             The default is True.
         :type flat: bool
-
-        
         """
         self.set_num_constraints(dimensions, flat=flat)
         self.set_coords(positions)

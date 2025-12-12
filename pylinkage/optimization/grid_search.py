@@ -16,19 +16,18 @@ from .utils import generate_bounds
 
 def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
     """Wrapper for tqdm, that let you specify if you want verbosity.
-    
+
     .. deprecated:: 0.6.0
           `tqdm_verbosity` will be removed in pylinkage 0.7.0, as tqdm can be
             disabled with the argument disable=True.
 
-    :param iterable: 
+    :param iterable: Iterable to wrap.
     :param verbose:  (Default value = True)
     :param args: Ordered args to pass to tqdm
     :param kwargs: Keyword args for tqdm
 
     """
-    for i in tqdm.tqdm(iterable, disable=not verbose, *args, **kwargs):
-        yield i
+    yield from tqdm.tqdm(iterable, *args, disable=not verbose, **kwargs)
 
 
 def sequential_variator(center, divisions, bounds):
@@ -139,10 +138,11 @@ def trials_and_errors_optimization(
         Its size is {n_results}.
     :rtype: list[MutableAgent]
     """
-    if parameters is None:
-        center = np.array(linkage.get_num_constraints())
-    else:
-        center = np.array(parameters)
+    center = (
+        np.array(linkage.get_num_constraints())
+        if parameters is None
+        else np.array(parameters)
+    )
     if 'bounds' not in kwargs or kwargs['bounds'] is None:
         bounds = generate_bounds(center)
     else:
@@ -163,10 +163,7 @@ def trials_and_errors_optimization(
         variations_generator = sequential_variator(center, divisions, bounds)
     else:
         variations_generator = fast_variator(divisions, bounds)
-    if 'order_relation' in kwargs:
-        order_relation = kwargs['order_relation']
-    else:
-        order_relation = max
+    order_relation = kwargs.get('order_relation', max)
     verbose = 'verbose' in kwargs and kwargs['verbose']
     # Iterable of all possible dimensions
     pbar = tqdm.tqdm(
