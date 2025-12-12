@@ -12,19 +12,6 @@ if TYPE_CHECKING:
     from .._types import Coord, Line
 
 
-def dist_builtin(point1: Coord, point2: Coord) -> float:
-    """Euclidian distance between two 2D points.
-
-    Legacy built-in unoptimized equivalent of `math.dist` in Python 3.8.
-
-    :param point1: First point.
-    :param point2: Second point.
-    """
-    return math.sqrt(
-        (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
-    )
-
-
 dist = math.dist
 
 

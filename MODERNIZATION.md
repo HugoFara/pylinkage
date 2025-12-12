@@ -432,8 +432,8 @@ def circle_intersect(c1, r1, c2, r2):
 - [x] Add pytest and coverage
 - [x] Add ruff for linting
 - [x] Set up uv for dependency management
-- [ ] Add mypy to CI
-- [ ] Remove Python 3.7/3.8 compatibility code (math.dist fallback)
+- [x] Add mypy to CI
+- [x] Remove Python 3.7/3.8 compatibility code (math.dist fallback)
 
 ### Phase 2: Type Safety
 
@@ -461,10 +461,10 @@ def circle_intersect(c1, r1, c2, r2):
 ## Quick Wins (< 1 hour each)
 
 1. ~~Delete `setup.py` (empty file)~~ DONE
-2. Remove `math.dist` fallback in `geometry/core.py`
+2. ~~Remove `math.dist` fallback in `geometry/core.py`~~ DONE
 3. Add `__all__` to `__init__.py` files
 4. ~~Update Python version requirement to >=3.9~~ DONE
-5. Add Python 3.13 to CI matrix
+5. ~~Add Python 3.13 to CI matrix~~ DONE
 6. Replace `.format()` with f-strings (use find/replace)
 
 ---
