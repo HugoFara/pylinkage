@@ -10,6 +10,7 @@ This document tracks remaining improvements for pylinkage.
 - ✅ Test infrastructure (pytest, 82% coverage, hypothesis)
 - ✅ API enhancements (serialization, context manager, `__all__` exports)
 - ✅ Code quality (f-strings, module exports, TODO resolution)
+- ✅ Async optimization (progress callbacks, cancellation support)
 
 ---
 
@@ -39,34 +40,6 @@ def circle_intersect(c1, r1, c2, r2):
    - Advanced optimization techniques
 
 3. **API changelog** - document breaking changes per version
-
-### 2. Async Optimization (Stretch Goal)
-
-**Priority: Low**
-
-For long-running PSO optimization, an async interface could improve UX:
-
-```python
-async def optimize_async(linkage, fitness_func, ...):
-    ...
-```
-
-This would allow:
-- Progress callbacks without blocking
-- Cancellation support
-- Integration with async frameworks
-
-### 3. OptimizationError Exception
-
-**Priority: Low**
-
-Consider adding a dedicated exception for optimization failures:
-
-```python
-class OptimizationError(Exception):
-    """Raised when optimization fails to converge."""
-    pass
-```
 
 ---
 

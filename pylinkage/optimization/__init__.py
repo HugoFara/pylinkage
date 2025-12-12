@@ -5,11 +5,23 @@ __all__ = [
     "generate_bounds",
     "kinematic_maximization",
     "kinematic_minimization",
+    "OptimizationProgress",
     "particle_swarm_optimization",
+    "particle_swarm_optimization_async",
     "trials_and_errors_optimization",
+    "trials_and_errors_optimization_async",
 ]
 
 from . import collections as collections
+from .async_optimization import (
+    OptimizationProgress as OptimizationProgress,
+)
+from .async_optimization import (
+    particle_swarm_optimization_async as particle_swarm_optimization_async,
+)
+from .async_optimization import (
+    trials_and_errors_optimization_async as trials_and_errors_optimization_async,
+)
 from .grid_search import (
     trials_and_errors_optimization as trials_and_errors_optimization,
 )
