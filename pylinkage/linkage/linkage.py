@@ -15,7 +15,7 @@ from math import gcd, tau
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ..exceptions import HypostaticError
+from ..exceptions import UnderconstrainedError
 from ..joints import Crank, Fixed, Revolute, Static
 from ..joints.joint import Joint
 
@@ -81,7 +81,7 @@ class Linkage:
             Tuple of joints in solvable order.
 
         Raises:
-            HypostaticError: If the linkage cannot be automatically solved.
+            UnderconstrainedError: If the linkage cannot be automatically solved.
         """
         warnings.warn(
             "Automatic solving order is still in experimental stage!",
@@ -99,7 +99,7 @@ class Linkage:
                     solvable.append(j)
                     solved_in_pass = True
         if len(solvable) < len(self.joints):
-            raise HypostaticError(
+            raise UnderconstrainedError(
                 'Unable to determine automatic order!'
                 'Those joints are left unsolved:'
                 ','.join(str(j) for j in self.joints if j not in solvable)
@@ -136,8 +136,8 @@ class Linkage:
         for joint, coord in zip(self.joints, coords):
             joint.set_coord(coord)
 
-    def hyperstaticity(self) -> int:
-        """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D.
+    def indeterminacy(self) -> int:
+        """Return the static indeterminacy degree of the linkage in 2D.
 
         Uses a variant of the Gruebler-Kutzbach criterion for 2D planar mechanisms:
             DOF = 3 * (n - 1) - kinematic_pairs + mobilities
@@ -147,12 +147,12 @@ class Linkage:
             - kinematic_pairs = sum of constraint DOFs removed by joints
             - mobilities = input degrees of freedom (e.g., from motors/cranks)
 
-        A positive return value indicates the mechanism is under-constrained
-        (hypostatic), zero means it's exactly constrained (isostatic), and
-        negative means it's over-constrained (hyperstatic).
+        A positive return value indicates the mechanism is under-constrained,
+        zero means it's exactly constrained, and negative means it's
+        over-constrained.
 
         Returns:
-            The hyperstaticity degree (negative DOF when over-constrained).
+            The indeterminacy degree (negative DOF when over-constrained).
 
         Note:
             This implementation is experimental and results should be verified
@@ -160,7 +160,7 @@ class Linkage:
             based on joint types (Static, Crank, Revolute, Fixed).
         """
         warnings.warn(
-            "The hyperstaticity method is in experimental stage! Results should be double-checked!",
+            "The indeterminacy method is in experimental stage! Results should be double-checked!",
             stacklevel=2,
         )
         # We have at least the frame

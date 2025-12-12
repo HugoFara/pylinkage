@@ -13,9 +13,10 @@ Created on Thu Jun 10 21:30:52 2021
 
 __all__ = [
     # Exceptions
-    "HypostaticError",
+    "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
     "UnbuildableError",
+    "UnderconstrainedError",
     # Geometry
     "circle_intersect",
     "cyl_to_cart",
@@ -49,13 +50,16 @@ __all__ = [
 ]
 
 from .exceptions import (
-    HypostaticError as HypostaticError,
+    HypostaticError as HypostaticError,  # Deprecated alias
 )
 from .exceptions import (
     NotCompletelyDefinedError as NotCompletelyDefinedError,
 )
 from .exceptions import (
     UnbuildableError as UnbuildableError,
+)
+from .exceptions import (
+    UnderconstrainedError as UnderconstrainedError,
 )
 from .geometry import (
     circle_intersect as circle_intersect,

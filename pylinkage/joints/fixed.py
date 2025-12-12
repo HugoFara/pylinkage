@@ -62,7 +62,7 @@ class Fixed(pl_joint.Joint):
         :param dt: Unused, but preserves the object structure.
         """
         if self.joint0 is None or self.joint1 is None:
-            raise pl_exceptions.HypostaticError(f'Not enough constraints for {self}')
+            raise pl_exceptions.UnderconstrainedError(f'Not enough constraints for {self}')
         # Type assertions after validation
         assert self.joint0.x is not None and self.joint0.y is not None
         assert self.joint1.x is not None and self.joint1.y is not None

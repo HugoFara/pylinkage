@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Switches to `uv`.
+- Renames `HypostaticError` to `UnderconstrainedError` and `hyperstaticity()` to `indeterminacy()`.
+  Old names kept as deprecated aliases.
 
 ### Fixed
 

@@ -56,7 +56,7 @@ class Crank(pl_joint.Joint):
         if self.joint0 is None:
             return
         if None in self.joint0.coord():
-            raise pl_exceptions.HypostaticError(
+            raise pl_exceptions.UnderconstrainedError(
                 f'{self.joint0} has None coordinates. '
                 f'{self} cannot be calculated'
             )

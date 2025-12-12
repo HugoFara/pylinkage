@@ -34,7 +34,7 @@ class UnbuildableError(Exception):
         return f"{self.message} on {self.joint}"
 
 
-class HypostaticError(Exception):
+class UnderconstrainedError(Exception):
     """The linkage is under-constrained and multiple solutions may exist."""
 
     def __init__(
@@ -42,6 +42,10 @@ class HypostaticError(Exception):
     ) -> None:
         self.linkage = linkage
         super().__init__(message)
+
+
+# Backwards compatibility alias (deprecated)
+HypostaticError = UnderconstrainedError
 
 
 class NotCompletelyDefinedError(Exception):

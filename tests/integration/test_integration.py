@@ -8,7 +8,7 @@ import math
 import unittest
 
 import pylinkage as pl
-from pylinkage.exceptions import HypostaticError, UnbuildableError
+from pylinkage.exceptions import UnbuildableError, UnderconstrainedError
 from pylinkage.joints import Crank, Fixed, Linear, Revolute, Static
 from pylinkage.linkage.analysis import bounding_box, movement_bounding_box
 from pylinkage.optimization.utils import (
@@ -139,7 +139,7 @@ class TestLinkageAutoOrder(unittest.TestCase):
         positions = list(linkage.step(iterations=5))
         self.assertEqual(len(positions), 5)
 
-    def test_auto_order_raises_hypostatic_error(self):
+    def test_auto_order_raises_underconstrained_error(self):
         """Test that automatic order raises error for unsolvable linkage.
 
         The automatic order algorithm cannot solve some linkages because
@@ -151,8 +151,8 @@ class TestLinkageAutoOrder(unittest.TestCase):
         pin = Revolute(2, 1, joint0=crank, joint1=(2, 0), distance0=2, distance1=1)
         linkage = pl.Linkage(joints=[crank, pin])  # No order specified
 
-        # Should raise HypostaticError when auto-order fails
-        with self.assertRaises(HypostaticError):
+        # Should raise UnderconstrainedError when auto-order fails
+        with self.assertRaises(UnderconstrainedError):
             linkage.rebuild()
 
 
@@ -600,8 +600,8 @@ class TestSimulationContextManager(unittest.TestCase):
             self.assertIs(sim.linkage, self.linkage)
 
 
-class TestHyperstaticityCalculation(unittest.TestCase):
-    """Test hyperstaticity calculation.
+class TestIndeterminacyCalculation(unittest.TestCase):
+    """Test indeterminacy calculation.
 
     Uses the Gruebler-Kutzbach criterion for 2D planar mechanisms:
     DOF = 3 * (n - 1) - kinematic_pairs + mobilities
@@ -611,11 +611,11 @@ class TestHyperstaticityCalculation(unittest.TestCase):
     - kinematic_pairs = sum of constraints from joints
     - mobilities = input degrees of freedom (e.g., motors)
 
-    Hyperstaticity = -DOF when DOF < 0 (over-constrained)
+    Indeterminacy = -DOF when DOF < 0 (over-constrained)
     """
 
-    def test_hyperstaticity_with_warning(self):
-        """Test that hyperstaticity gives result with warning."""
+    def test_indeterminacy_with_warning(self):
+        """Test that indeterminacy gives result with warning."""
         crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1)
         pin = Revolute(2, 1, joint0=crank, joint1=(2, 0), distance0=2, distance1=1)
         linkage = pl.Linkage(
@@ -626,15 +626,15 @@ class TestHyperstaticityCalculation(unittest.TestCase):
         import warnings
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            result = linkage.hyperstaticity()
+            result = linkage.indeterminacy()
             self.assertIsInstance(result, int)
             self.assertEqual(len(w), 1)
             self.assertIn("experimental", str(w[0].message).lower())
 
-    def test_hyperstaticity_four_bar(self):
-        """Test hyperstaticity for a standard four-bar linkage.
+    def test_indeterminacy_four_bar(self):
+        """Test indeterminacy for a standard four-bar linkage.
 
-        A four-bar linkage should have DOF = 1 (or hyperstaticity = -1 + input).
+        A four-bar linkage should have DOF = 1 (or indeterminacy = -1 + input).
         With one crank as input, it should be kinematically determinate.
         """
         import warnings
@@ -647,20 +647,20 @@ class TestHyperstaticityCalculation(unittest.TestCase):
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            result = linkage.hyperstaticity()
+            result = linkage.indeterminacy()
 
         # Four-bar should be kinematically determinate with one DOF
         self.assertIsInstance(result, int)
 
-    def test_hyperstaticity_with_static_only(self):
-        """Test hyperstaticity when only Static joints present."""
+    def test_indeterminacy_with_static_only(self):
+        """Test indeterminacy when only Static joints present."""
         import warnings
         anchor = Static(0, 0)
         linkage = pl.Linkage(joints=[anchor], order=[anchor])
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            result = linkage.hyperstaticity()
+            result = linkage.indeterminacy()
 
         # Just a static point, fully constrained
         self.assertIsInstance(result, int)
