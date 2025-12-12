@@ -2041,6 +2041,7 @@ dependencies = [
     { name = "numpy", version = "2.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pyswarms" },
     { name = "tqdm" },
+    { name = "typing-extensions", marker = "python_full_version < '3.10'" },
 ]
 
 [package.optional-dependencies]
@@ -2088,6 +2089,7 @@ requires-dist = [
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7.4.2" },
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=2.0.0" },
     { name = "tqdm", specifier = ">=4.40.0" },
+    { name = "typing-extensions", marker = "python_full_version < '3.10'", specifier = ">=4.0.0" },
 ]
 provides-extras = ["dev", "docs"]
 

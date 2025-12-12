@@ -1,18 +1,24 @@
 """
 Basic geometry features.
 """
+
+from __future__ import annotations
+
 import math
 import warnings
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .._types import Coord, Line
 
 
-def dist_builtin(point1, point2):
+def dist_builtin(point1: Coord, point2: Coord) -> float:
     """Euclidian distance between two 2D points.
 
     Legacy built-in unoptimized equivalent of `math.dist` in Python 3.8.
 
-    :param tuple[float, float] point1: First point
-    :param tuple[float, float] point2: Second point
-
+    :param point1: First point.
+    :param point2: Second point.
     """
     return math.sqrt(
         (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
@@ -22,28 +28,32 @@ def dist_builtin(point1, point2):
 dist = math.dist
 
 
-def sqr_dist(point1, point2):
+def sqr_dist(point1: Coord, point2: Coord) -> float:
     """
     Square of the distance between two points.
 
     Faster than dist.
 
-    :param tuple[float, float] point1: First point to compare
-    :param tuple[float, float] point2: Second point
+    :param point1: First point to compare.
+    :param point2: Second point.
 
-    :return float: Computed distance
+    :return: Computed squared distance.
     """
     return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
 
 
-def get_nearest_point(reference_point, first_point, second_point):
+def get_nearest_point(
+    reference_point: Coord,
+    first_point: Coord,
+    second_point: Coord,
+) -> Coord:
     """
     Return the point closer to the reference.
 
-    :param tuple[float, float] reference_point: Point to compare to
-    :param tuple[float, float] first_point: First point candidate
-    :param tuple[float, float] second_point: Second point candidate
-    :return tuple[float, float]: Either first point or second point
+    :param reference_point: Point to compare to.
+    :param first_point: First point candidate.
+    :param second_point: Second point candidate.
+    :return: Either first point or second point.
     """
     if reference_point in (first_point, second_point):
         return reference_point
@@ -52,33 +62,36 @@ def get_nearest_point(reference_point, first_point, second_point):
     return second_point
 
 
-def norm(vec):
+def norm(vec: Coord) -> float:
     """
     Return the norm of a 2-dimensional vector.
 
-    :param tuple[float, float] vec: Vector to get norm from
+    :param vec: Vector to get norm from.
     """
     return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
 
-def cyl_to_cart(radius, theta, ori=(0, 0)):
+def cyl_to_cart(
+    radius: float,
+    theta: float,
+    ori: Coord = (0, 0),
+) -> Coord:
     """Convert polar coordinates into cartesian.
 
-    :param radius: distance from ori
-    :param theta: angle is the angle starting from abscissa axis
-    :param ori: origin point (Default value = (0)).
-
+    :param radius: Distance from ori.
+    :param theta: Angle starting from abscissa axis.
+    :param ori: Origin point (Default value = (0, 0)).
     """
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
 
 
-def line_from_points(first_point, second_point):
+def line_from_points(first_point: Coord, second_point: Coord) -> Line:
     """
     A cartesian equation of the line joining two points.
 
-    :param tuple[float, float] first_point: One point of the line.
-    :param tuple[float, float] second_point: Another point on the line.
-    :return tuple[float, float, float]: A cartesian equation of this line.
+    :param first_point: One point of the line.
+    :param second_point: Another point on the line.
+    :return: A cartesian equation of this line (a, b, c) where ax + by + c = 0.
     """
     if first_point == second_point:
         warnings.warn(
@@ -88,12 +101,12 @@ def line_from_points(first_point, second_point):
         return 0, 0, 0
     director = (
         second_point[0] - first_point[0],
-        second_point[1] - first_point[1]
+        second_point[1] - first_point[1],
     )
     # The barycenter should give more precision
     mean = (
         (first_point[0] + second_point[0]) / 2,
-        (first_point[1] + second_point[1]) / 2
+        (first_point[1] + second_point[1]) / 2,
     )
     equilibrium = mean[0] * director[1] - mean[1] * director[0]
     return -director[1], director[0], equilibrium

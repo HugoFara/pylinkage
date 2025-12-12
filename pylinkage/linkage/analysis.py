@@ -1,36 +1,46 @@
 """
 Analysis tools for linkages.
 """
+
+from __future__ import annotations
+
+from collections.abc import Callable, Iterable
+from typing import TYPE_CHECKING
+
 from ..exceptions import UnbuildableError
 
+if TYPE_CHECKING:
+    from .._types import BoundingBox, Coord, JointPositions
+    from .linkage import Linkage
 
-def kinematic_default_test(func, error_penalty):
+
+def kinematic_default_test(
+    func: Callable[..., float],
+    error_penalty: float,
+) -> Callable[[Linkage, Iterable[float], JointPositions | None], float]:
     """Standard run for any linkage before a complete fitness evaluation.
 
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function.
 
     :param func: Fitness function to be decorated.
-    :type func: Callable
     :param error_penalty: Penalty value for unbuildable linkage. Common values include
             float('inf') and 0.
-    :type error_penalty: float
-
-
     """
 
-    def wrapper(linkage, params, init_pos=None):
+    def wrapper(
+        linkage: Linkage,
+        params: Iterable[float],
+        init_pos: JointPositions | None = None,
+    ) -> float:
         """Decorated function.
 
         :param linkage: The linkage to optimize.
-        :type linkage: pylinkage.linkage.Linkage
         :param params: Geometric constraints to pass to linkage.set_num_constraints.
-        :type params: tuple[float]
         :param init_pos: List of initial positions for the joints. If None it will be
-            redefined at each successful iteration. (Default value = None)
-        :type init_pos: tuple[tuple[float]]
+            redefined at each successful iteration. (Default value = None).
 
-        :return Callable: New optimization function wrapper
+        :return: Fitness score.
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
@@ -56,23 +66,20 @@ def kinematic_default_test(func, error_penalty):
             return error_penalty
         else:
             # We redefine the initial position if requested
-            if init_pos is None:
-                init_pos = linkage.get_coords()
+            actual_init_pos = init_pos if init_pos is not None else linkage.get_coords()
             return func(
-                linkage=linkage, params=params, init_pos=init_pos, loci=loci
+                linkage=linkage, params=params, init_pos=actual_init_pos, loci=loci
             )
 
     return wrapper
 
 
-def bounding_box(locus):
+def bounding_box(locus: Iterable[Coord]) -> BoundingBox:
     """Compute the bounding box of a locus.
 
     :param locus: A list of points or any iterable with the same structure.
-    :type locus: list[tuple[float, float]] | tuple[tuple[float, float]]
 
     :returns: Bounding box as (y_min, x_max, y_max, x_min).
-    :rtype: tuple[float, float, float, float]
     """
     y_min = float('inf')
     x_min = float('inf')
@@ -86,16 +93,15 @@ def bounding_box(locus):
     return y_min, x_max, y_max, x_min
 
 
-def movement_bounding_box(loci):
+def movement_bounding_box(loci: Iterable[Iterable[Coord]]) -> BoundingBox:
     """
     Bounding box for a group of loci.
 
-    :param loci:
+    :param loci: Iterable of loci (sequences of coordinates).
 
-    :rtype: tuple[float, float, float, float]
-
+    :returns: Bounding box as (y_min, x_max, y_max, x_min).
     """
-    bb = (float('inf'), -float('inf'), -float('inf'), float('inf'))
+    bb: BoundingBox = (float('inf'), -float('inf'), -float('inf'), float('inf'))
     for locus in loci:
         new_bb = bounding_box(locus)
         bb = (

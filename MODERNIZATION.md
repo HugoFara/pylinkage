@@ -437,10 +437,10 @@ def circle_intersect(c1, r1, c2, r2):
 
 ### Phase 2: Type Safety
 
-- [ ] Add type aliases module
-- [ ] Annotate core classes (`Joint`, `Linkage`)
-- [ ] Annotate optimization functions
-- [ ] Enable strict mypy checks
+- [x] Add type aliases module (`pylinkage/_types.py`)
+- [x] Annotate core classes (`Joint`, `Linkage`)
+- [x] Annotate optimization functions
+- [ ] Enable strict mypy checks (some errors remain due to Optional value handling)
 
 ### Phase 3: Test Coverage
 

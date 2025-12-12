@@ -4,17 +4,33 @@ Implementation of a grid search optimization.
 It should be used for reference only as the search space
 will almost certainly be too big.
 """
+
+from __future__ import annotations
+
 import itertools
 import math
+import warnings
+from collections.abc import Callable, Generator, Iterable, Sequence
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import tqdm
+from numpy.typing import NDArray
 
 from .collections import MutableAgent
 from .utils import generate_bounds
 
+if TYPE_CHECKING:
+    from .._types import JointPositions
+    from ..linkage.linkage import Linkage
 
-def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
+
+def tqdm_verbosity(
+    iterable: Iterable[Any],
+    verbose: bool = True,
+    *args: Any,
+    **kwargs: Any,
+) -> Generator[Any, None, None]:
     """Wrapper for tqdm, that let you specify if you want verbosity.
 
     .. deprecated:: 0.6.0
@@ -22,15 +38,24 @@ def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
             disabled with the argument disable=True.
 
     :param iterable: Iterable to wrap.
-    :param verbose:  (Default value = True)
-    :param args: Ordered args to pass to tqdm
-    :param kwargs: Keyword args for tqdm
-
+    :param verbose: Whether to show progress bar. (Default value = True).
+    :param args: Ordered args to pass to tqdm.
+    :param kwargs: Keyword args for tqdm.
     """
+    warnings.warn(
+        "tqdm_verbosity is deprecated and will be removed in pylinkage 0.7.0. "
+        "Use tqdm.tqdm with disable=not verbose instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     yield from tqdm.tqdm(iterable, *args, disable=not verbose, **kwargs)
 
 
-def sequential_variator(center, divisions, bounds):
+def sequential_variator(
+    center: Sequence[float] | NDArray[np.floating],
+    divisions: int,
+    bounds: tuple[Sequence[float], Sequence[float]],
+) -> Generator[NDArray[np.floating], None, None]:
     """Return an iterable of each possible variation for the elements.
 
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
@@ -42,13 +67,9 @@ def sequential_variator(center, divisions, bounds):
     middle → max (step 1), so that there is no huge variation.
 
     :param center: Elements that should vary.
-    :type center: Iterable[float]
     :param divisions: Number of subdivisions between `bounds`.
-    :type divisions: int
     :param bounds: 2-uple of minimal then maximal bounds.
-    :type bounds: tuple[tuple[float], tuple[float]]
     :returns: An iterable of all the dimension combinations.
-    :rtype: Generator[float]
     """
     # In the first place, we go in decreasing order to lower bound
     fall = np.linspace(center, bounds[0], int(divisions / 2))
@@ -69,7 +90,10 @@ def sequential_variator(center, divisions, bounds):
         yield dim
 
 
-def fast_variator(divisions, bounds):
+def fast_variator(
+    divisions: int,
+    bounds: tuple[Sequence[float], Sequence[float]],
+) -> Generator[list[float], None, None]:
     """Return an iterable of elements' all possibles variations.
 
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
@@ -77,11 +101,8 @@ def fast_variator(divisions, bounds):
     Here the order in the variations is not important.
 
     :param divisions: Number of subdivisions between `bounds`.
-    :type divisions: int
     :param bounds: 2-uple of minimal then maximal bounds.
-    :type bounds: tuple[tuple[float], tuple[float]]
     :returns: An iterable of all the dimension combinations.
-    :rtype: Generator[float]
     """
     lists = (
         iter(np.linspace(low, high, divisions))
@@ -92,13 +113,13 @@ def fast_variator(divisions, bounds):
 
 
 def trials_and_errors_optimization(
-        eval_func,
-        linkage,
-        parameters=None,
-        n_results=10,
-        divisions=5,
-        **kwargs
-):
+    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
+    linkage: Linkage,
+    parameters: Sequence[float] | None = None,
+    n_results: int = 10,
+    divisions: int = 5,
+    **kwargs: Any,
+) -> list[MutableAgent]:
     """Return the list of dimensions optimizing eval_func.
 
     Each dimension set has a score, which is added in an array of n_results
@@ -107,18 +128,13 @@ def trials_and_errors_optimization(
 
     :param eval_func: Evaluation function.
         Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float)
-    :type eval_func: Callable
+        Output: score (float).
     :param linkage: Linkage to evaluate.
-    :type linkage: pylinkage.linkage.Linkage
     :param parameters: Parameters that will be modified. Geometric constraints.
                        If not, it will be assigned tuple(linkage.get_num_constraints()).
                        The default is None.
-    :type parameters: list
     :param n_results: Number of the best candidates to return. The default is 10.
-    :type n_results: int
     :param divisions: Number of subdivisions between bounds. The default is 5.
-    :type divisions: int
     :param kwargs:
         - Extra arguments for the optimization.
         - bounds : A 2-uple (tuple of two elements), containing the minimal and maximal bounds.
@@ -131,14 +147,11 @@ def trials_and_errors_optimization(
             (Default value = True).
         - sequential : If True, two consecutive linkages will have a small variation.
 
-    :type kwargs: dict
-
     :returns: 3-uplet of score, dimensions and initial position for each Linkage to
         return.
         Its size is {n_results}.
-    :rtype: list[MutableAgent]
     """
-    center = (
+    center: NDArray[np.floating] = (
         np.array(linkage.get_num_constraints())
         if parameters is None
         else np.array(parameters)
@@ -150,39 +163,41 @@ def trials_and_errors_optimization(
 
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
-    results = [MutableAgent() for _ in range(n_results)]
-    prev = [i.coord() for i in linkage.joints]
+    results: list[MutableAgent] = [MutableAgent() for _ in range(n_results)]
+    prev: list[tuple[float | None, float | None]] = [i.coord() for i in linkage.joints]
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.
-    postfix = {
+    postfix: dict[str, Any] = {
         "best score": None,
-        "best dimensions": []
+        "best dimensions": [],
     }
     if 'sequential' in kwargs and kwargs['sequential']:
-        variations_generator = sequential_variator(center, divisions, bounds)
+        variations_generator: Generator[Any, None, None] = sequential_variator(
+            center, divisions, bounds
+        )
     else:
         variations_generator = fast_variator(divisions, bounds)
-    order_relation = kwargs.get('order_relation', max)
-    verbose = 'verbose' in kwargs and kwargs['verbose']
+    order_relation: Callable[[float, float], float] = kwargs.get('order_relation', max)
+    verbose: bool = 'verbose' in kwargs and kwargs['verbose']
     # Iterable of all possible dimensions
     pbar = tqdm.tqdm(
         variations_generator,
         desc='Trials and errors optimization',
         total=divisions ** len(center),
         postfix=postfix,
-        disable=not verbose
+        disable=not verbose,
     )
     for dim in pbar:
         # Check performances
         new_score = eval_func(linkage, dim, prev)
         for result in results:
             if result.score is None or order_relation(result.score, new_score) != result.score:
-                result[:] = new_score, dim.copy(), prev.copy()
+                result[:] = new_score, list(dim).copy(), prev.copy()
                 if verbose:
                     postfix.update({
                         "best score": results[0][0],
-                        "best dimensions": results[0][1]
+                        "best dimensions": results[0][1],
                     })
                     pbar.set_postfix(postfix)
                 break

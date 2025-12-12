@@ -1,10 +1,17 @@
 """
 Definition of the different joints used for pylinkage.
 """
+
+from __future__ import annotations
+
 import abc
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .._types import Constraints, Coord
 
 
-def joint_syntax_parser(joint):
+def joint_syntax_parser(joint: Joint | Coord | None) -> Joint | Static | None:
     """
     Syntactic parser that understand a joint definition.
 
@@ -28,65 +35,72 @@ class Joint(abc.ABC):
 
     __slots__ = "x", "y", "joint0", "joint1", "name"
 
-    def __init__(self, x=0, y=0, joint0=None, joint1=None, name=None):
+    x: float | None
+    y: float | None
+    joint0: Joint | Static | None
+    joint1: Joint | Static | None
+    name: str
+
+    def __init__(
+        self,
+        x: float = 0,
+        y: float = 0,
+        joint0: Joint | Coord | None = None,
+        joint1: Joint | Coord | None = None,
+        name: str | None = None,
+    ) -> None:
         """
         Create a Joint abstract object.
 
         :param x: Position on horizontal axis. The default is 0.
-        :type x: float | None
         :param y: Position on vertical axis. The default is O.
-        :type y: float | None
         :param name: Friendly name for human readability. Will default to object if None.
-        :type name: str | None
         :param joint0: First linked joint (geometric constraints). The default is None.
-        :type joint0: Joint | tuple[float, float] | None
         :param joint1: Other revolute joint linked. The default is None.
-        :type joint1: Joint | tuple[float, float] | None
         """
         self.x, self.y = x, y
         self.joint0 = joint_syntax_parser(joint0)
         self.joint1 = joint_syntax_parser(joint1)
-        self.name = name
-        if name is None:
-            self.name = str(id(self))
+        self.name = name if name is not None else str(id(self))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Represent an object with class name, coordinates, name and state."""
         return f"{self.__class__.__name__}(x={self.x}, y={self.y}, name={self.name})"
 
-    def __get_joints__(self):
+    def __get_joints__(self) -> tuple[Joint | Static | None, Joint | Static | None]:
         """Return constraint joints as a tuple."""
         return self.joint0, self.joint1
 
-    def coord(self):
-        """
-        Return cartesian coordinates.
-
-        :rtype: tuple[float | None, float | None]
-        """
+    def coord(self) -> tuple[float | None, float | None]:
+        """Return cartesian coordinates."""
         return self.x, self.y
 
-    def set_coord(self, *args):
+    def set_coord(
+        self,
+        *args: float | Coord,
+    ) -> None:
         """Take a sequence or two scalars, and assign them to object x, y.
 
-        :param args: Coordinates to set, either as two elements or as a tuple of 2 elements
-        :type args: tuple[float, float] | tuple[tuple[float, float]]
-
+        :param args: Coordinates to set, either as two elements or as a tuple of 2 elements.
         """
         if len(args) == 1:
-            self.x, self.y = args[0]
+            coord = args[0]
+            if isinstance(coord, (tuple, list)):
+                self.x, self.y = coord[0], coord[1]
+            else:
+                raise TypeError("Single argument must be a sequence of two floats")
         else:
-            self.x, self.y = args[0], args[1]
+            self.x, self.y = float(args[0]), float(args[1])  # type: ignore[arg-type]
 
     @abc.abstractmethod
-    def get_constraints(self):
+    def get_constraints(self) -> Constraints:
         """Return geometric constraints applying to this Joint."""
         raise NotImplementedError(
             "You can't call a constraint from an abstract class."
         )
 
     @abc.abstractmethod
-    def set_constraints(self, *args):
+    def set_constraints(self, *args: float | None) -> None:
         """Set geometric constraints applying to this Joint."""
         raise NotImplementedError(
             "You can't set a constraint from an abstract class."
@@ -99,51 +113,50 @@ class Static(Joint):
     Mostly used for the frame.
     """
 
-    __slots__ = tuple()
+    __slots__ = ()
 
-    def __init__(self, x=0, y=0, name=None):
+    def __init__(
+        self,
+        x: float = 0,
+        y: float = 0,
+        name: str | None = None,
+    ) -> None:
         """
         A Static joint is a point in space to use as anchor by other joints.
 
         It is NOT a kind of joint as viewed in engineering terms!
 
-        x : float, optional
-            Position on horizontal axis. The default is 0.
-        y : float, optional
-            Position on vertical axis. The default is O.
-        name : str, optional
-            Friendly name for human readability. The default is None.
+        :param x: Position on horizontal axis. The default is 0.
+        :param y: Position on vertical axis. The default is O.
+        :param name: Friendly name for human readability. The default is None.
         """
         super().__init__(x, y, name=name)
 
-    def reload(self):
+    def reload(self) -> None:
         """Do nothing, for consistency only."""
         pass
 
-    def get_constraints(self):
+    def get_constraints(self) -> tuple[()]:
         """Return an empty tuple."""
-        return tuple()
+        return ()
 
-    def set_constraints(self, *args):
+    def set_constraints(self, *args: float | None) -> None:
         """Do nothing, for consistency only.
 
-        :param args: Unused
-
+        :param args: Unused.
         """
         pass
 
-    def set_anchor0(self, joint):
+    def set_anchor0(self, joint: Joint | Coord) -> None:
         """First joint anchor.
 
         :param joint: Joint to set as anchor.
-
         """
-        self.joint0 = joint
+        self.joint0 = joint_syntax_parser(joint)
 
-    def set_anchor1(self, joint):
+    def set_anchor1(self, joint: Joint | Coord) -> None:
         """Second joint anchor.
 
         :param joint: Joint to set as anchor.
-
         """
-        self.joint1 = joint
+        self.joint1 = joint_syntax_parser(joint)

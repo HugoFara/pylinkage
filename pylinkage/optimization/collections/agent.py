@@ -1,11 +1,17 @@
-from collections import namedtuple
+"""Agent class for optimization results."""
+
+from __future__ import annotations
+
+from collections.abc import Sequence
+from typing import Any, NamedTuple
 
 
-class Agent(namedtuple("Agent", ["score", "dimensions", "init_positions"])):
+class Agent(NamedTuple):
     """A class that uniformizes a linkage optimization.
 
     It is roughly a namedtuple with preassigned fields.
-
-
     """
-    pass
+
+    score: float
+    dimensions: Any  # NDArray or sequence of floats
+    init_positions: Sequence[tuple[float | None, float | None]]
