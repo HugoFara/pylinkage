@@ -452,12 +452,12 @@ def circle_intersect(c1, r1, c2, r2):
 - [x] Reach 70% coverage (achieved 82%)
 - [x] Add property-based testing with hypothesis (`tests/geometry/test_geometry_hypothesis.py`)
 
-### Phase 4: API Enhancements
+### Phase 4: API Enhancements (COMPLETED)
 
-- [ ] Add serialization support
-- [ ] Implement context manager API
-- [ ] Review and resolve TODOs
-- [ ] Add `__all__` exports
+- [x] Add serialization support (`Linkage.to_json()`, `Linkage.from_json()`)
+- [x] Implement context manager API (`linkage.simulation()`)
+- [x] Review and resolve TODOs (improved docs, added tests)
+- [x] Add `__all__` exports to all public modules
 
 ---
 
@@ -465,7 +465,7 @@ def circle_intersect(c1, r1, c2, r2):
 
 1. ~~Delete `setup.py` (empty file)~~ DONE
 2. ~~Remove `math.dist` fallback in `geometry/core.py`~~ DONE
-3. Add `__all__` to `__init__.py` files
+3. ~~Add `__all__` to `__init__.py` files~~ DONE
 4. ~~Update Python version requirement to >=3.9~~ DONE
 5. ~~Add Python 3.13 to CI matrix~~ DONE
 6. Replace `.format()` with f-strings (use find/replace)

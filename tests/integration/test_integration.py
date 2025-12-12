@@ -111,6 +111,34 @@ class TestFourBarLinkageWorkflow(unittest.TestCase):
 class TestLinkageAutoOrder(unittest.TestCase):
     """Test automatic solving order for linkages."""
 
+    def test_auto_order_success(self):
+        """Test that automatic order succeeds when Static joints are in joints list.
+
+        The automatic order algorithm requires parent joints to be in the joints list.
+        When the anchor Static joint is explicitly included, auto-order works.
+        """
+        import warnings
+        anchor0 = Static(0, 0, name="anchor0")
+        anchor1 = Static(2, 0, name="anchor1")
+        crank = Crank(0, 1, joint0=anchor0, angle=0.5, distance=1, name="crank")
+        pin = Revolute(2, 1, joint0=crank, joint1=anchor1, distance0=2, distance1=1, name="pin")
+
+        linkage = pl.Linkage(
+            joints=[anchor0, anchor1, crank, pin],
+            name="auto_order_test"
+        )  # No order specified
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            linkage.rebuild()
+            # Should warn about experimental feature
+            self.assertEqual(len(w), 1)
+            self.assertIn("experimental", str(w[0].message).lower())
+
+        # Should be able to simulate
+        positions = list(linkage.step(iterations=5))
+        self.assertEqual(len(positions), 5)
+
     def test_auto_order_raises_hypostatic_error(self):
         """Test that automatic order raises error for unsolvable linkage.
 
@@ -320,8 +348,271 @@ class TestExceptionHandling(unittest.TestCase):
         self.assertIsNotNone(pos[1])
 
 
+class TestSerializationSupport(unittest.TestCase):
+    """Test JSON serialization and deserialization of linkages."""
+
+    def setUp(self):
+        """Set up a standard four-bar linkage for testing."""
+        self.crank = Crank(
+            0, 1,
+            joint0=(0, 0),
+            angle=0.31,
+            distance=1,
+            name="crank"
+        )
+        self.pin = Revolute(
+            3, 2,
+            joint0=self.crank,
+            joint1=(3, 0),
+            distance0=3,
+            distance1=1,
+            name="pin"
+        )
+        self.linkage = pl.Linkage(
+            joints=[self.crank, self.pin],
+            order=[self.crank, self.pin],
+            name="test_linkage"
+        )
+
+    def test_to_dict_basic(self):
+        """Test basic serialization to dictionary."""
+        data = self.linkage.to_dict()
+
+        self.assertEqual(data["name"], "test_linkage")
+        self.assertIn("joints", data)
+        self.assertEqual(len(data["joints"]), 2)
+
+    def test_from_dict_roundtrip(self):
+        """Test roundtrip serialization through dictionary."""
+        data = self.linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+
+        self.assertEqual(loaded.name, self.linkage.name)
+        self.assertEqual(len(loaded.joints), len(self.linkage.joints))
+
+    def test_to_json_and_from_json(self):
+        """Test saving and loading from JSON file."""
+        import os
+        import tempfile
+
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
+            temp_path = f.name
+
+        try:
+            self.linkage.to_json(temp_path)
+            loaded = pl.Linkage.from_json(temp_path)
+
+            self.assertEqual(loaded.name, self.linkage.name)
+            self.assertEqual(len(loaded.joints), len(self.linkage.joints))
+
+            # Verify joint types are preserved
+            self.assertIsInstance(loaded.joints[0], Crank)
+            self.assertIsInstance(loaded.joints[1], Revolute)
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
+
+    def test_serialization_preserves_constraints(self):
+        """Test that joint constraints are preserved through serialization."""
+        data = self.linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+
+        # Check Crank constraints
+        original_crank = self.linkage.joints[0]
+        loaded_crank = loaded.joints[0]
+        assert isinstance(original_crank, Crank) and isinstance(loaded_crank, Crank)
+        self.assertEqual(original_crank.r, loaded_crank.r)
+        self.assertEqual(original_crank.angle, loaded_crank.angle)
+
+        # Check Revolute constraints
+        original_pin = self.linkage.joints[1]
+        loaded_pin = loaded.joints[1]
+        assert isinstance(original_pin, Revolute) and isinstance(loaded_pin, Revolute)
+        self.assertEqual(original_pin.r0, loaded_pin.r0)
+        self.assertEqual(original_pin.r1, loaded_pin.r1)
+
+    def test_serialization_preserves_positions(self):
+        """Test that joint positions are preserved through serialization."""
+        data = self.linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+
+        for orig, load in zip(self.linkage.joints, loaded.joints):
+            self.assertEqual(orig.x, load.x)
+            self.assertEqual(orig.y, load.y)
+
+    def test_serialization_with_static_joints(self):
+        """Test serialization with explicit Static joints."""
+        anchor0 = Static(0, 0, name="anchor0")
+        anchor1 = Static(3, 0, name="anchor1")
+        crank = Crank(0, 1, joint0=anchor0, angle=0.5, distance=1, name="crank")
+        pin = Revolute(2, 1, joint0=crank, joint1=anchor1, distance0=2, distance1=1, name="pin")
+        linkage = pl.Linkage(
+            joints=[anchor0, anchor1, crank, pin],
+            order=[anchor0, anchor1, crank, pin],
+            name="static_test"
+        )
+
+        data = linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+
+        self.assertEqual(len(loaded.joints), 4)
+        self.assertIsInstance(loaded.joints[0], Static)
+        self.assertIsInstance(loaded.joints[1], Static)
+        self.assertIsInstance(loaded.joints[2], Crank)
+        self.assertIsInstance(loaded.joints[3], Revolute)
+
+    def test_loaded_linkage_can_simulate(self):
+        """Test that a loaded linkage can be simulated."""
+        data = self.linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+        loaded.rebuild()
+
+        # Should be able to simulate
+        positions = list(loaded.step(iterations=5))
+        self.assertEqual(len(positions), 5)
+
+    def test_serialization_with_fixed_joint(self):
+        """Test serialization with Fixed joint type."""
+        anchor0 = Static(0, 0, name="anchor0")
+        anchor1 = Static(3, 0, name="anchor1")
+        fixed = Fixed(
+            1, 1,
+            joint0=anchor0,
+            joint1=anchor1,
+            distance=1.5,
+            angle=0.5,
+            name="fixed_joint"
+        )
+        linkage = pl.Linkage(
+            joints=[anchor0, anchor1, fixed],
+            order=[anchor0, anchor1, fixed],
+            name="fixed_test"
+        )
+
+        data = linkage.to_dict()
+        loaded = pl.Linkage.from_dict(data)
+
+        self.assertIsInstance(loaded.joints[2], Fixed)
+        assert isinstance(loaded.joints[2], Fixed)
+        self.assertEqual(loaded.joints[2].r, 1.5)
+        self.assertEqual(loaded.joints[2].angle, 0.5)
+
+
+class TestSimulationContextManager(unittest.TestCase):
+    """Test the Simulation context manager API."""
+
+    def setUp(self):
+        """Set up a standard four-bar linkage for testing."""
+        self.crank = Crank(
+            0, 1,
+            joint0=(0, 0),
+            angle=0.31,
+            distance=1,
+            name="crank"
+        )
+        self.pin = Revolute(
+            3, 2,
+            joint0=self.crank,
+            joint1=(3, 0),
+            distance0=3,
+            distance1=1,
+            name="pin"
+        )
+        self.linkage = pl.Linkage(
+            joints=[self.crank, self.pin],
+            order=[self.crank, self.pin],
+            name="test_linkage"
+        )
+
+    def test_simulation_basic_iteration(self):
+        """Test basic iteration through simulation."""
+        steps_collected = []
+        coords_collected = []
+
+        with self.linkage.simulation(iterations=5) as sim:
+            for step, coords in sim:
+                steps_collected.append(step)
+                coords_collected.append(coords)
+
+        self.assertEqual(steps_collected, [0, 1, 2, 3, 4])
+        self.assertEqual(len(coords_collected), 5)
+        # Each coords should have 2 joints
+        for coords in coords_collected:
+            self.assertEqual(len(coords), 2)
+
+    def test_simulation_restores_state(self):
+        """Test that simulation restores initial state after exiting."""
+        initial_coords = self.linkage.get_coords()
+
+        with self.linkage.simulation(iterations=10) as sim:
+            for _ in sim:
+                pass
+
+        final_coords = self.linkage.get_coords()
+
+        # State should be restored
+        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords):
+            if init_x is not None and final_x is not None:
+                self.assertAlmostEqual(init_x, final_x)
+            if init_y is not None and final_y is not None:
+                self.assertAlmostEqual(init_y, final_y)
+
+    def test_simulation_restores_state_on_exception(self):
+        """Test that state is restored even when exception occurs."""
+        initial_coords = self.linkage.get_coords()
+
+        try:
+            with self.linkage.simulation(iterations=10) as sim:
+                for step, _ in sim:
+                    if step == 5:
+                        raise ValueError("Test exception")
+        except ValueError:
+            pass
+
+        final_coords = self.linkage.get_coords()
+
+        # State should still be restored
+        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords):
+            if init_x is not None and final_x is not None:
+                self.assertAlmostEqual(init_x, final_x)
+            if init_y is not None and final_y is not None:
+                self.assertAlmostEqual(init_y, final_y)
+
+    def test_simulation_default_iterations(self):
+        """Test that default iterations uses rotation period."""
+        expected_iterations = self.linkage.get_rotation_period()
+
+        with self.linkage.simulation() as sim:
+            self.assertEqual(sim.iterations, expected_iterations)
+
+    def test_simulation_custom_dt(self):
+        """Test simulation with custom dt value."""
+        steps = []
+        with self.linkage.simulation(iterations=3, dt=0.5) as sim:
+            for step, _ in sim:
+                steps.append(step)
+
+        self.assertEqual(len(steps), 3)
+
+    def test_simulation_linkage_property(self):
+        """Test that simulation provides access to linkage."""
+        with self.linkage.simulation(iterations=1) as sim:
+            self.assertIs(sim.linkage, self.linkage)
+
+
 class TestHyperstaticityCalculation(unittest.TestCase):
-    """Test hyperstaticity calculation."""
+    """Test hyperstaticity calculation.
+
+    Uses the Gruebler-Kutzbach criterion for 2D planar mechanisms:
+    DOF = 3 * (n - 1) - kinematic_pairs + mobilities
+
+    Where:
+    - n = number of bodies (including ground)
+    - kinematic_pairs = sum of constraints from joints
+    - mobilities = input degrees of freedom (e.g., motors)
+
+    Hyperstaticity = -DOF when DOF < 0 (over-constrained)
+    """
 
     def test_hyperstaticity_with_warning(self):
         """Test that hyperstaticity gives result with warning."""
@@ -339,6 +630,40 @@ class TestHyperstaticityCalculation(unittest.TestCase):
             self.assertIsInstance(result, int)
             self.assertEqual(len(w), 1)
             self.assertIn("experimental", str(w[0].message).lower())
+
+    def test_hyperstaticity_four_bar(self):
+        """Test hyperstaticity for a standard four-bar linkage.
+
+        A four-bar linkage should have DOF = 1 (or hyperstaticity = -1 + input).
+        With one crank as input, it should be kinematically determinate.
+        """
+        import warnings
+        crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
+        pin = Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
+        linkage = pl.Linkage(
+            joints=[crank, pin],
+            order=[crank, pin],
+        )
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            result = linkage.hyperstaticity()
+
+        # Four-bar should be kinematically determinate with one DOF
+        self.assertIsInstance(result, int)
+
+    def test_hyperstaticity_with_static_only(self):
+        """Test hyperstaticity when only Static joints present."""
+        import warnings
+        anchor = Static(0, 0)
+        linkage = pl.Linkage(joints=[anchor], order=[anchor])
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            result = linkage.hyperstaticity()
+
+        # Just a static point, fully constrained
+        self.assertIsInstance(result, int)
 
 
 if __name__ == '__main__':

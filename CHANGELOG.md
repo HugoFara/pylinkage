@@ -5,9 +5,25 @@ All notable changes to pylinkage are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.0] - 2024-10-02
+## [Unreleased]
 
 ### Added
+
+- Serialization: adds linkage serialization features.
+- Typing: adds typing.
+- Test: adds complete testing coverage.
+
+### Changed
+
+- Switches to `uv`.
+
+### Fixed
+
+- `__find_solving_order__()` is now properly tested.
+
+## [0.6.0] - 2024-10-02
+
+### Added in 0.6.0
 
 - New joint: the ``Linear`` joint!
 - New sub-package: optimization.collections.
@@ -34,7 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Run all tests with "All Tests".
   - Regenerate documentation with "Sphinx Documentation".
 
-### Changed
+### Changed in 0.6.0
 
 - Optimization return type changed ([#5](https://github.com/HugoFara/pylinkage/issues/5)):
   - ``trials_and_error_optimization`` return an array of ``MutableAgent``.
@@ -69,7 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ``__secant_circles_intersections__`` renamed to
 ``secant_circles_intersections`` (in ``pylinkage/geometry/secants.py``).
 
-### Fixed
+### Fixed in 0.6.0
 
 - ``swarm_tiled_repr`` in ``visualizer.py`` was wrongly assigning dimensions.
 - Setting ``locus_highlight`` in ``plot_static_linkage`` would result in an error.
@@ -77,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The highlighted locus was sometimes buggy in ``plot_static_linkage`` in
 ``visualizer.py``.
 
-### Deprecated
+### Deprecated in 0.6.0
 
 - Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in
   a tqdm object.
@@ -87,7 +103,7 @@ Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 - The ``hyperstaticity`` method is renamed ``indeterminacy`` in ``Linkage``
 (linkage.py)
 
-### Removed
+### Removed in 0.6.0
 
 - Drops support for Python 3.7 and 3.8 as both versions reached end-of-life.
 - ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in

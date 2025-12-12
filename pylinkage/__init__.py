@@ -11,6 +11,43 @@ Created on Thu Jun 10 21:30:52 2021
 @author: HugoFara
 """
 
+__all__ = [
+    # Exceptions
+    "HypostaticError",
+    "NotCompletelyDefinedError",
+    "UnbuildableError",
+    # Geometry
+    "circle_intersect",
+    "cyl_to_cart",
+    "intersection",
+    "norm",
+    "sqr_dist",
+    # Joints
+    "Crank",
+    "Fixed",
+    "Linear",
+    "Revolute",
+    "Static",
+    "Pivot",
+    # Linkage
+    "Linkage",
+    "Simulation",
+    "bounding_box",
+    "kinematic_default_test",
+    # Optimization
+    "collections",
+    "generate_bounds",
+    "kinematic_maximization",
+    "kinematic_minimization",
+    "particle_swarm_optimization",
+    "trials_and_errors_optimization",
+    # Visualizer
+    "plot_kinematic_linkage",
+    "plot_static_linkage",
+    "show_linkage",
+    "swarm_tiled_repr",
+]
+
 from .exceptions import (
     HypostaticError as HypostaticError,
 )
@@ -53,6 +90,9 @@ from .joints import (
 from .joints.revolute import Pivot as Pivot
 from .linkage import (
     Linkage as Linkage,
+)
+from .linkage import (
+    Simulation as Simulation,
 )
 from .linkage import (
     bounding_box as bounding_box,

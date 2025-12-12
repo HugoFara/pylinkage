@@ -1,6 +1,15 @@
 """
 Linkage visualization features.
 """
+
+__all__ = [
+    "COLOR_SWITCHER",
+    "plot_kinematic_linkage",
+    "plot_static_linkage",
+    "show_linkage",
+    "swarm_tiled_repr",
+]
+
 from .animated import (
     plot_kinematic_linkage as plot_kinematic_linkage,
 )

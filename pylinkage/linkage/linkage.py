@@ -12,7 +12,8 @@ from __future__ import annotations
 import warnings
 from collections.abc import Generator, Iterable
 from math import gcd, tau
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 from ..exceptions import HypostaticError
 from ..joints import Crank, Fixed, Revolute, Static
@@ -65,8 +66,23 @@ class Linkage:
         self._solve_order = tuple(order)
 
     def __find_solving_order__(self) -> tuple[Joint, ...]:
-        """Find solving order automatically (experimental)."""
-        # TODO : test it
+        """Find solving order automatically (experimental).
+
+        This method attempts to determine the order in which joints should be solved
+        by finding joints whose parent joints are already in the solvable list.
+
+        Note:
+            For this to work correctly, anchor joints (Static instances) must be
+            explicitly included in the joints list, rather than using tuple shortcuts
+            like ``joint0=(0, 0)``. Use ``joint0=Static(0, 0)`` instead and include
+            that Static joint in the Linkage's joints list.
+
+        Returns:
+            Tuple of joints in solvable order.
+
+        Raises:
+            HypostaticError: If the linkage cannot be automatically solved.
+        """
         warnings.warn(
             "Automatic solving order is still in experimental stage!",
             stacklevel=2,
@@ -121,8 +137,28 @@ class Linkage:
             joint.set_coord(coord)
 
     def hyperstaticity(self) -> int:
-        """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D."""
-        # TODO : test it
+        """Return the hyperstaticity (over-constrainment) degree of the linkage in 2D.
+
+        Uses a variant of the Gruebler-Kutzbach criterion for 2D planar mechanisms:
+            DOF = 3 * (n - 1) - kinematic_pairs + mobilities
+
+        Where:
+            - n = number of bodies (including the ground/frame)
+            - kinematic_pairs = sum of constraint DOFs removed by joints
+            - mobilities = input degrees of freedom (e.g., from motors/cranks)
+
+        A positive return value indicates the mechanism is under-constrained
+        (hypostatic), zero means it's exactly constrained (isostatic), and
+        negative means it's over-constrained (hyperstatic).
+
+        Returns:
+            The hyperstaticity degree (negative DOF when over-constrained).
+
+        Note:
+            This implementation is experimental and results should be verified
+            for complex mechanisms. The algorithm counts bodies and constraints
+            based on joint types (Static, Crank, Revolute, Fixed).
+        """
         warnings.warn(
             "The hyperstaticity method is in experimental stage! Results should be double-checked!",
             stacklevel=2,
@@ -250,3 +286,159 @@ class Linkage:
         """
         self.set_num_constraints(dimensions, flat=flat)
         self.set_coords(positions)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert this linkage to a dictionary representation.
+
+        The dictionary can be used for serialization or reconstruction.
+
+        Returns:
+            Dictionary containing the linkage's data including joints and solve order.
+
+        Example:
+            >>> data = linkage.to_dict()
+            >>> new_linkage = Linkage.from_dict(data)
+        """
+        from .serialization import linkage_to_dict
+        return linkage_to_dict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Linkage:
+        """Create a linkage from a dictionary representation.
+
+        Args:
+            data: Dictionary containing linkage data (as produced by to_dict()).
+
+        Returns:
+            A new Linkage instance.
+
+        Example:
+            >>> data = linkage.to_dict()
+            >>> new_linkage = Linkage.from_dict(data)
+        """
+        from .serialization import linkage_from_dict
+        return linkage_from_dict(data)
+
+    def to_json(self, path: str | Path) -> None:
+        """Save this linkage to a JSON file.
+
+        Args:
+            path: Path to the output JSON file.
+
+        Example:
+            >>> linkage.to_json("my_linkage.json")
+            >>> loaded = Linkage.from_json("my_linkage.json")
+        """
+        from .serialization import save_to_json
+        save_to_json(self, path)
+
+    @classmethod
+    def from_json(cls, path: str | Path) -> Linkage:
+        """Load a linkage from a JSON file.
+
+        Args:
+            path: Path to the JSON file.
+
+        Returns:
+            A new Linkage instance.
+
+        Example:
+            >>> linkage.to_json("my_linkage.json")
+            >>> loaded = Linkage.from_json("my_linkage.json")
+        """
+        from .serialization import load_from_json
+        return load_from_json(path)
+
+    def simulation(
+        self,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> Simulation:
+        """Create a simulation context manager for the linkage.
+
+        This provides a convenient way to run and iterate over linkage simulations
+        with automatic resource management.
+
+        Example:
+            >>> with linkage.simulation(iterations=100) as sim:
+            ...     for step, coords in sim:
+            ...         process(coords)
+
+        :param iterations: Number of iterations to run. If None, uses get_rotation_period().
+        :param dt: Time step for crank rotation. Default is 1.
+        :returns: A Simulation context manager.
+        """
+        return Simulation(self, iterations=iterations, dt=dt)
+
+
+class Simulation:
+    """Context manager for linkage simulation.
+
+    Provides a clean interface for iterating over linkage positions
+    with automatic setup and teardown.
+
+    Example:
+        >>> with linkage.simulation(iterations=100) as sim:
+        ...     for step, coords in sim:
+        ...         # coords is a tuple of (x, y) for each joint
+        ...         print(f"Step {step}: {coords}")
+    """
+
+    __slots__ = "_linkage", "_iterations", "_dt", "_initial_coords"
+
+    def __init__(
+        self,
+        linkage: Linkage,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> None:
+        """Initialize the simulation.
+
+        :param linkage: The linkage to simulate.
+        :param iterations: Number of iterations. If None, uses linkage.get_rotation_period().
+        :param dt: Time step for crank rotation.
+        """
+        self._linkage = linkage
+        self._iterations = iterations
+        self._dt = dt
+        self._initial_coords: list[tuple[float | None, float | None]] | None = None
+
+    def __enter__(self) -> Simulation:
+        """Enter the simulation context, saving initial state."""
+        self._initial_coords = self._linkage.get_coords()
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: object,
+    ) -> None:
+        """Exit the simulation context, restoring initial state."""
+        if self._initial_coords is not None:
+            self._linkage.set_coords(self._initial_coords)
+
+    def __iter__(
+        self,
+    ) -> Generator[tuple[int, tuple[tuple[float | None, float | None], ...]], None, None]:
+        """Iterate over simulation steps.
+
+        Yields:
+            Tuples of (step_number, joint_coordinates) where step_number is 0-indexed
+            and joint_coordinates is a tuple of (x, y) for each joint.
+        """
+        yield from enumerate(
+            self._linkage.step(iterations=self._iterations, dt=self._dt)
+        )
+
+    @property
+    def linkage(self) -> Linkage:
+        """The linkage being simulated."""
+        return self._linkage
+
+    @property
+    def iterations(self) -> int:
+        """Number of iterations for this simulation."""
+        if self._iterations is None:
+            return self._linkage.get_rotation_period()
+        return self._iterations

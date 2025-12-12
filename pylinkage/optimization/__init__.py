@@ -1,4 +1,14 @@
 """Optimization package."""
+
+__all__ = [
+    "collections",
+    "generate_bounds",
+    "kinematic_maximization",
+    "kinematic_minimization",
+    "particle_swarm_optimization",
+    "trials_and_errors_optimization",
+]
+
 from . import collections as collections
 from .grid_search import (
     trials_and_errors_optimization as trials_and_errors_optimization,
