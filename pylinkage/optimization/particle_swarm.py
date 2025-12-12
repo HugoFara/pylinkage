@@ -15,6 +15,7 @@ import numpy as np
 from numpy.typing import NDArray
 from pyswarms.single.local_best import LocalBestPSO
 
+from ..exceptions import OptimizationError
 from .collections import Agent
 
 if TYPE_CHECKING:
@@ -72,9 +73,27 @@ def particle_swarm_optimization(
     :param kwargs: keyword arguments to pass to pyswarm.local.single.LocalBestPSO.
 
     :returns: List of Agents: best score, best dimensions and initial positions.
+
+    :raises OptimizationError: If parameters are invalid or optimization fails.
     """
     if dimensions is None:
         dimensions = len(tuple(linkage.get_num_constraints()))
+    if dimensions <= 0:
+        raise OptimizationError(f"Dimensions must be positive, got {dimensions}")
+    if n_particles <= 0:
+        raise OptimizationError(f"Number of particles must be positive, got {n_particles}")
+    if iters <= 0:
+        raise OptimizationError(f"Number of iterations must be positive, got {iters}")
+    if bounds is not None:
+        if len(bounds) != 2:
+            raise OptimizationError(
+                f"Bounds must be a tuple of (lower, upper), got {len(bounds)} elements"
+            )
+        if len(bounds[0]) != dimensions or len(bounds[1]) != dimensions:
+            raise OptimizationError(
+                f"Bounds dimensions ({len(bounds[0])}, {len(bounds[1])}) "
+                f"must match number of dimensions ({dimensions})"
+            )
     options: dict[str, float | int] = {
         'c1': leader,
         'c2': follower,

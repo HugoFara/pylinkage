@@ -25,6 +25,14 @@ def sqr_dist(point1: Coord, point2: Coord) -> float:
     :param point2: Second point.
 
     :return: Computed squared distance.
+
+    Examples:
+        >>> sqr_dist((0, 0), (3, 4))
+        25
+        >>> sqr_dist((1, 1), (1, 1))
+        0
+        >>> sqr_dist((0, 0), (1, 1))
+        2
     """
     return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
 
@@ -41,6 +49,14 @@ def get_nearest_point(
     :param first_point: First point candidate.
     :param second_point: Second point candidate.
     :return: Either first point or second point.
+
+    Examples:
+        >>> get_nearest_point((0, 0), (1, 0), (5, 0))
+        (1, 0)
+        >>> get_nearest_point((0, 0), (3, 4), (0, 1))
+        (0, 1)
+        >>> get_nearest_point((1, 1), (1, 1), (2, 2))  # reference matches first
+        (1, 1)
     """
     if reference_point in (first_point, second_point):
         return reference_point
@@ -54,6 +70,14 @@ def norm(vec: Coord) -> float:
     Return the norm of a 2-dimensional vector.
 
     :param vec: Vector to get norm from.
+
+    Examples:
+        >>> norm((3, 4))
+        5.0
+        >>> norm((0, 0))
+        0.0
+        >>> norm((1, 0))
+        1.0
     """
     return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
@@ -68,6 +92,16 @@ def cyl_to_cart(
     :param radius: Distance from ori.
     :param theta: Angle starting from abscissa axis.
     :param ori: Origin point (Default value = (0, 0)).
+
+    Examples:
+        >>> import math
+        >>> cyl_to_cart(1, 0)  # Point at angle 0
+        (1.0, 0.0)
+        >>> x, y = cyl_to_cart(1, math.pi / 2)  # Point at 90 degrees
+        >>> (round(x, 10), round(y, 10))
+        (0.0, 1.0)
+        >>> cyl_to_cart(2, 0, ori=(1, 1))  # With offset origin
+        (3.0, 1.0)
     """
     return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
 
@@ -79,6 +113,16 @@ def line_from_points(first_point: Coord, second_point: Coord) -> Line:
     :param first_point: One point of the line.
     :param second_point: Another point on the line.
     :return: A cartesian equation of this line (a, b, c) where ax + by + c = 0.
+
+    Examples:
+        >>> line_from_points((0, 0), (1, 0))  # Horizontal line y=0
+        (0, 1, 0.0)
+        >>> line_from_points((0, 0), (0, 1))  # Vertical line x=0
+        (-1, 0, 0.0)
+        >>> line_from_points((0, 0), (1, 1))  # Diagonal line y=x
+        (-1, 1, 0.0)
+        >>> line_from_points((0, 1), (1, 1))  # Horizontal line y=1
+        (0, 1, -1.0)
     """
     if first_point == second_point:
         warnings.warn(

@@ -68,6 +68,31 @@ def circle_intersect(
         - (1, (float, float)) if the intersection is one point.
         - (2, (float, float), (float, float)) for two points of intersection.
         - (3, (float, float, float)) if the intersection is a circle.
+
+    Examples:
+        >>> # Two circles that intersect at two points
+        >>> result = circle_intersect((0, 0, 1), (1, 0, 1))
+        >>> result[0]  # Number of intersections
+        2
+        >>> x1, y1 = result[1]
+        >>> round(x1, 6), round(y1, 6)
+        (0.5, 0.866025)
+
+        >>> # Circles too far apart (no intersection)
+        >>> circle_intersect((0, 0, 1), (5, 0, 1))
+        (0,)
+
+        >>> # Tangent circles (one intersection)
+        >>> result = circle_intersect((0, 0, 1), (2, 0, 1))
+        >>> result[0]
+        1
+        >>> result[1]
+        (1.0, 0.0)
+
+        >>> # Same circle
+        >>> result = circle_intersect((0, 0, 1), (0, 0, 1), tol=0.1)
+        >>> result[0]
+        3
     """
     x_1, y_1, radius1 = circle1
     x_2, y_2, radius2 = circle2
@@ -120,6 +145,25 @@ def circle_line_from_points_intersection(
     :param second_point: Another point on the line.
 
     :return: Either 0, 1 or two intersection points, the length indicates the intersection type.
+
+    Examples:
+        >>> # Line through center of circle (two intersections)
+        >>> result = circle_line_from_points_intersection((0, 0, 1), (-2, 0), (2, 0))
+        >>> len(result)
+        2
+        >>> (round(result[0][0], 6), round(result[0][1], 6))
+        (-1.0, 0.0)
+
+        >>> # Line misses circle (no intersection)
+        >>> circle_line_from_points_intersection((0, 0, 1), (0, 5), (1, 5))
+        ()
+
+        >>> # Tangent line (one intersection)
+        >>> result = circle_line_from_points_intersection((0, 0, 1), (-1, 1), (1, 1))
+        >>> len(result)
+        1
+        >>> (round(result[0][0], 6), round(result[0][1], 6))
+        (0.0, 1.0)
     """
     # Move axis to circle center
     fp: Coord = first_point[0] - circle[0], first_point[1] - circle[1]
@@ -171,6 +215,18 @@ def circle_line_intersection(
     :param line: Cartesian equation of a line (a, b, c) where ax + by + c = 0.
 
     :return: Nothing, one or two intersections. The length of the tuple gives the intersection type.
+
+    Examples:
+        >>> # Horizontal line y=0 through unit circle at origin
+        >>> result = circle_line_intersection((0, 0, 1), (0, 1, 0))
+        >>> len(result)
+        2
+        >>> (round(result[0][0], 6), round(result[0][1], 6))
+        (-1.0, 0.0)
+
+        >>> # Line y=2 misses unit circle
+        >>> circle_line_intersection((0, 0, 1), (0, 1, -2))
+        ()
     """
     # Find two points on the line
     if line[1] != 0:
@@ -224,6 +280,14 @@ def bounding_box(locus: list[Coord]) -> tuple[float, float, float, float]:
     :param locus: A list of points or any iterable with the same structure.
 
     :returns: Bounding box as (y_min, x_max, y_max, x_min).
+
+    Examples:
+        >>> bounding_box([(0, 0), (1, 1), (2, 0)])
+        (0, 2, 1, 0)
+        >>> bounding_box([(-1, -2), (3, 4)])
+        (-2, 3, 4, -1)
+        >>> bounding_box([(0, 0)])
+        (0, 0, 0, 0)
     """
     y_min = float('inf')
     x_min = float('inf')

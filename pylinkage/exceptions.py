@@ -56,3 +56,13 @@ class NotCompletelyDefinedError(Exception):
     ) -> None:
         self.joint = joint
         super().__init__(message)
+
+
+class OptimizationError(Exception):
+    """Should be raised when the optimization process fails."""
+
+    def __init__(
+        self, message: str = 'Optimization failed'
+    ) -> None:
+        self.message = message
+        super().__init__(message)

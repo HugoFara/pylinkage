@@ -15,6 +15,7 @@ __all__ = [
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
+    "OptimizationError",
     "UnbuildableError",
     "UnderconstrainedError",
     # Geometry
@@ -54,6 +55,9 @@ from .exceptions import (
 )
 from .exceptions import (
     NotCompletelyDefinedError as NotCompletelyDefinedError,
+)
+from .exceptions import (
+    OptimizationError as OptimizationError,
 )
 from .exceptions import (
     UnbuildableError as UnbuildableError,

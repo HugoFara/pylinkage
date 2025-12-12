@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from numpy.typing import NDArray
 
+from ..exceptions import OptimizationError
 from ..linkage.analysis import kinematic_default_test
 
 if TYPE_CHECKING:
@@ -35,7 +36,13 @@ def generate_bounds(
     :param max_factor: Dilation factor for the upper bounds. Maximal bounds will be of the
         shape center[x] * max_factor.
         (Default value = 5).
+
+    :raises OptimizationError: If min_ratio or max_factor are not positive.
     """
+    if min_ratio <= 0:
+        raise OptimizationError(f"min_ratio must be positive, got {min_ratio}")
+    if max_factor <= 0:
+        raise OptimizationError(f"max_factor must be positive, got {max_factor}")
     np_center = np.array(center)
     return np_center / min_ratio, np_center * max_factor
 

@@ -17,6 +17,7 @@ import numpy as np
 import tqdm
 from numpy.typing import NDArray
 
+from ..exceptions import OptimizationError
 from .collections import MutableAgent
 from .utils import generate_bounds
 
@@ -150,7 +151,13 @@ def trials_and_errors_optimization(
     :returns: 3-uplet of score, dimensions and initial position for each Linkage to
         return.
         Its size is {n_results}.
+
+    :raises OptimizationError: If parameters are invalid or no valid solution is found.
     """
+    if n_results <= 0:
+        raise OptimizationError(f"Number of results must be positive, got {n_results}")
+    if divisions <= 0:
+        raise OptimizationError(f"Number of divisions must be positive, got {divisions}")
     center: NDArray[np.floating] = (
         np.array(linkage.get_num_constraints())
         if parameters is None
@@ -201,6 +208,11 @@ def trials_and_errors_optimization(
                     })
                     pbar.set_postfix(postfix)
                 break
+    if results[0].score is None:
+        raise OptimizationError(
+            "Optimization failed: no valid solutions found. "
+            "All evaluated configurations resulted in errors."
+        )
     if verbose:
         print(
             "Trials and errors optimization finished. "
