@@ -244,59 +244,23 @@ def test_plot_kinematic_linkage(four_bar_linkage):
 
 ## 5. CI/CD Improvements
 
+### Status: COMPLETED
+
 ### Current Workflows
 
 - `codeql-analysis.yml` - security scanning
-- `python-package-conda.yml` - conda testing
-- `versioning-test.yml` - multi-version Python
+- `versioning-test.yml` - multi-version Python testing with coverage and Codecov
 - `python-publish.yml` - PyPI publishing
+- `docs.yml` - documentation build check
 
-### Recommended Additions
+### Changes Made
 
-**Add to `versioning-test.yml`**:
-
-```yaml
-- name: Type check with mypy
-  run: |
-    pip install mypy
-    mypy pylinkage --ignore-missing-imports
-
-- name: Run tests with coverage
-  run: |
-    pip install pytest pytest-cov
-    pytest --cov=pylinkage --cov-report=xml
-
-- name: Upload coverage to Codecov
-  uses: codecov/codecov-action@v4
-  with:
-    file: ./coverage.xml
-    fail_ci_if_error: false
-```
-
-**Add documentation build check** (new file `.github/workflows/docs.yml`):
-
-```yaml
-name: Documentation
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: pip install -e ".[docs]"
-      - name: Build documentation
-        run: sphinx-build -W -b html sphinx/ docs/
-```
+- Removed `python-package-conda.yml` (conda no longer needed)
+- Removed `environment.yml` (conda environment file)
+- Updated `versioning-test.yml` to include:
+  - pytest with coverage (`--cov=pylinkage --cov-report=xml`)
+  - Codecov upload (on Python 3.12 only to avoid duplicate uploads)
+- Added `docs.yml` for documentation build verification on PRs
 
 ---
 
@@ -468,7 +432,7 @@ def circle_intersect(c1, r1, c2, r2):
 3. ~~Add `__all__` to `__init__.py` files~~ DONE
 4. ~~Update Python version requirement to >=3.9~~ DONE
 5. ~~Add Python 3.13 to CI matrix~~ DONE
-6. Replace `.format()` with f-strings (use find/replace)
+6. ~~Replace `.format()` with f-strings (use find/replace)~~ DONE
 
 ---
 
