@@ -44,7 +44,7 @@ def define_linkage():
 @pl.kinematic_minimization
 def quadrant_fitness(loci, **kwargs):
     """Return how fit the locus is to describe a quarter of circle.
-    
+
     It is a minimization problem and the theoretical best score is 0.
 
     :param loci: Successive positions of joints
@@ -53,8 +53,6 @@ def quadrant_fitness(loci, **kwargs):
     :return: Sum of square distances between tip locus bounding box and a defined
         square.
     :rtype: float
-
-    
     """
     # Locus of the Joint "pin" must in linkage order
     tip_locus = list(x[-1] for x in loci)

@@ -22,7 +22,7 @@ def joint_syntax_parser(joint):
 class Joint(abc.ABC):
     """
     Geometric constraint expressed by two joints.
-    
+
     Abstract class should always be inherited.
     """
 

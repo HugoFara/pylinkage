@@ -30,13 +30,13 @@ def plot_static_linkage(
     axis.set_aspect('equal')
     axis.grid(True)
     # Plot loci
-    for i, joint in enumerate(linkage.joints):
+    for i, _joint in enumerate(linkage.joints):
         axis.plot(tuple(j[i][0] for j in loci), tuple(j[i][1] for j in loci))
 
     # The plot linkage in initial positioning
     # It as important to use separate loops, because we would have bad
     # formatted legend otherwise
-    for i, joint in enumerate(linkage.joints):
+    for _i, joint in enumerate(linkage.joints):
         # Then the linkage in initial position
 
         # Draw a link to the first parent if it exists

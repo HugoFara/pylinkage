@@ -24,7 +24,7 @@ def particle_swarm_optimization(
         **kwargs
 ):
     """Particle Swarm Optimization wrapper for pyswarms.
-    
+
     This function is a simple wrapper to optimize a linkage using PSO. It will
     mainly call the LocalBestPSO function from pyswarms.single.
 
@@ -95,7 +95,7 @@ def particle_swarm_optimization(
     def eval_wrapper(dims):
         """Wrapper for the evaluation function since PySwarms is too rigid.
 
-        :param dims: 
+        :param dims: Dimensions to evaluate.
 
         """
         if order_relation is max:

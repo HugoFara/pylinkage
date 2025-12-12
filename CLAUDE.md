@@ -1,10 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Project Overview
 
-Pylinkage is a Python library for building and optimizing planar linkages using Particle Swarm Optimization (PSO). It provides tools to define kinematic linkages, simulate their motion, optimize their geometry against objective functions, and visualize the results.
+Pylinkage is a Python library for building and optimizing planar linkages using
+Particle Swarm Optimization (PSO). It provides tools to define kinematic
+linkages, simulate their motion, optimize their geometry against objective
+functions, and visualize the results.
 
 ## Common Commands
 
@@ -46,18 +50,21 @@ uv run sphinx-build -b html sphinx/ docs/  # Build documentation
 - **pylinkage/joints/**: Joint types that form linkage building blocks
   - `Static`: Fixed point in space (base class)
   - `Crank`: Rotating motor joint (creates a motor + pin joint)
-  - `Revolute`: Pin joint connecting two parents (creates 3 internal pin joints forming a deformable triangle)
+  - `Revolute`: Pin joint connecting two parents
+    (creates 3 internal pin joints forming a deformable triangle)
   - `Fixed`: Static joint with fixed distance constraints
   - `Linear`: Joint constrained to move along a line
 
 - **pylinkage/linkage/**: Linkage class that orchestrates joint collections
-  - `Linkage`: Main class managing joints, solving order, and simulation via `step()` method
+  - `Linkage`: Main class managing joints, solving order, and simulation
+    via `step()` method
   - `analysis.py`: Helper functions like `bounding_box()` and `kinematic_default_test()`
 
 - **pylinkage/optimization/**: Optimization algorithms
   - `grid_search.py`: `trials_and_errors_optimization()` - exhaustive search
   - `particle_swarm.py`: `particle_swarm_optimization()` - PSO using PySwarms
-  - `utils.py`: `@kinematic_minimization`/`@kinematic_maximization` decorators and `generate_bounds()`
+  - `utils.py`: `@kinematic_minimization`/`@kinematic_maximization` decorators
+    and `generate_bounds()`
 
 - **pylinkage/geometry/**: 2D geometry utilities
   - `core.py`: Distance calculations, coordinate conversions

@@ -23,8 +23,6 @@ def generate_bounds(center, min_ratio=5, max_factor=5):
         shape center[x] * max_factor.
         (Default value = 5)
     :type max_factor: float
-
-    
     """
     np_center = np.array(center)
     return np_center / min_ratio, np_center * max_factor

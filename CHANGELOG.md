@@ -11,18 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New joint: the ``Linear`` joint!
 - New sub-package: optimization.collections.
-``optimization.collections.Agent`` and ``optimization.collections.MutableAgent`` are two new classes that should standardize the format of
-optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
-  - ``Agent`` is immutable and inherits from a namedtuple. It is recommended to use it, as it is a bit faster.
+  ``optimization.collections.Agent`` and
+  ``optimization.collections.MutableAgent`` are two new classes that should
+  standardize the format of optimization, related to
+  ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
+  - ``Agent`` is immutable and inherits from a namedtuple. It is recommended
+    to use it, as it is a bit faster.
   - ``MutableAgent`` is mutable. It may be deprecated/removed if ``Agent`` is satisfactory.
 - New sub-package: geometry.
   - It introduces two new functions ``line_from_points`` and ``circle_line_intersection``.
 - New examples:
   - ``examples/strider.py`` from [leggedsnake](https://github.com/HugoFara/leggedsnake),
   based on the [Strider Linkage](https://www.diywalkers.com/strider-linkage-plans.html).
-  - ``examples/inverted_stroke_engine.py`` is a demo of a [four-stroke engine](https://en.wikipedia.org/wiki/Four-stroke_engine) featuring a Linear joint.
-- ``Linkage.set_completely`` is a new method combining both ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
-- New exception ``NotCompletelyDefinedError``, when a joint is reloading but its anchor coordinates are set to None.
+  - ``examples/inverted_stroke_engine.py`` is a demo of a
+    [four-stroke engine](https://en.wikipedia.org/wiki/Four-stroke_engine)
+    featuring a Linear joint.
+- ``Linkage.set_completely`` is a new method combining both
+  ``Linkage.set_num_constraints`` and ``Linkage.set_coords``.
+- New exception ``NotCompletelyDefinedError``, when a joint is reloading but
+  its anchor coordinates are set to None.
 - Some run configuration files added *for users of PyCharm*:
   - Run all tests with "All Tests".
   - Regenerate documentation with "Sphinx Documentation".
@@ -35,10 +42,11 @@ optimization, related to ([#5](https://github.com/HugoFara/pylinkage/issues/5)).
   - It should not be a breaking change for most users.
 - Changes to the "history" style.
   - It is no longer a global variable in example scripts.
-  - It was in format iterations[dimensions, score], now it is a standard iterations[score, dimensions, initial pos].
+  - It was in format iterations[dimensions, score], now it is a standard
+    iterations[score, dimensions, initial pos].
   - ``repr_polar_swarm`` (in example scripts) changed to follow the new format.
-  - ``swarm_tiled_repr`` takes (index, swarm) as input argument. swarm is (score, dim, pos) for each agent for this
-iteration.
+  - ``swarm_tiled_repr`` takes (index, swarm) as input argument. swarm is
+    (score, dim, pos) for each agent for this iteration.
 - ``repr_polar_swarm`` reload frame only when a new buildable linkage is generated.
   - This makes the display much faster.
   - For each iteration, you may see linkages that do not exist anymore.
@@ -55,7 +63,8 @@ iteration.
     - New file ``utils.py`` for ``generate_bounds``.
   - Tests follow the same renaming.
   - From the user perspective, no change (execution *may* be a bit faster)
-  - ``source/`` renamed to ``sphinx/`` because it was confusing and only for Sphinx configuration.
+  - ``source/`` renamed to ``sphinx/`` because it was confusing and only for
+    Sphinx configuration.
 - Transition from Numpydoc to reST for docstrings ([#12](https://github.com/HugoFara/pylinkage/issues/12)).
 - ``__secant_circles_intersections__`` renamed to
 ``secant_circles_intersections`` (in ``pylinkage/geometry/secants.py``).
@@ -70,7 +79,8 @@ iteration.
 
 ### Deprecated
 
-- Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in a tqdm object.
+- Using ``tqdm_verbosity`` is deprecated in favor of using ``disable=True`` in
+  a tqdm object.
 - The ``Pivot`` class is deprecated in favor of the ``Revolute`` class.
 The name "Pivot joint" is not standard.
 Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
@@ -80,7 +90,8 @@ Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 ### Removed
 
 - Drops support for Python 3.7 and 3.8 as both versions reached end-of-life.
-- ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in function name).
+- ``movement_bounding_bow`` is replaced by ``movement_bounding_box`` (typo in
+  function name).
 
 ## [0.5.3] - 2023-06-23
 
@@ -93,7 +104,8 @@ Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 ### Changed in 0.5.3
 
 - ``master`` branch is now ``main``.
-- ``docs/example/fourbar_linkage.py`` can now be used as a module (not the target but anyway).
+- ``docs/example/fourbar_linkage.py`` can now be used as a module (not the
+  target but anyway).
 - ``docs/examples`` moved to ``examples/`` (main folder).
   - Now ``docs/`` only contains sphinx documentation.
 - ``docs/examples/images`` moved to ``images/``.
@@ -102,11 +114,12 @@ Related to [#13](https://github.com/HugoFara/pylinkage/issues/13).
 
 - Setting a motor with a negative rotation angle do no longer break ``get_rotation_period``
 ([#7](https://github.com/HugoFara/pylinkage/issues/7)).
-- ``Pivot.reload`` and ``Linkage.__find_solving_order__`` were raising Warnings (stopping the code),
-when they should only print a message (intended behavior).
+- ``Pivot.reload`` and ``Linkage.__find_solving_order__`` were raising
+  Warnings (stopping the code), when they should only print a message
+  (intended behavior).
 - Fixed many typos in documentation as well as in code.
-- The ``TestPSO.test_convergence`` is now faster on average, and when it fails in the first time, it launches a bigger
-test.
+- The ``TestPSO.test_convergence`` is now faster on average, and when it
+  fails in the first time, it launches a bigger test.
 - Minor linting in the demo file ``docs/example/fourbar_linkage.py``.
 
 ### Deprecated in 0.5.3
@@ -226,8 +239,10 @@ the one ot ``trials_and_errors`` optimization. Wrappers are no longer needed!
 
 ### Changed in 0.4.0
 
-- ``exhaustive_optimization`` is now known as ``trials_and_errors_optimizattion``.
-- Axes on linkage visualization are now named "x" and "y". It was "Points abcsices" and "Ordinates".
+- ``exhaustive_optimization`` is now known as
+  ``trials_and_errors_optimizattion``.
+- Axes on linkage visualization are now named "x" and "y". It was "Points
+  abcsices" and "Ordinates".
 - A default view of the linkage is displayed in ``plot_static_linkage``.
 - Default padding in linkage representation was changed from an absolute value
   of 0.5 to a relative 20%.

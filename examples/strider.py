@@ -215,8 +215,6 @@ def view_swarm_polar(
     :type n_agents: int
     :param n_iterations: NUmber of iterations (Default value = 400)
     :type n_iterations: int
-
-    
     """
     history = []
     out = pl.particle_swarm_optimization(
@@ -313,8 +311,6 @@ def view_swarm_tiled(
     :type n_agents: int
     :param n_iterations: NUmber of iterations (Default value = 400)
     :type n_iterations: int
-
-    
     """
     history = []
 
@@ -419,26 +415,24 @@ def swarm_optimizer(
             bounds=BOUNDS
         ):
             if not i % save_each:
-                f = open('PSO optimizer.txt', 'w')
-                # We only keep the best results
-                dim.sort(key=lambda x: x[1], reverse=True)
-                for j in range(min(10, len(dim))):
-                    par = {}
-                    for k in range(len(dim[j][0])):
-                        par[DIM_NAMES[k]] = dim[j][0][k]
-                    f.write(f'{par}\n{dim[j][1]}\n{dim[j][2]}\n')
-                    f.write('----\n')
-                f.close()
+                with open('PSO optimizer.txt', 'w') as f:
+                    # We only keep the best results
+                    dim.sort(key=lambda x: x[1], reverse=True)
+                    for j in range(min(10, len(dim))):
+                        par = {}
+                        for k in range(len(dim[j][0])):
+                            par[DIM_NAMES[k]] = dim[j][0][k]
+                        f.write(f'{par}\n{dim[j][1]}\n{dim[j][2]}\n')
+                        f.write('----\n')
     else:
         out = pl.particle_swarm_optimization(
             sym_stride_evaluator,
             linkage,
-            dimensions,
+            *args,
             n_particles=n_agents,
             bounds=BOUNDS,
             dimensions=len(dimensions),
             iters=n_iterations,
-            *args
         )
         return tuple(out)
 
@@ -467,7 +461,7 @@ def show_optimized(linkage, data, n_show=10, duration=5, symmetric=True):
 
 def main():
     """Build and optimize a strider linkage.
-    
+
     You can find it at https://www.diywalkers.com/strider-linkage-plans.html
     """
     strider = complete_strider(param2dimensions(DIMENSIONS), INIT_COORD)

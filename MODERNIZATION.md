@@ -1,6 +1,7 @@
 # Pylinkage Modernization Guide
 
-This document outlines recommended improvements to bring pylinkage up to modern Python standards (2024+).
+This document outlines recommended improvements to bring pylinkage up to modern
+Python standards (2024+).
 
 ---
 
@@ -8,7 +9,8 @@ This document outlines recommended improvements to bring pylinkage up to modern 
 
 ### Status: COMPLETED
 
-The project now uses [uv](https://docs.astral.sh/uv/) for dependency management with a modern `pyproject.toml`:
+The project now uses [uv](https://docs.astral.sh/uv/) for dependency management
+with a modern `pyproject.toml`:
 
 - Removed `setup.py`, `setup.cfg`, `requirements.txt`, `requirements-dev.txt`
 - Using hatchling as build backend
@@ -137,13 +139,13 @@ FitnessFunc: TypeAlias = Callable[..., float]
 
 ## 3. Python Version Support
 
-### Current State
+### Python Version Current State
 
 - `pyproject.toml` claims `>=3.7`
 - CI only tests 3.9-3.12
 - Contains Python 3.7 compatibility code
 
-### Recommended Changes
+### Python Version Recommended Changes
 
 **Remove legacy compatibility code** in `pylinkage/geometry/core.py:9-27`:
 
@@ -171,13 +173,13 @@ requires-python = ">=3.9"
 
 ## 4. Test Infrastructure
 
-### Current State
+### Test Infrastructure Current State
 
 - Uses `unittest` with `python -m unittest discover`
 - No coverage tracking
 - ~415 lines of tests for ~2,132 lines of code
 
-### Recommended Changes
+### Test Infrastructure Recommended Changes
 
 **Migrate to pytest** with coverage:
 
@@ -191,7 +193,7 @@ pytest --cov=pylinkage --cov-report=html
 
 **Add missing test modules**:
 
-```
+```text
 tests/
 ├── __init__.py
 ├── geometry/
@@ -377,14 +379,14 @@ with linkage.simulation(iterations=100) as sim:
         process(coords)
 ```
 
-2. **Async optimization** for long-running PSO:
+1. **Async optimization** for long-running PSO:
 
 ```python
 async def optimize_async(linkage, fitness_func, ...):
     ...
 ```
 
-3. **JSON/YAML serialization** for linkage definitions:
+1. **JSON/YAML serialization** for linkage definitions:
 
 ```python
 linkage.to_json("my_linkage.json")
@@ -395,7 +397,7 @@ linkage = Linkage.from_json("my_linkage.json")
 
 ## 8. Documentation
 
-### Current State
+### Documentation Current State
 
 Well-structured Sphinx setup with autodoc.
 
@@ -413,12 +415,12 @@ def circle_intersect(c1, r1, c2, r2):
     """
 ```
 
-2. **Add tutorials** in `sphinx/tutorials/`:
+1. **Add tutorials** in `sphinx/tutorials/`:
    - Getting started guide
    - Custom joint creation
    - Advanced optimization techniques
 
-3. **API changelog** - document breaking changes per version
+1. **API changelog** - document breaking changes per version
 
 ---
 
@@ -471,6 +473,7 @@ def circle_intersect(c1, r1, c2, r2):
 
 - [PEP 621](https://peps.python.org/pep-0621/) - pyproject.toml metadata
 - [PEP 484](https://peps.python.org/pep-0484/) - Type hints
-- [bump-my-version](https://github.com/callowayproject/bump-my-version) - Modern version bumping
+- [bump-my-version](https://github.com/callowayproject/bump-my-version) -
+  Modern version bumping
 - [pytest-cov](https://pytest-cov.readthedocs.io/) - Coverage plugin
 - [mypy](https://mypy.readthedocs.io/) - Static type checker

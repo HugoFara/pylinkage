@@ -114,7 +114,7 @@ def show_linkage(
         loci=None,
         points=100,
         iteration_factor=1,
-        title=str(len(ANIMATIONS)),
+        title=None,
         duration=5,
         fps=24
 ):
@@ -145,6 +145,8 @@ def show_linkage(
 
 
     """
+    if title is None:
+        title = str(len(ANIMATIONS))
     # Define initial positions
     linkage.rebuild(prev)
     if loci is None:

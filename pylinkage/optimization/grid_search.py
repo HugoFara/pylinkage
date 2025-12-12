@@ -33,12 +33,12 @@ def tqdm_verbosity(iterable, verbose=True, *args, **kwargs):
 
 def sequential_variator(center, divisions, bounds):
     """Return an iterable of each possible variation for the elements.
-    
+
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
-    
+
     Because linkage is not tolerant to violent changes, the order of output
     for the coefficients is very important.
-    
+
     The coefficient is in order: middle → min (step 2), min → middle (step 2),
     middle → max (step 1), so that there is no huge variation.
 
@@ -72,9 +72,9 @@ def sequential_variator(center, divisions, bounds):
 
 def fast_variator(divisions, bounds):
     """Return an iterable of elements' all possibles variations.
-    
+
     Number of variations: ((max_dim - 1 / min_dim) / delta_dim) ** len(ite).
-    
+
     Here the order in the variations is not important.
 
     :param divisions: Number of subdivisions between `bounds`.
@@ -101,7 +101,7 @@ def trials_and_errors_optimization(
         **kwargs
 ):
     """Return the list of dimensions optimizing eval_func.
-    
+
     Each dimension set has a score, which is added in an array of n_results
     results, contains the linkages with the best scores in a maximization problem
     by default.
