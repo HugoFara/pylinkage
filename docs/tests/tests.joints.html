@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -9,15 +11,11 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=08553120"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08553120"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -113,13 +111,44 @@
 <p>Created on Fri Apr 16 17:19:47 2021</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestCrankJoint">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestCrankJoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestCrankJoint" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test Crank joint.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestCrankJoint.test_crank_creation">
+<span class="sig-name descname"><span class="pre">test_crank_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestCrankJoint.test_crank_creation" title="Link to this definition"></a></dt>
+<dd><p>Test Crank joint creation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestCrankJoint.test_crank_get_constraints">
+<span class="sig-name descname"><span class="pre">test_crank_get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestCrankJoint.test_crank_get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test Crank get_constraints returns distance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestCrankJoint.test_crank_reload">
+<span class="sig-name descname"><span class="pre">test_crank_reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestCrankJoint.test_crank_reload" title="Link to this definition"></a></dt>
+<dd><p>Test Crank reload rotates the joint.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestCrankJoint.test_crank_set_constraints">
+<span class="sig-name descname"><span class="pre">test_crank_set_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestCrankJoint.test_crank_set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test Crank set_constraints updates distance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestFixed">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestFixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestFixed" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestFixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestFixed" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
 <p>Test Fixed_Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestFixed.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=123550889268064)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestFixed.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815808)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestFixed.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -131,13 +160,136 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestJointBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test Joint base class methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_default_name">
+<span class="sig-name descname"><span class="pre">test_default_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_default_name" title="Link to this definition"></a></dt>
+<dd><p>Test that default name is set from id.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_get_joints">
+<span class="sig-name descname"><span class="pre">test_get_joints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_get_joints" title="Link to this definition"></a></dt>
+<dd><p>Test __get_joints__ method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_repr">
+<span class="sig-name descname"><span class="pre">test_repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_repr" title="Link to this definition"></a></dt>
+<dd><p>Test __repr__ method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_set_coord_with_invalid_single_arg">
+<span class="sig-name descname"><span class="pre">test_set_coord_with_invalid_single_arg</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_set_coord_with_invalid_single_arg" title="Link to this definition"></a></dt>
+<dd><p>Test set_coord raises with invalid single argument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_set_coord_with_tuple">
+<span class="sig-name descname"><span class="pre">test_set_coord_with_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_set_coord_with_tuple" title="Link to this definition"></a></dt>
+<dd><p>Test set_coord with single tuple argument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointBase.test_set_coord_with_two_args">
+<span class="sig-name descname"><span class="pre">test_set_coord_with_two_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointBase.test_set_coord_with_two_args" title="Link to this definition"></a></dt>
+<dd><p>Test set_coord with two arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointSyntaxParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestJointSyntaxParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointSyntaxParser" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test the joint_syntax_parser function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointSyntaxParser.test_joint_input">
+<span class="sig-name descname"><span class="pre">test_joint_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointSyntaxParser.test_joint_input" title="Link to this definition"></a></dt>
+<dd><p>Test that a Joint returns the same Joint.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointSyntaxParser.test_none_input">
+<span class="sig-name descname"><span class="pre">test_none_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointSyntaxParser.test_none_input" title="Link to this definition"></a></dt>
+<dd><p>Test that None returns None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestJointSyntaxParser.test_tuple_input">
+<span class="sig-name descname"><span class="pre">test_tuple_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestJointSyntaxParser.test_tuple_input" title="Link to this definition"></a></dt>
+<dd><p>Test that a tuple creates a Static joint.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestLinearJoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test Linear joint.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.setUp">
+<span class="sig-name descname"><span class="pre">setUp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.setUp" title="Link to this definition"></a></dt>
+<dd><p>Set up test fixtures.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_creation">
+<span class="sig-name descname"><span class="pre">test_linear_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_creation" title="Link to this definition"></a></dt>
+<dd><p>Test Linear joint creation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_get_constraints">
+<span class="sig-name descname"><span class="pre">test_linear_get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test Linear get_constraints.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_reload">
+<span class="sig-name descname"><span class="pre">test_linear_reload</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_reload" title="Link to this definition"></a></dt>
+<dd><p>Test Linear reload computes position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_reload_missing_joint0">
+<span class="sig-name descname"><span class="pre">test_linear_reload_missing_joint0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_reload_missing_joint0" title="Link to this definition"></a></dt>
+<dd><p>Test Linear reload raises when joint0 missing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_reload_missing_line_joints">
+<span class="sig-name descname"><span class="pre">test_linear_reload_missing_line_joints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_reload_missing_line_joints" title="Link to this definition"></a></dt>
+<dd><p>Test Linear reload raises when line joints missing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_reload_no_intersection">
+<span class="sig-name descname"><span class="pre">test_linear_reload_no_intersection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_reload_no_intersection" title="Link to this definition"></a></dt>
+<dd><p>Test Linear reload raises when no intersection possible.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestLinearJoint.test_linear_set_constraints">
+<span class="sig-name descname"><span class="pre">test_linear_set_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestLinearJoint.test_linear_set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test Linear set_constraints.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestPivot">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestPivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestPivot" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestPivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestPivot" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
 <p>Test Pivot Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestPivot.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=123550889267680)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestPivot.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815232)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestPivot.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -168,12 +320,12 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestRevolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestRevolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
 <p>Test Revolute Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=123550889267872)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815424)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -198,6 +350,55 @@
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_under_intersect">
 <span class="sig-name descname"><span class="pre">test_under_intersect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_under_intersect" title="Link to this definition"></a></dt>
 <dd><p>Under intersect test.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestStaticJoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test Static joint.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_creation">
+<span class="sig-name descname"><span class="pre">test_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_creation" title="Link to this definition"></a></dt>
+<dd><p>Test Static joint creation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_get_constraints_empty">
+<span class="sig-name descname"><span class="pre">test_get_constraints_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_get_constraints_empty" title="Link to this definition"></a></dt>
+<dd><p>Test that get_constraints returns empty tuple.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_reload_does_nothing">
+<span class="sig-name descname"><span class="pre">test_reload_does_nothing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_reload_does_nothing" title="Link to this definition"></a></dt>
+<dd><p>Test that reload doesn’t change coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_set_anchor0">
+<span class="sig-name descname"><span class="pre">test_set_anchor0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_set_anchor0" title="Link to this definition"></a></dt>
+<dd><p>Test set_anchor0 method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_set_anchor1">
+<span class="sig-name descname"><span class="pre">test_set_anchor1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_set_anchor1" title="Link to this definition"></a></dt>
+<dd><p>Test set_anchor1 method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_set_anchor_with_tuple">
+<span class="sig-name descname"><span class="pre">test_set_anchor_with_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_set_anchor_with_tuple" title="Link to this definition"></a></dt>
+<dd><p>Test setting anchors with tuple coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestStaticJoint.test_set_constraints_does_nothing">
+<span class="sig-name descname"><span class="pre">test_set_constraints_does_nothing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestStaticJoint.test_set_constraints_does_nothing" title="Link to this definition"></a></dt>
+<dd><p>Test that set_constraints doesn’t raise.</p>
 </dd></dl>
 
 </dd></dl>

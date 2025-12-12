@@ -1,6 +1,9 @@
 # Project can generate several videos
 *.mp4
 
+# Backup files
+*.bak
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

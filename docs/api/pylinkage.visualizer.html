@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -9,15 +11,11 @@
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=08553120"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08553120"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -118,87 +116,83 @@
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.animated.plot_kinematic_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.animated.plot_kinematic_linkage" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">anim.FuncAnimation</span></span></span><a class="headerlink" href="#pylinkage.visualizer.animated.plot_kinematic_linkage" title="Link to this definition"></a></dt>
 <dd><p>Plot a linkage with an animation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – DESCRIPTION.</p></li>
-<li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – Figure to support the axes.</p></li>
-<li><p><strong>axis</strong> (<em>matplotlib.axes._subplots.AxesSubplot</em>) – The subplot to draw on.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of list of coordinates.</p></li>
-<li><p><strong>frames</strong> (<em>int</em>) – Number of frames to draw the linkage on. The default is 100.</p></li>
-<li><p><strong>interval</strong> (<em>float</em>) – Delay between frames in milliseconds. The default is 40 (24 fps).</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The linkage to animate.
+fig: Figure to support the axes.
+axis: The subplot to draw on.
+loci: list of list of coordinates.
+frames: Number of frames to draw the linkage on.
+interval: Delay between frames in milliseconds.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The animation object.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.animated.show_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.animated.show_linkage" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">anim.FuncAnimation</span></span></span><a class="headerlink" href="#pylinkage.visualizer.animated.show_linkage" title="Link to this definition"></a></dt>
 <dd><p>Display results as an animated drawing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – The Linkage you want to draw.</p></li>
-<li><p><strong>save</strong> (<em>bool</em>) – To save the animation. The default is False.</p></li>
-<li><p><strong>prev</strong> (<em>list</em><em> | </em><em>tuple</em>) – Previous coordinates to use for linkage. The default is None.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of loci. The default is None.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – Number of points to draw for a crank revolution.
-Useless when loci are set.
-The default is 100.</p></li>
-<li><p><strong>iteration_factor</strong> (<em>float</em>) – A simple way to subdivide the movement. The real number of points
-will be points * iteration_factor. The default is 1.</p></li>
-<li><p><strong>title</strong> (<em>str</em>) – Figure title. The default is str(len(ani)).</p></li>
-<li><p><strong>duration</strong> (<em>float</em>) – Animation duration (in seconds). The default is 5.</p></li>
-<li><p><strong>fps</strong> (<em>int</em>) – Number of frames per second for the output video.
-The default is 24.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The Linkage you want to draw.
+save: To save the animation.
+prev: Previous coordinates to use for linkage.
+loci: list of loci.
+points: Number of points to draw for a crank revolution.</p>
+<blockquote>
+<div><p>Useless when loci are set.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>iteration_factor: A simple way to subdivide the movement. The real</dt><dd><p>number of points will be points * iteration_factor.</p>
+</dd>
+</dl>
+<p>title: Figure title. Defaults to str(len(ani)).
+duration: Animation duration (in seconds).
+fps: Number of frames per second for the output video.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The animation object.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.animated.swarm_tiled_repr">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.animated.swarm_tiled_repr" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.visualizer.animated.swarm_tiled_repr" title="Link to this definition"></a></dt>
 <dd><p>Show all the linkages in a swarm in tiled mode.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>pylinkage.linkage.Linkage</em>) – The original Linkage that will be MODIFIED.</p></li>
-<li><p><strong>swarm</strong> (<em>list</em>) – Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
-positions).</p></li>
-<li><p><strong>fig</strong> (<em>matplotlib.figure.Figure</em>) – Figure to support the axes.</p></li>
-<li><p><strong>axes</strong> (<em>matplotlib.axes._subplots.AxesSubplot</em>) – The subplot to draw on.</p></li>
-<li><p><strong>points</strong> (<em>int</em>) – Number of steps to use for each Linkage. The default is 12.</p></li>
-<li><p><strong>iteration_factor</strong> (<em>float</em>) – A simple way to subdivide the movement. The real number of points
-will be points * iteration_factor. The default is 1.</p></li>
-<li><p><strong>dimension_func</strong> (<em>callable</em><em>, </em><em>optional</em>) – If you want a special formatting of dimensions from agents before
-passing them to the linkage. (Default value = None)</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The original Linkage that will be MODIFIED.
+swarm: Tuple of (iteration_number, list_of_agents) where each agent is</p>
+<blockquote>
+<div><p>(score, dimensions, initial_positions).</p>
+</div></blockquote>
+<p>fig: Figure to support the axes.
+axes: The subplot to draw on.
+points: Number of steps to use for each Linkage.
+iteration_factor: A simple way to subdivide the movement. The real</p>
+<blockquote>
+<div><p>number of points will be points * iteration_factor.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dimension_func: If you want a special formatting of dimensions from</dt><dd><p>agents before passing them to the linkage.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.animated.update_animated_plot">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">update_animated_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.animated.update_animated_plot" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.animated.</span></span><span class="sig-name descname"><span class="pre">update_animated_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Line2D</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Line2D</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.visualizer.animated.update_animated_plot" title="Link to this definition"></a></dt>
 <dd><p>Modify im, instead of recreating it to make the animation run faster.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
-<li><p><strong>index</strong> (<em>int</em>) – Frame index.</p></li>
-<li><p><strong>images</strong> (<em>list</em><em> of </em><em>images Artists</em>) – Artist to be modified.</p></li>
-<li><p><strong>loci</strong> (<em>list</em>) – list of loci.</p></li>
-</ul>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The linkage being animated.
+index: Frame index.
+images: Artist to be modified.
+loci: list of loci.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Updated version</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[Artists]</p>
+<dt>Returns:</dt><dd><p>Updated version of images.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -213,18 +207,17 @@ passing them to the linkage. (Default value = None)</p></li>
 <p>Static (not animated) visualization.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.visualizer.static.plot_static_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.static.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.visualizer.static.plot_static_linkage" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.static.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.visualizer.static.plot_static_linkage" title="Link to this definition"></a></dt>
 <dd><p>Plot a linkage without movement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>linkage</strong> (<a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage" title="pylinkage.linkage.linkage.Linkage"><em>Linkage</em></a>) – The linkage you want to see.</p></li>
-<li><p><strong>axis</strong> (<em>Artist</em>) – The graph we should draw on.</p></li>
-<li><p><strong>loci</strong> (<em>Iterable</em>) – List of list of coordinates. They will be plotted.</p></li>
-<li><p><strong>locus_highlights</strong> (<em>list</em>) – If a list, should be a list of list of coordinates you want to see
-highlighted. The default is None.</p></li>
-<li><p><strong>show_legend</strong> (<em>bool</em>) – To add an automatic legend to the graph. The default is False.</p></li>
-</ul>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage you want to see.
+axis: The graph we should draw on.
+loci: List of list of coordinates. They will be plotted.
+locus_highlights: If a list, should be a list of list of coordinates you</p>
+<blockquote>
+<div><p>want to see highlighted.</p>
+</div></blockquote>
+<p>show_legend: To add an automatic legend to the graph.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,6 +226,91 @@ highlighted. The default is None.</p></li>
 <section id="module-pylinkage.visualizer">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.visualizer" title="Link to this heading"></a></h2>
 <p>Linkage visualization features.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.visualizer.plot_kinematic_linkage">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_kinematic_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">anim.FuncAnimation</span></span></span><a class="headerlink" href="#pylinkage.visualizer.plot_kinematic_linkage" title="Link to this definition"></a></dt>
+<dd><p>Plot a linkage with an animation.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The linkage to animate.
+fig: Figure to support the axes.
+axis: The subplot to draw on.
+loci: list of list of coordinates.
+frames: Number of frames to draw the linkage on.
+interval: Delay between frames in milliseconds.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The animation object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.visualizer.plot_static_linkage">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">plot_static_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locus_highlights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_legend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.visualizer.plot_static_linkage" title="Link to this definition"></a></dt>
+<dd><p>Plot a linkage without movement.</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage you want to see.
+axis: The graph we should draw on.
+loci: List of list of coordinates. They will be plotted.
+locus_highlights: If a list, should be a list of list of coordinates you</p>
+<blockquote>
+<div><p>want to see highlighted.</p>
+</div></blockquote>
+<p>show_legend: To add an automatic legend to the graph.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.visualizer.show_linkage">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">show_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loci</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">24</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">anim.FuncAnimation</span></span></span><a class="headerlink" href="#pylinkage.visualizer.show_linkage" title="Link to this definition"></a></dt>
+<dd><p>Display results as an animated drawing.</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The Linkage you want to draw.
+save: To save the animation.
+prev: Previous coordinates to use for linkage.
+loci: list of loci.
+points: Number of points to draw for a crank revolution.</p>
+<blockquote>
+<div><p>Useless when loci are set.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>iteration_factor: A simple way to subdivide the movement. The real</dt><dd><p>number of points will be points * iteration_factor.</p>
+</dd>
+</dl>
+<p>title: Figure title. Defaults to str(len(ani)).
+duration: Animation duration (in seconds).
+fps: Number of frames per second for the output video.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The animation object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.visualizer.swarm_tiled_repr">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.visualizer.</span></span><span class="sig-name descname"><span class="pre">swarm_tiled_repr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">swarm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Coord</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Figure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">np.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iteration_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.visualizer.swarm_tiled_repr" title="Link to this definition"></a></dt>
+<dd><p>Show all the linkages in a swarm in tiled mode.</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The original Linkage that will be MODIFIED.
+swarm: Tuple of (iteration_number, list_of_agents) where each agent is</p>
+<blockquote>
+<div><p>(score, dimensions, initial_positions).</p>
+</div></blockquote>
+<p>fig: Figure to support the axes.
+axes: The subplot to draw on.
+points: Number of steps to use for each Linkage.
+iteration_factor: A simple way to subdivide the movement. The real</p>
+<blockquote>
+<div><p>number of points will be points * iteration_factor.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dimension_func: If you want a special formatting of dimensions from</dt><dd><p>agents before passing them to the linkage.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
