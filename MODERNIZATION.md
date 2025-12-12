@@ -435,12 +435,15 @@ def circle_intersect(c1, r1, c2, r2):
 - [x] Add mypy to CI
 - [x] Remove Python 3.7/3.8 compatibility code (math.dist fallback)
 
-### Phase 2: Type Safety
+### Phase 2: Type Safety (COMPLETED)
 
 - [x] Add type aliases module (`pylinkage/_types.py`)
 - [x] Annotate core classes (`Joint`, `Linkage`)
 - [x] Annotate optimization functions
-- [ ] Enable strict mypy checks (some errors remain due to Optional value handling)
+- [x] Enable strict mypy checks
+- [x] Annotate exceptions module
+- [x] Annotate visualizer modules (`core.py`, `static.py`, `animated.py`)
+- [x] Fix `joints/static.py` type annotations and signature compatibility
 
 ### Phase 3: Test Coverage
 

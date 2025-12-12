@@ -6,7 +6,10 @@ Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
-from typing import Any
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
@@ -17,24 +20,37 @@ from ..linkage.analysis import movement_bounding_box
 from .core import _get_color
 from .static import plot_static_linkage
 
+if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+
+    import numpy as np
+    from matplotlib.axes import Axes
+    from matplotlib.figure import Figure
+    from matplotlib.lines import Line2D
+
+    from .._types import Coord
+    from ..linkage.linkage import Linkage
+
 # List of animations
 ANIMATIONS: list[Any] = []
 
 
-def update_animated_plot(linkage, index, images, loci):
+def update_animated_plot(
+    linkage: Linkage,
+    index: int,
+    images: list[Line2D],
+    loci: Sequence[tuple[Coord, ...]],
+) -> list[Line2D]:
     """Modify im, instead of recreating it to make the animation run faster.
 
-    :param linkage: DESCRIPTION.
-    :type linkage: TYPE
-    :param index: Frame index.
-    :type index: int
-    :param images: Artist to be modified.
-    :type images: list of images Artists
-    :param loci: list of loci.
-    :type loci: list
+    Args:
+        linkage: The linkage being animated.
+        index: Frame index.
+        images: Artist to be modified.
+        loci: list of loci.
 
-    :returns: Updated version
-    :rtype: list[Artists]
+    Returns:
+        Updated version of images.
     """
     image = iter(images)
     locus = loci[index]
@@ -60,34 +76,30 @@ def update_animated_plot(linkage, index, images, loci):
 
 
 def plot_kinematic_linkage(
-        linkage,
-        fig,
-        axis,
-        loci,
-        frames=100,
-        interval=40
-):
+    linkage: Linkage,
+    fig: Figure,
+    axis: Axes,
+    loci: Sequence[tuple[Coord, ...]],
+    frames: int = 100,
+    interval: float = 40,
+) -> anim.FuncAnimation:
     """Plot a linkage with an animation.
 
-    :param linkage: DESCRIPTION.
-    :type linkage: pylinkage.linkage.Linkage
-    :param fig: Figure to support the axes.
-    :type fig: matplotlib.figure.Figure
-    :param axis: The subplot to draw on.
-    :type axis: matplotlib.axes._subplots.AxesSubplot
-    :param loci: list of list of coordinates.
-    :type loci: list
-    :param frames: Number of frames to draw the linkage on. The default is 100.
-    :type frames: int
-    :param interval: Delay between frames in milliseconds. The default is 40 (24 fps).
-    :type interval: float
+    Args:
+        linkage: The linkage to animate.
+        fig: Figure to support the axes.
+        axis: The subplot to draw on.
+        loci: list of list of coordinates.
+        frames: Number of frames to draw the linkage on.
+        interval: Delay between frames in milliseconds.
 
-
+    Returns:
+        The animation object.
     """
     axis.set_aspect('equal')
     axis.set_title("Animation")
 
-    images = []
+    images: list[Line2D] = []
     for joint in linkage.joints:
         for parent in (joint.joint0, joint.joint1):
             if parent is not None:
@@ -110,42 +122,33 @@ def plot_kinematic_linkage(
 
 
 def show_linkage(
-        linkage,
-        save=False,
-        prev=None,
-        loci=None,
-        points=100,
-        iteration_factor=1,
-        title=None,
-        duration=5,
-        fps=24
-):
+    linkage: Linkage,
+    save: bool = False,
+    prev: Sequence[Coord] | None = None,
+    loci: Sequence[tuple[Coord, ...]] | None = None,
+    points: int = 100,
+    iteration_factor: float = 1,
+    title: str | None = None,
+    duration: float = 5,
+    fps: int = 24,
+) -> anim.FuncAnimation:
     """Display results as an animated drawing.
 
-    :param linkage: The Linkage you want to draw.
-    :type linkage: pylinkage.linkage.Linkage
-    :param save: To save the animation. The default is False.
-    :type save: bool
-    :param prev: Previous coordinates to use for linkage. The default is None.
-    :type prev: list | tuple
-    :param loci: list of loci. The default is None.
-    :type loci: list
-    :param points: Number of points to draw for a crank revolution.
-        Useless when loci are set.
-        The default is 100.
-    :type points: int
-    :param iteration_factor: A simple way to subdivide the movement. The real number of points
-        will be points * iteration_factor. The default is 1.
-    :type iteration_factor: float
-    :param title: Figure title. The default is str(len(ani)).
-    :type title: str
-    :param duration: Animation duration (in seconds). The default is 5.
-    :type duration: float
-    :param fps: Number of frames per second for the output video.
-        The default is 24.
-    :type fps: int
+    Args:
+        linkage: The Linkage you want to draw.
+        save: To save the animation.
+        prev: Previous coordinates to use for linkage.
+        loci: list of loci.
+        points: Number of points to draw for a crank revolution.
+            Useless when loci are set.
+        iteration_factor: A simple way to subdivide the movement. The real
+            number of points will be points * iteration_factor.
+        title: Figure title. Defaults to str(len(ani)).
+        duration: Animation duration (in seconds).
+        fps: Number of frames per second for the output video.
 
-
+    Returns:
+        The animation object.
     """
     if title is None:
         title = str(len(ANIMATIONS))
@@ -153,12 +156,9 @@ def show_linkage(
     linkage.rebuild(prev)
     if loci is None:
         loci = tuple(
-            map(
-                tuple,
-                linkage.step(
-                    iterations=points * iteration_factor,
-                    dt=1 / iteration_factor
-                )
+            tuple(pos) for pos in linkage.step(  # type: ignore[arg-type]
+                iterations=int(points * iteration_factor),
+                dt=1 / iteration_factor
             )
         )
 
@@ -193,35 +193,27 @@ def show_linkage(
 
 
 def swarm_tiled_repr(
-    linkage,
-    swarm,
-    fig,
-    axes,
-    dimension_func=None,
-    points=12,
-    iteration_factor=1
-):
+    linkage: Linkage,
+    swarm: tuple[int, Sequence[tuple[float, np.ndarray, Sequence[Coord]]]],
+    fig: Figure,
+    axes: np.ndarray,
+    dimension_func: Callable[[np.ndarray], Sequence[float]] | None = None,
+    points: int = 12,
+    iteration_factor: float = 1,
+) -> None:
     """Show all the linkages in a swarm in tiled mode.
 
-    :param linkage: The original Linkage that will be MODIFIED.
-    :type linkage: pylinkage.linkage.Linkage
-    :param swarm: Sequence of list of 3 elements: for each iteration, for each agent, (score, dimensions and initial
-        positions).
-    :type swarm: list
-    :param fig: Figure to support the axes.
-    :type fig: matplotlib.figure.Figure
-    :param axes: The subplot to draw on.
-    :type axes: matplotlib.axes._subplots.AxesSubplot
-    :param points: Number of steps to use for each Linkage. The default is 12.
-    :type points: int
-    :param iteration_factor: A simple way to subdivide the movement. The real number of points
-        will be points * iteration_factor. The default is 1.
-    :type iteration_factor: float
-    :param dimension_func: If you want a special formatting of dimensions from agents before
-        passing them to the linkage. (Default value = None)
-    :type dimension_func: callable, optional
-
-
+    Args:
+        linkage: The original Linkage that will be MODIFIED.
+        swarm: Tuple of (iteration_number, list_of_agents) where each agent is
+            (score, dimensions, initial_positions).
+        fig: Figure to support the axes.
+        axes: The subplot to draw on.
+        points: Number of steps to use for each Linkage.
+        iteration_factor: A simple way to subdivide the movement. The real
+            number of points will be points * iteration_factor.
+        dimension_func: If you want a special formatting of dimensions from
+            agents before passing them to the linkage.
     """
     fig.suptitle(f"Iteration: {swarm[0]}, best score: {max(agent[0] for agent in swarm[1])}")
     for i, agent in enumerate(swarm[1]):
@@ -233,15 +225,13 @@ def swarm_tiled_repr(
         linkage.set_coords(agent[2])
         try:
             loci = tuple(
-                map(
-                    tuple,
-                    linkage.step(
-                        iterations=points * iteration_factor,
-                        dt=1 / iteration_factor
-                    )
+                tuple(pos) for pos in linkage.step(
+                    iterations=int(points * iteration_factor),
+                    dt=1 / iteration_factor
                 )
             )
         except UnbuildableError:
             continue
-        axes.flatten()[i].clear()
-        plot_static_linkage(linkage, axes.flatten()[i], loci)
+        ax: Axes = axes.flatten()[i]  # type: ignore[assignment]
+        ax.clear()
+        plot_static_linkage(linkage, ax, loci)  # type: ignore[arg-type]

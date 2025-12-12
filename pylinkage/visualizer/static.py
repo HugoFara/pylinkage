@@ -2,30 +2,39 @@
 Static (not animated) visualization.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from ..joints import Fixed, Linear, Revolute
 from ..joints.revolute import Pivot
 from .core import _get_color
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from matplotlib.axes import Axes
+
+    from .._types import Coord
+    from ..linkage.linkage import Linkage
+
 
 def plot_static_linkage(
-        linkage, axis, loci, locus_highlights=None,
-        show_legend=False
-):
+    linkage: Linkage,
+    axis: Axes,
+    loci: Iterable[tuple[Coord, ...]],
+    locus_highlights: list[list[Coord]] | None = None,
+    show_legend: bool = False,
+) -> None:
     """Plot a linkage without movement.
 
-    :param linkage: The linkage you want to see.
-    :type linkage: Linkage
-    :param axis: The graph we should draw on.
-    :type axis: Artist
-    :param loci: List of list of coordinates. They will be plotted.
-    :type loci: Iterable
-    :param locus_highlights: If a list, should be a list of list of coordinates you want to see
-        highlighted. The default is None.
-    :type locus_highlights: list
-    :param show_legend: To add an automatic legend to the graph. The default is False.
-    :type show_legend: bool
-
-
+    Args:
+        linkage: The linkage you want to see.
+        axis: The graph we should draw on.
+        loci: List of list of coordinates. They will be plotted.
+        locus_highlights: If a list, should be a list of list of coordinates you
+            want to see highlighted.
+        show_legend: To add an automatic legend to the graph.
     """
     axis.set_aspect('equal')
     axis.grid(True)
@@ -44,28 +53,24 @@ def plot_static_linkage(
             continue
         pos = joint.coord()
         par_pos = joint.joint0.coord()
-        plot_kwargs = {
-            "c": _get_color(joint),
-            "linewidth": .3
-        }
         axis.plot(
             [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-            **plot_kwargs
+            c=_get_color(joint), linewidth=.3
         )
         # Then second parent
-        if isinstance(joint, (Fixed, Pivot, Revolute)):
+        if isinstance(joint, (Fixed, Pivot, Revolute)) and joint.joint1 is not None:
             par_pos = joint.joint1.coord()
             axis.plot(
                 [par_pos[0], pos[0]], [par_pos[1], pos[1]],
-                **plot_kwargs
+                c=_get_color(joint), linewidth=.3
             )
-        elif isinstance(joint, Linear):
+        elif isinstance(joint, Linear) and joint.joint1 is not None and joint.joint2 is not None:
             # Different ordering
             par_pos = joint.joint2.coord()
             other_pos = joint.joint1.coord()
             axis.plot(
                 [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],
-                **plot_kwargs
+                c=_get_color(joint), linewidth=.3
             )
 
     # Highlight for specific loci

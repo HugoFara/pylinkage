@@ -1,6 +1,9 @@
 """
 Core features for visualization.
 """
+
+from __future__ import annotations
+
 from ..joints import (
     Crank,
     Fixed,
@@ -8,10 +11,11 @@ from ..joints import (
     Revolute,
     Static,
 )
+from ..joints.joint import Joint
 from ..joints.revolute import Pivot
 
 # Colors to use for plotting
-COLOR_SWITCHER = {
+COLOR_SWITCHER: dict[type[Joint], str] = {
     Static: 'k',
     Crank: 'g',
     Fixed: 'r',
@@ -21,11 +25,14 @@ COLOR_SWITCHER = {
 }
 
 
-def _get_color(joint):
+def _get_color(joint: Joint) -> str:
     """Search in COLOR_SWITCHER for the corresponding color.
 
-    :param joint:
+    Args:
+        joint: The joint to get the color for.
 
+    Returns:
+        The color string for matplotlib.
     """
     for joint_type, color in COLOR_SWITCHER.items():
         if isinstance(joint, joint_type):

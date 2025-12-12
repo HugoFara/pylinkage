@@ -198,16 +198,16 @@ def intersection(
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:
-        if obj_1 == obj_2 or (tol and math.dist(obj_1, obj_2) <= tol):  # type: ignore[arg-type]
-            return obj_1  # type: ignore[return-value]
+        if obj_1 == obj_2 or (tol and math.dist(obj_1, obj_2) <= tol):
+            return obj_1
         return None
     # Two circles
     if len(obj_1) == 3 and len(obj_2) == 3:
-        return circle_intersect(obj_1, obj_2)[1:]  # type: ignore[arg-type, return-value]
+        return circle_intersect(obj_1, obj_2)[1:]  # type: ignore[return-value]
     # Point and circle
     if len(obj_1) == 2 and len(obj_2) == 3:
-        if math.dist(obj_1, obj_2[:2]) - obj_2[2] <= tol:  # type: ignore[arg-type]
-            return obj_1  # type: ignore[return-value]
+        if math.dist(obj_1, obj_2[:2]) - obj_2[2] <= tol:
+            return obj_1
         return None
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:

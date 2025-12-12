@@ -7,24 +7,29 @@ Created on Wed Jun 16, 15:20:06 2021.
 @author: HugoFara
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from pylinkage.linkage.linkage import Linkage
+
 
 class UnbuildableError(Exception):
     """Should be raised when the constraints cannot be solved."""
 
-    def __init__(self, joint, message='Unable to solve constraints'):
+    def __init__(
+        self, joint: Any, message: str = 'Unable to solve constraints'
+    ) -> None:
         self.joint = joint
         self.message = message
         super().__init__(message)
 
-    def __str__(self):
-        """
-        Output the problematic joint.
+    def __str__(self) -> str:
+        """Output the problematic joint.
 
-        Returns
-        -------
-        str
+        Returns:
             Name of the joint that can't be solved.
-
         """
         return f"{self.message} on {self.joint}"
 
@@ -32,13 +37,18 @@ class UnbuildableError(Exception):
 class HypostaticError(Exception):
     """The linkage is under-constrained and multiple solutions may exist."""
 
-    def __init__(self, linkage, message='The linkage is under-constrained!'):
+    def __init__(
+        self, linkage: Linkage | str, message: str = 'The linkage is under-constrained!'
+    ) -> None:
         self.linkage = linkage
         super().__init__(message)
 
 
 class NotCompletelyDefinedError(Exception):
     """The linkage definition is incomplete."""
-    def __init__(self, joint, message='The joint is not completely defined!'):
+
+    def __init__(
+        self, joint: Any, message: str = 'The joint is not completely defined!'
+    ) -> None:
         self.joint = joint
         super().__init__(message)

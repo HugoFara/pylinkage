@@ -219,7 +219,7 @@ class Linkage:
                     joint.set_constraints(next(dispatcher), next(dispatcher))  # type: ignore[arg-type]
         else:
             for joint, constraint in zip(self.joints, constraints):
-                joint.set_constraints(*constraint)  # type: ignore[arg-type, misc]
+                joint.set_constraints(*constraint)  # type: ignore[misc]
 
     def get_rotation_period(self) -> int:
         """The number of iterations to finish in the previous state.
