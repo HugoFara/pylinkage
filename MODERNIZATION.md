@@ -9,6 +9,7 @@ This document outlines recommended improvements to bring pylinkage up to modern 
 ### Status: COMPLETED
 
 The project now uses [uv](https://docs.astral.sh/uv/) for dependency management with a modern `pyproject.toml`:
+
 - Removed `setup.py`, `setup.cfg`, `requirements.txt`, `requirements-dev.txt`
 - Using hatchling as build backend
 - Lock file at `uv.lock`
@@ -55,7 +56,9 @@ uv build                   # Build package
 ## 2. Type Hints Migration
 
 ### Current State
+
 Types documented in docstrings (Sphinx/Napoleon style):
+
 ```python
 def __init__(self, x=0, y=0, joint0=None, name=None):
     """
@@ -67,6 +70,7 @@ def __init__(self, x=0, y=0, joint0=None, name=None):
 ```
 
 ### Recommended Changes
+
 Migrate to PEP 484/604 annotations:
 
 ```python
@@ -116,6 +120,7 @@ def __init__(
 ### Type Aliases to Define
 
 Create `pylinkage/_types.py`:
+
 ```python
 """Type definitions for pylinkage."""
 from __future__ import annotations
@@ -133,6 +138,7 @@ FitnessFunc: TypeAlias = Callable[..., float]
 ## 3. Python Version Support
 
 ### Current State
+
 - `pyproject.toml` claims `>=3.7`
 - CI only tests 3.9-3.12
 - Contains Python 3.7 compatibility code
@@ -154,6 +160,7 @@ from math import dist
 ```
 
 **Update minimum version** to 3.9 in `pyproject.toml`:
+
 ```toml
 requires-python = ">=3.9"
 ```
@@ -165,6 +172,7 @@ requires-python = ">=3.9"
 ## 4. Test Infrastructure
 
 ### Current State
+
 - Uses `unittest` with `python -m unittest discover`
 - No coverage tracking
 - ~415 lines of tests for ~2,132 lines of code
@@ -182,6 +190,7 @@ pytest --cov=pylinkage --cov-report=html
 ```
 
 **Add missing test modules**:
+
 ```
 tests/
 ├── __init__.py
@@ -200,6 +209,7 @@ tests/
 ```
 
 **Example new test** for `visualizer/`:
+
 ```python
 # tests/visualizer/test_visualizer.py
 import pytest
@@ -233,6 +243,7 @@ def test_plot_kinematic_linkage(four_bar_linkage):
 ## 5. CI/CD Improvements
 
 ### Current Workflows
+
 - `codeql-analysis.yml` - security scanning
 - `python-package-conda.yml` - conda testing
 - `versioning-test.yml` - multi-version Python
@@ -241,6 +252,7 @@ def test_plot_kinematic_linkage(four_bar_linkage):
 ### Recommended Additions
 
 **Add to `versioning-test.yml`**:
+
 ```yaml
 - name: Type check with mypy
   run: |
@@ -260,6 +272,7 @@ def test_plot_kinematic_linkage(four_bar_linkage):
 ```
 
 **Add documentation build check** (new file `.github/workflows/docs.yml`):
+
 ```yaml
 name: Documentation
 
@@ -288,6 +301,7 @@ jobs:
 ## 6. Code Quality
 
 ### String Formatting
+
 Standardize on f-strings throughout:
 
 ```python
@@ -299,6 +313,7 @@ f"<{self.__class__.__name__} {self.coord()} with name {self.name}>"
 ```
 
 ### Module Exports
+
 Add `__all__` to public modules for explicit API:
 
 ```python
@@ -313,15 +328,19 @@ from .crank import Crank
 ### Address TODOs
 
 **`pylinkage/linkage/linkage.py:57`** - Automatic solving order:
+
 - Either implement properly with tests, or
 - Remove the experimental warning after validation
 
 **`pylinkage/linkage/linkage.py:120`** - `hyperstaticity()` method:
+
 - Add unit tests
 - Document the formula used
 
 ### Exception Handling
+
 Current exceptions in `pylinkage/exceptions.py` are well-structured. Consider adding:
+
 ```python
 class OptimizationError(Exception):
     """Raised when optimization fails to converge."""
@@ -333,6 +352,7 @@ class OptimizationError(Exception):
 ## 7. API Improvements
 
 ### Deprecation Strategy
+
 For any breaking changes, use warnings:
 
 ```python
@@ -350,6 +370,7 @@ def old_function():
 ### Consider Adding
 
 1. **Context manager for linkage simulation**:
+
 ```python
 with linkage.simulation(iterations=100) as sim:
     for step, coords in sim:
@@ -357,12 +378,14 @@ with linkage.simulation(iterations=100) as sim:
 ```
 
 2. **Async optimization** for long-running PSO:
+
 ```python
 async def optimize_async(linkage, fitness_func, ...):
     ...
 ```
 
 3. **JSON/YAML serialization** for linkage definitions:
+
 ```python
 linkage.to_json("my_linkage.json")
 linkage = Linkage.from_json("my_linkage.json")
@@ -373,11 +396,13 @@ linkage = Linkage.from_json("my_linkage.json")
 ## 8. Documentation
 
 ### Current State
+
 Well-structured Sphinx setup with autodoc.
 
 ### Recommended Improvements
 
 1. **Add doctest examples** to docstrings:
+
 ```python
 def circle_intersect(c1, r1, c2, r2):
     """Find intersection points of two circles.
@@ -400,6 +425,7 @@ def circle_intersect(c1, r1, c2, r2):
 ## Implementation Roadmap
 
 ### Phase 1: Foundation (no breaking changes)
+
 - [x] Consolidate to single `pyproject.toml`
 - [x] Add pytest and coverage
 - [x] Add ruff for linting
@@ -408,18 +434,21 @@ def circle_intersect(c1, r1, c2, r2):
 - [ ] Remove Python 3.7/3.8 compatibility code (math.dist fallback)
 
 ### Phase 2: Type Safety
+
 - [ ] Add type aliases module
 - [ ] Annotate core classes (`Joint`, `Linkage`)
 - [ ] Annotate optimization functions
 - [ ] Enable strict mypy checks
 
 ### Phase 3: Test Coverage
+
 - [ ] Add visualizer tests
 - [ ] Add integration tests
 - [ ] Reach 70% coverage
 - [ ] Add property-based testing with hypothesis
 
 ### Phase 4: API Enhancements
+
 - [ ] Add serialization support
 - [ ] Implement context manager API
 - [ ] Review and resolve TODOs

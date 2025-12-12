@@ -50,9 +50,11 @@ This section is mainly intended for maintainers.
 1. Update the version in `pyproject.toml` and `pylinkage/__init__.py`.
 2. Update CHANGELOG.md with release date and edit subsection titles.
 3. Regenerate the documentation (uses Sphinx):
+
    ```bash
    uv run sphinx-build -b html sphinx/ docs/
    ```
+
 4. Commit and add a tag (e.g., v0.4.0).
 5. Publish a new [GitHub release](https://github.com/HugoFara/pylinkage/releases).
 

@@ -9,12 +9,14 @@ Pylinkage is a Python library for building and optimizing planar linkages using 
 ## Common Commands
 
 ### Setup and Dependencies
+
 ```bash
 uv sync                              # Install all dependencies (including dev)
 uv sync --no-dev                     # Install only production dependencies
 ```
 
 ### Testing
+
 ```bash
 uv run pytest                        # Run all tests
 uv run pytest tests/joints/          # Run specific test directory
@@ -23,6 +25,7 @@ uv run pytest --cov=pylinkage        # Run with coverage
 ```
 
 ### Linting and Type Checking
+
 ```bash
 uv run ruff check .                  # Lint code
 uv run ruff check . --fix            # Lint and auto-fix
@@ -30,6 +33,7 @@ uv run mypy pylinkage                # Type check
 ```
 
 ### Building
+
 ```bash
 uv build                             # Build wheel and sdist
 uv run sphinx-build -b html sphinx/ docs/  # Build documentation
@@ -66,18 +70,21 @@ uv run sphinx-build -b html sphinx/ docs/  # Build documentation
 ### Key Patterns
 
 **Linkage Definition Flow:**
+
 1. Create joint instances (Crank, Revolute, etc.) with parent references
 2. Wrap joints in a `Linkage(joints=..., order=...)`
 3. Call `linkage.step()` to simulate one full rotation cycle
 4. Use `show_linkage()` to visualize
 
 **Optimization Flow:**
+
 1. Define a fitness function decorated with `@kinematic_minimization` or `@kinematic_maximization`
 2. Generate bounds with `generate_bounds(linkage.get_num_constraints())`
 3. Call `particle_swarm_optimization()` or `trials_and_errors_optimization()`
 4. Apply results via `linkage.set_num_constraints(position)`
 
 **Constraint System:**
+
 - `get_num_constraints()`: Returns flat list of distances/angles
 - `set_num_constraints()`: Applies constraints back to joints
 - `get_coords()`/`set_coords()`: Joint positions (used for initial positions in optimization)
