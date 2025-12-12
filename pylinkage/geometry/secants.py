@@ -34,7 +34,9 @@ def secant_circles_intersections(
     """Return the TWO intersections of secant circles."""
     # Distance between projected P and points
     # and the points of which P is projection
-    height = math.sqrt(radius1 ** 2 - mid_dist ** 2) / distance
+    # Clamp to handle floating-point precision issues near tangent cases
+    height_squared = max(0.0, radius1 ** 2 - mid_dist ** 2)
+    height = math.sqrt(height_squared) / distance
     inter1: Coord = (
         projected[0] + height * dist_y,
         projected[1] - height * dist_x,

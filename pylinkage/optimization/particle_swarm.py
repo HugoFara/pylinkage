@@ -61,7 +61,8 @@ def particle_swarm_optimization(
     :param follower: Social coefficient, c2 in pyswarms. The default is .5.
     :param neighbors: Number of neighbors to consider. The default is 17.
     :param iters: Number of iterations to describe. The default is 200.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound). (Default value = None).
+    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
+        (Default value = None).
     :param order_relation: How to compare scores.
         There should not be anything else than the built-in
         max and min functions.

@@ -1,4 +1,18 @@
-"""Type definitions for pylinkage."""
+"""
+Type definitions for pylinkage.
+
+This module defines type aliases used throughout the pylinkage library to ensure
+consistent typing and improve code readability. These types represent the core
+geometric and mathematical concepts used in linkage simulation and optimization.
+
+Type Categories:
+    Coordinates: Coord, MaybeCoord, Coord3 - represent points and circles in 2D space
+    Paths: Locus, Loci - represent trajectories traced by joints during motion
+    Constraints: Constraints, Bounds - represent geometric constraints and optimization bounds
+    Geometry: Circle, Line, BoundingBox - represent geometric primitives
+    Functions: FitnessFunc - callable types for optimization
+    Positions: JointPositions - represent joint state during simulation
+"""
 
 import sys
 from collections.abc import Callable, Sequence

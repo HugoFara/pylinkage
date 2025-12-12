@@ -211,7 +211,9 @@ class Linkage:
                     j.reload()
             yield tuple(j.coord() for j in self.joints)
 
-    def get_num_constraints(self, flat: bool = True) -> list[float | None] | list[tuple[float | None, ...]]:
+    def get_num_constraints(
+        self, flat: bool = True
+    ) -> list[float | None] | list[tuple[float | None, ...]]:
         """Numeric constraints of this linkage.
 
         :param flat: Whether to force one-dimensional representation of constraints.

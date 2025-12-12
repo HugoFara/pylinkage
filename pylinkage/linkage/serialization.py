@@ -27,7 +27,9 @@ JOINT_TYPES: dict[str, type[Joint]] = {
 }
 
 
-def _serialize_joint_ref(joint_ref: Joint | None, linkage_joints: tuple[Joint, ...]) -> dict[str, Any] | None:
+def _serialize_joint_ref(
+    joint_ref: Joint | None, linkage_joints: tuple[Joint, ...]
+) -> dict[str, Any] | None:
     """Serialize a joint reference.
 
     If the joint is in the linkage's joints list, reference by name.
@@ -226,7 +228,11 @@ def linkage_to_dict(linkage: Linkage) -> dict[str, Any]:
     return {
         "name": linkage.name,
         "joints": [joint_to_dict(j, linkage.joints) for j in linkage.joints],
-        "solve_order": [j.name for j in linkage._solve_order] if hasattr(linkage, "_solve_order") else None,
+        "solve_order": (
+            [j.name for j in linkage._solve_order]
+            if hasattr(linkage, "_solve_order")
+            else None
+        ),
     }
 
 

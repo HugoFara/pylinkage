@@ -33,6 +33,7 @@ uv run pytest --cov=pylinkage        # Run with coverage
 ```bash
 uv run ruff check .                  # Lint code
 uv run ruff check . --fix            # Lint and auto-fix
+uv run ruff format .                 # Format code
 uv run mypy pylinkage                # Type check
 ```
 
@@ -48,16 +49,18 @@ uv run sphinx-build -b html sphinx/ docs/  # Build documentation
 ### Package Structure
 
 - **pylinkage/joints/**: Joint types that form linkage building blocks
-  - `Static`: Fixed point in space (base class)
+  - `Static`: Fixed point in space (base class for all joints)
   - `Crank`: Rotating motor joint (creates a motor + pin joint)
   - `Revolute`: Pin joint connecting two parents
     (creates 3 internal pin joints forming a deformable triangle)
+  - `Pivot`: Low-level pin joint (used internally by Revolute)
   - `Fixed`: Static joint with fixed distance constraints
   - `Linear`: Joint constrained to move along a line
 
 - **pylinkage/linkage/**: Linkage class that orchestrates joint collections
   - `Linkage`: Main class managing joints, solving order, and simulation
     via `step()` method
+  - `Simulation`: Container for simulation results (loci, steps)
   - `analysis.py`: Helper functions like `bounding_box()` and `kinematic_default_test()`
 
 - **pylinkage/optimization/**: Optimization algorithms
@@ -96,8 +99,14 @@ uv run sphinx-build -b html sphinx/ docs/  # Build documentation
 - `set_num_constraints()`: Applies constraints back to joints
 - `get_coords()`/`set_coords()`: Joint positions (used for initial positions in optimization)
 
+**Exceptions:**
+
+- `UnbuildableError`: Raised when a linkage cannot be assembled (geometric impossibility)
+- `UnderconstrainedError`: Raised when a linkage is underconstrained (too few constraints)
+- `NotCompletelyDefinedError`: Raised when joint parameters are incomplete
+
 ## Dependencies
 
 Core: numpy, matplotlib, pyswarms, tqdm
 
-Dev (managed via uv): pytest, pytest-cov, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser
+Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser

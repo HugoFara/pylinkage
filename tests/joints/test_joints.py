@@ -12,6 +12,7 @@ from pylinkage import UnbuildableError
 from pylinkage.exceptions import NotCompletelyDefinedError
 from pylinkage.joints import Crank, Fixed, Linear, Revolute, Static
 from pylinkage.joints.joint import joint_syntax_parser
+from pylinkage.joints.revolute import Pivot
 
 
 class TestJointSyntaxParser(unittest.TestCase):
@@ -337,6 +338,100 @@ class TestRevolute(unittest.TestCase):
         with self.assertRaises(UnbuildableError):
             pivot3.reload()
 
+    def test_get_constraints(self):
+        """Test get_constraints returns distances."""
+        joint = Revolute(0, 0, distance0=2.5, distance1=3.5)
+        self.assertEqual(joint.get_constraints(), (2.5, 3.5))
+
+    def test_set_constraints(self):
+        """Test set_constraints updates distances."""
+        joint = Revolute(0, 0, distance0=1, distance1=1)
+        joint.set_constraints(2.0, 3.0)
+        self.assertEqual(joint.get_constraints(), (2.0, 3.0))
+
+    def test_set_constraints_partial(self):
+        """Test set_constraints with None keeps existing value."""
+        joint = Revolute(0, 0, distance0=1, distance1=2)
+        joint.set_constraints(5.0, None)
+        self.assertEqual(joint.get_constraints(), (5.0, 2))
+
+    def test_set_anchor0(self):
+        """Test set_anchor0 method."""
+        joint = Revolute(0, 0)
+        anchor = Static(1, 1)
+        joint.set_anchor0(anchor, distance=2.0)
+        self.assertIs(joint.joint0, anchor)
+        self.assertEqual(joint.r0, 2.0)
+
+    def test_set_anchor1(self):
+        """Test set_anchor1 method."""
+        joint = Revolute(0, 0)
+        anchor = Static(1, 1)
+        joint.set_anchor1(anchor, distance=3.0)
+        self.assertIs(joint.joint1, anchor)
+        self.assertEqual(joint.r1, 3.0)
+
+    def test_set_anchor_with_tuple(self):
+        """Test set_anchor with tuple creates Static."""
+        joint = Revolute(0, 0)
+        joint.set_anchor0((5, 5), distance=1.0)
+        self.assertIsInstance(joint.joint0, Static)
+        self.assertEqual(joint.joint0.coord(), (5, 5))
+
+    def test_circle_method(self):
+        """Test circle method returns correct circle."""
+        parent1 = Static(0, 0)
+        parent2 = Static(2, 0)
+        joint = Revolute(1, 1, joint0=parent1, joint1=parent2, distance0=1.5, distance1=2.5)
+        self.assertEqual(joint.circle(parent1), (0, 0, 1.5))
+        self.assertEqual(joint.circle(parent2), (2, 0, 2.5))
+
+    def test_circle_method_invalid_joint(self):
+        """Test circle raises ValueError for unknown joint."""
+        parent1 = Static(0, 0)
+        parent2 = Static(2, 0)
+        other = Static(5, 5)
+        joint = Revolute(1, 1, joint0=parent1, joint1=parent2, distance0=1.5, distance1=2.5)
+        with self.assertRaises(ValueError):
+            joint.circle(other)
+
+    def test_get_joint_as_circle_invalid_index(self):
+        """Test __get_joint_as_circle__ raises for invalid index."""
+        parent1 = Static(0, 0)
+        parent2 = Static(2, 0)
+        joint = Revolute(1, 1, joint0=parent1, joint1=parent2, distance0=1.5, distance1=2.5)
+        with self.assertRaises(ValueError):
+            joint.__get_joint_as_circle__(2)
+
+    def test_reload_no_joint0(self):
+        """Test reload with no joint0 does nothing."""
+        joint = Revolute(1, 2)
+        joint.reload()
+        self.assertEqual(joint.coord(), (1, 2))
+
+    def test_reload_one_constraint_warning(self):
+        """Test reload with only one valid constraint emits warning."""
+        import warnings
+        parent = Static(0, 0)
+        joint = Revolute(1, 1, joint0=parent, distance0=1.5)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            joint.reload()
+            self.assertEqual(len(w), 1)
+            self.assertIn("Only one constraint", str(w[0].message))
+
+    def test_reload_coincident_circles_warning(self):
+        """Test reload with coincident circles emits warning."""
+        import warnings
+        parent1 = Static(0, 0)
+        parent2 = Static(0, 0)  # Same position
+        joint = Revolute(1, 0, joint0=parent1, joint1=parent2, distance0=1, distance1=1)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            joint.reload()
+            self.assertEqual(len(w), 1)
+            self.assertIn("infinite number", str(w[0].message))
+
 
 class TestFixed(unittest.TestCase):
     """Test Fixed_Joint."""
@@ -351,6 +446,29 @@ class TestFixed(unittest.TestCase):
         )
         fixed.reload()
         self.assertEqual((1, 0), fixed.coord())
+
+
+class TestPivotDeprecation(unittest.TestCase):
+    """Test Pivot class deprecation."""
+
+    def test_pivot_deprecation_warning(self):
+        """Test that Pivot emits deprecation warning."""
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            Pivot(0, 0)
+            self.assertEqual(len(w), 1)
+            self.assertTrue(issubclass(w[0].category, DeprecationWarning))
+            self.assertIn("deprecated", str(w[0].message).lower())
+
+    def test_pivot_inherits_revolute(self):
+        """Test that Pivot still works as Revolute."""
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            pivot = Pivot(1, 2, distance0=1, distance1=2)
+            self.assertEqual(pivot.coord(), (1, 2))
+            self.assertEqual(pivot.get_constraints(), (1, 2))
 
 
 if __name__ == '__main__':

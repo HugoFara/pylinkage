@@ -61,4 +61,7 @@ class MutableAgent:
         raise IndexError()
 
     def __repr__(self) -> str:
-        return f"Agent(score={self.score}, dimensions={self.dimensions}, init_positions={self.init_positions})"
+        return (
+            f"Agent(score={self.score}, dimensions={self.dimensions}, "
+            f"init_positions={self.init_positions})"
+        )
