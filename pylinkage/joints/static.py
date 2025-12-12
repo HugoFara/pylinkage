@@ -2,6 +2,8 @@
 Static joint definition file.
 """
 
+from __future__ import annotations
+
 from . import joint as pl_joint
 
 
@@ -11,7 +13,7 @@ class Static(pl_joint.Joint):
     Mostly used for the frame.
     """
 
-    __slots__ = tuple()
+    __slots__: tuple[str, ...] = ()
 
     def __init__(self, x=0, y=0, name=None):
         """

@@ -60,11 +60,15 @@ class Crank(pl_joint.Joint):
                 f'{self.joint0} has None coordinates. '
                 f'{self} cannot be calculated'
             )
+        # Type assertions after validation
+        assert self.joint0.x is not None and self.joint0.y is not None
+        assert self.x is not None and self.y is not None
+        assert self.r is not None and self.angle is not None
         # Rotation angle of local space relative to global
         rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
         self.x, self.y = pl_geom.cyl_to_cart(
             self.r, rot + self.angle * dt,
-            self.joint0.coord()
+            (self.joint0.x, self.joint0.y)
         )
 
     def get_constraints(self) -> tuple[float | None]:

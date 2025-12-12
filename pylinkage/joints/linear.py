@@ -47,10 +47,15 @@ class Linear(pl_joint.Joint):
         self.revolute_radius = revolute_radius
         self.joint2 = pl_joint.joint_syntax_parser(joint2)
 
-    def reload(self) -> None:
-        """Compute position of revolute joint, with the three linked joints."""
+    def reload(self, dt: float = 1) -> None:
+        """Compute position of revolute joint, with the three linked joints.
+
+        :param dt: Unused, but preserves the object structure.
+        """
         if self.joint0 is None:
             raise pl_exceptions.NotCompletelyDefinedError(self, "joint0 is not defined")
+        if self.joint1 is None or self.joint2 is None:
+            raise pl_exceptions.NotCompletelyDefinedError(self, "joint1 or joint2 is not defined")
         positions_circle = (*self.joint0.coord(), self.revolute_radius)
         if None in positions_circle:
             raise pl_exceptions.UnbuildableError(
@@ -58,10 +63,15 @@ class Linear(pl_joint.Joint):
                 message="Joint has missing constraints. "
                         "Current constraints are " + str(positions_circle)
             )
+        # Type assertions after validation
+        assert self.joint0.x is not None and self.joint0.y is not None
+        assert self.revolute_radius is not None
+        assert self.joint1.x is not None and self.joint1.y is not None
+        assert self.joint2.x is not None and self.joint2.y is not None
         positions = geom.circle_line_from_points_intersection(
-            positions_circle,
-            self.joint1.coord(),
-            self.joint2.coord()
+            (self.joint0.x, self.joint0.y, self.revolute_radius),
+            (self.joint1.x, self.joint1.y),
+            (self.joint2.x, self.joint2.y)
         )
         if len(positions) == 0:
             raise pl_exceptions.UnbuildableError(self)
@@ -69,15 +79,17 @@ class Linear(pl_joint.Joint):
             self.x, self.y = positions[0]
         else:
             # Got to the nearest point
-            self.x, self.y = geom.get_nearest_point(self.coord(), positions[0], positions[1])
+            assert self.x is not None and self.y is not None
+            self.x, self.y = geom.get_nearest_point((self.x, self.y), positions[0], positions[1])
 
     def get_constraints(self) -> tuple[float | None]:
         """Return the only distance constraint for this joint."""
         return (self.revolute_radius,)
 
-    def set_constraints(self, distance0: float | None = None) -> None:
+    def set_constraints(self, distance0: float | None = None, *args: float | None) -> None:
         """Set the only distance constraint for this joint.
 
         :param distance0: Distance from joint0. (Default value = None).
+        :param args: Unused, but preserves the object structure.
         """
         self.revolute_radius = distance0 or self.revolute_radius

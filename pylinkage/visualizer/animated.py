@@ -6,6 +6,8 @@ Created on Mon Jun 14, 12:13:58 2021.
 
 @author: HugoFara
 """
+from typing import Any
+
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 
@@ -16,7 +18,7 @@ from .core import _get_color
 from .static import plot_static_linkage
 
 # List of animations
-ANIMATIONS = []
+ANIMATIONS: list[Any] = []
 
 
 def update_animated_plot(linkage, index, images, loci):

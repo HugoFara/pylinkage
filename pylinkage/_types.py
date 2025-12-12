@@ -2,6 +2,7 @@
 
 import sys
 from collections.abc import Callable, Sequence
+from typing import Optional
 
 # TypeAlias is available in typing from Python 3.10+
 # For 3.9 compatibility, we use typing_extensions
@@ -14,6 +15,10 @@ else:
 Coord: TypeAlias = tuple[float, float]
 """A 2D coordinate as (x, y)."""
 
+# Coordinate that may contain None (for uninitialized joints)
+MaybeCoord: TypeAlias = tuple[Optional[float], Optional[float]]
+"""A 2D coordinate that may contain None values."""
+
 Coord3: TypeAlias = tuple[float, float, float]
 """A 3-element tuple, typically used for circles (x, y, radius)."""
 
@@ -24,9 +29,9 @@ Locus: TypeAlias = tuple[Coord, ...]
 Loci: TypeAlias = tuple[Locus, ...]
 """Multiple loci, one per joint in a linkage."""
 
-# Constraint types
-Constraints: TypeAlias = tuple[float, ...]
-"""A sequence of geometric constraints (distances, angles)."""
+# Constraint types - may contain None for uninitialized constraints
+Constraints: TypeAlias = tuple[Optional[float], ...]
+"""A sequence of geometric constraints (distances, angles), may contain None."""
 
 Bounds: TypeAlias = tuple[Sequence[float], Sequence[float]]
 """Optimization bounds as (lower_bounds, upper_bounds)."""
@@ -35,9 +40,9 @@ Bounds: TypeAlias = tuple[Sequence[float], Sequence[float]]
 FitnessFunc: TypeAlias = Callable[..., float]
 """A fitness function that returns a score."""
 
-# Joint position types
-JointPositions: TypeAlias = Sequence[Coord]
-"""A sequence of joint coordinates."""
+# Joint position types - may contain None for uninitialized positions
+JointPositions: TypeAlias = Sequence[MaybeCoord]
+"""A sequence of joint coordinates, may contain None values."""
 
 # Circle type for geometry operations
 Circle: TypeAlias = tuple[float, float, float]

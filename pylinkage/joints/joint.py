@@ -8,7 +8,7 @@ import abc
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .._types import Constraints, Coord
+    from .._types import Constraints, Coord, MaybeCoord
 
 
 def joint_syntax_parser(joint: Joint | Coord | None) -> Joint | Static | None:
@@ -43,8 +43,8 @@ class Joint(abc.ABC):
 
     def __init__(
         self,
-        x: float = 0,
-        y: float = 0,
+        x: float | None = 0,
+        y: float | None = 0,
         joint0: Joint | Coord | None = None,
         joint1: Joint | Coord | None = None,
         name: str | None = None,
@@ -77,7 +77,7 @@ class Joint(abc.ABC):
 
     def set_coord(
         self,
-        *args: float | Coord,
+        *args: float | None | Coord | MaybeCoord,
     ) -> None:
         """Take a sequence or two scalars, and assign them to object x, y.
 
@@ -90,7 +90,9 @@ class Joint(abc.ABC):
             else:
                 raise TypeError("Single argument must be a sequence of two floats")
         else:
-            self.x, self.y = float(args[0]), float(args[1])  # type: ignore[arg-type]
+            x, y = args[0], args[1]
+            self.x = float(x) if x is not None else None  # type: ignore[arg-type]
+            self.y = float(y) if y is not None else None  # type: ignore[arg-type]
 
     @abc.abstractmethod
     def get_constraints(self) -> Constraints:
@@ -104,6 +106,16 @@ class Joint(abc.ABC):
         """Set geometric constraints applying to this Joint."""
         raise NotImplementedError(
             "You can't set a constraint from an abstract class."
+        )
+
+    @abc.abstractmethod
+    def reload(self, dt: float = 1) -> None:
+        """Recompute joint coordinates based on constraints and parent joints.
+
+        :param dt: Time step or fraction of movement. The default is 1.
+        """
+        raise NotImplementedError(
+            "You can't reload from an abstract class."
         )
 
 
@@ -132,8 +144,11 @@ class Static(Joint):
         """
         super().__init__(x, y, name=name)
 
-    def reload(self) -> None:
-        """Do nothing, for consistency only."""
+    def reload(self, dt: float = 1) -> None:
+        """Do nothing, for consistency only.
+
+        :param dt: Unused, but preserves the object structure.
+        """
         pass
 
     def get_constraints(self) -> tuple[()]:

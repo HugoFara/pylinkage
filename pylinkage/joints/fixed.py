@@ -50,7 +50,7 @@ class Fixed(pl_joint.Joint):
         self.angle = angle
         self.r = distance
 
-    def reload(self) -> None:
+    def reload(self, dt: float = 1) -> None:
         """Compute point coordinates.
 
         We know point position relative to its two parents, which gives a local
@@ -58,11 +58,15 @@ class Fixed(pl_joint.Joint):
         We know the orientation of local space, so we can solve the
         whole. Local space is defined by link[0] as the origin and
         (link[0], link[1]) as abscissas axis.
+
+        :param dt: Unused, but preserves the object structure.
         """
-        if self.joint0 is None:
-            return
         if self.joint0 is None or self.joint1 is None:
             raise pl_exceptions.HypostaticError(f'Not enough constraints for {self}')
+        # Type assertions after validation
+        assert self.joint0.x is not None and self.joint0.y is not None
+        assert self.joint1.x is not None and self.joint1.y is not None
+        assert self.r is not None and self.angle is not None
         # Rotation angle of local space relative to global
         rot = math.atan2(
             self.joint1.y - self.joint0.y,
@@ -70,7 +74,7 @@ class Fixed(pl_joint.Joint):
         )
         # Position in global space
         self.x, self.y = pl_geom.cyl_to_cart(
-            self.r, self.angle + rot, self.joint0.coord()
+            self.r, self.angle + rot, (self.joint0.x, self.joint0.y)
         )
 
     def get_constraints(self) -> tuple[float | None, float | None]:
@@ -81,11 +85,13 @@ class Fixed(pl_joint.Joint):
         self,
         distance: float | None = None,
         angle: float | None = None,
+        *args: float | None,
     ) -> None:
         """Set geometric constraints.
 
         :param distance: Distance from joint0. (Default value = None).
         :param angle: Angle in radians. (Default value = None).
+        :param args: Unused, but preserves the object structure.
         """
         self.r, self.angle = distance or self.r, angle or self.angle
 

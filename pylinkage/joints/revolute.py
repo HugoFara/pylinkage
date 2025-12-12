@@ -66,8 +66,14 @@ class Revolute(pl_joint.Joint):
         :return: Constraint as a circle.
         """
         if index == 0:
+            assert self.joint0 is not None
+            assert self.joint0.x is not None and self.joint0.y is not None
+            assert self.r0 is not None
             return self.joint0.x, self.joint0.y, self.r0
         if index == 1:
+            assert self.joint1 is not None
+            assert self.joint1.x is not None and self.joint1.y is not None
+            assert self.r1 is not None
             return self.joint1.x, self.joint1.y, self.r1
         raise ValueError(f'index should be 0 or 1, not {index}')
 
@@ -78,18 +84,25 @@ class Revolute(pl_joint.Joint):
         :param joint: Parent joint you want to use.
         :returns: Circle is a tuple (abscissa, ordinate, radius).
         """
+        assert joint.x is not None and joint.y is not None
         if self.joint0 is joint:
+            assert self.r0 is not None
             return joint.x, joint.y, self.r0
         if self.joint1 is joint:
+            assert self.r1 is not None
             return joint.x, joint.y, self.r1
         raise ValueError(f'{joint} is not in joints of {self}')
 
-    def reload(self) -> None:
-        """Compute the position of revolute joint, use the two linked joints."""
+    def reload(self, dt: float = 1) -> None:
+        """Compute the position of revolute joint, use the two linked joints.
+
+        :param dt: Unused, but preserves the object structure.
+        """
         if self.joint0 is None:
             return
         # Fixed joint as reference. In links, we only keep fixed objects
-        ref = tuple(x for x in self.__get_joints__() if None not in x.coord())
+        joints = self.__get_joints__()
+        ref = tuple(x for x in joints if x is not None and None not in x.coord())
         if len(ref) == 0:
             # Don't change coordinates (irrelevant)
             return
@@ -109,10 +122,17 @@ class Revolute(pl_joint.Joint):
             if intersections[0] == 0:
                 raise pl_exceptions.UnbuildableError(self)
             if intersections[0] == 1:
-                self.x, self.y = intersections[1]
+                coord = intersections[1]  # type: ignore[misc]
+                assert isinstance(coord, tuple) and len(coord) == 2
+                self.x, self.y = coord
             elif intersections[0] == 2:
+                assert self.x is not None and self.y is not None
+                coord1 = intersections[1]  # type: ignore[misc]
+                coord2 = intersections[2]  # type: ignore[misc]
+                assert isinstance(coord1, tuple) and len(coord1) == 2
+                assert isinstance(coord2, tuple) and len(coord2) == 2
                 self.x, self.y = pl_geom.core.get_nearest_point(
-                    self.coord(), intersections[1], intersections[2]
+                    (self.x, self.y), coord1, coord2
                 )
             elif intersections[0] == 3:
                 warnings.warn(
@@ -121,8 +141,13 @@ class Revolute(pl_joint.Joint):
                     stacklevel=2,
                 )
                 # We project position on circle of possible positions
+                assert self.joint0.x is not None and self.joint0.y is not None
+                assert self.x is not None and self.y is not None
+                assert self.r0 is not None
                 angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
-                self.x, self.y = pl_geom.cyl_to_cart(self.r0, angle, self.joint0.coord())
+                self.x, self.y = pl_geom.cyl_to_cart(
+                    self.r0, angle, (self.joint0.x, self.joint0.y)
+                )
 
     def get_constraints(self) -> tuple[float | None, float | None]:
         """Return the two constraining distances of this joint."""
@@ -132,11 +157,13 @@ class Revolute(pl_joint.Joint):
         self,
         distance0: float | None = None,
         distance1: float | None = None,
+        *args: float | None,
     ) -> None:
         """Set geometric constraints.
 
         :param distance0: Distance to the first reference (Default value = None).
         :param distance1: Distance to the second reference (Default value = None).
+        :param args: Unused, but preserves the object structure.
         """
         self.r0, self.r1 = distance0 or self.r0, distance1 or self.r1
 
