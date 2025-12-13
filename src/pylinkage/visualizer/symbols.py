@@ -5,7 +5,6 @@ This module provides shared symbol metadata used by visualization backends
 to render proper ISO 3952 kinematic diagram symbols.
 """
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum, auto
@@ -68,7 +67,7 @@ LINK_COLORS: list[str] = [
 ]
 
 
-def get_symbol_spec(joint: Joint) -> SymbolSpec:
+def get_symbol_spec(joint: "Joint") -> SymbolSpec:
     """Get the symbol specification for a joint.
 
     Args:
@@ -96,7 +95,7 @@ def get_link_color(index: int) -> str:
     return LINK_COLORS[index % len(LINK_COLORS)]
 
 
-def is_ground_joint(joint: Joint) -> bool:
+def is_ground_joint(joint: "Joint") -> bool:
     """Check if a joint should be rendered as a ground/fixed support.
 
     Args:

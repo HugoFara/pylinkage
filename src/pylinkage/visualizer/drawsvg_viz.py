@@ -5,17 +5,15 @@ This module provides SVG output with proper ISO 3952 kinematic symbols,
 suitable for engineering documentation and academic publications.
 """
 
-from __future__ import annotations
 
 import math
 from typing import TYPE_CHECKING, Literal
 
 import drawsvg as draw
 
-from ..joints import Crank, Fixed, Linear, Static
+from ..joints import Fixed, Linear
 from ..joints.revolute import Pivot
 from .symbols import (
-    LINK_COLORS,
     LinkStyle,
     SymbolType,
     get_link_color,
@@ -339,8 +337,8 @@ def _draw_dimension(
 
 
 def plot_linkage_svg(
-    linkage: Linkage,
-    loci: Iterable[tuple[Coord, ...]] | None = None,
+    linkage: "Linkage",
+    loci: "Iterable[tuple[Coord, ...]] | None" = None,
     *,
     title: str | None = None,
     show_dimensions: bool = False,
@@ -563,9 +561,9 @@ def plot_linkage_svg(
 
 
 def save_linkage_svg(
-    linkage: Linkage,
+    linkage: "Linkage",
     path: str,
-    loci: Iterable[tuple[Coord, ...]] | None = None,
+    loci: "Iterable[tuple[Coord, ...]] | None" = None,
     **kwargs,
 ) -> None:
     """Save a linkage diagram to an SVG file.

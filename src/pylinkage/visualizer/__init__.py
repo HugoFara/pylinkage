@@ -42,19 +42,19 @@ from .animated import (
     swarm_tiled_repr as swarm_tiled_repr,
 )
 from .core import COLOR_SWITCHER as COLOR_SWITCHER
+
+# drawsvg backend
+from .drawsvg_viz import plot_linkage_svg as plot_linkage_svg
+from .drawsvg_viz import save_linkage_svg as save_linkage_svg
+
+# Plotly backend
+from .plotly_viz import animate_linkage_plotly as animate_linkage_plotly
+from .plotly_viz import plot_linkage_plotly as plot_linkage_plotly
 from .pso_plots import animate_dashboard as animate_dashboard
 from .pso_plots import animate_parallel_coordinates as animate_parallel_coordinates
 from .pso_plots import dashboard_layout as dashboard_layout
 from .pso_plots import parallel_coordinates_plot as parallel_coordinates_plot
 from .static import plot_static_linkage as plot_static_linkage
-
-# Plotly backend
-from .plotly_viz import animate_linkage_plotly as animate_linkage_plotly
-from .plotly_viz import plot_linkage_plotly as plot_linkage_plotly
-
-# drawsvg backend
-from .drawsvg_viz import plot_linkage_svg as plot_linkage_svg
-from .drawsvg_viz import save_linkage_svg as save_linkage_svg
 
 # Symbol definitions
 from .symbols import LINK_COLORS as LINK_COLORS

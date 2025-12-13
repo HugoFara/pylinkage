@@ -2,7 +2,6 @@
 Static (not animated) visualization.
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -20,10 +19,10 @@ if TYPE_CHECKING:
 
 
 def plot_static_linkage(
-    linkage: Linkage,
-    axis: Axes,
-    loci: Iterable[tuple[Coord, ...]],
-    locus_highlights: list[list[Coord]] | None = None,
+    linkage: "Linkage",
+    axis: "Axes",
+    loci: "Iterable[tuple[Coord, ...]]",
+    locus_highlights: "list[list[Coord]] | None" = None,
     show_legend: bool = False,
 ) -> None:
     """Plot a linkage without movement.

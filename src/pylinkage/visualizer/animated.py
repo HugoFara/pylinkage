@@ -7,7 +7,6 @@ Created on Mon Jun 14, 12:13:58 2021.
 @author: HugoFara
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
@@ -36,11 +35,11 @@ ANIMATIONS: list[Any] = []
 
 
 def update_animated_plot(
-    linkage: Linkage,
+    linkage: "Linkage",
     index: int,
-    images: list[Line2D],
-    loci: Sequence[tuple[Coord, ...]],
-) -> list[Line2D]:
+    images: "list[Line2D]",
+    loci: "Sequence[tuple[Coord, ...]]",
+) -> "list[Line2D]":
     """Modify im, instead of recreating it to make the animation run faster.
 
     Args:
@@ -76,10 +75,10 @@ def update_animated_plot(
 
 
 def plot_kinematic_linkage(
-    linkage: Linkage,
-    fig: Figure,
-    axis: Axes,
-    loci: Sequence[tuple[Coord, ...]],
+    linkage: "Linkage",
+    fig: "Figure",
+    axis: "Axes",
+    loci: "Sequence[tuple[Coord, ...]]",
     frames: int = 100,
     interval: float = 40,
 ) -> anim.FuncAnimation:
@@ -122,10 +121,10 @@ def plot_kinematic_linkage(
 
 
 def show_linkage(
-    linkage: Linkage,
+    linkage: "Linkage",
     save: bool = False,
-    prev: Sequence[Coord] | None = None,
-    loci: Sequence[tuple[Coord, ...]] | None = None,
+    prev: "Sequence[Coord] | None" = None,
+    loci: "Sequence[tuple[Coord, ...]] | None" = None,
     points: int = 100,
     iteration_factor: float = 1,
     title: str | None = None,
@@ -193,11 +192,11 @@ def show_linkage(
 
 
 def swarm_tiled_repr(
-    linkage: Linkage,
-    swarm: tuple[int, Sequence[tuple[float, np.ndarray, Sequence[Coord]]]],
-    fig: Figure,
-    axes: np.ndarray,
-    dimension_func: Callable[[np.ndarray], Sequence[float]] | None = None,
+    linkage: "Linkage",
+    swarm: "tuple[int, Sequence[tuple[float, np.ndarray, Sequence[Coord]]]]",
+    fig: "Figure",
+    axes: "np.ndarray",
+    dimension_func: "Callable[[np.ndarray], Sequence[float]] | None" = None,
     points: int = 12,
     iteration_factor: float = 1,
 ) -> None:

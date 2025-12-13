@@ -9,7 +9,6 @@ angles, scores).
 Created for improved PSO visualization in pylinkage.
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
@@ -41,7 +40,7 @@ if TYPE_CHECKING:
 
 def normalize_data(
     data: np.ndarray,
-    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
+    bounds: "tuple[Sequence[float], Sequence[float]] | None" = None,
 ) -> np.ndarray:
     """Normalize data to [0, 1] range.
 
@@ -68,16 +67,16 @@ def normalize_data(
 
 
 def parallel_coordinates_plot(
-    swarm: Swarm,
-    dim_names: Sequence[str],
-    dim_types: Sequence[str] | None = None,
-    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
-    ax: Axes | None = None,
-    cbar_ax: Axes | None = None,
+    swarm: "Swarm",
+    dim_names: "Sequence[str]",
+    dim_types: "Sequence[str] | None" = None,
+    bounds: "tuple[Sequence[float], Sequence[float]] | None" = None,
+    ax: "Axes | None" = None,
+    cbar_ax: "Axes | None" = None,
     cmap: str = "viridis",
     alpha: float = 0.3,
     highlight_best: int = 5,
-) -> Axes:
+) -> "Axes":
     """Create a parallel coordinates plot for a PSO swarm.
 
     Each dimension gets its own vertical axis, normalized to [0, 1].
@@ -242,10 +241,10 @@ def parallel_coordinates_plot(
 
 
 def animate_parallel_coordinates(
-    history: History,
-    dim_names: Sequence[str],
-    dim_types: Sequence[str] | None = None,
-    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
+    history: "History",
+    dim_names: "Sequence[str]",
+    dim_types: "Sequence[str] | None" = None,
+    bounds: "tuple[Sequence[float], Sequence[float]] | None" = None,
     interval: int = 200,
     cmap: str = "viridis",
     save_path: str | None = None,
@@ -299,15 +298,15 @@ def animate_parallel_coordinates(
 
 
 def dashboard_layout(
-    linkage: Linkage,
-    swarm: Swarm,
-    score_history: Sequence[float],
-    dim_names: Sequence[str],
-    dim_types: Sequence[str] | None = None,
-    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
-    dimension_func: Callable[[np.ndarray], Sequence[float]] | None = None,
-    fig: Figure | None = None,
-) -> Figure:
+    linkage: "Linkage",
+    swarm: "Swarm",
+    score_history: "Sequence[float]",
+    dim_names: "Sequence[str]",
+    dim_types: "Sequence[str] | None" = None,
+    bounds: "tuple[Sequence[float], Sequence[float]] | None" = None,
+    dimension_func: "Callable[[np.ndarray], Sequence[float]] | None" = None,
+    fig: "Figure | None" = None,
+) -> "Figure":
     """Create a dashboard layout for PSO visualization.
 
     Layout:
@@ -549,12 +548,12 @@ def dashboard_layout(
 
 
 def animate_dashboard(
-    linkage: Linkage,
-    history: History,
-    dim_names: Sequence[str],
-    dim_types: Sequence[str] | None = None,
-    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
-    dimension_func: Callable[[np.ndarray], Sequence[float]] | None = None,
+    linkage: "Linkage",
+    history: "History",
+    dim_names: "Sequence[str]",
+    dim_types: "Sequence[str] | None" = None,
+    bounds: "tuple[Sequence[float], Sequence[float]] | None" = None,
+    dimension_func: "Callable[[np.ndarray], Sequence[float]] | None" = None,
     interval: int = 500,
     save_path: str | None = None,
 ) -> anim.FuncAnimation:

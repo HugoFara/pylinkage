@@ -5,13 +5,12 @@ This module provides interactive HTML output with zoom, pan, hover tooltips,
 and animation controls.
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
 import plotly.graph_objects as go
 
-from ..joints import Crank, Fixed, Linear, Static
+from ..joints import Fixed, Linear
 from ..joints.revolute import Pivot
 from .symbols import (
     SymbolType,
@@ -56,8 +55,8 @@ def _get_plotly_marker(symbol_type: SymbolType) -> dict:
 
 
 def plot_linkage_plotly(
-    linkage: Linkage,
-    loci: Iterable[tuple[Coord, ...]] | None = None,
+    linkage: "Linkage",
+    loci: "Iterable[tuple[Coord, ...]] | None" = None,
     *,
     title: str | None = None,
     show_dimensions: bool = False,
@@ -329,8 +328,8 @@ def plot_linkage_plotly(
 
 
 def animate_linkage_plotly(
-    linkage: Linkage,
-    loci: Iterable[tuple[Coord, ...]] | None = None,
+    linkage: "Linkage",
+    loci: "Iterable[tuple[Coord, ...]] | None" = None,
     *,
     title: str | None = None,
     show_loci: bool = True,

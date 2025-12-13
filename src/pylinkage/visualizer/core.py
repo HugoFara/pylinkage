@@ -5,7 +5,6 @@ This module provides shared utilities for matplotlib-based visualization.
 For symbol definitions used by other backends (Plotly, drawsvg), see symbols.py.
 """
 
-from __future__ import annotations
 
 from ..joints import (
     Crank,
@@ -28,14 +27,6 @@ COLOR_SWITCHER: dict[type[Joint], str] = {
 }
 
 # Re-export symbol utilities for convenience
-from .symbols import (  # noqa: E402
-    LINK_COLORS,
-    SYMBOL_SPECS,
-    LinkStyle,
-    SymbolType,
-    get_link_color,
-    get_symbol_spec,
-)
 
 
 def _get_color(joint: Joint) -> str:
