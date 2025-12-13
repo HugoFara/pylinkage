@@ -100,6 +100,21 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
   - `simulate()`: Fast trajectory computation
   - `linkage_to_solver_data()`: Convert Linkage for fast simulation
 
+- **src/pylinkage/synthesis/**: Classical mechanism synthesis methods
+  - `function_generation.py`: Match input/output angle relationships (Freudenstein)
+  - `path_generation.py`: Coupler point traces through specified points
+  - `motion_generation.py`: Guide body through specified poses
+  - `burmester.py`: Burmester theory for circle point/center point curves
+  - `utils.py`: Grashof criterion checking (`is_grashof()`, `is_crank_rocker()`)
+  - `conversion.py`: `fourbar_from_lengths()`, `solution_to_linkage()`
+
+- **src/pylinkage/symbolic/**: Symbolic computation using SymPy
+  - `joints.py`: `SymStatic`, `SymCrank`, `SymRevolute` symbolic joint classes
+  - `linkage.py`: `SymbolicLinkage` for symbolic trajectory expressions
+  - `solver.py`: `solve_linkage_symbolically()`, `compute_trajectory_numeric()`
+  - `optimization.py`: `SymbolicOptimizer` for gradient-based optimization
+  - `geometry.py`: Symbolic geometry primitives
+
 ### Key Patterns
 
 **Linkage Definition Flow:**
@@ -128,6 +143,21 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
 3. Call `particle_swarm_optimization()` or `trials_and_errors_optimization()`
 4. Apply results via `linkage.set_num_constraints(position)`
 
+**Synthesis Flow (Design from requirements):**
+
+1. Define precision points, angle pairs, or poses depending on synthesis type
+2. Call `function_generation()`, `path_generation()`, or `motion_generation()`
+3. Iterate over `SynthesisResult.solutions` to get candidate linkages
+4. Validate with `grashof_check()` or `is_crank_rocker()`
+5. Convert to `Linkage` with `solution_to_linkage()` for simulation
+
+**Symbolic Computation Flow:**
+
+1. Create symbolic linkage with `fourbar_symbolic()` or `linkage_to_symbolic()`
+2. Get closed-form expressions via `solve_linkage_symbolically()`
+3. Evaluate numerically with `compute_trajectory_numeric()`
+4. Optional: Use `SymbolicOptimizer` for gradient-based optimization
+
 **Constraint System:**
 
 - `get_num_constraints()`: Returns flat list of distances/angles
@@ -144,6 +174,6 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
 
 Requires Python >= 3.10
 
-Core: numpy, numba, matplotlib, pyswarms, tqdm, plotly, drawsvg
+Core: numpy, numba, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser
