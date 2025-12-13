@@ -29,7 +29,8 @@ __all__ = [
     # Joints
     "Crank",
     "Fixed",
-    "Linear",
+    "Linear",  # Deprecated alias for Prismatic
+    "Prismatic",
     "Revolute",
     "Static",
     "Pivot",
@@ -91,7 +92,10 @@ from .joints import (
     Fixed as Fixed,
 )
 from .joints import (
-    Linear as Linear,
+    Linear as Linear,  # Deprecated alias for Prismatic
+)
+from .joints import (
+    Prismatic as Prismatic,
 )
 from .joints import (
     Revolute as Revolute,

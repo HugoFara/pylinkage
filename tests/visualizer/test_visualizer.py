@@ -9,7 +9,7 @@ matplotlib.use('Agg')  # Non-interactive backend for CI
 import matplotlib.pyplot as plt
 
 import pylinkage as pl
-from pylinkage.joints import Crank, Fixed, Linear, Revolute, Static
+from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
 from pylinkage.joints.revolute import Pivot
 from pylinkage.visualizer.animated import (
     plot_kinematic_linkage,
@@ -50,17 +50,17 @@ class TestGetColor(unittest.TestCase):
         fixed = Fixed(joint0=joint1, joint1=joint2, angle=0, distance=1)
         self.assertEqual(_get_color(fixed), 'r')
 
-    def test_linear_joint_color(self):
-        """Test color for Linear joint."""
+    def test_prismatic_joint_color(self):
+        """Test color for Prismatic joint."""
         joint0 = Revolute(0, 0)
         joint1 = Revolute(0, 1)
         joint2 = Revolute(1, 1)
-        linear = Linear(0.5, 0.5, joint0=joint0, joint1=joint1, joint2=joint2, revolute_radius=1)
-        self.assertEqual(_get_color(linear), 'orange')
+        prismatic = Prismatic(0.5, 0.5, joint0=joint0, joint1=joint1, joint2=joint2, revolute_radius=1)
+        self.assertEqual(_get_color(prismatic), 'orange')
 
     def test_color_switcher_has_all_types(self):
         """Test that COLOR_SWITCHER has colors for all joint types."""
-        expected_types = {Static, Crank, Fixed, Pivot, Revolute, Linear}
+        expected_types = {Static, Crank, Fixed, Pivot, Revolute, Prismatic}
         self.assertEqual(set(COLOR_SWITCHER.keys()), expected_types)
 
 
@@ -228,26 +228,26 @@ class TestShowLinkage(FourBarLinkageTestCase):
         self.assertIsNotNone(animation)
 
 
-class TestLinearJointVisualization(unittest.TestCase):
-    """Test visualization with Linear joints."""
+class TestPrismaticJointVisualization(unittest.TestCase):
+    """Test visualization with Prismatic joints."""
 
     def setUp(self):
-        """Set up a linkage with a Linear joint."""
+        """Set up a linkage with a Prismatic joint."""
         self.joint0 = Revolute(0, 0)
         self.joint1 = Static(0, 2)
         self.joint2 = Static(2, 2)
-        self.linear = Linear(
+        self.prismatic = Prismatic(
             1, 1,
             joint0=self.joint0,
             joint1=self.joint1,
             joint2=self.joint2,
             revolute_radius=1.5,
-            name="LinearJoint"
+            name="PrismaticJoint"
         )
 
-    def test_linear_joint_color_in_plot(self):
-        """Test that Linear joint gets correct color."""
-        self.assertEqual(_get_color(self.linear), 'orange')
+    def test_prismatic_joint_color_in_plot(self):
+        """Test that Prismatic joint gets correct color."""
+        self.assertEqual(_get_color(self.prismatic), 'orange')
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ For symbol definitions used by other backends (Plotly, drawsvg), see symbols.py.
 from ..joints import (
     Crank,
     Fixed,
-    Linear,
+    Prismatic,
     Revolute,
     Static,
 )
@@ -23,7 +23,7 @@ COLOR_SWITCHER: dict[type[Joint], str] = {
     Fixed: 'r',
     Pivot: 'b',
     Revolute: 'b',
-    Linear: 'orange'
+    Prismatic: 'orange'
 }
 
 # Re-export symbol utilities for convenience

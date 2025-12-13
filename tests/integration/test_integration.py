@@ -9,7 +9,7 @@ import unittest
 
 import pylinkage as pl
 from pylinkage.exceptions import UnbuildableError, UnderconstrainedError
-from pylinkage.joints import Crank, Fixed, Linear, Revolute, Static
+from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
 from pylinkage.linkage.analysis import bounding_box, movement_bounding_box
 from pylinkage.optimization.utils import (
     generate_bounds,
@@ -276,15 +276,15 @@ class TestOptimizationWorkflow(unittest.TestCase):
         self.assertEqual(result, float('inf'))
 
 
-class TestLinearJointWorkflow(unittest.TestCase):
-    """Test workflow with Linear joints."""
+class TestPrismaticJointWorkflow(unittest.TestCase):
+    """Test workflow with Prismatic joints."""
 
-    def test_linear_joint_definition(self):
-        """Test that Linear joint can be defined."""
+    def test_prismatic_joint_definition(self):
+        """Test that Prismatic joint can be defined."""
         anchor = Static(0, 0)
         line_start = Static(0, 2)
         line_end = Static(4, 2)
-        linear = Linear(
+        prismatic = Prismatic(
             2, 2,
             joint0=anchor,
             joint1=line_start,
@@ -293,23 +293,23 @@ class TestLinearJointWorkflow(unittest.TestCase):
             name="Slider"
         )
         # Get constraints
-        constraints = linear.get_constraints()
+        constraints = prismatic.get_constraints()
         self.assertEqual(constraints, (2,))
 
-    def test_linear_joint_set_constraints(self):
-        """Test setting constraints on Linear joint."""
+    def test_prismatic_joint_set_constraints(self):
+        """Test setting constraints on Prismatic joint."""
         anchor = Static(0, 0)
         line_start = Static(0, 2)
         line_end = Static(4, 2)
-        linear = Linear(
+        prismatic = Prismatic(
             2, 2,
             joint0=anchor,
             joint1=line_start,
             joint2=line_end,
             revolute_radius=2,
         )
-        linear.set_constraints(3.0)
-        self.assertEqual(linear.revolute_radius, 3.0)
+        prismatic.set_constraints(3.0)
+        self.assertEqual(prismatic.revolute_radius, 3.0)
 
 
 class TestFixedJointWorkflow(unittest.TestCase):

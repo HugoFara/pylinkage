@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Literal
 
 import drawsvg as draw
 
-from ..joints import Fixed, Linear
+from ..joints import Fixed, Prismatic
 from ..joints.revolute import Pivot
 from .symbols import (
     LinkStyle,
@@ -510,8 +510,8 @@ def plot_linkage_svg(
                         )
                         _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
 
-        # Handle Linear joints differently
-        if isinstance(joint, Linear) and joint.joint1 is not None and joint.joint2 is not None:
+        # Handle Prismatic joints differently
+        if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
             # Draw the constraint line between joint1 and joint2
             p1_pos = get_position(joint.joint1)
             p2_pos = get_position(joint.joint2)

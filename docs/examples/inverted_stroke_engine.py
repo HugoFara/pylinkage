@@ -10,7 +10,7 @@ def create_stroke_engine_linkage():
     """Create an inverted stroke engine linkage."""
     crank = pl.Crank(x=0, y=0, joint0=(0, 0), distance=1, angle=0.1, name="Crank")
 
-    slider = pl.Linear(
+    slider = pl.Prismatic(
         x=2, y=0, joint0=crank, joint1=(0, 0), joint2=(1, 0), revolute_radius=1.5, name="Slider"
     )
 

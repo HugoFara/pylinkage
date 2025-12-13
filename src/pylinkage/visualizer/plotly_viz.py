@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import plotly.graph_objects as go
 
-from ..joints import Fixed, Linear
+from ..joints import Fixed, Prismatic
 from ..joints.revolute import Pivot
 from .symbols import (
     SymbolType,
@@ -214,8 +214,8 @@ def plot_linkage_plotly(
 
                     link_index += 1
 
-        # Handle Linear joints
-        if isinstance(joint, Linear) and joint.joint1 is not None and joint.joint2 is not None:
+        # Handle Prismatic joints
+        if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
             p1_pos = get_position(joint.joint1)
             p2_pos = get_position(joint.joint2)
 

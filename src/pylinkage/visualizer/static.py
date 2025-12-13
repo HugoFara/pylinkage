@@ -5,7 +5,7 @@ Static (not animated) visualization.
 
 from typing import TYPE_CHECKING
 
-from ..joints import Fixed, Linear, Revolute
+from ..joints import Fixed, Prismatic, Revolute
 from ..joints.revolute import Pivot
 from .core import _get_color
 
@@ -63,7 +63,7 @@ def plot_static_linkage(
                 [par_pos[0], pos[0]], [par_pos[1], pos[1]],
                 c=_get_color(joint), linewidth=.3
             )
-        elif isinstance(joint, Linear) and joint.joint1 is not None and joint.joint2 is not None:
+        elif isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
             # Different ordering
             par_pos = joint.joint2.coord()
             other_pos = joint.joint1.coord()

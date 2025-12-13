@@ -10,7 +10,7 @@ import unittest
 
 from pylinkage import UnbuildableError
 from pylinkage.exceptions import NotCompletelyDefinedError
-from pylinkage.joints import Crank, Fixed, Linear, Revolute, Static
+from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
 from pylinkage.joints.joint import joint_syntax_parser
 from pylinkage.joints.revolute import Pivot
 
@@ -156,8 +156,8 @@ class TestCrankJoint(unittest.TestCase):
         self.assertEqual(crank.get_constraints(), (3,))
 
 
-class TestLinearJoint(unittest.TestCase):
-    """Test Linear joint."""
+class TestPrismaticJoint(unittest.TestCase):
+    """Test Prismatic joint."""
 
     def setUp(self):
         """Set up test fixtures."""
@@ -165,78 +165,78 @@ class TestLinearJoint(unittest.TestCase):
         self.line_start = Static(0, 2)
         self.line_end = Static(4, 2)
 
-    def test_linear_creation(self):
-        """Test Linear joint creation."""
-        linear = Linear(
+    def test_prismatic_creation(self):
+        """Test Prismatic joint creation."""
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
             revolute_radius=2,
-            name="TestLinear"
+            name="TestPrismatic"
         )
-        self.assertEqual(linear.name, "TestLinear")
-        self.assertEqual(linear.revolute_radius, 2)
+        self.assertEqual(prismatic.name, "TestPrismatic")
+        self.assertEqual(prismatic.revolute_radius, 2)
 
-    def test_linear_get_constraints(self):
-        """Test Linear get_constraints."""
-        linear = Linear(
+    def test_prismatic_get_constraints(self):
+        """Test Prismatic get_constraints."""
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
             revolute_radius=2.5
         )
-        self.assertEqual(linear.get_constraints(), (2.5,))
+        self.assertEqual(prismatic.get_constraints(), (2.5,))
 
-    def test_linear_set_constraints(self):
-        """Test Linear set_constraints."""
-        linear = Linear(
+    def test_prismatic_set_constraints(self):
+        """Test Prismatic set_constraints."""
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
             revolute_radius=2
         )
-        linear.set_constraints(3.5)
-        self.assertEqual(linear.revolute_radius, 3.5)
+        prismatic.set_constraints(3.5)
+        self.assertEqual(prismatic.revolute_radius, 3.5)
 
-    def test_linear_reload(self):
-        """Test Linear reload computes position."""
-        linear = Linear(
+    def test_prismatic_reload(self):
+        """Test Prismatic reload computes position."""
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
             revolute_radius=2.5
         )
-        linear.reload()
-        x, y = linear.coord()
+        prismatic.reload()
+        x, y = prismatic.coord()
         self.assertIsNotNone(x)
         self.assertIsNotNone(y)
         # Should be on line y=2
         self.assertAlmostEqual(y, 2)
 
-    def test_linear_reload_missing_joint0(self):
-        """Test Linear reload raises when joint0 missing."""
-        linear = Linear(2, 2, revolute_radius=2)
+    def test_prismatic_reload_missing_joint0(self):
+        """Test Prismatic reload raises when joint0 missing."""
+        prismatic = Prismatic(2, 2, revolute_radius=2)
         with self.assertRaises(NotCompletelyDefinedError):
-            linear.reload()
+            prismatic.reload()
 
-    def test_linear_reload_missing_line_joints(self):
-        """Test Linear reload raises when line joints missing."""
-        linear = Linear(
+    def test_prismatic_reload_missing_line_joints(self):
+        """Test Prismatic reload raises when line joints missing."""
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             revolute_radius=2
         )
         with self.assertRaises(NotCompletelyDefinedError):
-            linear.reload()
+            prismatic.reload()
 
-    def test_linear_reload_no_intersection(self):
-        """Test Linear reload raises when no intersection possible."""
+    def test_prismatic_reload_no_intersection(self):
+        """Test Prismatic reload raises when no intersection possible."""
         # Circle too small to reach the line
-        linear = Linear(
+        prismatic = Prismatic(
             2, 2,
             joint0=self.anchor,
             joint1=self.line_start,
@@ -244,7 +244,23 @@ class TestLinearJoint(unittest.TestCase):
             revolute_radius=0.5  # Too small
         )
         with self.assertRaises(UnbuildableError):
-            linear.reload()
+            prismatic.reload()
+
+    def test_linear_alias_deprecated(self):
+        """Test that Linear alias emits deprecation warning."""
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            Linear(
+                2, 2,
+                joint0=self.anchor,
+                joint1=self.line_start,
+                joint2=self.line_end,
+                revolute_radius=2,
+            )
+            self.assertEqual(len(w), 1)
+            self.assertTrue(issubclass(w[0].category, DeprecationWarning))
+            self.assertIn("Linear is deprecated", str(w[0].message))
 
 
 class TestPivot(unittest.TestCase):

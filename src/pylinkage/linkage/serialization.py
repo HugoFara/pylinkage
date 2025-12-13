@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ..joints import Crank, Fixed, Linear, Revolute, Static
+from ..joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
 from ..joints.joint import Joint
 
 if TYPE_CHECKING:
@@ -21,7 +21,8 @@ JOINT_TYPES: dict[str, type[Joint]] = {
     "Static": Static,
     "Crank": Crank,
     "Fixed": Fixed,
-    "Linear": Linear,
+    "Linear": Prismatic,  # Backward compatible alias
+    "Prismatic": Prismatic,
     "Revolute": Revolute,
 }
 
@@ -96,7 +97,7 @@ def joint_to_dict(joint: Joint, linkage_joints: tuple[Joint, ...] | None = None)
     elif isinstance(joint, Revolute):
         data["distance0"] = joint.r0
         data["distance1"] = joint.r1
-    elif isinstance(joint, Linear):
+    elif isinstance(joint, Prismatic):
         data["revolute_radius"] = joint.revolute_radius
         if hasattr(joint, "joint2") and joint.joint2 is not None:
             data["joint2"] = _serialize_joint_ref(joint.joint2, linkage_joints)
@@ -198,9 +199,9 @@ def joint_from_dict(
             distance1=data.get("distance1"),
             name=data.get("name"),
         )
-    elif cls == Linear:
+    elif cls == Prismatic:
         joint2 = _resolve_joint_ref(data.get("joint2"), joints_by_name)
-        result = Linear(
+        result = Prismatic(
             x=data.get("x", 0),
             y=data.get("y", 0),
             joint0=joint0,

@@ -41,7 +41,7 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
         ValueError: If joint references cannot be resolved.
     """
     # Import here to avoid circular imports
-    from ..joints import Crank, Fixed, Linear, Revolute
+    from ..joints import Crank, Fixed, Prismatic, Revolute
     from ..joints.joint import Static
 
     # Build index map from joint identity to array index
@@ -130,7 +130,7 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
             constraints_list.append(joint.angle if joint.angle is not None else 0.0)
             counts.append(2)
 
-        elif isinstance(joint, Linear):
+        elif isinstance(joint, Prismatic):
             joint_types[i] = JOINT_LINEAR
             # Parents: joint0 (circle center), joint1, joint2 (line definition)
             if joint.joint0 is not None:
@@ -199,7 +199,7 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
         data: SolverData to update.
         linkage: Linkage containing updated constraints.
     """
-    from ..joints import Crank, Fixed, Linear, Revolute
+    from ..joints import Crank, Fixed, Prismatic, Revolute
 
     for i, joint in enumerate(linkage.joints):
         offset = data.constraint_offsets[i]
@@ -220,7 +220,7 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
                 joint.angle if joint.angle is not None else 0.0
             )
 
-        elif isinstance(joint, Linear):
+        elif isinstance(joint, Prismatic):
             data.constraints[offset] = (
                 joint.revolute_radius if joint.revolute_radius is not None else 0.0
             )

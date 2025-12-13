@@ -1,7 +1,7 @@
 """
-Definition of a linear joint (RRP dyad).
+Definition of a prismatic joint (RRP dyad).
 
-A linear joint is positioned at the intersection of a circle and a line.
+A prismatic joint is positioned at the intersection of a circle and a line.
 The circle is centered at a revolute anchor, and the line is defined by
 two other joints. This corresponds to an RRP (two revolute, one prismatic)
 dyad in Assur group theory.
@@ -10,15 +10,16 @@ This is a thin wrapper around the solver's solve_linear function.
 """
 
 import math
+import warnings
 
-from .._types import Coord
 from .. import exceptions as pl_exceptions
+from .._types import Coord
 from ..solver.joints import solve_linear
 from . import joint as pl_joint
 
 
-class Linear(pl_joint.Joint):
-    """Linear joint (RRP dyad) - circle-line intersection.
+class Prismatic(pl_joint.Joint):
+    """Prismatic joint (RRP dyad) - circle-line intersection.
 
     The position is computed as the intersection of:
     - Circle: centered at joint0 with radius revolute_radius
@@ -117,3 +118,21 @@ class Linear(pl_joint.Joint):
         :param args: Unused, but preserves the object structure.
         """
         self.revolute_radius = distance0 or self.revolute_radius
+
+
+class Linear(Prismatic):
+    """Deprecated alias for Prismatic joint.
+
+    .. deprecated::
+        Use :class:`Prismatic` instead. The ``Linear`` name will be removed
+        in a future version.
+    """
+
+    def __init__(self, *args: object, **kwargs: object) -> None:
+        """Initialize with deprecation warning."""
+        warnings.warn(
+            "Linear is deprecated, use Prismatic instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(*args, **kwargs)  # type: ignore[arg-type]

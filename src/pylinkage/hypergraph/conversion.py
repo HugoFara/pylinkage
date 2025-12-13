@@ -38,7 +38,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
-    from ..joints import Crank, Fixed, Linear, Revolute, Static
+    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
     from ..joints.joint import Joint
     from ..linkage.linkage import Linkage as LinkageClass
 
@@ -120,7 +120,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
                 # Determine joint type based on connections
                 if node.joint_type == JointType.PRISMATIC:
-                    # Linear joint - needs circle center + line
+                    # Prismatic joint - needs circle center + line
                     # Find revolute connection (with distance)
                     revolute_parent = None
                     revolute_dist = None
@@ -137,7 +137,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                         else:
                             line_parents.append(node_to_joint[pid])
 
-                    joint = Linear(
+                    joint = Prismatic(
                         x=x,
                         y=y,
                         joint0=revolute_parent,
@@ -203,7 +203,7 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
         >>> linkage = Linkage(joints=[...], order=[...])
         >>> hg = from_linkage(linkage)
     """
-    from ..joints import Crank, Fixed, Linear, Revolute, Static
+    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
 
     hypergraph = HypergraphLinkage(name=linkage.name)
 
@@ -251,7 +251,7 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
         elif isinstance(joint, Crank):
             role = NodeRole.DRIVER
             joint_type = JointType.REVOLUTE
-        elif isinstance(joint, Linear):
+        elif isinstance(joint, Prismatic):
             role = NodeRole.DRIVEN
             joint_type = JointType.PRISMATIC
         else:
@@ -359,7 +359,7 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                 hypergraph.add_edge(edge)
                 edge_counter += 1
 
-        elif isinstance(joint, Linear):
+        elif isinstance(joint, Prismatic):
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:

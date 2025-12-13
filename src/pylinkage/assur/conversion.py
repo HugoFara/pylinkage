@@ -39,7 +39,7 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
         >>> graph = linkage_to_graph(linkage)
         >>> print(f"Nodes: {list(graph.nodes.keys())}")
     """
-    from ..joints import Crank, Fixed, Linear, Revolute, Static
+    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
 
     graph = LinkageGraph(name=linkage.name)
 
@@ -85,8 +85,8 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
         elif isinstance(joint, Crank):
             role = NodeRole.DRIVER
             joint_type = JointType.REVOLUTE
-        elif isinstance(joint, Linear):
-            # Linear has a prismatic component, but the joint itself is revolute
+        elif isinstance(joint, Prismatic):
+            # Prismatic has a prismatic component, but the joint itself is revolute
             role = NodeRole.DRIVEN
             joint_type = JointType.REVOLUTE
         else:
@@ -190,8 +190,8 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 graph.add_edge(edge)
                 edge_counter += 1
 
-        elif isinstance(joint, Linear):
-            # Linear has revolute connection + line constraint
+        elif isinstance(joint, Prismatic):
+            # Prismatic has revolute connection + line constraint
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:
@@ -349,7 +349,7 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
             node_to_joint[internal_id] = revolute_joint
 
         elif group.joint_signature == "RRP":
-            # Create Linear joint
+            # Create Prismatic joint
             if len(group.internal_nodes) != 1:
                 raise ValueError(f"RRP group should have 1 internal node, got {len(group.internal_nodes)}")
 
@@ -365,7 +365,7 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
 
             revolute_distance = getattr(group, 'revolute_distance', None)
 
-            linear_joint = Linear(
+            prismatic_joint = Prismatic(
                 x=x,
                 y=y,
                 joint0=anchor,
@@ -374,8 +374,8 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
                 revolute_radius=revolute_distance,
                 name=node.name,
             )
-            joints.append(linear_joint)
-            node_to_joint[internal_id] = linear_joint
+            joints.append(prismatic_joint)
+            node_to_joint[internal_id] = prismatic_joint
 
         else:
             raise NotImplementedError(

@@ -15,9 +15,10 @@ JOINT_STATIC = 0
 JOINT_CRANK = 1
 JOINT_REVOLUTE = 2
 JOINT_FIXED = 3
-JOINT_LINEAR = 4
+JOINT_LINEAR = 4  # Deprecated: use JOINT_PRISMATIC
+JOINT_PRISMATIC = 4  # Alias for JOINT_LINEAR
 
-# Maximum number of parent joints (Linear has 3: circle center + 2 line points)
+# Maximum number of parent joints (Prismatic has 3: circle center + 2 line points)
 MAX_PARENTS = 3
 
 
