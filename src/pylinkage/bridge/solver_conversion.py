@@ -176,18 +176,32 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
 
 
 def solver_data_to_linkage(data: SolverData, linkage: "Linkage") -> None:
-    """Update linkage joint positions from solver data.
+    """Update linkage joint positions and velocities from solver data.
 
-    This synchronizes the numeric positions back to the Joint objects
-    after simulation.
+    This synchronizes the numeric positions and velocities back to the
+    Joint objects after simulation.
 
     Args:
-        data: SolverData containing updated positions.
+        data: SolverData containing updated positions and optionally velocities.
         linkage: Linkage to update.
     """
     for i, joint in enumerate(linkage.joints):
         joint.x = float(data.positions[i, 0])
         joint.y = float(data.positions[i, 1])
+
+        # Sync velocities if available
+        if data.velocities is not None:
+            joint.velocity = (
+                float(data.velocities[i, 0]),
+                float(data.velocities[i, 1]),
+            )
+
+        # Sync accelerations if available
+        if data.accelerations is not None:
+            joint.acceleration = (
+                float(data.accelerations[i, 0]),
+                float(data.accelerations[i, 1]),
+            )
 
 
 def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:

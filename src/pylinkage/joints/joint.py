@@ -30,13 +30,15 @@ class Joint(abc.ABC):
     Abstract class should always be inherited.
     """
 
-    __slots__ = "x", "y", "joint0", "joint1", "name"
+    __slots__ = "x", "y", "joint0", "joint1", "name", "_velocity", "_acceleration"
 
     x: float | None
     y: float | None
     joint0: "Joint | Static | None"
     joint1: "Joint | Static | None"
     name: str
+    _velocity: tuple[float, float] | None
+    _acceleration: tuple[float, float] | None
 
     def __init__(
         self,
@@ -59,6 +61,8 @@ class Joint(abc.ABC):
         self.joint0 = joint_syntax_parser(joint0)
         self.joint1 = joint_syntax_parser(joint1)
         self.name = name if name is not None else str(id(self))
+        self._velocity = None
+        self._acceleration = None
 
     def __repr__(self) -> str:
         """Represent an object with class name, coordinates, name and state."""
@@ -71,6 +75,34 @@ class Joint(abc.ABC):
     def coord(self) -> tuple[float | None, float | None]:
         """Return cartesian coordinates."""
         return self.x, self.y
+
+    @property
+    def velocity(self) -> tuple[float, float] | None:
+        """Return linear velocity (vx, vy) in units/s.
+
+        Returns None if velocity has not been computed.
+        To compute velocities, use linkage.step_fast_with_kinematics()
+        or set omega on crank joints and call linkage.compute_velocities().
+        """
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, value: tuple[float, float] | None) -> None:
+        """Set the velocity of this joint."""
+        self._velocity = value
+
+    @property
+    def acceleration(self) -> tuple[float, float] | None:
+        """Return linear acceleration (ax, ay) in units/s².
+
+        Returns None if acceleration has not been computed.
+        """
+        return self._acceleration
+
+    @acceleration.setter
+    def acceleration(self, value: tuple[float, float] | None) -> None:
+        """Set the acceleration of this joint."""
+        self._acceleration = value
 
     def set_coord(
         self,

@@ -38,6 +38,11 @@ class SolverData:
         constraint_offsets: Start index in constraints array for each joint.
         constraint_counts: Number of constraints for each joint.
         solve_order: Indices of joints in solving order.
+        velocities: Joint velocities, shape (n_joints, 2). Optional.
+        accelerations: Joint accelerations, shape (n_joints, 2). Optional.
+        omega_values: Angular velocities for crank joints (rad/s), shape (n_cranks,).
+        alpha_values: Angular accelerations for crank joints (rad/s²), shape (n_cranks,).
+        crank_indices: Indices of crank joints in the joints array, shape (n_cranks,).
     """
 
     positions: NDArray[np.float64]
@@ -47,6 +52,12 @@ class SolverData:
     constraint_offsets: NDArray[np.int32]
     constraint_counts: NDArray[np.int32]
     solve_order: NDArray[np.int32]
+    # Kinematics arrays (optional, initialized to zeros if not used)
+    velocities: NDArray[np.float64] | None = None
+    accelerations: NDArray[np.float64] | None = None
+    omega_values: NDArray[np.float64] | None = None
+    alpha_values: NDArray[np.float64] | None = None
+    crank_indices: NDArray[np.int32] | None = None
 
     def copy(self) -> "SolverData":
         """Create a deep copy of the solver data."""
@@ -58,6 +69,19 @@ class SolverData:
             constraint_offsets=self.constraint_offsets.copy(),
             constraint_counts=self.constraint_counts.copy(),
             solve_order=self.solve_order.copy(),
+            velocities=self.velocities.copy() if self.velocities is not None else None,
+            accelerations=(
+                self.accelerations.copy() if self.accelerations is not None else None
+            ),
+            omega_values=(
+                self.omega_values.copy() if self.omega_values is not None else None
+            ),
+            alpha_values=(
+                self.alpha_values.copy() if self.alpha_values is not None else None
+            ),
+            crank_indices=(
+                self.crank_indices.copy() if self.crank_indices is not None else None
+            ),
         )
 
     @property

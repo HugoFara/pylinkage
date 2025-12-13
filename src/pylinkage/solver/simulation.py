@@ -16,6 +16,12 @@ from .types import (
     JOINT_REVOLUTE,
     JOINT_STATIC,
 )
+from .velocity import (
+    solve_crank_velocity,
+    solve_fixed_velocity,
+    solve_prismatic_velocity,
+    solve_revolute_velocity,
+)
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -196,3 +202,203 @@ def first_nan_step(trajectory: np.ndarray) -> int:
             if np.isnan(trajectory[i, j, 0]) or np.isnan(trajectory[i, j, 1]):
                 return i
     return -1
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def step_single_velocity(
+    positions: np.ndarray,
+    velocities: np.ndarray,
+    constraints: np.ndarray,
+    joint_types: np.ndarray,
+    parent_indices: np.ndarray,
+    constraint_offsets: np.ndarray,
+    solve_order: np.ndarray,
+    omega_values: np.ndarray,
+    crank_indices: np.ndarray,
+) -> None:
+    """Compute velocities for all joints after positions are solved.
+
+    Must be called after step_single() has updated positions.
+
+    Args:
+        positions: Joint positions, shape (n_joints, 2).
+        velocities: Output velocities, shape (n_joints, 2). Modified in-place.
+        constraints: Flat array of constraint values.
+        joint_types: Joint type code for each joint, shape (n_joints,).
+        parent_indices: Parent joint indices, shape (n_joints, max_parents).
+        constraint_offsets: Start index in constraints for each joint.
+        solve_order: Indices of joints to solve, in order.
+        omega_values: Angular velocities for crank joints (rad/s).
+        crank_indices: Indices of crank joints in joints array.
+    """
+    # Build a mapping from joint index to crank omega index
+    # For non-cranks, omega is not used
+    crank_omega_map = np.full(len(joint_types), -1, dtype=np.int32)
+    for i in range(len(crank_indices)):
+        crank_omega_map[crank_indices[i]] = i
+
+    for i in range(len(solve_order)):
+        joint_idx = solve_order[i]
+        joint_type = joint_types[joint_idx]
+        offset = constraint_offsets[joint_idx]
+
+        if joint_type == JOINT_STATIC:
+            # Static joints have zero velocity
+            velocities[joint_idx, 0] = 0.0
+            velocities[joint_idx, 1] = 0.0
+
+        elif joint_type == JOINT_CRANK:
+            p0_idx = parent_indices[joint_idx, 0]
+            omega_idx = crank_omega_map[joint_idx]
+            omega = omega_values[omega_idx] if omega_idx >= 0 else 0.0
+            vx, vy = solve_crank_velocity(
+                positions[joint_idx, 0],
+                positions[joint_idx, 1],
+                positions[p0_idx, 0],
+                positions[p0_idx, 1],
+                velocities[p0_idx, 0],
+                velocities[p0_idx, 1],
+                constraints[offset],  # radius
+                omega,
+            )
+            velocities[joint_idx, 0] = vx
+            velocities[joint_idx, 1] = vy
+
+        elif joint_type == JOINT_REVOLUTE:
+            p0_idx = parent_indices[joint_idx, 0]
+            p1_idx = parent_indices[joint_idx, 1]
+            vx, vy = solve_revolute_velocity(
+                positions[joint_idx, 0],
+                positions[joint_idx, 1],
+                positions[p0_idx, 0],
+                positions[p0_idx, 1],
+                velocities[p0_idx, 0],
+                velocities[p0_idx, 1],
+                positions[p1_idx, 0],
+                positions[p1_idx, 1],
+                velocities[p1_idx, 0],
+                velocities[p1_idx, 1],
+            )
+            velocities[joint_idx, 0] = vx
+            velocities[joint_idx, 1] = vy
+
+        elif joint_type == JOINT_FIXED:
+            p0_idx = parent_indices[joint_idx, 0]
+            p1_idx = parent_indices[joint_idx, 1]
+            vx, vy = solve_fixed_velocity(
+                positions[joint_idx, 0],
+                positions[joint_idx, 1],
+                positions[p0_idx, 0],
+                positions[p0_idx, 1],
+                velocities[p0_idx, 0],
+                velocities[p0_idx, 1],
+                positions[p1_idx, 0],
+                positions[p1_idx, 1],
+                velocities[p1_idx, 0],
+                velocities[p1_idx, 1],
+                constraints[offset],      # radius
+                constraints[offset + 1],  # angle
+            )
+            velocities[joint_idx, 0] = vx
+            velocities[joint_idx, 1] = vy
+
+        elif joint_type == JOINT_LINEAR:
+            p0_idx = parent_indices[joint_idx, 0]
+            p1_idx = parent_indices[joint_idx, 1]
+            p2_idx = parent_indices[joint_idx, 2]
+            vx, vy = solve_prismatic_velocity(
+                positions[joint_idx, 0],
+                positions[joint_idx, 1],
+                positions[p0_idx, 0],
+                positions[p0_idx, 1],
+                velocities[p0_idx, 0],
+                velocities[p0_idx, 1],
+                constraints[offset],  # radius
+                positions[p1_idx, 0],
+                positions[p1_idx, 1],
+                velocities[p1_idx, 0],
+                velocities[p1_idx, 1],
+                positions[p2_idx, 0],
+                positions[p2_idx, 1],
+                velocities[p2_idx, 0],
+                velocities[p2_idx, 1],
+            )
+            velocities[joint_idx, 0] = vx
+            velocities[joint_idx, 1] = vy
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def simulate_with_kinematics(
+    positions: np.ndarray,
+    velocities: np.ndarray,
+    constraints: np.ndarray,
+    joint_types: np.ndarray,
+    parent_indices: np.ndarray,
+    constraint_offsets: np.ndarray,
+    solve_order: np.ndarray,
+    omega_values: np.ndarray,
+    crank_indices: np.ndarray,
+    iterations: int,
+    dt: float,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Run full simulation with velocity computation.
+
+    This extends the basic simulate() function to also compute velocities
+    at each step.
+
+    Args:
+        positions: Initial joint positions, shape (n_joints, 2).
+            Will be modified to contain final positions.
+        velocities: Initial velocities, shape (n_joints, 2).
+            Will be modified to contain final velocities.
+        constraints: Flat array of constraint values.
+        joint_types: Joint type code for each joint, shape (n_joints,).
+        parent_indices: Parent joint indices, shape (n_joints, max_parents).
+        constraint_offsets: Start index in constraints for each joint.
+        solve_order: Indices of joints to solve, in order.
+        omega_values: Angular velocities for crank joints (rad/s).
+        crank_indices: Indices of crank joints in the joints array.
+        iterations: Number of simulation steps to run.
+        dt: Time step for crank rotation.
+
+    Returns:
+        Tuple of (positions_trajectory, velocities_trajectory), each with
+        shape (iterations, n_joints, 2).
+    """
+    n_joints = positions.shape[0]
+    pos_trajectory = np.empty((iterations, n_joints, 2), dtype=np.float64)
+    vel_trajectory = np.empty((iterations, n_joints, 2), dtype=np.float64)
+
+    for step in range(iterations):
+        # First compute positions
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt,
+        )
+
+        # Then compute velocities based on new positions
+        step_single_velocity(
+            positions,
+            velocities,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            omega_values,
+            crank_indices,
+        )
+
+        # Copy to trajectory arrays
+        for j in range(n_joints):
+            pos_trajectory[step, j, 0] = positions[j, 0]
+            pos_trajectory[step, j, 1] = positions[j, 1]
+            vel_trajectory[step, j, 0] = velocities[j, 0]
+            vel_trajectory[step, j, 1] = velocities[j, 1]
+
+    return pos_trajectory, vel_trajectory

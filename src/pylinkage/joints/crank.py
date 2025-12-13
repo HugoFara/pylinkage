@@ -16,12 +16,20 @@ class Crank(pl_joint.Joint):
 
     The crank rotates around its anchor point (joint0) at a constant
     angular velocity. It is the primary driver for linkage mechanisms.
+
+    Attributes:
+        r: Distance from anchor to crank (radius).
+        angle: Angular step per iteration (radians per dt=1 step).
+        omega: Angular velocity in rad/s for kinematics computation.
+        alpha: Angular acceleration in rad/s² for kinematics computation.
     """
 
-    __slots__ = "r", "angle"
+    __slots__ = "r", "angle", "omega", "alpha"
 
     r: float | None
     angle: float | None
+    omega: float | None
+    alpha: float | None
 
     def __init__(
         self,
@@ -31,6 +39,8 @@ class Crank(pl_joint.Joint):
         distance: float | None = None,
         angle: float | None = None,
         name: str | None = None,
+        omega: float | None = None,
+        alpha: float | None = None,
     ) -> None:
         """
         Define a crank (circular motor).
@@ -44,9 +54,13 @@ class Crank(pl_joint.Joint):
             Should be in radian and in trigonometric order.
             The default is None.
         :param name: Human-readable name. The default is None.
+        :param omega: Angular velocity in rad/s for kinematics. The default is None.
+        :param alpha: Angular acceleration in rad/s² for kinematics. The default is None.
         """
         super().__init__(x, y, joint0, name=name)
         self.r, self.angle = distance, angle
+        self.omega = omega
+        self.alpha = alpha
 
     def reload(self, dt: float = 1) -> None:
         """Make a step of crank using solver function.

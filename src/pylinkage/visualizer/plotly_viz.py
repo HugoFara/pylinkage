@@ -2,12 +2,13 @@
 Plotly-based visualization for interactive kinematic diagrams.
 
 This module provides interactive HTML output with zoom, pan, hover tooltips,
-and animation controls.
+and animation controls. Includes velocity vector visualization.
 """
 
 
 from typing import TYPE_CHECKING
 
+import numpy as np
 import plotly.graph_objects as go
 
 from ..joints import Fixed, Prismatic
@@ -558,6 +559,163 @@ def animate_linkage_plotly(
         plot_bgcolor="white",
         width=width,
         height=height,
+    )
+
+    return fig
+
+
+def plot_linkage_plotly_with_velocity(
+    linkage: "Linkage",
+    frame_index: int = 0,
+    *,
+    title: str | None = None,
+    show_loci: bool = True,
+    show_velocity: bool = True,
+    velocity_scale: float | None = None,
+    velocity_color: str = "#2196F3",
+    width: int = 900,
+    height: int = 700,
+) -> go.Figure:
+    """Create an interactive Plotly diagram with velocity vectors.
+
+    Runs simulation with kinematics and displays velocity arrows at the
+    specified frame.
+
+    Args:
+        linkage: The linkage to visualize.
+        frame_index: Which frame to display (0 = initial position).
+        title: Optional title for the diagram.
+        show_loci: Whether to show joint movement paths.
+        show_velocity: Whether to show velocity vectors.
+        velocity_scale: Scaling factor for arrows. Auto-computed if None.
+        velocity_color: Color for velocity arrows.
+        width: Figure width in pixels.
+        height: Figure height in pixels.
+
+    Returns:
+        A plotly Figure object.
+
+    Example:
+        >>> linkage.set_input_velocity(crank, omega=10.0)
+        >>> fig = plot_linkage_plotly_with_velocity(linkage, frame_index=25)
+        >>> fig.show()
+    """
+    from ..joints import Crank, Static
+
+    # Check that omega is set
+    has_omega = any(
+        isinstance(j, Crank) and j.omega is not None and j.omega != 0
+        for j in linkage.joints
+    )
+    if not has_omega:
+        raise ValueError(
+            "No crank has omega set. Use linkage.set_input_velocity(crank, omega=...) "
+            "before calling plot_linkage_plotly_with_velocity()."
+        )
+
+    # Run simulation with kinematics
+    positions, velocities = linkage.step_fast_with_kinematics()
+    n_frames = positions.shape[0]
+
+    if frame_index < 0 or frame_index >= n_frames:
+        raise ValueError(f"frame_index must be in [0, {n_frames}), got {frame_index}")
+
+    # Convert to loci format for base plot
+    loci = [
+        tuple(
+            (float(positions[i, j, 0]), float(positions[i, j, 1]))
+            for j in range(len(linkage.joints))
+        )
+        for i in range(n_frames)
+    ]
+
+    # Create base plot
+    fig = plot_linkage_plotly(
+        linkage,
+        loci=loci if show_loci else [loci[frame_index]],
+        title=title,
+        show_loci=show_loci,
+        width=width,
+        height=height,
+    )
+
+    # Add velocity vectors
+    if show_velocity:
+        pos = positions[frame_index]
+        vel = velocities[frame_index]
+
+        # Auto-compute scale
+        if velocity_scale is None:
+            vel_mag = np.sqrt(vel[:, 0] ** 2 + vel[:, 1] ** 2)
+            max_vel = np.nanmax(vel_mag) if np.any(~np.isnan(vel_mag)) else 1.0
+            # Scale based on position range
+            pos_range = max(
+                np.nanmax(pos[:, 0]) - np.nanmin(pos[:, 0]),
+                np.nanmax(pos[:, 1]) - np.nanmin(pos[:, 1]),
+            )
+            velocity_scale = pos_range * 0.15 / max_vel if max_vel > 0 else 1.0
+
+        # Draw velocity arrows for non-static joints
+        for i, joint in enumerate(linkage.joints):
+            if isinstance(joint, Static):
+                continue
+
+            vx, vy = vel[i, 0], vel[i, 1]
+            if np.isnan(vx) or np.isnan(vy):
+                continue
+
+            x0, y0 = pos[i, 0], pos[i, 1]
+            x1 = x0 + vx * velocity_scale
+            y1 = y0 + vy * velocity_scale
+
+            # Arrow line
+            fig.add_trace(
+                go.Scatter(
+                    x=[x0, x1],
+                    y=[y0, y1],
+                    mode="lines",
+                    line={"color": velocity_color, "width": 3},
+                    showlegend=False,
+                    hoverinfo="skip",
+                )
+            )
+
+            # Arrow head using annotation
+            vel_mag_i = np.sqrt(vx**2 + vy**2)
+            if vel_mag_i > 0:
+                fig.add_annotation(
+                    x=x1,
+                    y=y1,
+                    ax=x0,
+                    ay=y0,
+                    xref="x",
+                    yref="y",
+                    axref="x",
+                    ayref="y",
+                    showarrow=True,
+                    arrowhead=2,
+                    arrowsize=1.5,
+                    arrowwidth=2,
+                    arrowcolor=velocity_color,
+                )
+
+        # Add legend entry for velocity
+        fig.add_trace(
+            go.Scatter(
+                x=[None],
+                y=[None],
+                mode="lines",
+                line={"color": velocity_color, "width": 3},
+                name="Velocity",
+            )
+        )
+
+    # Update title to show frame
+    fig.update_layout(
+        title={
+            "text": title or f"Kinematics at frame {frame_index}",
+            "font": {"size": 18},
+        }
     )
 
     return fig

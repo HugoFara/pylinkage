@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kinematics-Based Optimization &mdash; pylinkage 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage" href="../api/modules.html" />
+    <link rel="prev" title="Advanced Optimization Techniques" href="advanced_optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Kinematics-Based Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-angular-velocity">Setting Up Angular Velocity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-kinematics-simulation">Running Kinematics Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#querying-joint-velocities">Querying Joint Velocities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimizing-for-velocity-characteristics">Optimizing for Velocity Characteristics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-minimize-peak-velocity">Example: Minimize Peak Velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-uniform-velocity-profile">Example: Uniform Velocity Profile</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-velocity-direction-constraint">Example: Velocity Direction Constraint</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#combined-path-and-velocity-optimization">Combined Path and Velocity Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualizing-velocity-vectors">Visualizing Velocity Vectors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#matplotlib-visualization">Matplotlib Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plotly-interactive-visualization">Plotly Interactive Visualization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#svg-publication-quality-output">SVG Publication-Quality Output</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Kinematics-Based Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/kinematics_optimization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="kinematics-based-optimization">
+<h1>Kinematics-Based Optimization<a class="headerlink" href="#kinematics-based-optimization" title="Link to this heading"></a></h1>
+<p>This tutorial covers how to use velocity and acceleration analysis in linkage
+optimization. By incorporating kinematic quantities into fitness functions,
+you can design linkages that not only follow a desired path but also meet
+velocity and acceleration requirements.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Pylinkage can compute:</p>
+<ul class="simple">
+<li><p><strong>Linear velocities</strong> of all joints given crank angular velocity</p></li>
+<li><p><strong>Linear accelerations</strong> of all joints given crank angular velocity and acceleration</p></li>
+<li><p><strong>Velocity vectors</strong> for visualization</p></li>
+</ul>
+<p>This enables optimization for:</p>
+<ul class="simple">
+<li><p>Minimizing peak velocities at output joints</p></li>
+<li><p>Achieving uniform velocity profiles</p></li>
+<li><p>Limiting accelerations to reduce wear and vibration</p></li>
+<li><p>Matching velocity requirements for specific applications</p></li>
+</ul>
+</section>
+<section id="setting-up-angular-velocity">
+<h2>Setting Up Angular Velocity<a class="headerlink" href="#setting-up-angular-velocity" title="Link to this heading"></a></h2>
+<p>Before computing kinematics, set the angular velocity on the input crank:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+<span class="c1"># Create a four-bar linkage</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+<span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
+    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Set angular velocity (rad/s) and optional angular acceleration (rad/s²)</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="running-kinematics-simulation">
+<h2>Running Kinematics Simulation<a class="headerlink" href="#running-kinematics-simulation" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">step_fast_with_kinematics()</span></code> to compute positions and velocities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run simulation with kinematics</span>
+<span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># positions.shape = (100, n_joints, 2)  # (frames, joints, x/y)</span>
+<span class="c1"># velocities.shape = (100, n_joints, 2)  # (frames, joints, vx/vy)</span>
+
+<span class="c1"># Access velocity at a specific frame</span>
+<span class="n">frame</span> <span class="o">=</span> <span class="mi">25</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">joint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">):</span>
+    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[</span><span class="n">frame</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: velocity = (</span><span class="si">{</span><span class="n">vx</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">vy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="querying-joint-velocities">
+<h2>Querying Joint Velocities<a class="headerlink" href="#querying-joint-velocities" title="Link to this heading"></a></h2>
+<p>After running the kinematics simulation, joint velocities are accessible:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get velocities for all joints (after simulation)</span>
+<span class="n">all_velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_velocities</span><span class="p">()</span>
+<span class="c1"># Returns: [(vx0, vy0), (vx1, vy1), ...]</span>
+
+<span class="c1"># Access individual joint velocity</span>
+<span class="n">output_velocity</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">velocity</span>
+<span class="k">if</span> <span class="n">output_velocity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">vx</span><span class="p">,</span> <span class="n">vy</span> <span class="o">=</span> <span class="n">output_velocity</span>
+    <span class="n">speed</span> <span class="o">=</span> <span class="p">(</span><span class="n">vx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">vy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output speed: </span><span class="si">{</span><span class="n">speed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> units/s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="optimizing-for-velocity-characteristics">
+<h2>Optimizing for Velocity Characteristics<a class="headerlink" href="#optimizing-for-velocity-characteristics" title="Link to this heading"></a></h2>
+<section id="example-minimize-peak-velocity">
+<h3>Example: Minimize Peak Velocity<a class="headerlink" href="#example-minimize-peak-velocity" title="Link to this heading"></a></h3>
+<p>Design a linkage where the output joint has the lowest possible peak velocity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_linkage</span><span class="p">():</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+    <span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
+        <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
+        <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
+        <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">minimize_peak_velocity</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize the peak velocity at the output joint.&quot;&quot;&quot;</span>
+    <span class="c1"># Get the crank and set angular velocity</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+    <span class="c1"># Run kinematics</span>
+    <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+    <span class="c1"># Calculate output joint speed at each frame</span>
+    <span class="n">output_velocities</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># Last joint</span>
+    <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Return peak velocity (we want to minimize this)</span>
+    <span class="n">peak_velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">speeds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">peak_velocity</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">peak_velocity</span><span class="p">)</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Run optimization</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">create_linkage</span><span class="p">()</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">minimize_peak_velocity</span><span class="p">,</span>
+    <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">n_particles</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">best_score</span><span class="p">,</span> <span class="n">best_constraints</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Minimum peak velocity: </span><span class="si">{</span><span class="n">best_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> units/s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-uniform-velocity-profile">
+<h3>Example: Uniform Velocity Profile<a class="headerlink" href="#example-uniform-velocity-profile" title="Link to this heading"></a></h3>
+<p>Optimize for a constant output velocity (useful for conveyor mechanisms):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">uniform_velocity</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize velocity variation at the output joint.&quot;&quot;&quot;</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+    <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+    <span class="c1"># Calculate output speeds</span>
+    <span class="n">output_velocities</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Filter out NaN values</span>
+    <span class="n">valid_speeds</span> <span class="o">=</span> <span class="n">speeds</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">speeds</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_speeds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Minimize standard deviation of speed (uniformity measure)</span>
+    <span class="n">velocity_variance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">valid_speeds</span><span class="p">)</span>
+
+    <span class="c1"># Also penalize very low average speed (we want motion, not stillness)</span>
+    <span class="n">avg_speed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">valid_speeds</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">avg_speed</span> <span class="o">&lt;</span> <span class="mf">10.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">velocity_variance</span>
+</pre></div>
+</div>
+</section>
+<section id="example-velocity-direction-constraint">
+<h3>Example: Velocity Direction Constraint<a class="headerlink" href="#example-velocity-direction-constraint" title="Link to this heading"></a></h3>
+<p>Optimize for a specific velocity direction at certain positions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">horizontal_velocity</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maximize horizontal velocity component at output.&quot;&quot;&quot;</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+    <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+    <span class="c1"># Get output velocities</span>
+    <span class="n">output_vx</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">output_vy</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Calculate ratio of horizontal to total velocity</span>
+    <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">output_vx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">output_vy</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">horizontal_ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">output_vx</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">speeds</span> <span class="o">+</span> <span class="mf">1e-10</span><span class="p">)</span>
+
+    <span class="c1"># Filter NaN and calculate average</span>
+    <span class="n">valid_ratio</span> <span class="o">=</span> <span class="n">horizontal_ratio</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">horizontal_ratio</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_ratio</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Return negative average (we want to maximize horizontal component)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">valid_ratio</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="combined-path-and-velocity-optimization">
+<h2>Combined Path and Velocity Optimization<a class="headerlink" href="#combined-path-and-velocity-optimization" title="Link to this heading"></a></h2>
+<p>Optimize for both path shape and velocity characteristics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">path_and_velocity</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize path shape while limiting peak velocity.&quot;&quot;&quot;</span>
+    <span class="c1"># Path shape objective</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">target_bbox</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># min_y, max_x, max_y, min_x</span>
+    <span class="n">path_error</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">target_bbox</span><span class="p">))</span>
+
+    <span class="c1"># Velocity objective</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+    <span class="n">output_velocities</span> <span class="o">=</span> <span class="n">velocities</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">output_velocities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">peak_velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">speeds</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">speeds</span><span class="p">))</span> <span class="k">else</span> <span class="mf">100.0</span>
+
+    <span class="c1"># Weighted combination</span>
+    <span class="c1"># Penalize peak velocities above 50 units/s</span>
+    <span class="n">velocity_penalty</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">peak_velocity</span> <span class="o">-</span> <span class="mi">50</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+
+    <span class="k">return</span> <span class="n">path_error</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">velocity_penalty</span>
+</pre></div>
+</div>
+</section>
+<section id="visualizing-velocity-vectors">
+<h2>Visualizing Velocity Vectors<a class="headerlink" href="#visualizing-velocity-vectors" title="Link to this heading"></a></h2>
+<section id="matplotlib-visualization">
+<h3>Matplotlib Visualization<a class="headerlink" href="#matplotlib-visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_kinematics</span><span class="p">,</span> <span class="n">animate_kinematics</span>
+
+<span class="c1"># Set up linkage with angular velocity</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+
+<span class="c1"># Show single frame with velocity vectors</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">show_kinematics</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">frame_index</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create animation with velocity vectors</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">animate_kinematics</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">fps</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;velocity_animation.gif&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="plotly-interactive-visualization">
+<h3>Plotly Interactive Visualization<a class="headerlink" href="#plotly-interactive-visualization" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly_with_velocity</span>
+
+<span class="c1"># Run kinematics</span>
+<span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+<span class="c1"># Create interactive plot with velocity arrows</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly_with_velocity</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="n">positions</span><span class="p">[</span><span class="mi">25</span><span class="p">],</span>     <span class="c1"># Position at frame 25</span>
+    <span class="n">velocities</span><span class="p">[</span><span class="mi">25</span><span class="p">],</span>    <span class="c1"># Velocity at frame 25</span>
+    <span class="n">velocity_scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Four-bar with Velocity Vectors&quot;</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;velocity_plot.html&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="svg-publication-quality-output">
+<h3>SVG Publication-Quality Output<a class="headerlink" href="#svg-publication-quality-output" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg_with_velocity</span>
+
+<span class="c1"># Save SVG with velocity vectors</span>
+<span class="n">save_linkage_svg_with_velocity</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="s2">&quot;linkage_velocity.svg&quot;</span><span class="p">,</span>
+    <span class="n">positions</span><span class="p">[</span><span class="mi">25</span><span class="p">],</span>
+    <span class="n">velocities</span><span class="p">[</span><span class="mi">25</span><span class="p">],</span>
+    <span class="n">velocity_color</span><span class="o">=</span><span class="s2">&quot;#0066CC&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-considerations">
+<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
+<p>The kinematics computation adds minimal overhead:</p>
+<ol class="arabic simple">
+<li><p>Velocity is computed analytically (not numerically), so it’s fast</p></li>
+<li><p>The velocity solver is numba-compiled for maximum performance</p></li>
+<li><p>Memory usage increases by 2x (storing velocities alongside positions)</p></li>
+</ol>
+<p>For optimization loops, cache the kinematics results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">optimized_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># Run kinematics once</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+    <span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">()</span>
+
+    <span class="c1"># Compute all metrics from cached results</span>
+    <span class="n">peak_vel</span> <span class="o">=</span> <span class="n">compute_peak_velocity</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span>
+    <span class="n">vel_uniformity</span> <span class="o">=</span> <span class="n">compute_uniformity</span><span class="p">(</span><span class="n">velocities</span><span class="p">)</span>
+    <span class="n">path_score</span> <span class="o">=</span> <span class="n">compute_path_score</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">weighted_combination</span><span class="p">(</span><span class="n">peak_vel</span><span class="p">,</span> <span class="n">vel_uniformity</span><span class="p">,</span> <span class="n">path_score</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> for general optimization techniques</p></li>
+<li><p>Check <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.solver.velocity</span></code> for velocity solver implementation</p></li>
+<li><p>Explore <a class="reference internal" href="../api/pylinkage.visualizer.html#module-pylinkage.visualizer" title="pylinkage.visualizer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code></a> for visualization options</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="advanced_optimization.html" class="btn btn-neutral float-left" title="Advanced Optimization Techniques" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/modules.html" class="btn btn-neutral float-right" title="pylinkage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

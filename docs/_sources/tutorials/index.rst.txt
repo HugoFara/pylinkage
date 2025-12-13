@@ -10,3 +10,4 @@ Step-by-step guides to help you get started with pylinkage and master its featur
    getting_started
    custom_joints
    advanced_optimization
+   kinematics_optimization

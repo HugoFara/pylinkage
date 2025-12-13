@@ -10,8 +10,9 @@ import math
 from typing import TYPE_CHECKING, Literal
 
 import drawsvg as draw
+import numpy as np
 
-from ..joints import Fixed, Prismatic
+from ..joints import Fixed, Prismatic, Static
 from ..joints.revolute import Pivot
 from .symbols import (
     LinkStyle,
@@ -22,7 +23,9 @@ from .symbols import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Sequence
+
+    from numpy.typing import NDArray
 
     from .._types import Coord
     from ..linkage.linkage import Linkage
@@ -336,6 +339,119 @@ def _draw_dimension(
     )
 
 
+def _draw_velocity_arrow(
+    d: draw.Drawing,
+    x: float,
+    y: float,
+    vx: float,
+    vy: float,
+    scale: float = 1.0,
+    color: str = "#0066CC",
+    width: float = 2.0,
+) -> None:
+    """Draw a velocity vector as an arrow.
+
+    Args:
+        d: The drawing to add the arrow to.
+        x, y: Start point (joint position) in canvas coordinates.
+        vx, vy: Velocity components in canvas coordinates (pre-scaled).
+        scale: Additional scaling factor for arrow length.
+        color: Arrow color.
+        width: Stroke width for arrow shaft.
+    """
+    # Skip zero or very small velocities
+    mag = math.sqrt(vx * vx + vy * vy)
+    if mag < 1e-6:
+        return
+
+    # End point
+    end_x = x + vx * scale
+    end_y = y + vy * scale  # Note: vy is already flipped for canvas coords
+
+    # Draw arrow shaft
+    d.append(
+        draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width)
+    )
+
+    # Arrowhead
+    arrow_size = 8
+    angle = math.atan2(vy, vx)
+    head_angle = 0.4  # radians
+
+    # Arrowhead points
+    tip1_x = end_x - arrow_size * math.cos(angle - head_angle)
+    tip1_y = end_y - arrow_size * math.sin(angle - head_angle)
+    tip2_x = end_x - arrow_size * math.cos(angle + head_angle)
+    tip2_y = end_y - arrow_size * math.sin(angle + head_angle)
+
+    d.append(
+        draw.Lines(
+            end_x, end_y,
+            tip1_x, tip1_y,
+            tip2_x, tip2_y,
+            close=True,
+            fill=color,
+            stroke="none",
+        )
+    )
+
+
+def _draw_acceleration_arrow(
+    d: draw.Drawing,
+    x: float,
+    y: float,
+    ax: float,
+    ay: float,
+    scale: float = 1.0,
+    color: str = "#CC3300",
+    width: float = 2.0,
+) -> None:
+    """Draw an acceleration vector as a double-headed arrow.
+
+    Args:
+        d: The drawing to add the arrow to.
+        x, y: Start point (joint position) in canvas coordinates.
+        ax, ay: Acceleration components in canvas coordinates (pre-scaled).
+        scale: Additional scaling factor for arrow length.
+        color: Arrow color.
+        width: Stroke width for arrow shaft.
+    """
+    # Skip zero or very small accelerations
+    mag = math.sqrt(ax * ax + ay * ay)
+    if mag < 1e-6:
+        return
+
+    # End point
+    end_x = x + ax * scale
+    end_y = y + ay * scale
+
+    # Draw arrow shaft (double line for acceleration)
+    d.append(
+        draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width)
+    )
+
+    # Arrowhead
+    arrow_size = 6
+    angle = math.atan2(ay, ax)
+    head_angle = 0.5
+
+    tip1_x = end_x - arrow_size * math.cos(angle - head_angle)
+    tip1_y = end_y - arrow_size * math.sin(angle - head_angle)
+    tip2_x = end_x - arrow_size * math.cos(angle + head_angle)
+    tip2_y = end_y - arrow_size * math.sin(angle + head_angle)
+
+    d.append(
+        draw.Lines(
+            end_x, end_y,
+            tip1_x, tip1_y,
+            tip2_x, tip2_y,
+            close=True,
+            fill=color,
+            stroke="none",
+        )
+    )
+
+
 def plot_linkage_svg(
     linkage: "Linkage",
     loci: "Iterable[tuple[Coord, ...]] | None" = None,
@@ -575,4 +691,263 @@ def save_linkage_svg(
         **kwargs: Additional arguments passed to plot_linkage_svg.
     """
     drawing = plot_linkage_svg(linkage, loci, **kwargs)  # type: ignore[arg-type]
+    drawing.save_svg(path)
+
+
+def plot_linkage_svg_with_velocity(
+    linkage: "Linkage",
+    positions: "NDArray[np.float64] | Sequence[tuple[float, float]]",
+    velocities: "NDArray[np.float64] | Sequence[tuple[float, float]]",
+    *,
+    title: str | None = None,
+    show_labels: bool = True,
+    link_style: Literal["bar", "bone", "line"] = "bar",
+    velocity_scale: float | None = None,
+    velocity_color: str = "#0066CC",
+    skip_static: bool = True,
+    scale: float = DEFAULT_SCALE,
+    padding: float = DEFAULT_PADDING,
+) -> draw.Drawing:
+    """Create an SVG diagram with velocity vectors overlaid.
+
+    Args:
+        linkage: The linkage to visualize.
+        positions: Joint positions, shape (n_joints, 2) or list of (x, y).
+        velocities: Joint velocities, shape (n_joints, 2) or list of (vx, vy).
+        title: Optional title for the diagram.
+        show_labels: Whether to show joint labels.
+        link_style: Visual style for links ('bar', 'bone', or 'line').
+        velocity_scale: Scaling factor for velocity arrows. Auto-computed if None.
+        velocity_color: Color for velocity arrows.
+        skip_static: Whether to skip velocity arrows for static joints.
+        scale: Pixels per unit.
+        padding: Canvas padding in pixels.
+
+    Returns:
+        A drawsvg.Drawing object.
+
+    Example:
+        >>> linkage.set_input_velocity(crank, omega=10.0)
+        >>> positions, velocities = linkage.step_fast_with_kinematics()
+        >>> drawing = plot_linkage_svg_with_velocity(
+        ...     linkage, positions[0], velocities[0]
+        ... )
+        >>> drawing.save_svg("linkage_with_velocity.svg")
+    """
+    # Convert to numpy arrays
+    positions = np.asarray(positions)
+    velocities = np.asarray(velocities)
+
+    # Convert string style to enum
+    style_map = {"bar": LinkStyle.BAR, "bone": LinkStyle.BONE, "line": LinkStyle.LINE}
+    link_style_enum = style_map.get(link_style, LinkStyle.BAR)
+
+    # Calculate bounding box including velocity arrows
+    xs = positions[:, 0]
+    ys = positions[:, 1]
+
+    # Account for velocity vectors in bounding box
+    if velocity_scale is None:
+        vel_mag = np.sqrt(velocities[:, 0] ** 2 + velocities[:, 1] ** 2)
+        max_vel = np.nanmax(vel_mag) if np.any(~np.isnan(vel_mag)) else 1.0
+        linkage_size = max(np.ptp(xs), np.ptp(ys))
+        velocity_scale = (linkage_size * 0.2) / max_vel if max_vel > 0 else 1.0
+
+    min_x, max_x = float(np.nanmin(xs)), float(np.nanmax(xs))
+    min_y, max_y = float(np.nanmin(ys)), float(np.nanmax(ys))
+
+    # Extend bounds for velocity arrows
+    for i, (vx, vy) in enumerate(velocities):
+        if not np.isnan(vx) and not np.isnan(vy):
+            end_x = positions[i, 0] + vx * velocity_scale
+            end_y = positions[i, 1] + vy * velocity_scale
+            min_x = min(min_x, end_x)
+            max_x = max(max_x, end_x)
+            min_y = min(min_y, end_y)
+            max_y = max(max_y, end_y)
+
+    # Add padding
+    margin = 0.3
+    width_world = max_x - min_x + 2 * margin
+    height_world = max_y - min_y + 2 * margin
+
+    canvas_width = int(width_world * scale + 2 * padding)
+    canvas_height = int(height_world * scale + 2 * padding)
+
+    d = draw.Drawing(canvas_width, canvas_height, origin=(0, 0))
+    d.append(draw.Rectangle(0, 0, canvas_width, canvas_height, fill="white"))
+
+    def w2c(x: float, y: float) -> tuple[float, float]:
+        """Convert world to canvas coordinates."""
+        cx = (x - min_x + margin) * scale + padding
+        cy = canvas_height - ((y - min_y + margin) * scale + padding)
+        return (cx, cy)
+
+    # Title
+    if title or linkage.name:
+        d.append(
+            draw.Text(
+                title or linkage.name,
+                16,
+                canvas_width / 2,
+                25,
+                center=True,
+                fill="#333",
+                font_family="Arial",
+                font_weight="bold",
+            )
+        )
+
+    # Draw ground line if there are ground joints
+    ground_joints = [j for j in linkage.joints if is_ground_joint(j)]
+    if ground_joints:
+        ground_ys = [
+            w2c(positions[list(linkage.joints).index(j), 0],
+                positions[list(linkage.joints).index(j), 1])[1]
+            for j in ground_joints
+        ]
+        ground_xs = [
+            w2c(positions[list(linkage.joints).index(j), 0],
+                positions[list(linkage.joints).index(j), 1])[0]
+            for j in ground_joints
+        ]
+        ground_y = max(ground_ys)
+        d.append(
+            draw.Line(
+                min(ground_xs) - 30,
+                ground_y,
+                max(ground_xs) + 30,
+                ground_y,
+                stroke="#333",
+                stroke_width=2.5,
+            )
+        )
+
+    # Draw links
+    link_index = 0
+    drawn_links: set[tuple[int, int]] = set()
+    joint_list = list(linkage.joints)
+
+    for joint in linkage.joints:
+        i = joint_list.index(joint)
+        cx, cy = w2c(positions[i, 0], positions[i, 1])
+
+        # Draw link to joint0
+        if joint.joint0 is not None:
+            if joint.joint0 in joint_list:
+                pi = joint_list.index(joint.joint0)
+                px, py = w2c(positions[pi, 0], positions[pi, 1])
+            else:
+                # Implicit Static joint
+                coord = joint.joint0.coord()
+                px, py = w2c(coord[0], coord[1])
+
+            joint_ids = (id(joint), id(joint.joint0))
+            rev_ids = (id(joint.joint0), id(joint))
+            if joint_ids not in drawn_links and rev_ids not in drawn_links:
+                color = get_link_color(link_index)
+                _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
+                drawn_links.add(joint_ids)
+                link_index += 1
+
+        # Draw link to joint1
+        has_joint1 = hasattr(joint, "joint1") and joint.joint1 is not None
+        is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
+        if has_joint1 and is_revolute_type:
+            if joint.joint1 in joint_list:
+                pi = joint_list.index(joint.joint1)
+                px, py = w2c(positions[pi, 0], positions[pi, 1])
+            else:
+                coord = joint.joint1.coord()
+                px, py = w2c(coord[0], coord[1])
+
+            joint_ids = (id(joint), id(joint.joint1))
+            rev_ids = (id(joint.joint1), id(joint))
+            if joint_ids not in drawn_links and rev_ids not in drawn_links:
+                color = get_link_color(link_index)
+                _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
+                drawn_links.add(joint_ids)
+                link_index += 1
+
+    # Draw joints
+    for i, joint in enumerate(linkage.joints):
+        cx, cy = w2c(positions[i, 0], positions[i, 1])
+        spec = get_symbol_spec(joint)
+
+        if spec.symbol_type == SymbolType.GROUND:
+            _draw_ground_symbol(d, cx, cy, size=18 * spec.size, color=spec.color)
+        elif spec.symbol_type == SymbolType.CRANK:
+            _draw_crank_joint(d, cx, cy, radius=12 * spec.size, color=spec.color)
+        elif spec.symbol_type == SymbolType.SLIDER:
+            _draw_slider_joint(d, cx, cy, size=16 * spec.size, color=spec.color)
+        else:
+            _draw_revolute_joint(d, cx, cy, radius=9 * spec.size, color=spec.color)
+
+        # Joint label
+        if show_labels and joint.name:
+            label_x = cx + spec.label_offset[0] * 15
+            label_y = cy + spec.label_offset[1] * 15
+            d.append(
+                draw.Text(
+                    joint.name,
+                    11,
+                    label_x,
+                    label_y,
+                    fill="#333",
+                    font_family="Arial",
+                    font_weight="bold",
+                )
+            )
+
+    # Draw velocity vectors on top
+    for i, joint in enumerate(linkage.joints):
+        if skip_static and isinstance(joint, Static):
+            continue
+
+        vx, vy = velocities[i, 0], velocities[i, 1]
+        if np.isnan(vx) or np.isnan(vy):
+            continue
+
+        cx, cy = w2c(positions[i, 0], positions[i, 1])
+        # Note: y is flipped for canvas coordinates
+        scaled_vx = vx * velocity_scale * scale
+        scaled_vy = -vy * velocity_scale * scale  # Flip Y for canvas
+
+        _draw_velocity_arrow(d, cx, cy, scaled_vx, scaled_vy, color=velocity_color)
+
+    # Add legend
+    legend_x = canvas_width - padding
+    legend_y = 50
+    d.append(
+        draw.Line(
+            legend_x - 40, legend_y, legend_x - 10, legend_y,
+            stroke=velocity_color, stroke_width=2
+        )
+    )
+    d.append(
+        draw.Text("Velocity", 10, legend_x - 45, legend_y + 4, fill="#333", font_family="Arial")
+    )
+
+    return d
+
+
+def save_linkage_svg_with_velocity(
+    linkage: "Linkage",
+    path: str,
+    positions: "NDArray[np.float64] | Sequence[tuple[float, float]]",
+    velocities: "NDArray[np.float64] | Sequence[tuple[float, float]]",
+    **kwargs: object,
+) -> None:
+    """Save a linkage diagram with velocity vectors to an SVG file.
+
+    Args:
+        linkage: The linkage to visualize.
+        path: Output file path (should end in .svg).
+        positions: Joint positions, shape (n_joints, 2) or list of (x, y).
+        velocities: Joint velocities, shape (n_joints, 2) or list of (vx, vy).
+        **kwargs: Additional arguments passed to plot_linkage_svg_with_velocity.
+    """
+    drawing = plot_linkage_svg_with_velocity(
+        linkage, positions, velocities, **kwargs  # type: ignore[arg-type]
+    )
     drawing.save_svg(path)

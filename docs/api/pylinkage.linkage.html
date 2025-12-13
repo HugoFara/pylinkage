@@ -220,6 +220,17 @@ by changes to constraints (set_num_constraints) or structure.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_accelerations">
+<span class="sig-name descname"><span class="pre">get_accelerations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_accelerations" title="Link to this definition"></a></dt>
+<dd><p>Return accelerations for all joints.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List of (ax, ay) tuples, one per joint. Returns None for joints
+whose acceleration has not been computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_coords">
 <span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_coords" title="Link to this definition"></a></dt>
 <dd><p>Return the positions of each element in the system.</p>
@@ -248,6 +259,17 @@ The default is True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of iterations with dt=1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.get_velocities">
+<span class="sig-name descname"><span class="pre">get_velocities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.get_velocities" title="Link to this definition"></a></dt>
+<dd><p>Return velocities for all joints.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List of (vx, vy) tuples, one per joint. Returns None for joints
+whose velocity has not been computed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -326,6 +348,26 @@ The default is True.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>coords</strong> – Joint coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.set_input_velocity">
+<span class="sig-name descname"><span class="pre">set_input_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.crank.Crank" title="pylinkage.joints.crank.Crank"><span class="pre">Crank</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.set_input_velocity" title="Link to this definition"></a></dt>
+<dd><p>Set angular velocity and acceleration for a crank joint.</p>
+<p>This is used for kinematics computation (velocity/acceleration analysis).</p>
+<dl>
+<dt>Args:</dt><dd><p>crank: The crank joint to set velocity for.
+omega: Angular velocity in rad/s.
+alpha: Angular acceleration in rad/s² (default 0).</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the crank is not part of this linkage.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># 10 rad/s</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -430,6 +472,32 @@ np.isnan(trajectory).any() or use solver.has_nan_positions().</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (1000, n_joints, 2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get position of joint 2 at step 100:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># (x, y)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics">
+<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
+<dd><p>Run simulation with velocity computation using numba-optimized solver.</p>
+<p>This extends step_fast() to also compute velocities at each step.
+Requires that omega is set on crank joints to specify angular velocities.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>iterations: Number of iterations to run. If None, uses</dt><dd><p>get_rotation_period(). (Default: None)</p>
+</dd>
+<dt>dt: Amount of rotation per step. Cranks rotate by their</dt><dd><p>angle * dt. (Default: 1)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Tuple of (positions, velocities) arrays, each with shape
+(iterations, n_joints, 2).</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
 </pre></div>
 </div>
 </dd>
@@ -557,6 +625,17 @@ by changes to constraints (set_num_constraints) or structure.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.get_accelerations">
+<span class="sig-name descname"><span class="pre">get_accelerations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.get_accelerations" title="Link to this definition"></a></dt>
+<dd><p>Return accelerations for all joints.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List of (ax, ay) tuples, one per joint. Returns None for joints
+whose acceleration has not been computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.Linkage.get_coords">
 <span class="sig-name descname"><span class="pre">get_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.get_coords" title="Link to this definition"></a></dt>
 <dd><p>Return the positions of each element in the system.</p>
@@ -585,6 +664,17 @@ The default is True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of iterations with dt=1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.get_velocities">
+<span class="sig-name descname"><span class="pre">get_velocities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.get_velocities" title="Link to this definition"></a></dt>
+<dd><p>Return velocities for all joints.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>List of (vx, vy) tuples, one per joint. Returns None for joints
+whose velocity has not been computed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -663,6 +753,26 @@ The default is True.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>coords</strong> – Joint coordinates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.set_input_velocity">
+<span class="sig-name descname"><span class="pre">set_input_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">crank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.crank.Crank" title="pylinkage.joints.crank.Crank"><span class="pre">Crank</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.set_input_velocity" title="Link to this definition"></a></dt>
+<dd><p>Set angular velocity and acceleration for a crank joint.</p>
+<p>This is used for kinematics computation (velocity/acceleration analysis).</p>
+<dl>
+<dt>Args:</dt><dd><p>crank: The crank joint to set velocity for.
+omega: Angular velocity in rad/s.
+alpha: Angular acceleration in rad/s² (default 0).</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the crank is not part of this linkage.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># 10 rad/s</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -767,6 +877,32 @@ np.isnan(trajectory).any() or use solver.has_nan_positions().</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">trajectory</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (1000, n_joints, 2)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get position of joint 2 at step 100:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">trajectory</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># (x, y)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.step_fast_with_kinematics">
+<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
+<dd><p>Run simulation with velocity computation using numba-optimized solver.</p>
+<p>This extends step_fast() to also compute velocities at each step.
+Requires that omega is set on crank joints to specify angular velocities.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>iterations: Number of iterations to run. If None, uses</dt><dd><p>get_rotation_period(). (Default: None)</p>
+</dd>
+<dt>dt: Amount of rotation per step. Cranks rotate by their</dt><dd><p>angle * dt. (Default: 1)</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Tuple of (positions, velocities) arrays, each with shape
+(iterations, n_joints, 2).</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
 </pre></div>
 </div>
 </dd>

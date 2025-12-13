@@ -312,6 +312,133 @@ class Linkage:
 
         return trajectory
 
+    def step_fast_with_kinematics(
+        self,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+        """Run simulation with velocity computation using numba-optimized solver.
+
+        This extends step_fast() to also compute velocities at each step.
+        Requires that omega is set on crank joints to specify angular velocities.
+
+        Args:
+            iterations: Number of iterations to run. If None, uses
+                get_rotation_period(). (Default: None)
+            dt: Amount of rotation per step. Cranks rotate by their
+                angle * dt. (Default: 1)
+
+        Returns:
+            Tuple of (positions, velocities) arrays, each with shape
+            (iterations, n_joints, 2).
+
+        Example:
+            >>> linkage.set_input_velocity(crank, omega=10.0)
+            >>> positions, velocities = linkage.step_fast_with_kinematics(1000)
+            >>> print(velocities[100, 2])  # velocity of joint 2 at step 100
+        """
+        from ..solver import (
+            simulate_with_kinematics,
+            solver_data_to_linkage,
+            update_solver_positions,
+        )
+
+        # Auto-compile if needed
+        if self._solver_data is None:
+            self.compile()
+
+        assert self._solver_data is not None  # for type checker
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        # Sync positions from joints to solver data
+        update_solver_positions(self._solver_data, self)  # type: ignore[operator]
+
+        # Initialize velocity and kinematics arrays if not present
+        n_joints = len(self.joints)
+        if self._solver_data.velocities is None:
+            self._solver_data.velocities = np.zeros((n_joints, 2), dtype=np.float64)
+        if self._solver_data.omega_values is None:
+            self._solver_data.omega_values = np.zeros(
+                len(self._cranks), dtype=np.float64
+            )
+        if self._solver_data.crank_indices is None:
+            crank_indices = []
+            for i, j in enumerate(self.joints):
+                if isinstance(j, Crank):
+                    crank_indices.append(i)
+            self._solver_data.crank_indices = np.array(crank_indices, dtype=np.int32)
+
+        # Sync omega values from cranks
+        for i, crank in enumerate(self._cranks):
+            self._solver_data.omega_values[i] = crank.omega if crank.omega else 0.0
+
+        # Run numba simulation with kinematics
+        pos_trajectory, vel_trajectory = simulate_with_kinematics(
+            self._solver_data.positions,
+            self._solver_data.velocities,
+            self._solver_data.constraints,
+            self._solver_data.joint_types,
+            self._solver_data.parent_indices,
+            self._solver_data.constraint_offsets,
+            self._solver_data.solve_order,
+            self._solver_data.omega_values,
+            self._solver_data.crank_indices,
+            iterations,
+            dt,
+        )
+
+        # Sync final positions and velocities back to joints
+        solver_data_to_linkage(self._solver_data, self)  # type: ignore[operator]
+
+        return pos_trajectory, vel_trajectory
+
+    def set_input_velocity(
+        self,
+        crank: Crank,
+        omega: float,
+        alpha: float = 0.0,
+    ) -> None:
+        """Set angular velocity and acceleration for a crank joint.
+
+        This is used for kinematics computation (velocity/acceleration analysis).
+
+        Args:
+            crank: The crank joint to set velocity for.
+            omega: Angular velocity in rad/s.
+            alpha: Angular acceleration in rad/s² (default 0).
+
+        Raises:
+            ValueError: If the crank is not part of this linkage.
+
+        Example:
+            >>> linkage.set_input_velocity(crank, omega=10.0)  # 10 rad/s
+            >>> positions, velocities = linkage.step_fast_with_kinematics(100)
+        """
+        if crank not in self._cranks:
+            raise ValueError(f"{crank} is not a crank in this linkage")
+        crank.omega = omega
+        crank.alpha = alpha
+
+    def get_velocities(self) -> list[tuple[float, float] | None]:
+        """Return velocities for all joints.
+
+        Returns:
+            List of (vx, vy) tuples, one per joint. Returns None for joints
+            whose velocity has not been computed.
+        """
+        return [j.velocity for j in self.joints]
+
+    def get_accelerations(self) -> list[tuple[float, float] | None]:
+        """Return accelerations for all joints.
+
+        Returns:
+            List of (ax, ay) tuples, one per joint. Returns None for joints
+            whose acceleration has not been computed.
+        """
+        return [j.acceleration for j in self.joints]
+
     def get_num_constraints(
         self, flat: bool = True
     ) -> list[float | None] | list[tuple[float | None, ...]]:

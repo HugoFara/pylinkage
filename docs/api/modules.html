@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pylinkage package" href="pylinkage.html" />
-    <link rel="prev" title="Advanced Optimization Techniques" href="../tutorials/advanced_optimization.html" /> 
+    <link rel="prev" title="Kinematics-Based Optimization" href="../tutorials/kinematics_optimization.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -158,8 +158,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-pylinkage">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Crank"><code class="docutils literal notranslate"><span class="pre">Crank</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.alpha"><code class="docutils literal notranslate"><span class="pre">Crank.alpha</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.angle"><code class="docutils literal notranslate"><span class="pre">Crank.angle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.get_constraints"><code class="docutils literal notranslate"><span class="pre">Crank.get_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.omega"><code class="docutils literal notranslate"><span class="pre">Crank.omega</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.r"><code class="docutils literal notranslate"><span class="pre">Crank.r</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.reload"><code class="docutils literal notranslate"><span class="pre">Crank.reload()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Crank.set_anchor0()</span></code></a></li>
@@ -186,19 +188,23 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_accelerations"><code class="docutils literal notranslate"><span class="pre">Linkage.get_accelerations()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_coords"><code class="docutils literal notranslate"><span class="pre">Linkage.get_coords()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_num_constraints"><code class="docutils literal notranslate"><span class="pre">Linkage.get_num_constraints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_rotation_period"><code class="docutils literal notranslate"><span class="pre">Linkage.get_rotation_period()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_velocities"><code class="docutils literal notranslate"><span class="pre">Linkage.get_velocities()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.indeterminacy"><code class="docutils literal notranslate"><span class="pre">Linkage.indeterminacy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.joints"><code class="docutils literal notranslate"><span class="pre">Linkage.joints</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.name"><code class="docutils literal notranslate"><span class="pre">Linkage.name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.rebuild"><code class="docutils literal notranslate"><span class="pre">Linkage.rebuild()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_completely"><code class="docutils literal notranslate"><span class="pre">Linkage.set_completely()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_coords"><code class="docutils literal notranslate"><span class="pre">Linkage.set_coords()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_input_velocity"><code class="docutils literal notranslate"><span class="pre">Linkage.set_input_velocity()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_num_constraints"><code class="docutils literal notranslate"><span class="pre">Linkage.set_num_constraints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.simulation"><code class="docutils literal notranslate"><span class="pre">Linkage.simulation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast_with_kinematics"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
 </ul>
@@ -272,7 +278,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials/advanced_optimization.html" class="btn btn-neutral float-left" title="Advanced Optimization Techniques" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/kinematics_optimization.html" class="btn btn-neutral float-left" title="Kinematics-Based Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pylinkage.html" class="btn btn-neutral float-right" title="pylinkage package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

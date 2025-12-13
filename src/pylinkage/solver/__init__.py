@@ -34,7 +34,15 @@ from .simulation import (
     first_nan_step,
     has_nan_positions,
     simulate,
+    simulate_with_kinematics,
     step_single,
+    step_single_velocity,
+)
+from .velocity import (
+    solve_crank_velocity,
+    solve_fixed_velocity,
+    solve_prismatic_velocity,
+    solve_revolute_velocity,
 )
 from .types import (
     JOINT_CRANK,
@@ -76,14 +84,21 @@ __all__ = [
     "JOINT_FIXED",
     "JOINT_LINEAR",
     "MAX_PARENTS",
-    # Joint solvers
+    # Joint solvers (position)
     "solve_crank",
     "solve_revolute",
     "solve_fixed",
     "solve_linear",
+    # Joint solvers (velocity)
+    "solve_crank_velocity",
+    "solve_revolute_velocity",
+    "solve_fixed_velocity",
+    "solve_prismatic_velocity",
     # Simulation
     "step_single",
+    "step_single_velocity",
     "simulate",
+    "simulate_with_kinematics",
     "has_nan_positions",
     "first_nan_step",
     # Conversion (lazy-loaded for backwards compatibility)
