@@ -23,12 +23,7 @@ For direct access to the solver:
     ... )
 """
 
-from .conversion import (
-    linkage_to_solver_data,
-    solver_data_to_linkage,
-    update_solver_constraints,
-    update_solver_positions,
-)
+# Pure numba components (no Python object dependencies)
 from .joints import (
     solve_crank,
     solve_fixed,
@@ -51,6 +46,27 @@ from .types import (
     SolverData,
 )
 
+# Conversion functions are loaded lazily to avoid circular imports.
+# They are implemented in pylinkage.bridge for architectural reasons
+# (keeps solver pure, with no Python object dependencies).
+# For new code, prefer importing from pylinkage.bridge directly.
+_conversion_attrs = {
+    "linkage_to_solver_data",
+    "solver_data_to_linkage",
+    "update_solver_constraints",
+    "update_solver_positions",
+}
+
+
+def __getattr__(name: str):
+    """Lazy import of conversion functions to avoid circular imports."""
+    if name in _conversion_attrs:
+        from . import conversion
+
+        return getattr(conversion, name)
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
 __all__ = [
     # Types
     "SolverData",
@@ -70,7 +86,7 @@ __all__ = [
     "simulate",
     "has_nan_positions",
     "first_nan_step",
-    # Conversion
+    # Conversion (lazy-loaded for backwards compatibility)
     "linkage_to_solver_data",
     "solver_data_to_linkage",
     "update_solver_constraints",

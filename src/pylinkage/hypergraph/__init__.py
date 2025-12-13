@@ -47,8 +47,8 @@ from ._types import (
 # Component system
 from .components import Component, ParameterMapping, ParameterSpec, Port
 
-# Conversion functions
-from .conversion import from_assur_graph, from_linkage, to_assur_graph, to_linkage
+# Conversion functions (to/from Linkage only - for Assur conversion use assur module)
+from .conversion import from_linkage, to_linkage
 
 # Core graph elements
 from .core import Edge, Hyperedge, Node
@@ -108,9 +108,7 @@ __all__ = [
     "ComponentInstance",
     "Connection",
     "HierarchicalLinkage",
-    # Conversion
-    "to_assur_graph",
-    "from_assur_graph",
+    # Conversion (to/from Linkage - for Assur use assur.from_hypergraph/to_hypergraph)
     "to_linkage",
     "from_linkage",
     # Serialization

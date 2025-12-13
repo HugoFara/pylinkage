@@ -139,21 +139,28 @@ class TestLinkageAutoOrder(unittest.TestCase):
         positions = list(linkage.step(iterations=5))
         self.assertEqual(len(positions), 5)
 
-    def test_auto_order_raises_underconstrained_error(self):
-        """Test that automatic order raises error for unsolvable linkage.
+    def test_auto_order_with_tuple_shortcuts(self):
+        """Test that automatic order works with tuple shortcuts for anchors.
 
-        The automatic order algorithm cannot solve some linkages because
-        it looks for joints whose parents are already in the solvable list.
-        A Crank's joint0 is a Static (tuple converted), but it's not
-        part of the joints list, so it won't be added to solvable.
+        The automatic order algorithm should detect Static joints created
+        from tuple shortcuts (e.g., joint0=(0, 0)) even when they are not
+        explicitly included in the joints list.
         """
+        import warnings
         crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1)
         pin = Revolute(2, 1, joint0=crank, joint1=(2, 0), distance0=2, distance1=1)
         linkage = pl.Linkage(joints=[crank, pin])  # No order specified
 
-        # Should raise UnderconstrainedError when auto-order fails
-        with self.assertRaises(UnderconstrainedError):
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
             linkage.rebuild()
+            # Should warn about experimental feature
+            self.assertEqual(len(w), 1)
+            self.assertIn("experimental", str(w[0].message).lower())
+
+        # Should be able to simulate
+        positions = list(linkage.step(iterations=5))
+        self.assertEqual(len(positions), 5)
 
 
 class TestLinkageAnalysis(unittest.TestCase):

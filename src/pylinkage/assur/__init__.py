@@ -60,9 +60,12 @@ __all__ = [
     "decompose_assur_groups",
     "validate_decomposition",
     "solve_decomposition",
-    # Conversion
+    # Conversion to/from Linkage
     "linkage_to_graph",
     "graph_to_linkage",
+    # Conversion to/from Hypergraph
+    "from_hypergraph",
+    "to_hypergraph",
     # Serialization
     "graph_to_dict",
     "graph_from_dict",
@@ -88,6 +91,7 @@ from .groups import (
     DyadRRR,
     identify_dyad_type,
 )
+from .hypergraph_conversion import from_hypergraph, to_hypergraph
 from .serialization import (
     graph_from_dict,
     graph_from_json,

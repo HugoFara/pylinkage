@@ -1,187 +1,29 @@
-"""Conversion between hypergraph and other representations.
+"""Conversion between hypergraph and Linkage representations.
 
 This module provides functions to convert between the hypergraph
-representation and other formats:
-- Assur graph (LinkageGraph)
-- Joint-based Linkage
+representation and the joint-based Linkage class.
 
-This enables the hypergraph to serve as an abstract mathematical
-foundation that can be converted to specific representations for
-different purposes (analysis, simulation, etc.).
+The hypergraph is the foundational mathematical layer. Conversion to
+Linkage enables simulation. For conversion to/from Assur graph
+representation, use the assur.hypergraph_conversion module.
 """
-
 
 from typing import TYPE_CHECKING
 
-from ._types import JointType, NodeRole
+from ._types import JointType, NodeId, NodeRole
 from .core import Edge, Hyperedge, Node
 from .graph import HypergraphLinkage
 
 if TYPE_CHECKING:
-    from ..assur.graph import LinkageGraph as AssurLinkageGraph
     from ..linkage.linkage import Linkage
-
-
-def to_assur_graph(hypergraph: HypergraphLinkage) -> "AssurLinkageGraph":
-    """Convert a HypergraphLinkage to an Assur LinkageGraph.
-
-    This converts the hypergraph to the simpler graph representation
-    used by the Assur decomposition system. Hyperedges are expanded
-    to regular edges.
-
-    Args:
-        hypergraph: The HypergraphLinkage to convert.
-
-    Returns:
-        An Assur LinkageGraph suitable for decomposition and analysis.
-
-    Example:
-        >>> hg = HypergraphLinkage(name="Four-bar")
-        >>> # ... add nodes and edges ...
-        >>> assur_graph = to_assur_graph(hg)
-    """
-    from ..assur._types import JointType as AssurJointType
-    from ..assur._types import NodeRole as AssurNodeRole
-    from ..assur.graph import Edge as AssurEdge
-    from ..assur.graph import LinkageGraph as AssurLinkageGraph
-    from ..assur.graph import Node as AssurNode
-
-    # First convert to simple graph (expand hyperedges)
-    simple = hypergraph.to_simple_graph()
-
-    assur_graph = AssurLinkageGraph(name=simple.name)
-
-    # Map our types to Assur types
-    role_map = {
-        NodeRole.GROUND: AssurNodeRole.GROUND,
-        NodeRole.DRIVER: AssurNodeRole.DRIVER,
-        NodeRole.DRIVEN: AssurNodeRole.DRIVEN,
-    }
-    joint_type_map = {
-        JointType.REVOLUTE: AssurJointType.REVOLUTE,
-        JointType.PRISMATIC: AssurJointType.PRISMATIC,
-    }
-
-    # Convert nodes
-    for node in simple.nodes.values():
-        assur_node = AssurNode(
-            id=node.id,
-            joint_type=joint_type_map[node.joint_type],
-            role=role_map[node.role],
-            position=node.position,
-            angle=node.angle,
-            initial_angle=node.initial_angle,
-            name=node.name,
-        )
-        assur_graph.add_node(assur_node)
-
-    # Convert edges
-    for edge in simple.edges.values():
-        assur_edge = AssurEdge(
-            id=edge.id,
-            source=edge.source,
-            target=edge.target,
-            distance=edge.distance,
-        )
-        assur_graph.add_edge(assur_edge)
-
-    return assur_graph
-
-
-def from_assur_graph(assur_graph: "AssurLinkageGraph") -> HypergraphLinkage:
-    """Convert an Assur LinkageGraph to a HypergraphLinkage.
-
-    This converts from the Assur graph representation to the more
-    abstract hypergraph representation. Edges with the same body_id
-    are grouped into hyperedges.
-
-    Args:
-        assur_graph: The Assur LinkageGraph to convert.
-
-    Returns:
-        A HypergraphLinkage representation.
-
-    Example:
-        >>> assur_graph = LinkageGraph(name="Four-bar")
-        >>> # ... add nodes and edges ...
-        >>> hg = from_assur_graph(assur_graph)
-    """
-    from ..assur._types import JointType as AssurJointType
-    from ..assur._types import NodeRole as AssurNodeRole
-
-    hypergraph = HypergraphLinkage(name=assur_graph.name)
-
-    # Map Assur types to our types
-    role_map = {
-        AssurNodeRole.GROUND: NodeRole.GROUND,
-        AssurNodeRole.DRIVER: NodeRole.DRIVER,
-        AssurNodeRole.DRIVEN: NodeRole.DRIVEN,
-    }
-    joint_type_map = {
-        AssurJointType.REVOLUTE: JointType.REVOLUTE,
-        AssurJointType.PRISMATIC: JointType.PRISMATIC,
-    }
-
-    # Convert nodes
-    for node in assur_graph.nodes.values():
-        hyper_node = Node(
-            id=node.id,
-            position=node.position,
-            role=role_map[node.role],
-            joint_type=joint_type_map[node.joint_type],
-            angle=node.angle,
-            initial_angle=node.initial_angle,
-            name=node.name,
-        )
-        hypergraph.add_node(hyper_node)
-
-    # Group edges by body_id to potentially create hyperedges
-    body_edges: dict[str | None, list[tuple[str, str, str, float | None]]] = {}
-    for edge in assur_graph.edges.values():
-        body_id = getattr(edge, "body_id", None)
-        if body_id not in body_edges:
-            body_edges[body_id] = []
-        body_edges[body_id].append((edge.id, edge.source, edge.target, edge.distance))
-
-    # Convert edges - edges with body_id become hyperedges, others stay as edges
-    for body_id, edges in body_edges.items():
-        if body_id is not None and len(edges) > 1:
-            # Create hyperedge from grouped edges
-            nodes_set: set[str] = set()
-            constraints: dict[tuple[str, str], float] = {}
-            for _, source, target, distance in edges:
-                nodes_set.add(source)
-                nodes_set.add(target)
-                if distance is not None:
-                    constraints[(source, target)] = distance
-
-            hyperedge = Hyperedge(
-                id=body_id,
-                nodes=tuple(sorted(nodes_set)),
-                constraints=constraints,
-                name=body_id,
-            )
-            hypergraph.add_hyperedge(hyperedge)
-        else:
-            # Keep as regular edges
-            for edge_id, source, target, distance in edges:
-                hyper_edge = Edge(
-                    id=edge_id,
-                    source=source,
-                    target=target,
-                    distance=distance,
-                )
-                hypergraph.add_edge(hyper_edge)
-
-    return hypergraph
 
 
 def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
     """Convert a HypergraphLinkage to a joint-based Linkage.
 
-    This converts the hypergraph to a Linkage that can be used for
-    simulation. The conversion goes through the Assur representation
-    to leverage the existing decomposition and conversion logic.
+    This converts the hypergraph directly to a Linkage that can be used
+    for simulation. The conversion maps nodes to joints based on their
+    roles and connections.
 
     Args:
         hypergraph: The HypergraphLinkage to convert.
@@ -196,21 +38,160 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
-    from ..assur.conversion import graph_to_linkage
+    from ..joints import Crank, Fixed, Linear, Revolute, Static
+    from ..joints.joint import Joint
+    from ..linkage.linkage import Linkage as LinkageClass
 
-    # Convert to Assur graph first
-    assur_graph = to_assur_graph(hypergraph)
+    # First expand hyperedges to simple graph
+    simple = hypergraph.to_simple_graph()
 
-    # Then use existing conversion
-    return graph_to_linkage(assur_graph)
+    joints: list[Joint] = []
+    node_to_joint: dict[NodeId, Joint] = {}
+    solve_order: list[Joint] = []
+
+    # Create ground joints (Static) first
+    for node in simple.ground_nodes():
+        pos = node.position
+        x = pos[0] if pos[0] is not None else 0.0
+        y = pos[1] if pos[1] is not None else 0.0
+
+        joint = Static(x=x, y=y, name=node.name)
+        joints.append(joint)
+        node_to_joint[node.id] = joint
+
+    # Create driver joints (Cranks)
+    for node in simple.driver_nodes():
+        pos = node.position
+        x = pos[0] if pos[0] is not None else 0.0
+        y = pos[1] if pos[1] is not None else 0.0
+
+        # Find ground connection
+        neighbors = simple.neighbors(node.id)
+        parent_joint: Joint | None = None
+        distance: float | None = None
+
+        for neighbor_id in neighbors:
+            neighbor = simple.nodes.get(neighbor_id)
+            if neighbor and neighbor.role == NodeRole.GROUND:
+                parent_joint = node_to_joint.get(neighbor_id)
+                edge = simple.get_edge_between(node.id, neighbor_id)
+                if edge:
+                    distance = edge.distance
+                break
+
+        crank_joint = Crank(
+            x=x,
+            y=y,
+            joint0=parent_joint,
+            distance=distance,
+            angle=node.angle,
+            name=node.name,
+        )
+        joints.append(crank_joint)
+        node_to_joint[node.id] = crank_joint
+        solve_order.append(crank_joint)
+
+    # Create driven joints
+    # Build dependency order based on connections
+    driven = simple.driven_nodes()
+    solved_nodes: set[NodeId] = set()
+    for node in simple.ground_nodes():
+        solved_nodes.add(node.id)
+    for node in simple.driver_nodes():
+        solved_nodes.add(node.id)
+
+    # Iteratively add nodes whose parents are solved
+    remaining = {n.id: n for n in driven}
+    max_iterations = len(remaining) * 2
+
+    for _ in range(max_iterations):
+        if not remaining:
+            break
+
+        for node_id, node in list(remaining.items()):
+            neighbors = simple.neighbors(node_id)
+            parent_ids = [n for n in neighbors if n in solved_nodes]
+
+            # Need at least 2 solved parents for a driven joint
+            if len(parent_ids) >= 2:
+                pos = node.position
+                x = pos[0] if pos[0] is not None else 0.0
+                y = pos[1] if pos[1] is not None else 0.0
+
+                # Determine joint type based on connections
+                if node.joint_type == JointType.PRISMATIC:
+                    # Linear joint - needs circle center + line
+                    # Find revolute connection (with distance)
+                    revolute_parent = None
+                    revolute_dist = None
+                    line_parents: list[Joint] = []
+
+                    for pid in parent_ids:
+                        edge = simple.get_edge_between(node_id, pid)
+                        if edge and edge.distance is not None:
+                            if revolute_parent is None:
+                                revolute_parent = node_to_joint.get(pid)
+                                revolute_dist = edge.distance
+                            else:
+                                line_parents.append(node_to_joint[pid])
+                        else:
+                            line_parents.append(node_to_joint[pid])
+
+                    joint = Linear(
+                        x=x,
+                        y=y,
+                        joint0=revolute_parent,
+                        joint1=line_parents[0] if len(line_parents) > 0 else None,
+                        joint2=line_parents[1] if len(line_parents) > 1 else None,
+                        revolute_radius=revolute_dist,
+                        name=node.name,
+                    )
+                else:
+                    # Revolute joint (most common)
+                    parent0 = node_to_joint.get(parent_ids[0])
+                    parent1 = node_to_joint.get(parent_ids[1])
+
+                    edge0 = simple.get_edge_between(node_id, parent_ids[0])
+                    edge1 = simple.get_edge_between(node_id, parent_ids[1])
+
+                    dist0 = edge0.distance if edge0 else None
+                    dist1 = edge1.distance if edge1 else None
+
+                    joint = Revolute(
+                        x=x,
+                        y=y,
+                        joint0=parent0,
+                        joint1=parent1,
+                        distance0=dist0,
+                        distance1=dist1,
+                        name=node.name,
+                    )
+
+                joints.append(joint)
+                node_to_joint[node_id] = joint
+                solve_order.append(joint)
+                solved_nodes.add(node_id)
+                del remaining[node_id]
+                break
+
+    if remaining:
+        raise ValueError(
+            f"Could not determine solve order for nodes: {list(remaining.keys())}. "
+            "The hypergraph may be underconstrained or have disconnected components."
+        )
+
+    return LinkageClass(
+        joints=joints,
+        order=solve_order,
+        name=hypergraph.name,
+    )
 
 
 def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
     """Convert a joint-based Linkage to a HypergraphLinkage.
 
     This converts an existing Linkage to the hypergraph representation
-    for analysis or manipulation. The conversion goes through the
-    Assur representation to leverage existing conversion logic.
+    for analysis or manipulation.
 
     Args:
         linkage: The Linkage to convert.
@@ -222,10 +203,209 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
         >>> linkage = Linkage(joints=[...], order=[...])
         >>> hg = from_linkage(linkage)
     """
-    from ..assur.conversion import linkage_to_graph
+    from ..joints import Crank, Fixed, Linear, Revolute, Static
 
-    # Convert to Assur graph first
-    assur_graph = linkage_to_graph(linkage)
+    hypergraph = HypergraphLinkage(name=linkage.name)
 
-    # Then convert to hypergraph
-    return from_assur_graph(assur_graph)
+    # Track joint -> node mapping
+    joint_to_node: dict[int, NodeId] = {}
+    edge_counter = 0
+
+    def get_or_create_anchor_node(
+        joint: object, coord: tuple[float | None, float | None]
+    ) -> NodeId:
+        """Get existing node for joint or create anchor node."""
+        nonlocal edge_counter
+
+        joint_id = id(joint)
+        if joint_id in joint_to_node:
+            return joint_to_node[joint_id]
+
+        # Create implicit ground node
+        node_id = f"anchor_{edge_counter}"
+        edge_counter += 1
+
+        pos = (coord[0], coord[1]) if coord[0] is not None else (None, None)
+        anchor_node = Node(
+            id=node_id,
+            role=NodeRole.GROUND,
+            position=pos,
+            name=node_id,
+        )
+        hypergraph.add_node(anchor_node)
+        joint_to_node[joint_id] = node_id
+        return node_id
+
+    # First pass: create nodes for all joints
+    for i, joint in enumerate(linkage.joints):
+        node_id = joint.name if joint.name else f"joint_{i}"
+
+        # Ensure unique node IDs
+        if node_id in hypergraph.nodes:
+            node_id = f"{node_id}_{i}"
+
+        # Determine node properties
+        if isinstance(joint, Static) and not isinstance(joint, Crank):
+            role = NodeRole.GROUND
+            joint_type = JointType.REVOLUTE
+        elif isinstance(joint, Crank):
+            role = NodeRole.DRIVER
+            joint_type = JointType.REVOLUTE
+        elif isinstance(joint, Linear):
+            role = NodeRole.DRIVEN
+            joint_type = JointType.PRISMATIC
+        else:
+            role = NodeRole.DRIVEN
+            joint_type = JointType.REVOLUTE
+
+        node = Node(
+            id=node_id,
+            joint_type=joint_type,
+            role=role,
+            position=joint.coord(),
+            name=joint.name,
+        )
+
+        if isinstance(joint, Crank):
+            node.angle = joint.angle
+
+        hypergraph.add_node(node)
+        joint_to_node[id(joint)] = node_id
+
+    # Second pass: create edges from joint relationships
+    for joint in linkage.joints:
+        node_id = joint_to_node[id(joint)]
+
+        if isinstance(joint, Crank):
+            if joint.joint0 is not None:
+                parent_id = joint_to_node.get(id(joint.joint0))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint0, joint.joint0.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=joint.r,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+        elif isinstance(joint, Revolute):
+            if joint.joint0 is not None:
+                parent_id = joint_to_node.get(id(joint.joint0))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint0, joint.joint0.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=joint.r0,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+            if joint.joint1 is not None:
+                parent_id = joint_to_node.get(id(joint.joint1))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint1, joint.joint1.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=joint.r1,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+        elif isinstance(joint, Fixed):
+            if joint.joint0 is not None:
+                parent_id = joint_to_node.get(id(joint.joint0))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint0, joint.joint0.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=joint.r,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+            if joint.joint1 is not None:
+                parent_id = joint_to_node.get(id(joint.joint1))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint1, joint.joint1.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=None,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+        elif isinstance(joint, Linear):
+            if joint.joint0 is not None:
+                parent_id = joint_to_node.get(id(joint.joint0))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint0, joint.joint0.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=joint.revolute_radius,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+            if joint.joint1 is not None:
+                parent_id = joint_to_node.get(id(joint.joint1))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint1, joint.joint1.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=None,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+            if hasattr(joint, "joint2") and joint.joint2 is not None:
+                parent_id = joint_to_node.get(id(joint.joint2))
+                if parent_id is None:
+                    parent_id = get_or_create_anchor_node(
+                        joint.joint2, joint.joint2.coord()
+                    )
+
+                edge = Edge(
+                    id=f"edge_{edge_counter}",
+                    source=parent_id,
+                    target=node_id,
+                    distance=None,
+                )
+                hypergraph.add_edge(edge)
+                edge_counter += 1
+
+    return hypergraph
