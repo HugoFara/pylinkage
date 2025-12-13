@@ -18,7 +18,7 @@ from ..geometry.secants import (
 )
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_crank(
     current_x: float,
     current_y: float,
@@ -46,10 +46,10 @@ def solve_crank(
     """
     current_angle = math.atan2(current_y - anchor_y, current_x - anchor_x)
     new_angle = current_angle + angle_rate * dt
-    return cyl_to_cart(radius, new_angle, anchor_x, anchor_y)
+    return cyl_to_cart(radius, new_angle, anchor_x, anchor_y)  # type: ignore[no-any-return]
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_revolute(
     current_x: float,
     current_y: float,
@@ -90,12 +90,12 @@ def solve_revolute(
         return (result[1], result[2])
 
     # Two or more solutions - pick nearest to current position
-    return get_nearest_point(
+    return get_nearest_point(  # type: ignore[no-any-return]
         current_x, current_y, result[1], result[2], result[3], result[4]
     )
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_fixed(
     p0_x: float,
     p0_y: float,
@@ -121,10 +121,10 @@ def solve_fixed(
         New (x, y) position (always deterministic).
     """
     base_angle = math.atan2(p1_y - p0_y, p1_x - p0_x)
-    return cyl_to_cart(radius, angle + base_angle, p0_x, p0_y)
+    return cyl_to_cart(radius, angle + base_angle, p0_x, p0_y)  # type: ignore[no-any-return]
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_linear(
     current_x: float,
     current_y: float,
@@ -170,6 +170,6 @@ def solve_linear(
         return (result[1], result[2])
 
     # Two solutions - pick nearest to current position
-    return get_nearest_point(
+    return get_nearest_point(  # type: ignore[no-any-return]
         current_x, current_y, result[1], result[2], result[3], result[4]
     )

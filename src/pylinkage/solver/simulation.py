@@ -18,7 +18,7 @@ from .types import (
 )
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def step_single(
     positions: np.ndarray,
     constraints: np.ndarray,
@@ -111,7 +111,7 @@ def step_single(
             positions[joint_idx, 1] = new_y
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def simulate(
     positions: np.ndarray,
     constraints: np.ndarray,
@@ -164,7 +164,7 @@ def simulate(
     return trajectory
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def has_nan_positions(trajectory: np.ndarray) -> bool:
     """Check if trajectory contains any NaN positions.
 
@@ -181,7 +181,7 @@ def has_nan_positions(trajectory: np.ndarray) -> bool:
     return False
 
 
-@njit(cache=True)
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def first_nan_step(trajectory: np.ndarray) -> int:
     """Find the first step with NaN positions.
 

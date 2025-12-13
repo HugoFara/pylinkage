@@ -113,8 +113,7 @@ def parallel_coordinates_plot(
     dimensions = np.array([list(agent[1]) for agent in agents])
     n_dims = dimensions.shape[1]
 
-    # Add score as the last column
-    all_data = np.column_stack([dimensions, scores])
+    # Add score as the last column for naming
     all_names = list(dim_names) + ["score"]
 
     if dim_types is None:
@@ -196,7 +195,7 @@ def parallel_coordinates_plot(
 
     # Color-code axis labels by type
     type_colors = {"length": "blue", "angle": "orange", "score": "green"}
-    for i, (name, dtype) in enumerate(zip(all_names, dim_types)):
+    for i, (name, dtype) in enumerate(zip(all_names, dim_types, strict=True)):
         label_color = type_colors.get(dtype, "black")
         ax.text(
             i,
@@ -484,7 +483,7 @@ def dashboard_layout(
             if bounds is not None:
                 norm_angles = [
                     (a - bounds[0][i]) / (bounds[1][i] - bounds[0][i])
-                    for a, i in zip(angles, angle_indices)
+                    for a, i in zip(angles, angle_indices, strict=True)
                 ]
             else:
                 norm_angles = [a / (2 * np.pi) for a in angles]
@@ -503,7 +502,7 @@ def dashboard_layout(
         if bounds is not None:
             best_norm_angles = [
                 (a - bounds[0][i]) / (bounds[1][i] - bounds[0][i])
-                for a, i in zip(best_angles, angle_indices)
+                for a, i in zip(best_angles, angle_indices, strict=True)
             ]
         else:
             best_norm_angles = [a / (2 * np.pi) for a in best_angles]
