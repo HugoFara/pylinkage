@@ -28,11 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `__find_solving_order__()` is now properly tested and implemented ([#16](https://github.com/HugoFara/pylinkage/issues/16)).
 
-## Deprecated in 0.7.0
+### Deprecated in 0.7.0
 
 - `Linear` joint term is now deprecated in favor of `Prismatic`.
 
-## Removed in 0.7.0
+### Removed in 0.7.0
 
 - Removed support for Python 3.9.
 

@@ -166,3 +166,55 @@ class TestGraphToLinkage:
             assert len(coords) == len(linkage.joints)
 
         assert step_count == 10
+
+
+class TestLinkageToGraphFixed:
+    """Tests for linkage_to_graph with Fixed joints."""
+
+    def test_convert_with_fixed_joint(self):
+        """Test converting linkage with Fixed joint."""
+        anchor0 = pl.Static(0, 0, name="anchor0")
+        anchor1 = pl.Static(3, 0, name="anchor1")
+        fixed = pl.Fixed(
+            joint0=anchor0,
+            joint1=anchor1,
+            distance=2.0,
+            angle=0.5,
+            name="fixed"
+        )
+        linkage = pl.Linkage(
+            joints=[anchor0, anchor1, fixed],
+            order=[anchor0, anchor1, fixed]
+        )
+
+        graph = linkage_to_graph(linkage)
+
+        # Check Fixed becomes DRIVEN (deterministic position)
+        assert graph.nodes["fixed"].role == NodeRole.DRIVEN
+
+
+class TestLinkageToGraphPrismatic:
+    """Tests for linkage_to_graph with Prismatic joints."""
+
+    def test_convert_with_prismatic_joint(self):
+        """Test converting linkage with Prismatic joint."""
+        anchor = pl.Static(0, 0, name="anchor")
+        line_start = pl.Static(0, 2, name="line_start")
+        line_end = pl.Static(5, 2, name="line_end")
+        prismatic = pl.Prismatic(
+            2, 2,
+            joint0=anchor,
+            joint1=line_start,
+            joint2=line_end,
+            revolute_radius=2.5,
+            name="prismatic"
+        )
+        linkage = pl.Linkage(
+            joints=[anchor, line_start, line_end, prismatic],
+            order=[anchor, line_start, line_end, prismatic]
+        )
+
+        graph = linkage_to_graph(linkage)
+
+        # Check Prismatic becomes DRIVEN
+        assert graph.nodes["prismatic"].role == NodeRole.DRIVEN

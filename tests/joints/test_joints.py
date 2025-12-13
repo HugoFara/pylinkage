@@ -13,6 +13,7 @@ from pylinkage.exceptions import NotCompletelyDefinedError
 from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
 from pylinkage.joints.joint import joint_syntax_parser
 from pylinkage.joints.revolute import Pivot
+from pylinkage.joints.static import Static as StaticFromModule
 
 
 class TestJointSyntaxParser(unittest.TestCase):
@@ -33,6 +34,55 @@ class TestJointSyntaxParser(unittest.TestCase):
         result = joint_syntax_parser((3.0, 4.0))
         self.assertIsInstance(result, Static)
         self.assertEqual(result.coord(), (3.0, 4.0))
+
+
+class TestStaticJointFromModule(unittest.TestCase):
+    """Test Static joint from static.py module."""
+
+    def test_creation(self):
+        """Test Static joint creation from static.py."""
+        static = StaticFromModule(1, 2, name="TestStaticModule")
+        self.assertEqual(static.coord(), (1, 2))
+        self.assertEqual(static.name, "TestStaticModule")
+
+    def test_reload_does_nothing(self):
+        """Test that reload doesn't change coordinates."""
+        static = StaticFromModule(5, 6)
+        static.reload(dt=2.0)
+        self.assertEqual(static.coord(), (5, 6))
+
+    def test_get_constraints_empty(self):
+        """Test that get_constraints returns empty tuple."""
+        static = StaticFromModule(1, 2)
+        self.assertEqual(static.get_constraints(), ())
+
+    def test_set_constraints_does_nothing(self):
+        """Test that set_constraints doesn't raise or change anything."""
+        static = StaticFromModule(1, 2)
+        static.set_constraints(100, 200, 300)
+        self.assertEqual(static.coord(), (1, 2))
+
+    def test_set_anchor0(self):
+        """Test set_anchor0 method."""
+        static = StaticFromModule(0, 0)
+        other = StaticFromModule(3, 4)
+        static.set_anchor0(other)
+        self.assertIs(static.joint0, other)
+
+    def test_set_anchor1(self):
+        """Test set_anchor1 method."""
+        static = StaticFromModule(0, 0)
+        other = StaticFromModule(7, 8)
+        static.set_anchor1(other)
+        self.assertIs(static.joint1, other)
+
+    def test_set_anchor_with_tuple(self):
+        """Test setting anchors with tuple coordinates."""
+        static = StaticFromModule(0, 0)
+        static.set_anchor0((9, 10))
+        self.assertEqual(static.joint0.coord(), (9, 10))
+        static.set_anchor1((11, 12))
+        self.assertEqual(static.joint1.coord(), (11, 12))
 
 
 class TestStaticJoint(unittest.TestCase):
@@ -154,6 +204,45 @@ class TestCrankJoint(unittest.TestCase):
         crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1)
         crank.set_constraints(3)
         self.assertEqual(crank.get_constraints(), (3,))
+
+    def test_crank_reload_missing_joint0(self):
+        """Test Crank reload returns early when joint0 is missing."""
+        crank = Crank(1, 0, angle=0.5, distance=1)
+        # Should not raise, just return early without changing coords
+        crank.reload()
+        self.assertEqual(crank.coord(), (1, 0))
+
+    def test_crank_reload_joint0_none_coords(self):
+        """Test Crank reload raises when joint0 has None coordinates."""
+        from pylinkage.exceptions import UnderconstrainedError
+        j0 = Revolute()
+        j0.x = None
+        j0.y = None
+        crank = Crank(1, 0, joint0=j0, angle=0.5, distance=1)
+        with self.assertRaises(UnderconstrainedError):
+            crank.reload()
+
+    def test_crank_reload_missing_distance(self):
+        """Test Crank reload raises when distance is missing."""
+        from pylinkage.exceptions import UnderconstrainedError
+        crank = Crank(1, 0, joint0=(0, 0), angle=0.5)
+        with self.assertRaises(UnderconstrainedError):
+            crank.reload()
+
+    def test_crank_reload_missing_angle(self):
+        """Test Crank reload raises when angle is missing."""
+        from pylinkage.exceptions import UnderconstrainedError
+        crank = Crank(1, 0, joint0=(0, 0), distance=1)
+        with self.assertRaises(UnderconstrainedError):
+            crank.reload()
+
+    def test_crank_set_anchor0(self):
+        """Test Crank set_anchor0 method."""
+        crank = Crank(1, 0, angle=0.5, distance=1)
+        anchor = Static(2, 2)
+        crank.set_anchor0(anchor, distance=3.0)
+        self.assertIs(crank.joint0, anchor)
+        self.assertEqual(crank.r, 3.0)
 
 
 class TestPrismaticJoint(unittest.TestCase):
@@ -462,6 +551,81 @@ class TestFixed(unittest.TestCase):
         )
         fixed.reload()
         self.assertEqual((1, 0), fixed.coord())
+
+    def test_get_constraints(self):
+        """Test get_constraints returns distance and angle."""
+        fixed = Fixed(distance=2.5, angle=0.7)
+        self.assertEqual(fixed.get_constraints(), (2.5, 0.7))
+
+    def test_set_constraints(self):
+        """Test set_constraints updates distance and angle."""
+        fixed = Fixed(distance=1, angle=0.5)
+        fixed.set_constraints(distance=3.0, angle=1.2)
+        self.assertEqual(fixed.get_constraints(), (3.0, 1.2))
+
+    def test_set_constraints_partial(self):
+        """Test set_constraints with partial update."""
+        fixed = Fixed(distance=1, angle=0.5)
+        fixed.set_constraints(distance=4.0)
+        self.assertEqual(fixed.r, 4.0)
+        self.assertEqual(fixed.angle, 0.5)
+
+    def test_set_anchor0(self):
+        """Test set_anchor0 method."""
+        fixed = Fixed()
+        anchor = Static(5, 5)
+        fixed.set_anchor0(anchor, distance=2.0, angle=0.3)
+        self.assertIs(fixed.joint0, anchor)
+        self.assertEqual(fixed.r, 2.0)
+        self.assertEqual(fixed.angle, 0.3)
+
+    def test_set_anchor1(self):
+        """Test set_anchor1 method."""
+        fixed = Fixed()
+        anchor = Static(7, 7)
+        fixed.set_anchor1(anchor)
+        self.assertIs(fixed.joint1, anchor)
+
+    def test_reload_missing_joint0(self):
+        """Test reload raises when joint0 is missing."""
+        from pylinkage.exceptions import UnderconstrainedError
+        fixed = Fixed(joint1=Static(1, 0), distance=1, angle=0)
+        with self.assertRaises(UnderconstrainedError):
+            fixed.reload()
+
+    def test_reload_missing_joint1(self):
+        """Test reload raises when joint1 is missing."""
+        from pylinkage.exceptions import UnderconstrainedError
+        fixed = Fixed(joint0=Static(0, 0), distance=1, angle=0)
+        with self.assertRaises(UnderconstrainedError):
+            fixed.reload()
+
+    def test_reload_missing_constraints(self):
+        """Test reload raises when constraints are missing."""
+        from pylinkage.exceptions import UnderconstrainedError
+        fixed = Fixed(joint0=Static(0, 0), joint1=Static(1, 0))
+        with self.assertRaises(UnderconstrainedError):
+            fixed.reload()
+
+    def test_reload_joint0_none_coords(self):
+        """Test reload raises when joint0 has None coordinates."""
+        from pylinkage.exceptions import UnderconstrainedError
+        j0 = Revolute()  # Has None coordinates
+        j0.x = None
+        j0.y = None
+        fixed = Fixed(joint0=j0, joint1=Static(1, 0), distance=1, angle=0)
+        with self.assertRaises(UnderconstrainedError):
+            fixed.reload()
+
+    def test_reload_joint1_none_coords(self):
+        """Test reload raises when joint1 has None coordinates."""
+        from pylinkage.exceptions import UnderconstrainedError
+        j1 = Revolute()
+        j1.x = None
+        j1.y = None
+        fixed = Fixed(joint0=Static(0, 0), joint1=j1, distance=1, angle=0)
+        with self.assertRaises(UnderconstrainedError):
+            fixed.reload()
 
 
 class TestPivotDeprecation(unittest.TestCase):

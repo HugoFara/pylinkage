@@ -250,5 +250,109 @@ class TestPrismaticJointVisualization(unittest.TestCase):
         self.assertEqual(_get_color(self.prismatic), 'orange')
 
 
+class TestSymbols(unittest.TestCase):
+    """Test visualizer symbols module."""
+
+    def test_symbols_import(self):
+        """Test that symbols module can be imported."""
+        from pylinkage.visualizer.symbols import (
+            get_symbol_spec,
+            get_link_color,
+            is_ground_joint,
+            SYMBOL_SPECS,
+            LINK_COLORS,
+            SymbolType,
+        )
+        # Just verify import works
+        self.assertTrue(callable(get_symbol_spec))
+        self.assertTrue(callable(get_link_color))
+        self.assertTrue(callable(is_ground_joint))
+        self.assertIsInstance(SYMBOL_SPECS, dict)
+        self.assertIsInstance(LINK_COLORS, list)
+
+    def test_get_symbol_spec_for_static(self):
+        """Test getting symbol spec for Static joint."""
+        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        joint = Static(0, 0)
+        spec = get_symbol_spec(joint)
+        self.assertEqual(spec.symbol_type, SymbolType.GROUND)
+
+    def test_get_symbol_spec_for_crank(self):
+        """Test getting symbol spec for Crank joint."""
+        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        joint = Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
+        spec = get_symbol_spec(joint)
+        self.assertEqual(spec.symbol_type, SymbolType.CRANK)
+
+    def test_get_symbol_spec_for_revolute(self):
+        """Test getting symbol spec for Revolute joint."""
+        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        joint = Revolute(0, 0)
+        spec = get_symbol_spec(joint)
+        self.assertEqual(spec.symbol_type, SymbolType.REVOLUTE)
+
+    def test_get_link_color_cycles(self):
+        """Test that get_link_color cycles through colors."""
+        from pylinkage.visualizer.symbols import get_link_color, LINK_COLORS
+        # First color
+        self.assertEqual(get_link_color(0), LINK_COLORS[0])
+        # Last color
+        self.assertEqual(get_link_color(len(LINK_COLORS) - 1), LINK_COLORS[-1])
+        # Cycling
+        self.assertEqual(get_link_color(len(LINK_COLORS)), LINK_COLORS[0])
+
+    def test_is_ground_joint_true(self):
+        """Test is_ground_joint returns True for Static with no parent."""
+        from pylinkage.visualizer.symbols import is_ground_joint
+        joint = Static(0, 0)
+        self.assertTrue(is_ground_joint(joint))
+
+    def test_is_ground_joint_false_for_crank(self):
+        """Test is_ground_joint returns False for Crank."""
+        from pylinkage.visualizer.symbols import is_ground_joint
+        joint = Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
+        self.assertFalse(is_ground_joint(joint))
+
+
+class TestPlotlyVizImport(unittest.TestCase):
+    """Basic tests for plotly visualization module."""
+
+    def test_import(self):
+        """Test that plotly_viz module can be imported."""
+        from pylinkage.visualizer import plotly_viz
+        # Check main functions exist
+        self.assertTrue(hasattr(plotly_viz, 'plot_linkage_plotly'))
+
+    def test_create_linkage_figure_function_exists(self):
+        """Test that create_linkage_figure function exists."""
+        from pylinkage.visualizer.plotly_viz import plot_linkage_plotly
+        self.assertTrue(callable(plot_linkage_plotly))
+
+
+class TestDrawsvgVizImport(unittest.TestCase):
+    """Basic tests for drawsvg visualization module."""
+
+    def test_import(self):
+        """Test that drawsvg_viz module can be imported."""
+        from pylinkage.visualizer import drawsvg_viz
+        self.assertTrue(hasattr(drawsvg_viz, 'save_linkage_svg'))
+
+
+class TestAnimatedVisualization(FourBarLinkageTestCase):
+    """Additional tests for animated visualization."""
+
+    def test_show_linkage_creates_figure(self):
+        """Test that show_linkage creates a matplotlib figure."""
+        animation = show_linkage(
+            self.linkage,
+            save=False,
+            loci=self.loci,
+            duration=0.1,
+            fps=5
+        )
+        # Animation should have a reference to the figure
+        self.assertIsNotNone(animation)
+
+
 if __name__ == '__main__':
     unittest.main()
