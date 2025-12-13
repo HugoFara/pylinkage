@@ -56,6 +56,9 @@ docs = [
     "sphinx-rtd-theme>=2.0.0",
     "myst-parser>=3.0.1",
 ]
+app = [
+    "streamlit>=1.28.0",
+]
 
 [project.urls]
 Homepage = "https://hugofara.github.io/pylinkage/"
