@@ -28,6 +28,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
+from scipy import linalg as scipy_linalg
 
 from ._types import FourBarSolution, Point2D, Pose, SynthesisType
 from .burmester import (
@@ -302,7 +303,7 @@ def motion_generation(
                 if solution is not None:
                     raw_solutions.append(solution)
 
-    except (ValueError, np.linalg.LinAlgError) as e:
+    except (ValueError, np.linalg.LinAlgError, scipy_linalg.LinAlgError) as e:
         warnings.append(f"Synthesis computation failed: {e}")
 
     # Remove duplicates
@@ -399,7 +400,7 @@ def motion_generation_3_poses(
                                 done = True
                                 break
 
-    except (ValueError, np.linalg.LinAlgError) as e:
+    except (ValueError, np.linalg.LinAlgError, scipy_linalg.LinAlgError) as e:
         warnings.append(f"Synthesis failed: {e}")
 
     # Remove duplicates

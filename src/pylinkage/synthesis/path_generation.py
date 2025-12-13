@@ -34,6 +34,7 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import numpy as np
+from scipy import linalg as scipy_linalg
 
 from ._types import FourBarSolution, Point2D, Pose, PrecisionPoint, SynthesisType
 from .burmester import (
@@ -420,7 +421,7 @@ def path_generation(
                         # Collected enough candidates
                         break
 
-        except (ValueError, np.linalg.LinAlgError):
+        except (ValueError, np.linalg.LinAlgError, scipy_linalg.LinAlgError):
             # Configuration doesn't yield valid solution
             continue
 
@@ -536,7 +537,7 @@ def path_generation_with_timing(
                 if solution is not None:
                     raw_solutions.append(solution)
 
-    except (ValueError, np.linalg.LinAlgError) as e:
+    except (ValueError, np.linalg.LinAlgError, scipy_linalg.LinAlgError) as e:
         warnings.append(f"Synthesis failed: {e}")
 
     # Filter

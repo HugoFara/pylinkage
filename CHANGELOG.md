@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SymPy for analytical optimization.
 - Native computation of velocity and acceleration with visualizations.
 - Linkage synthesis with Burgmester's theory, function, path and motion generation.
+- Adds scipy.
+  - Exact optimization solving (better than numpy) + support constraints.
+  - Adds a new optimization: differential evolution.
 
 ## [0.7.0] - 2025-12-13
 

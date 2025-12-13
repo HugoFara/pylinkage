@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING, Any
 from .collections import Agent, MutableAgent
 from .grid_search import trials_and_errors_optimization
 from .particle_swarm import particle_swarm_optimization
+from .scipy_optimize import differential_evolution_optimization, minimize_linkage
 
 if TYPE_CHECKING:
     from .._types import JointPositions
@@ -260,6 +261,183 @@ async def trials_and_errors_optimization_async(
         on_progress(OptimizationProgress(
             current_iteration=total_iterations,
             total_iterations=total_iterations,
+            best_score=best_score,
+            is_complete=True,
+        ))
+
+    return result
+
+
+async def differential_evolution_optimization_async(
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
+    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
+    order_relation: Callable[[float, float], float] = max,
+    strategy: str = "best1bin",
+    maxiter: int = 1000,
+    popsize: int = 15,
+    tol: float = 0.01,
+    mutation: tuple[float, float] | float = (0.5, 1.0),
+    recombination: float = 0.7,
+    seed: int | None = None,
+    on_progress: ProgressCallback | None = None,
+    executor: ThreadPoolExecutor | None = None,
+    **kwargs: Any,
+) -> list[Agent]:
+    """Async version of differential_evolution_optimization.
+
+    This function runs the differential evolution optimization in a thread pool
+    executor to avoid blocking the event loop, while providing progress callbacks
+    and cancellation support.
+
+    :param eval_func: The evaluation function.
+        Input: (linkage, num_constraints, initial_coordinates).
+        Output: score (float).
+    :param linkage: Linkage to be optimized.
+    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
+    :param order_relation: How to compare scores (max or min). Default is max.
+    :param strategy: Differential evolution strategy. Default is "best1bin".
+    :param maxiter: Maximum number of generations. Default is 1000.
+    :param popsize: Population size multiplier. Default is 15.
+    :param tol: Relative tolerance for convergence. Default is 0.01.
+    :param mutation: Mutation constant. Default is (0.5, 1.0).
+    :param recombination: Recombination constant. Default is 0.7.
+    :param seed: Random seed for reproducibility.
+    :param on_progress: Optional callback function called with progress updates.
+    :param executor: Optional ThreadPoolExecutor to use.
+    :param kwargs: Additional keyword arguments passed to differential_evolution.
+
+    :returns: List containing single Agent with best score, dimensions, and positions.
+
+    :raises asyncio.CancelledError: If the optimization is cancelled.
+    :raises OptimizationError: If parameters are invalid or optimization fails.
+    """
+    loop = asyncio.get_running_loop()
+
+    # Signal progress at start
+    if on_progress is not None:
+        on_progress(OptimizationProgress(
+            current_iteration=0,
+            total_iterations=maxiter,
+            best_score=None,
+            is_complete=False,
+        ))
+
+    def run_optimization() -> list[Agent]:
+        return differential_evolution_optimization(
+            eval_func=eval_func,
+            linkage=linkage,
+            bounds=bounds,
+            order_relation=order_relation,
+            strategy=strategy,
+            maxiter=maxiter,
+            popsize=popsize,
+            tol=tol,
+            mutation=mutation,
+            recombination=recombination,
+            seed=seed,
+            workers=1,  # Don't use scipy workers in async context
+            verbose=False,  # Disable verbose output in async mode
+            **kwargs,
+        )
+
+    # Run optimization in thread pool
+    if executor is not None:
+        result = await loop.run_in_executor(executor, run_optimization)
+    else:
+        result = await loop.run_in_executor(None, run_optimization)
+
+    # Signal completion
+    if on_progress is not None:
+        best_score = result[0].score if result else None
+        on_progress(OptimizationProgress(
+            current_iteration=maxiter,
+            total_iterations=maxiter,
+            best_score=best_score,
+            is_complete=True,
+        ))
+
+    return result
+
+
+async def minimize_linkage_async(
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
+    x0: Sequence[float] | None = None,
+    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
+    order_relation: Callable[[float, float], float] = max,
+    method: str = "Nelder-Mead",
+    maxiter: int | None = None,
+    tol: float | None = None,
+    on_progress: ProgressCallback | None = None,
+    executor: ThreadPoolExecutor | None = None,
+    **kwargs: Any,
+) -> list[Agent]:
+    """Async version of minimize_linkage.
+
+    This function runs the local optimization in a thread pool executor to avoid
+    blocking the event loop, while providing progress callbacks and cancellation
+    support.
+
+    :param eval_func: The evaluation function.
+        Input: (linkage, num_constraints, initial_coordinates).
+        Output: score (float).
+    :param linkage: Linkage to be optimized.
+    :param x0: Initial guess for the parameters.
+    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
+    :param order_relation: How to compare scores (max or min). Default is max.
+    :param method: Optimization method. Default is "Nelder-Mead".
+    :param maxiter: Maximum number of iterations.
+    :param tol: Tolerance for termination.
+    :param on_progress: Optional callback function called with progress updates.
+    :param executor: Optional ThreadPoolExecutor to use.
+    :param kwargs: Additional keyword arguments passed to minimize.
+
+    :returns: List containing single Agent with best score, dimensions, and positions.
+
+    :raises asyncio.CancelledError: If the optimization is cancelled.
+    :raises OptimizationError: If parameters are invalid or optimization fails.
+    """
+    loop = asyncio.get_running_loop()
+
+    # Estimate total iterations for progress (default scipy value if not specified)
+    total_iters = maxiter if maxiter is not None else 1000
+
+    # Signal progress at start
+    if on_progress is not None:
+        on_progress(OptimizationProgress(
+            current_iteration=0,
+            total_iterations=total_iters,
+            best_score=None,
+            is_complete=False,
+        ))
+
+    def run_optimization() -> list[Agent]:
+        return minimize_linkage(
+            eval_func=eval_func,
+            linkage=linkage,
+            x0=x0,
+            bounds=bounds,
+            order_relation=order_relation,
+            method=method,  # type: ignore[arg-type]
+            maxiter=maxiter,
+            tol=tol,
+            verbose=False,  # Disable verbose output in async mode
+            **kwargs,
+        )
+
+    # Run optimization in thread pool
+    if executor is not None:
+        result = await loop.run_in_executor(executor, run_optimization)
+    else:
+        result = await loop.run_in_executor(None, run_optimization)
+
+    # Signal completion
+    if on_progress is not None:
+        best_score = result[0].score if result else None
+        on_progress(OptimizationProgress(
+            current_iteration=total_iters,
+            total_iterations=total_iters,
             best_score=best_score,
             is_complete=True,
         ))

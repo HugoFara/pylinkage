@@ -31,6 +31,7 @@ import math
 from typing import TYPE_CHECKING
 
 import numpy as np
+from scipy import linalg as scipy_linalg
 
 from ._types import AnglePair, FourBarSolution, Point2D, SynthesisType
 from .core import SynthesisProblem, SynthesisResult
@@ -86,7 +87,7 @@ def solve_freudenstein_3_positions(
 
     Raises:
         ValueError: If not exactly 3 angle pairs provided.
-        np.linalg.LinAlgError: If the system is singular.
+        scipy.linalg.LinAlgError: If the system is singular.
 
     Example:
         >>> pairs = [(0.0, 0.0), (0.5, 0.6), (1.0, 1.1)]
@@ -108,13 +109,13 @@ def solve_freudenstein_3_positions(
     # Check condition number
     cond = np.linalg.cond(A)
     if cond > 1e12:
-        raise np.linalg.LinAlgError(
+        raise scipy_linalg.LinAlgError(
             f"System is ill-conditioned (cond={cond:.2e}). "
             "Angle pairs may be too similar or degenerate."
         )
 
     # Solve linear system
-    R = np.linalg.solve(A, b)
+    R = scipy_linalg.solve(A, b)
 
     return float(R[0]), float(R[1]), float(R[2])
 
@@ -151,12 +152,11 @@ def solve_freudenstein_least_squares(
         b[i] = math.cos(theta2 - theta4)
 
     # Least squares solution
-    result = np.linalg.lstsq(A, b, rcond=None)
-    R = result[0]
+    R, residues, rank, s = scipy_linalg.lstsq(A, b)
 
     # Compute residual norm
     residuals = A @ R - b
-    residual_norm = float(np.linalg.norm(residuals))
+    residual_norm = float(scipy_linalg.norm(residuals))
 
     return float(R[0]), float(R[1]), float(R[2]), residual_norm
 
@@ -446,7 +446,7 @@ def function_generation(
         else:
             raw_solutions.append(raw_solution)
 
-    except np.linalg.LinAlgError as e:
+    except (np.linalg.LinAlgError, scipy_linalg.LinAlgError) as e:
         warnings.append(f"Linear algebra error: {e}")
 
     # Convert raw solutions to Linkage objects

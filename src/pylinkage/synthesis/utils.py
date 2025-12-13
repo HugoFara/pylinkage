@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
+from scipy import linalg as scipy_linalg
 
 from ._types import ComplexPoint, FourBarSolution, Point2D
 
@@ -330,5 +331,5 @@ def check_condition_number(
     try:
         cond = float(np.linalg.cond(matrix))
         return cond < threshold
-    except np.linalg.LinAlgError:
+    except (np.linalg.LinAlgError, scipy_linalg.LinAlgError):
         return False
