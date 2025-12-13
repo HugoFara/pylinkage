@@ -60,7 +60,7 @@ Repository = "https://github.com/HugoFara/pylinkage"
 Changelog = "https://github.com/hugofara/pylinkage/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pylinkage"]
+packages = ["src/pylinkage"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

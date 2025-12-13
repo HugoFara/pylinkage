@@ -7,15 +7,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Welcome to pylinkage’s documentation! &mdash; pylinkage 0.6.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=08553120"></script>
-      <script src="_static/doctools.js?v=888ff710"></script>
-      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -145,12 +145,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples/modules.html">examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples.html">examples package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#module-examples.fourbar_linkage">examples.fourbar_linkage module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#module-examples.inverted_stroke_engine">examples.inverted_stroke_engine module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#module-examples.strider">examples.strider module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#module-examples">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples.html">Example Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#four-bar-linkage">Four-bar Linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#inverted-stroke-engine">Inverted Stroke Engine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/examples.html#strider">Strider</a></li>
 </ul>
 </li>
 </ul>
@@ -233,7 +231,7 @@ the requirements in a separate environment.</p>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif" /></p>
+<p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif" /></p>
 <p>Cool, isn’t it? But the package doesn’t stop here as it provides a library
 <strong>to achieve any movement</strong>.</p>
 <p>Let’s say that you want the <code class="docutils literal notranslate"><span class="pre">pin</span></code> joint to stay in top-right corner, with an
@@ -261,7 +259,7 @@ when the <code class="docutils literal notranslate"><span class="pre">pin</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif" /></p>
+<p><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20Windscreen%20wiper.gif" /></p>
 <p>Tadaaa!
 We defined a mechanism, solved an issue and viewed the result in a few lines of code!
 And remember, you can define any objective function, so let’s give it a try!</p>
@@ -363,7 +361,7 @@ Let’s add friendly names to joints, so the communication is simplified.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20My%20four-bar%20linkage.gif" /></p>
+<p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif" /></p>
 <p>Last recap, rearranging names:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main motor</span>
 <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
@@ -475,7 +473,7 @@ constraints, the particles move in an n-D space.</p></li>
 </div>
 <p>Here the result can vary, but it is rarely above 0.2.</p>
 <p>So we made something that says it works, let’s verify it:</p>
-<p><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/images/Kinematic%20Windscreen%20wiper.gif" /></p>
+<p><img alt="An optimized four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20Windscreen%20wiper.gif" /></p>
 <p>With a bit of imagination, you have a wonderful windshield wiper!</p>
 </section>
 </section>

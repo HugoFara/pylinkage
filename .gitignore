@@ -74,8 +74,9 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# Sphinx documentation build artifacts
 docs/_build/
+docs/_doctrees/
 docs/.doctrees
 docs/.buildinfo
 

@@ -7,15 +7,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>tests.optimization package &mdash; pylinkage 0.6.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=08553120"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -49,9 +49,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/custom_joints.html">Custom Joint Creation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul class="current">
@@ -112,115 +110,11 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="module-tests.optimization.test_optimizer">
-<span id="tests-optimization-test-optimizer-module"></span><h2>tests.optimization.test_optimizer module<a class="headerlink" href="#module-tests.optimization.test_optimizer" title="Link to this heading"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestEvaluation">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">TestEvaluation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestEvaluation" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<p>Test if a linkage can properly be evaluated.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestEvaluation.constraints">
-<span class="sig-name descname"><span class="pre">constraints</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(3,</span> <span class="pre">1)</span></em><a class="headerlink" href="#tests.optimization.test_optimizer.TestEvaluation.constraints" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestEvaluation.linkage">
-<span class="sig-name descname"><span class="pre">linkage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pylinkage.linkage.linkage.Linkage</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#tests.optimization.test_optimizer.TestEvaluation.linkage" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestEvaluation.test_score">
-<span class="sig-name descname"><span class="pre">test_score</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestEvaluation.test_score" title="Link to this definition"></a></dt>
-<dd><p>Test if score is well returned.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestGenerateBounds">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">TestGenerateBounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestGenerateBounds" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<p>Test various things about the generate_bounds function.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestGenerateBounds.test_function">
-<span class="sig-name descname"><span class="pre">test_function</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestGenerateBounds.test_function" title="Link to this definition"></a></dt>
-<dd><p>Test is the function runs simply.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestPSO">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">TestPSO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestPSO" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<p>Test the particle swarm optimization.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestPSO.constraints">
-<span class="sig-name descname"><span class="pre">constraints</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(3,</span> <span class="pre">1)</span></em><a class="headerlink" href="#tests.optimization.test_optimizer.TestPSO.constraints" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestPSO.linkage">
-<span class="sig-name descname"><span class="pre">linkage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pylinkage.linkage.linkage.Linkage</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#tests.optimization.test_optimizer.TestPSO.linkage" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestPSO.test_convergence">
-<span class="sig-name descname"><span class="pre">test_convergence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestPSO.test_convergence" title="Link to this definition"></a></dt>
-<dd><p>Test if the result is not too far from 0.0.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestTrialsAndErrors">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">TestTrialsAndErrors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestTrialsAndErrors" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<p>Tests for the trials and errors optimization.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestTrialsAndErrors.linkage">
-<span class="sig-name descname"><span class="pre">linkage</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;pylinkage.linkage.linkage.Linkage</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#tests.optimization.test_optimizer.TestTrialsAndErrors.linkage" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestTrialsAndErrors.test_convergence">
-<span class="sig-name descname"><span class="pre">test_convergence</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestTrialsAndErrors.test_convergence" title="Link to this definition"></a></dt>
-<dd><p>Test if the output after some iterations is improved.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestVariator">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">TestVariator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestVariator" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
-<p>Test case for the variation creators.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.TestVariator.test_length">
-<span class="sig-name descname"><span class="pre">test_length</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.TestVariator.test_length" title="Link to this definition"></a></dt>
-<dd><p>Test that the length is about the number of subdivisions.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="tests.optimization.test_optimizer.prepare_linkage">
-<span class="sig-prename descclassname"><span class="pre">tests.optimization.test_optimizer.</span></span><span class="sig-name descname"><span class="pre">prepare_linkage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.optimization.test_optimizer.prepare_linkage" title="Link to this definition"></a></dt>
-<dd><p>Simple four-bar linkage.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A four-bar linkage</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="../api/pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage">pylinkage.Linkage</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="tests-optimization-test-optimizer-module">
+<h2>tests.optimization.test_optimizer module<a class="headerlink" href="#tests-optimization-test-optimizer-module" title="Link to this heading"></a></h2>
 </section>
-<section id="module-tests.optimization">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests.optimization" title="Link to this heading"></a></h2>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
 </section>
 </section>
 

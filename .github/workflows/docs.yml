@@ -20,4 +20,4 @@ jobs:
       - name: Install dependencies
         run: uv sync --python 3.12
       - name: Build documentation
-        run: uv run sphinx-build -b html sphinx/ docs/
+        run: uv run sphinx-build -b html docs/source docs/

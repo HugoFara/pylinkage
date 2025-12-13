@@ -34,21 +34,21 @@ uv run pytest --cov=pylinkage        # Run with coverage
 uv run ruff check .                  # Lint code
 uv run ruff check . --fix            # Lint and auto-fix
 uv run ruff format .                 # Format code
-uv run mypy pylinkage                # Type check
+uv run mypy src/pylinkage            # Type check
 ```
 
 ### Building
 
 ```bash
 uv build                             # Build wheel and sdist
-uv run sphinx-build -b html sphinx/ docs/  # Build documentation
+uv run sphinx-build -b html docs/source docs/  # Build documentation
 ```
 
 ## Architecture
 
 ### Package Structure
 
-- **pylinkage/joints/**: Joint types that form linkage building blocks
+- **src/pylinkage/joints/**: Joint types that form linkage building blocks
   - `Static`: Fixed point in space (base class for all joints)
   - `Crank`: Rotating motor joint (creates a motor + pin joint)
   - `Revolute`: Pin joint connecting two parents
@@ -57,23 +57,23 @@ uv run sphinx-build -b html sphinx/ docs/  # Build documentation
   - `Fixed`: Static joint with fixed distance constraints
   - `Linear`: Joint constrained to move along a line
 
-- **pylinkage/linkage/**: Linkage class that orchestrates joint collections
+- **src/pylinkage/linkage/**: Linkage class that orchestrates joint collections
   - `Linkage`: Main class managing joints, solving order, and simulation
     via `step()` method
   - `Simulation`: Container for simulation results (loci, steps)
   - `analysis.py`: Helper functions like `bounding_box()` and `kinematic_default_test()`
 
-- **pylinkage/optimization/**: Optimization algorithms
+- **src/pylinkage/optimization/**: Optimization algorithms
   - `grid_search.py`: `trials_and_errors_optimization()` - exhaustive search
   - `particle_swarm.py`: `particle_swarm_optimization()` - PSO using PySwarms
   - `utils.py`: `@kinematic_minimization`/`@kinematic_maximization` decorators
     and `generate_bounds()`
 
-- **pylinkage/geometry/**: 2D geometry utilities
+- **src/pylinkage/geometry/**: 2D geometry utilities
   - `core.py`: Distance calculations, coordinate conversions
   - `secants.py`: Circle-circle and circle-line intersections
 
-- **pylinkage/visualizer/**: Matplotlib-based visualization
+- **src/pylinkage/visualizer/**: Matplotlib-based visualization
   - `static.py`: Static linkage plots
   - `animated.py`: `show_linkage()` for animated GIF output
 
