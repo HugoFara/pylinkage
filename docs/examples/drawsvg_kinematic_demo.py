@@ -11,6 +11,7 @@ This demo shows how to visualize linkages using standard kinematic symbols:
 Run with: uv run python docs/examples/drawsvg_kinematic_demo.py
 """
 import math
+
 import drawsvg as draw
 
 # Scale factor: 1 unit = 80 pixels

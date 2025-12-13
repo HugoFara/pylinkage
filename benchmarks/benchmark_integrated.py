@@ -10,18 +10,13 @@ This script:
 Run with: uv run python benchmarks/benchmark_integrated.py
 """
 import math
-import time
-import statistics
 import random
-from dataclasses import dataclass
+import statistics
+import time
 
-import numpy as np
 from numba import njit
 
 import pylinkage as pl
-from pylinkage.geometry.secants import circle_intersect as circle_intersect_orig
-from pylinkage.geometry.core import sqr_dist as sqr_dist_orig
-
 
 # ============================================================================
 # NUMBA-OPTIMIZED JOINT SIMULATION
@@ -331,11 +326,11 @@ def main():
     orig_cycle = benchmark_original_linkage(n_cycles=1000)
     numba_cycle = benchmark_numba_simulation(n_cycles=1000)
 
-    print(f"Original pylinkage:")
+    print("Original pylinkage:")
     print(f"  Mean cycle time: {orig_cycle['mean_us']:.2f} µs")
     print(f"  Total time: {orig_cycle['total_ms']:.1f} ms")
     print()
-    print(f"Numba-optimized:")
+    print("Numba-optimized:")
     print(f"  Mean cycle time: {numba_cycle['mean_us']:.2f} µs")
     print(f"  Total time: {numba_cycle['total_ms']:.1f} ms")
     print()
@@ -352,13 +347,13 @@ def main():
     orig_opt = benchmark_optimization_scenario(n_evals=1000)
     numba_opt = benchmark_numba_optimization_scenario(n_evals=1000)
 
-    print(f"Original pylinkage:")
+    print("Original pylinkage:")
     print(f"  Total time: {orig_opt['total_sec']:.3f} sec")
     print(f"  Mean eval time: {orig_opt['mean_eval_us']:.1f} µs")
     print(f"  Throughput: {orig_opt['evals_per_sec']:,.0f} evals/sec")
     print(f"  Successful: {orig_opt['successful']}/{orig_opt['evals']}")
     print()
-    print(f"Numba-optimized:")
+    print("Numba-optimized:")
     print(f"  Total time: {numba_opt['total_sec']:.3f} sec")
     print(f"  Mean eval time: {numba_opt['mean_eval_us']:.1f} µs")
     print(f"  Throughput: {numba_opt['evals_per_sec']:,.0f} evals/sec")

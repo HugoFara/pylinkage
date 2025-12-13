@@ -6,16 +6,17 @@ Run with: uv run python docs/examples/pso_animation_demo.py
 """
 
 import matplotlib
+
 matplotlib.use('Agg')  # Non-interactive backend for saving
 
-import matplotlib.pyplot as plt
 import matplotlib.animation as anim
+import matplotlib.pyplot as plt
 import numpy as np
 
 import pylinkage as pl
 from pylinkage.visualizer.pso_plots import (
-    parallel_coordinates_plot,
     dashboard_layout,
+    parallel_coordinates_plot,
 )
 
 # Simulation parameters
@@ -143,7 +144,7 @@ def run_optimization(linkage, n_particles=50, n_iterations=40):
 
 def create_parallel_coordinates_animation(history, output_path="parallel_coords_animation.gif"):
     """Create and save parallel coordinates animation."""
-    print(f"Creating parallel coordinates animation...")
+    print("Creating parallel coordinates animation...")
 
     # Create figure with fixed layout: main axes + colorbar axes
     fig = plt.figure(figsize=(14, 6))
@@ -182,7 +183,7 @@ def create_parallel_coordinates_animation(history, output_path="parallel_coords_
 
 def create_dashboard_animation(linkage, history, output_path="dashboard_animation.gif"):
     """Create and save dashboard animation."""
-    print(f"Creating dashboard animation...")
+    print("Creating dashboard animation...")
 
     fig = plt.figure(figsize=(14, 10))
     score_history = []

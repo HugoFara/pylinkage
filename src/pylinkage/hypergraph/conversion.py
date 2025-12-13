@@ -10,8 +10,9 @@ representation, use the assur.hypergraph_conversion module.
 
 from typing import TYPE_CHECKING
 
+from ..joints.joint import Joint
 from ._types import JointType, NodeId, NodeRole
-from .core import Edge, Hyperedge, Node
+from .core import Edge, Node
 from .graph import HypergraphLinkage
 
 if TYPE_CHECKING:
@@ -38,7 +39,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+    from ..joints import Crank, Prismatic, Revolute, Static
     from ..joints.joint import Joint
     from ..linkage.linkage import Linkage as LinkageClass
 
@@ -122,8 +123,8 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                 if node.joint_type == JointType.PRISMATIC:
                     # Prismatic joint - needs circle center + line
                     # Find revolute connection (with distance)
-                    revolute_parent = None
-                    revolute_dist = None
+                    revolute_parent: Joint | None = None
+                    revolute_dist: float | None = None
                     line_parents: list[Joint] = []
 
                     for pid in parent_ids:
@@ -137,7 +138,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                         else:
                             line_parents.append(node_to_joint[pid])
 
-                    joint = Prismatic(
+                    created_joint: Joint = Prismatic(
                         x=x,
                         y=y,
                         joint0=revolute_parent,
@@ -157,7 +158,7 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                     dist0 = edge0.distance if edge0 else None
                     dist1 = edge1.distance if edge1 else None
 
-                    joint = Revolute(
+                    created_joint = Revolute(
                         x=x,
                         y=y,
                         joint0=parent0,
@@ -167,9 +168,9 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                         name=node.name,
                     )
 
-                joints.append(joint)
-                node_to_joint[node_id] = joint
-                solve_order.append(joint)
+                joints.append(created_joint)
+                node_to_joint[node_id] = created_joint
+                solve_order.append(created_joint)
                 solved_nodes.add(node_id)
                 del remaining[node_id]
                 break

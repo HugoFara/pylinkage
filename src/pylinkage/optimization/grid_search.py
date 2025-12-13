@@ -180,10 +180,10 @@ def trials_and_errors_optimization(
     }
     if 'sequential' in kwargs and kwargs['sequential']:
         variations_generator: Generator[Any, None, None] = sequential_variator(
-            center, divisions, bounds
+            center, divisions, bounds  # type: ignore[arg-type]
         )
     else:
-        variations_generator = fast_variator(divisions, bounds)
+        variations_generator = fast_variator(divisions, bounds)  # type: ignore[arg-type]
     order_relation: Callable[[float, float], float] = kwargs.get('order_relation', max)
     verbose: bool = 'verbose' in kwargs and kwargs['verbose']
     # Iterable of all possible dimensions

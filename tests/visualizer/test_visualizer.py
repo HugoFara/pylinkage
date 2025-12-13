@@ -9,7 +9,7 @@ matplotlib.use('Agg')  # Non-interactive backend for CI
 import matplotlib.pyplot as plt
 
 import pylinkage as pl
-from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
+from pylinkage.joints import Crank, Fixed, Prismatic, Revolute, Static
 from pylinkage.joints.revolute import Pivot
 from pylinkage.visualizer.animated import (
     plot_kinematic_linkage,

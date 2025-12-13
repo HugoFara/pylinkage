@@ -8,8 +8,8 @@ between the two parents.
 This is a thin wrapper around the solver's solve_fixed function.
 """
 
-from .._types import Coord
 from .. import exceptions as pl_exceptions
+from .._types import Coord
 from ..solver.joints import solve_fixed
 from . import joint as pl_joint
 

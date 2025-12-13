@@ -58,7 +58,7 @@ _conversion_attrs = {
 }
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> object:
     """Lazy import of conversion functions to avoid circular imports."""
     if name in _conversion_attrs:
         from . import conversion

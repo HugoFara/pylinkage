@@ -8,8 +8,8 @@ import math
 import unittest
 
 import pylinkage as pl
-from pylinkage.exceptions import UnbuildableError, UnderconstrainedError
-from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
+from pylinkage.exceptions import UnbuildableError
+from pylinkage.joints import Crank, Fixed, Prismatic, Revolute, Static
 from pylinkage.linkage.analysis import bounding_box, movement_bounding_box
 from pylinkage.optimization.utils import (
     generate_bounds,

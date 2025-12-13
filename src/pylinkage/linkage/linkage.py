@@ -240,7 +240,7 @@ class Linkage:
 
         if not hasattr(self, "_solve_order"):
             self.__find_solving_order__()
-        self._solver_data = linkage_to_solver_data(self)
+        self._solver_data = linkage_to_solver_data(self)  # type: ignore[operator]
 
     def step_fast(
         self,
@@ -293,10 +293,10 @@ class Linkage:
             iterations = self.get_rotation_period()
 
         # Sync positions from joints to solver data
-        update_solver_positions(self._solver_data, self)
+        update_solver_positions(self._solver_data, self)  # type: ignore[operator]
 
         # Run numba simulation
-        trajectory = simulate(
+        trajectory: NDArray[np.float64] = simulate(
             self._solver_data.positions,
             self._solver_data.constraints,
             self._solver_data.joint_types,
@@ -308,7 +308,7 @@ class Linkage:
         )
 
         # Sync final positions back to joints
-        solver_data_to_linkage(self._solver_data, self)
+        solver_data_to_linkage(self._solver_data, self)  # type: ignore[operator]
 
         return trajectory
 

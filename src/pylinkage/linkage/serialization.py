@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ..joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
+from ..joints import Crank, Fixed, Prismatic, Revolute, Static
 from ..joints.joint import Joint
 
 if TYPE_CHECKING:

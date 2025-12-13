@@ -63,7 +63,8 @@ def normalize_data(
     ranges = maxs - mins
     ranges[ranges == 0] = 1
 
-    return (data - mins) / ranges
+    result: np.ndarray = (data - mins) / ranges
+    return result
 
 
 def parallel_coordinates_plot(
@@ -140,7 +141,7 @@ def parallel_coordinates_plot(
     if ax is None:
         fig, ax = plt.subplots(figsize=(14, 6))
     else:
-        fig = ax.figure
+        fig = ax.figure  # type: ignore[assignment]
 
     # Setup color mapping based on score
     norm = Normalize(vmin=scores.min(), vmax=scores.max())
@@ -171,7 +172,7 @@ def parallel_coordinates_plot(
 
     # Draw vertical axis lines
     for i, x in enumerate(x_positions):
-        ax.axvline(x, color="gray", lw=1, alpha=0.5)
+        ax.axvline(float(x), color="gray", lw=1, alpha=0.5)
 
         # Add tick labels showing actual range
         if i < n_dims:
@@ -190,13 +191,13 @@ def parallel_coordinates_plot(
             low_label = f"{low:.2f}"
             high_label = f"{high:.2f}"
 
-        ax.text(x, -0.08, low_label, ha="center", va="top", fontsize=8)
-        ax.text(x, 1.08, high_label, ha="center", va="bottom", fontsize=8)
+        ax.text(float(x), -0.08, low_label, ha="center", va="top", fontsize=8)
+        ax.text(float(x), 1.08, high_label, ha="center", va="bottom", fontsize=8)
 
     # Color-code axis labels by type
     type_colors = {"length": "blue", "angle": "orange", "score": "green"}
     for i, (name, dtype) in enumerate(zip(all_names, dim_types)):
-        color = type_colors.get(dtype, "black")
+        label_color = type_colors.get(dtype, "black")
         ax.text(
             i,
             -0.18,
@@ -205,7 +206,7 @@ def parallel_coordinates_plot(
             va="top",
             fontsize=10,
             fontweight="bold",
-            color=color,
+            color=label_color,
         )
 
     # Styling
@@ -283,7 +284,7 @@ def animate_parallel_coordinates(
 
     animation = anim.FuncAnimation(
         fig,
-        update,
+        update,  # type: ignore[arg-type]
         frames=len(history),
         interval=interval,
         repeat=True,
@@ -387,7 +388,7 @@ def dashboard_layout(
     ax_linkage = fig.add_subplot(gs[0, 1])
 
     # Find best agent
-    best_idx = np.argmax(scores)
+    best_idx = int(np.argmax(scores))
     best_agent = agents[best_idx]
 
     # Configure and simulate linkage
@@ -399,7 +400,7 @@ def dashboard_layout(
 
     try:
         loci = tuple(tuple(pos) for pos in linkage.step(iterations=50, dt=1))
-        plot_static_linkage(linkage, ax_linkage, loci)
+        plot_static_linkage(linkage, ax_linkage, loci)  # type: ignore[arg-type]
         ax_linkage.set_title(f"Best Linkage (score: {best_agent[0]:.4f})")
     except UnbuildableError:
         ax_linkage.text(
@@ -418,7 +419,7 @@ def dashboard_layout(
 
         # Box plot for lengths
         bp = ax_lengths.boxplot(
-            length_data, labels=length_names, patch_artist=True
+            length_data, tick_labels=length_names, patch_artist=True
         )
 
         # Color boxes
@@ -601,7 +602,7 @@ def animate_dashboard(
 
     animation = anim.FuncAnimation(
         fig,
-        update,
+        update,  # type: ignore[arg-type]
         frames=len(history),
         interval=interval,
         repeat=True,

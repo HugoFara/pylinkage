@@ -11,8 +11,8 @@ This is a thin wrapper around the solver's solve_revolute function.
 import math
 import warnings
 
-from .._types import Circle, Coord
 from .. import exceptions as pl_exceptions
+from .._types import Circle, Coord
 from ..solver.joints import solve_revolute
 from . import joint as pl_joint
 
@@ -137,8 +137,12 @@ class Revolute(pl_joint.Joint):
 
         # Check for coincident circles (same center, same radius) - edge case
         # This is a degenerate case where infinite solutions exist
-        dx = self.joint1.x - self.joint0.x  # type: ignore[operator]
-        dy = self.joint1.y - self.joint0.y  # type: ignore[operator]
+        j0x = self.joint0.x if self.joint0 is not None else 0.0
+        j0y = self.joint0.y if self.joint0 is not None else 0.0
+        j1x = self.joint1.x if self.joint1 is not None else 0.0
+        j1y = self.joint1.y if self.joint1 is not None else 0.0
+        dx = (j1x or 0.0) - (j0x or 0.0)
+        dy = (j1y or 0.0) - (j0y or 0.0)
         dist_sq = dx * dx + dy * dy
         if dist_sq < 1e-10 and abs(self.r0 - self.r1) < 1e-10:
             warnings.warn(
@@ -150,9 +154,9 @@ class Revolute(pl_joint.Joint):
         # Delegate to solver function (single source of truth)
         new_x, new_y = solve_revolute(
             self.x, self.y,
-            self.joint0.x, self.joint0.y,  # type: ignore[arg-type]
+            j0x or 0.0, j0y or 0.0,
             self.r0,
-            self.joint1.x, self.joint1.y,  # type: ignore[arg-type]
+            j1x or 0.0, j1y or 0.0,
             self.r1,
         )
 

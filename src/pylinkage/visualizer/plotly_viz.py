@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 
-def _get_plotly_marker(symbol_type: SymbolType) -> dict:
+def _get_plotly_marker(symbol_type: SymbolType) -> dict[str, object]:
     """Get Plotly marker properties for a symbol type."""
     if symbol_type == SymbolType.GROUND:
         return {
@@ -82,7 +82,7 @@ def plot_linkage_plotly(
     """
     # Run simulation if no loci provided
     if loci is None:
-        loci = list(linkage.step())
+        loci = list(linkage.step())  # type: ignore[arg-type]
     else:
         loci = list(loci)
 
@@ -102,7 +102,7 @@ def plot_linkage_plotly(
         if joint in current_positions:
             return current_positions[joint]
         # For implicit Static joints (created from coordinate tuples)
-        coord = joint.coord()  # type: ignore[union-attr]
+        coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Draw loci (movement paths)
@@ -268,7 +268,7 @@ def plot_linkage_plotly(
                 marker={
                     **marker_props,
                     "color": "white",
-                    "line": {**marker_props.get("line", {}), "color": spec.color},
+                    "line": {**marker_props.get("line", {}), "color": spec.color},  # type: ignore[dict-item]
                 },
                 name=joint.name or type(joint).__name__,
                 hovertemplate=(
@@ -353,7 +353,7 @@ def animate_linkage_plotly(
     """
     # Run simulation if no loci provided
     if loci is None:
-        loci = list(linkage.step())
+        loci = list(linkage.step())  # type: ignore[arg-type]
     else:
         loci = list(loci)
 
@@ -390,7 +390,7 @@ def animate_linkage_plotly(
         """Get position, handling implicit Static joints."""
         if joint in pos_map:
             return pos_map[joint]
-        coord = joint.coord()  # type: ignore[union-attr]
+        coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     for frame_idx, positions in enumerate(loci):
@@ -440,7 +440,7 @@ def animate_linkage_plotly(
         """Get initial position, handling implicit Static joints."""
         if joint in initial_pos_map:
             return initial_pos_map[joint]
-        coord = joint.coord()  # type: ignore[union-attr]
+        coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Loci traces (static, behind animation)

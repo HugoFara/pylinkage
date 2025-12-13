@@ -188,7 +188,7 @@ def intersection(
     obj_1: Coord | Circle,
     obj_2: Coord | Circle,
     tol: float = 0.0,
-) -> Coord | tuple[Coord, ...] | None:
+) -> Coord | tuple[Coord, ...] | Circle | None:
     """Intersection of two arbitrary objects.
 
     The input objects should be points or circles.
@@ -217,8 +217,8 @@ def intersection(
             return ((result[1], result[2]),)
         if result[0] == INTERSECTION_TWO:
             return ((result[1], result[2]), (result[3], result[4]))
-        # Same circle
-        return ((obj_1[0], obj_1[1], obj_1[2]),)
+        # Same circle - return the circle itself
+        return (obj_1[0], obj_1[1], obj_1[2])
 
     # Point and circle
     if len(obj_1) == 2 and len(obj_2) == 3:

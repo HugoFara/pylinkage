@@ -9,29 +9,35 @@ This script measures performance improvements from:
 Run with: uv run python benchmarks/benchmark_optimizations.py
 """
 import math
-import time
-import statistics
-from typing import Callable
 import random
+import statistics
+import time
+from collections.abc import Callable
 
 import numpy as np
-from numba import njit, float64
+from numba import njit
+
+# For linkage benchmarks
+from pylinkage.geometry.core import (
+    cyl_to_cart as cyl_to_cart_orig,
+)
+from pylinkage.geometry.core import (
+    get_nearest_point as get_nearest_point_orig,
+)
+from pylinkage.geometry.core import (
+    norm as norm_orig,
+)
 
 # Current implementations
 from pylinkage.geometry.core import (
     sqr_dist as sqr_dist_orig,
-    get_nearest_point as get_nearest_point_orig,
-    norm as norm_orig,
-    cyl_to_cart as cyl_to_cart_orig,
 )
 from pylinkage.geometry.secants import (
     circle_intersect as circle_intersect_orig,
+)
+from pylinkage.geometry.secants import (
     circle_line_from_points_intersection as circle_line_orig,
 )
-
-# For linkage benchmarks
-import pylinkage as pl
-
 
 # ============================================================================
 # NUMBA OPTIMIZED IMPLEMENTATIONS

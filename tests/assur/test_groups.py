@@ -5,8 +5,8 @@ import math
 import pytest
 
 from pylinkage.assur import (
-    DyadRRR,
     DyadRRP,
+    DyadRRR,
     Edge,
     JointType,
     LinkageGraph,

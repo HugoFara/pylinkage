@@ -102,7 +102,8 @@ def to_hypergraph(assur_graph: LinkageGraph) -> "HypergraphLinkage":
     from ..hypergraph._types import JointType as HyperJointType
     from ..hypergraph._types import NodeRole as HyperNodeRole
     from ..hypergraph.core import Edge as HyperEdge
-    from ..hypergraph.core import Hyperedge, Node as HyperNode
+    from ..hypergraph.core import Hyperedge
+    from ..hypergraph.core import Node as HyperNode
     from ..hypergraph.graph import HypergraphLinkage
 
     hypergraph = HypergraphLinkage(name=assur_graph.name)

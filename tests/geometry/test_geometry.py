@@ -10,7 +10,7 @@ import unittest
 import numpy as np
 
 from pylinkage.geometry import circle_intersect, circle_line_intersection, sqr_dist
-from pylinkage.geometry.secants import INTERSECTION_NONE, INTERSECTION_TWO, INTERSECTION_SAME
+from pylinkage.geometry.secants import INTERSECTION_NONE, INTERSECTION_SAME, INTERSECTION_TWO
 
 
 class TestCircles(unittest.TestCase):

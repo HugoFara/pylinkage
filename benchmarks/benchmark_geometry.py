@@ -10,25 +10,25 @@ This script measures performance of:
 Run with: uv run python benchmarks/benchmark_geometry.py
 """
 import math
-import time
-import statistics
-from typing import Callable
 import random
+import statistics
+import time
+from collections.abc import Callable
+
+# For linkage benchmarks
+import pylinkage as pl
 
 # Current implementations
 from pylinkage.geometry.core import (
-    sqr_dist,
+    cyl_to_cart,
     get_nearest_point,
     norm,
-    cyl_to_cart,
+    sqr_dist,
 )
 from pylinkage.geometry.secants import (
     circle_intersect,
     circle_line_from_points_intersection,
 )
-
-# For linkage benchmarks
-import pylinkage as pl
 
 
 def benchmark(func: Callable, args_generator: Callable, n_iterations: int = 100_000, warmup: int = 1000) -> dict:
@@ -300,7 +300,7 @@ def run_linkage_benchmarks(n_cycles: int = 1000, n_evals: int = 500):
     print(f"Benchmarking linkage.step() ({n_cycles} cycles)...", end=" ", flush=True)
     step_results = benchmark_linkage_step(linkage, n_cycles=n_cycles)
     print("done")
-    print(f"linkage.step() (full cycle):")
+    print("linkage.step() (full cycle):")
     print(f"  Mean cycle time: {step_results['mean_cycle_us']:.1f} µs")
     print(f"  Median cycle time: {step_results['median_cycle_us']:.1f} µs")
     print(f"  Steps per cycle: {step_results['steps_per_cycle']}")
@@ -311,7 +311,7 @@ def run_linkage_benchmarks(n_cycles: int = 1000, n_evals: int = 500):
     print(f"Benchmarking optimization loop ({n_evals} evaluations)...", end=" ", flush=True)
     opt_results = benchmark_optimization_loop(linkage, n_evaluations=n_evals)
     print("done")
-    print(f"Optimization evaluation loop:")
+    print("Optimization evaluation loop:")
     print(f"  Mean evaluation time: {opt_results['mean_eval_us']:.1f} µs")
     print(f"  Median evaluation time: {opt_results['median_eval_us']:.1f} µs")
     print(f"  Successful builds: {opt_results['successful']}/{opt_results['evaluations']}")

@@ -4,7 +4,6 @@ Definition of the different joints used for pylinkage.
 
 
 import abc
-from typing import TYPE_CHECKING
 
 from .._types import Constraints, Coord, MaybeCoord
 

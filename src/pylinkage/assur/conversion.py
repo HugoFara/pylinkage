@@ -10,6 +10,7 @@ This enables interoperability between the two systems:
 
 from typing import TYPE_CHECKING
 
+from ..joints import Prismatic
 from ._types import JointType, NodeId, NodeRole
 from .decomposition import decompose_assur_groups
 from .graph import Edge, LinkageGraph, Node
@@ -260,7 +261,7 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
-    from ..joints import Crank, Linear, Revolute, Static
+    from ..joints import Crank, Revolute, Static
     from ..joints.joint import Joint
     from ..linkage.linkage import Linkage as LinkageClass
 

@@ -17,7 +17,12 @@ from pylinkage.geometry import (
     sqr_dist,
 )
 from pylinkage.geometry.core import dist, line_from_points
-from pylinkage.geometry.secants import INTERSECTION_NONE, INTERSECTION_ONE, INTERSECTION_TWO, INTERSECTION_SAME
+from pylinkage.geometry.secants import (
+    INTERSECTION_NONE,
+    INTERSECTION_ONE,
+    INTERSECTION_SAME,
+    INTERSECTION_TWO,
+)
 
 # Strategy for valid coordinates
 float_st = st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False)

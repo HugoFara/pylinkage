@@ -342,8 +342,8 @@ class HierarchicalLinkage:
                     qn1 = get_canonical(instance.get_qualified_node_id(n1))
                     qn2 = get_canonical(instance.get_qualified_node_id(n2))
                     if qn1 != qn2:  # Skip constraints between merged nodes
-                        key = (min(qn1, qn2), max(qn1, qn2))
-                        qualified_constraints[key] = dist
+                        constraint_key: tuple[NodeId, NodeId] = (min(qn1, qn2), max(qn1, qn2))
+                        qualified_constraints[constraint_key] = dist
 
                 if len(unique_nodes) >= 2 and qualified_constraints:
                     qualified_he_id = f"{instance_id}.{hyperedge.id}"

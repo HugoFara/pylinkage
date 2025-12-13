@@ -62,7 +62,8 @@ def update_animated_plot(
             par_locus = joint.joint0.coord()
         else:
             par_locus = locus[linkage.joints.index(joint.joint0)]
-        next(image).set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
+        im = next(image)
+        im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
         # Then second parent
         if isinstance(joint, (Crank, Static)):
             continue
@@ -70,7 +71,8 @@ def update_animated_plot(
             par_locus = joint.joint1.coord()
         else:
             par_locus = locus[linkage.joints.index(joint.joint1)]
-        next(image).set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])
+        im = next(image)
+        im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
     return images
 
 
@@ -231,6 +233,6 @@ def swarm_tiled_repr(
             )
         except UnbuildableError:
             continue
-        ax: Axes = axes.flatten()[i]  # type: ignore[assignment]
+        ax = axes.flatten()[i]
         ax.clear()
         plot_static_linkage(linkage, ax, loci)  # type: ignore[arg-type]

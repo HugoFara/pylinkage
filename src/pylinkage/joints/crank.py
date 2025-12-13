@@ -5,8 +5,8 @@ A crank is a driver joint that rotates around a fixed anchor point.
 This is a thin wrapper around the solver's solve_crank function.
 """
 
-from .._types import Coord
 from .. import exceptions as pl_exceptions
+from .._types import Coord
 from ..solver.joints import solve_crank
 from . import joint as pl_joint
 
@@ -70,9 +70,11 @@ class Crank(pl_joint.Joint):
             )
 
         # Delegate to solver function (single source of truth)
+        j0x = self.joint0.x if self.joint0 is not None else 0.0
+        j0y = self.joint0.y if self.joint0 is not None else 0.0
         self.x, self.y = solve_crank(
             self.x, self.y,
-            self.joint0.x, self.joint0.y,  # type: ignore[arg-type]
+            j0x or 0.0, j0y or 0.0,
             self.r, self.angle, dt
         )
 

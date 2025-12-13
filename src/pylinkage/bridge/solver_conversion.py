@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from ..joints.joint import Joint
 from ..solver.types import (
     JOINT_CRANK,
     JOINT_FIXED,
@@ -46,14 +47,14 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
 
     # Build index map from joint identity to array index
     # First, collect all joints including implicit Static joints
-    all_joints: list[object] = list(linkage.joints)
+    all_joints: list[Joint] = list(linkage.joints)
     joint_to_idx: dict[int, int] = {}
     for i, joint in enumerate(linkage.joints):
         joint_to_idx[id(joint)] = i
 
     # Find implicit Static joints (referenced but not in linkage.joints)
-    def add_implicit_joint(parent_joint: object) -> None:
-        if parent_joint is not None and id(parent_joint) not in joint_to_idx:
+    def add_implicit_joint(parent_joint: Joint) -> None:
+        if id(parent_joint) not in joint_to_idx:
             idx = len(all_joints)
             joint_to_idx[id(parent_joint)] = idx
             all_joints.append(parent_joint)

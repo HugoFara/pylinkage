@@ -370,7 +370,7 @@ def plot_linkage_svg(
 
     # Run simulation if no loci provided
     if loci is None:
-        loci = list(linkage.step())
+        loci = list(linkage.step())  # type: ignore[arg-type]
     else:
         loci = list(loci)
 
@@ -445,7 +445,7 @@ def plot_linkage_svg(
         if joint in current_positions:
             return current_positions[joint]
         # For implicit Static joints (created from coordinate tuples)
-        coord = joint.coord()  # type: ignore[union-attr]
+        coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Draw ground line if there are ground joints
@@ -564,7 +564,7 @@ def save_linkage_svg(
     linkage: "Linkage",
     path: str,
     loci: "Iterable[tuple[Coord, ...]] | None" = None,
-    **kwargs,
+    **kwargs: object,
 ) -> None:
     """Save a linkage diagram to an SVG file.
 
@@ -574,5 +574,5 @@ def save_linkage_svg(
         loci: Optional precomputed loci.
         **kwargs: Additional arguments passed to plot_linkage_svg.
     """
-    drawing = plot_linkage_svg(linkage, loci, **kwargs)
+    drawing = plot_linkage_svg(linkage, loci, **kwargs)  # type: ignore[arg-type]
     drawing.save_svg(path)
