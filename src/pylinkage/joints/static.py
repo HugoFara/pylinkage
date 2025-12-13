@@ -51,7 +51,7 @@ class Static(pl_joint.Joint):
         """
         pass
 
-    def set_anchor0(self, joint: pl_joint.Joint | Coord) -> None:
+    def set_anchor0(self, joint: "pl_joint.Joint | Coord") -> None:
         """First joint anchor.
 
         Args:
@@ -59,7 +59,7 @@ class Static(pl_joint.Joint):
         """
         self.joint0 = pl_joint.joint_syntax_parser(joint)
 
-    def set_anchor1(self, joint: pl_joint.Joint | Coord) -> None:
+    def set_anchor1(self, joint: "pl_joint.Joint | Coord") -> None:
         """Second joint anchor.
 
         Args:

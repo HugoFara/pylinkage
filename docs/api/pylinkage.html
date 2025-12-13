@@ -111,7 +111,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -257,7 +256,22 @@
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.joint_syntax_parser"><code class="docutils literal notranslate"><span class="pre">joint_syntax_parser()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#pylinkage-joints-linear-module">pylinkage.joints.linear module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.prismatic">pylinkage.joints.prismatic module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Linear.joint2"><code class="docutils literal notranslate"><span class="pre">Linear.joint2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Linear.revolute_radius"><code class="docutils literal notranslate"><span class="pre">Linear.revolute_radius</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic"><code class="docutils literal notranslate"><span class="pre">Prismatic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.get_constraints"><code class="docutils literal notranslate"><span class="pre">Prismatic.get_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.joint2"><code class="docutils literal notranslate"><span class="pre">Prismatic.joint2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.reload"><code class="docutils literal notranslate"><span class="pre">Prismatic.reload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.revolute_radius"><code class="docutils literal notranslate"><span class="pre">Prismatic.revolute_radius</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.set_constraints"><code class="docutils literal notranslate"><span class="pre">Prismatic.set_constraints()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.revolute">pylinkage.joints.revolute module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.revolute.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.revolute.Pivot.r0"><code class="docutils literal notranslate"><span class="pre">Pivot.r0</span></code></a></li>
@@ -277,7 +291,17 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#pylinkage-joints-static-module">pylinkage.joints.static module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.static">pylinkage.joints.static module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static.get_constraints"><code class="docutils literal notranslate"><span class="pre">Static.get_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static.reload"><code class="docutils literal notranslate"><span class="pre">Static.reload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor0()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor1()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.static.Static.set_constraints"><code class="docutils literal notranslate"><span class="pre">Static.set_constraints()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Crank"><code class="docutils literal notranslate"><span class="pre">Crank</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Crank.angle"><code class="docutils literal notranslate"><span class="pre">Crank.angle</span></code></a></li>
@@ -698,7 +722,7 @@ angular velocity. It is the primary driver for linkage mechanisms.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Linear">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Linear" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Prismatic" title="pylinkage.joints.prismatic.Prismatic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prismatic</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic" title="pylinkage.joints.prismatic.Prismatic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prismatic</span></code></a></p>
 <p>Deprecated alias for Prismatic joint.</p>
 <div class="deprecated">
 <p><span class="versionmodified deprecated">Deprecated since version Use: </span><a class="reference internal" href="#pylinkage.Prismatic" title="pylinkage.Prismatic"><code class="xref py py-class docutils literal notranslate"><span class="pre">Prismatic</span></code></a> instead. The <code class="docutils literal notranslate"><span class="pre">Linear</span></code> name will be removed

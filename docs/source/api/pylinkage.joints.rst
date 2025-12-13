@@ -28,10 +28,10 @@ pylinkage.joints.joint module
    :undoc-members:
    :show-inheritance:
 
-pylinkage.joints.linear module
-------------------------------
+pylinkage.joints.prismatic module
+---------------------------------
 
-.. automodule:: pylinkage.joints.linear
+.. automodule:: pylinkage.joints.prismatic
    :members:
    :undoc-members:
    :show-inheritance:

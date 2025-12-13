@@ -52,7 +52,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">pylinkage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/modules.html">examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests/modules.html">tests</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
 <ul>
@@ -316,11 +315,15 @@
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic.get_constraints">(pylinkage.joints.Prismatic method)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.get_constraints">(pylinkage.joints.prismatic.Prismatic method)</a>
+</li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Revolute.get_constraints">(pylinkage.joints.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.revolute.Revolute.get_constraints">(pylinkage.joints.revolute.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Static.get_constraints">(pylinkage.joints.Static method)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.get_constraints">(pylinkage.joints.static.Static method)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Prismatic.get_constraints">(pylinkage.Prismatic method)</a>
 </li>
@@ -432,6 +435,10 @@
       <ul>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic.joint2">(pylinkage.joints.Prismatic attribute)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Linear.joint2">(pylinkage.joints.prismatic.Linear attribute)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.joint2">(pylinkage.joints.prismatic.Prismatic attribute)</a>
+</li>
         <li><a href="api/pylinkage.html#pylinkage.Linear.joint2">(pylinkage.Linear attribute)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Prismatic.joint2">(pylinkage.Prismatic attribute)</a>
@@ -496,9 +503,13 @@
       <ul>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Linear">(class in pylinkage.joints)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Linear">(class in pylinkage.joints.prismatic)</a>
+</li>
       </ul></li>
       <li><a href="api/pylinkage.visualizer.html#pylinkage.visualizer.SymbolType.LINEAR">LINEAR (pylinkage.visualizer.SymbolType attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.html#pylinkage.Linkage">Linkage (class in pylinkage)</a>
 
       <ul>
@@ -507,8 +518,6 @@
         <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage">(class in pylinkage.linkage.linkage)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/pylinkage.linkage.html#pylinkage.linkage.linkage.Simulation.linkage">linkage (pylinkage.linkage.linkage.Simulation property)</a>
 
       <ul>
@@ -553,7 +562,11 @@
 </li>
         <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.joint">pylinkage.joints.joint</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.prismatic">pylinkage.joints.prismatic</a>
+</li>
         <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.revolute">pylinkage.joints.revolute</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.static">pylinkage.joints.static</a>
 </li>
         <li><a href="api/pylinkage.linkage.html#module-pylinkage.linkage">pylinkage.linkage</a>
 </li>
@@ -576,8 +589,6 @@
         <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.core">pylinkage.visualizer.core</a>
 </li>
         <li><a href="api/pylinkage.visualizer.html#module-pylinkage.visualizer.static">pylinkage.visualizer.static</a>
-</li>
-        <li><a href="tests/tests.html#module-tests">tests</a>
 </li>
       </ul></li>
   </ul></td>
@@ -675,6 +686,8 @@
       <ul>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic">(class in pylinkage.joints)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic">(class in pylinkage.joints.prismatic)</a>
+</li>
       </ul></li>
       <li><a href="api/pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.progress_fraction">progress_fraction (pylinkage.optimization.OptimizationProgress property)</a>
 </li>
@@ -765,10 +778,24 @@
 </li>
       </ul></li>
       <li>
+    pylinkage.joints.prismatic
+
+      <ul>
+        <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.prismatic">module</a>
+</li>
+      </ul></li>
+      <li>
     pylinkage.joints.revolute
 
       <ul>
         <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.revolute">module</a>
+</li>
+      </ul></li>
+      <li>
+    pylinkage.joints.static
+
+      <ul>
+        <li><a href="api/pylinkage.joints.html#module-pylinkage.joints.static">module</a>
 </li>
       </ul></li>
       <li>
@@ -919,11 +946,15 @@
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic.reload">(pylinkage.joints.Prismatic method)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.reload">(pylinkage.joints.prismatic.Prismatic method)</a>
+</li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Revolute.reload">(pylinkage.joints.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.revolute.Revolute.reload">(pylinkage.joints.revolute.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Static.reload">(pylinkage.joints.Static method)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.reload">(pylinkage.joints.static.Static method)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Prismatic.reload">(pylinkage.Prismatic method)</a>
 </li>
@@ -948,6 +979,10 @@
 
       <ul>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic.revolute_radius">(pylinkage.joints.Prismatic attribute)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Linear.revolute_radius">(pylinkage.joints.prismatic.Linear attribute)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.revolute_radius">(pylinkage.joints.prismatic.Prismatic attribute)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Linear.revolute_radius">(pylinkage.Linear attribute)</a>
 </li>
@@ -991,6 +1026,8 @@
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Static.set_anchor0">(pylinkage.joints.Static method)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.set_anchor0">(pylinkage.joints.static.Static method)</a>
+</li>
         <li><a href="api/pylinkage.html#pylinkage.Revolute.set_anchor0">(pylinkage.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Static.set_anchor0">(pylinkage.Static method)</a>
@@ -1010,6 +1047,8 @@
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.revolute.Revolute.set_anchor1">(pylinkage.joints.revolute.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Static.set_anchor1">(pylinkage.joints.Static method)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.set_anchor1">(pylinkage.joints.static.Static method)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Revolute.set_anchor1">(pylinkage.Revolute method)</a>
 </li>
@@ -1043,11 +1082,15 @@
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Prismatic.set_constraints">(pylinkage.joints.Prismatic method)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.prismatic.Prismatic.set_constraints">(pylinkage.joints.prismatic.Prismatic method)</a>
+</li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Revolute.set_constraints">(pylinkage.joints.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.revolute.Revolute.set_constraints">(pylinkage.joints.revolute.Revolute method)</a>
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.Static.set_constraints">(pylinkage.joints.Static method)</a>
+</li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static.set_constraints">(pylinkage.joints.static.Static method)</a>
 </li>
         <li><a href="api/pylinkage.html#pylinkage.Prismatic.set_constraints">(pylinkage.Prismatic method)</a>
 </li>
@@ -1117,6 +1160,8 @@
 </li>
         <li><a href="api/pylinkage.joints.html#pylinkage.joints.joint.Static">(class in pylinkage.joints.joint)</a>
 </li>
+        <li><a href="api/pylinkage.joints.html#pylinkage.joints.static.Static">(class in pylinkage.joints.static)</a>
+</li>
       </ul></li>
       <li><a href="api/pylinkage.html#pylinkage.Linkage.step">step() (pylinkage.Linkage method)</a>
 
@@ -1150,13 +1195,6 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li>
-    tests
-
-      <ul>
-        <li><a href="tests/tests.html#module-tests">module</a>
-</li>
-      </ul></li>
       <li><a href="api/pylinkage.html#pylinkage.Linkage.to_dict">to_dict() (pylinkage.Linkage method)</a>
 
       <ul>

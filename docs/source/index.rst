@@ -25,7 +25,6 @@ Welcome to pylinkage's documentation!
 
    api/modules
    examples/modules
-   tests/modules
 
 .. toctree::
    :maxdepth: 2
