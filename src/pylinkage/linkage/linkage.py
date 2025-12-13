@@ -7,20 +7,22 @@ Created on Fri Apr 16, 16:39:21 2021.
 @author: HugoFara
 """
 
-from __future__ import annotations
-
 import warnings
 from collections.abc import Generator, Iterable
 from math import gcd, tau
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+import numpy as np
+from numpy.typing import NDArray
+
+from .._types import JointPositions
 from ..exceptions import UnderconstrainedError
 from ..joints import Crank, Fixed, Revolute, Static
 from ..joints.joint import Joint
 
 if TYPE_CHECKING:
-    from .._types import JointPositions
+    from ..solver import SolverData
 
 
 class Linkage:
@@ -30,12 +32,13 @@ class Linkage:
     Coordinates are given relative to its own base.
     """
 
-    __slots__ = "name", "joints", "_cranks", "_solve_order"
+    __slots__ = "name", "joints", "_cranks", "_solve_order", "_solver_data"
 
     name: str
     joints: tuple[Joint, ...]
     _cranks: tuple[Crank, ...]
     _solve_order: tuple[Joint, ...]
+    _solver_data: "SolverData | None"
 
     def __init__(
         self,
@@ -58,6 +61,7 @@ class Linkage:
         self.name = name if name is not None else str(id(self))
         self.joints = tuple(joints)
         self._cranks = tuple(j for j in self.joints if isinstance(j, Crank))
+        self._solver_data = None
         if order:
             self._solve_order = tuple(order)
 
@@ -211,6 +215,93 @@ class Linkage:
                     j.reload()
             yield tuple(j.coord() for j in self.joints)
 
+    def compile(self) -> None:
+        """Prepare numba-optimized solver for fast simulation.
+
+        This converts the linkage structure into numeric arrays for
+        use by the numba-compiled simulation loop. The compilation
+        is done automatically on first call to step_fast(), but can
+        be called explicitly to control when the overhead occurs.
+
+        The compiled solver is cached and reused until invalidated
+        by changes to constraints (set_num_constraints) or structure.
+        """
+        from ..solver import linkage_to_solver_data
+
+        if not hasattr(self, "_solve_order"):
+            self.__find_solving_order__()
+        self._solver_data = linkage_to_solver_data(self)
+
+    def step_fast(
+        self,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> NDArray[np.float64]:
+        """Run simulation using numba-optimized solver.
+
+        This is significantly faster than step() for large iteration counts,
+        as it avoids Python method call overhead in the hot loop.
+
+        The first call may be slower due to numba compilation (JIT warm-up).
+        Subsequent calls will be fast.
+
+        Args:
+            iterations: Number of iterations to run. If None, uses
+                get_rotation_period(). (Default: None)
+            dt: Amount of rotation per step. Cranks rotate by their
+                angle * dt. (Default: 1)
+
+        Returns:
+            Array of shape (iterations, n_joints, 2) containing all joint
+            positions at each step. Access individual step positions via
+            trajectory[step_idx, joint_idx] which gives (x, y).
+
+        Note:
+            If any configuration becomes unbuildable during simulation,
+            the corresponding positions will be NaN. Check for this with
+            np.isnan(trajectory).any() or use solver.has_nan_positions().
+
+        Example:
+            >>> trajectory = linkage.step_fast(iterations=1000)
+            >>> print(trajectory.shape)  # (1000, n_joints, 2)
+            >>> # Get position of joint 2 at step 100:
+            >>> pos = trajectory[100, 2]  # (x, y)
+        """
+        from ..solver import (
+            simulate,
+            solver_data_to_linkage,
+            update_solver_positions,
+        )
+
+        # Auto-compile if needed
+        if self._solver_data is None:
+            self.compile()
+
+        assert self._solver_data is not None  # for type checker
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        # Sync positions from joints to solver data
+        update_solver_positions(self._solver_data, self)
+
+        # Run numba simulation
+        trajectory = simulate(
+            self._solver_data.positions,
+            self._solver_data.constraints,
+            self._solver_data.joint_types,
+            self._solver_data.parent_indices,
+            self._solver_data.constraint_offsets,
+            self._solver_data.solve_order,
+            iterations,
+            dt,
+        )
+
+        # Sync final positions back to joints
+        solver_data_to_linkage(self._solver_data, self)
+
+        return trajectory
+
     def get_num_constraints(
         self, flat: bool = True
     ) -> list[float | None] | list[tuple[float | None, ...]]:
@@ -238,6 +329,10 @@ class Linkage:
 
         Numeric constraints are distances or angles between joints.
 
+        Note:
+            This invalidates any cached solver data. The next call to
+            step_fast() will recompile the solver automatically.
+
         :param constraints: Sequence of constraints to pass to the joints.
         :param flat: If True, constraints should be a one-dimensional sequence of floats.
             If False, constraints should be a sequence of tuples of digits.
@@ -245,6 +340,9 @@ class Linkage:
             corresponding Joint.
             (Default value = True).
         """
+        # Invalidate cached solver data
+        self._solver_data = None
+
         if flat:
             # Is in charge of redistributing constraints
             dispatcher = iter(constraints)
@@ -305,7 +403,7 @@ class Linkage:
         return linkage_to_dict(self)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> Linkage:
+    def from_dict(cls, data: dict[str, Any]) -> "Linkage":
         """Create a linkage from a dictionary representation.
 
         Args:
@@ -335,7 +433,7 @@ class Linkage:
         save_to_json(self, path)
 
     @classmethod
-    def from_json(cls, path: str | Path) -> Linkage:
+    def from_json(cls, path: str | Path) -> "Linkage":
         """Load a linkage from a JSON file.
 
         Args:
@@ -355,7 +453,7 @@ class Linkage:
         self,
         iterations: int | None = None,
         dt: float = 1,
-    ) -> Simulation:
+    ) -> "Simulation":
         """Create a simulation context manager for the linkage.
 
         This provides a convenient way to run and iterate over linkage simulations
@@ -405,7 +503,7 @@ class Simulation:
         self._dt = dt
         self._initial_coords: list[tuple[float | None, float | None]] | None = None
 
-    def __enter__(self) -> Simulation:
+    def __enter__(self) -> "Simulation":
         """Enter the simulation context, saving initial state."""
         self._initial_coords = self._linkage.get_coords()
         return self

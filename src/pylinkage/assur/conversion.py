@@ -8,8 +8,6 @@ This enables interoperability between the two systems:
 - Analyze existing Linkages by converting to graph representation
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING
 
 from ._types import JointType, NodeId, NodeRole
@@ -20,7 +18,7 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 
-def linkage_to_graph(linkage: Linkage) -> LinkageGraph:
+def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
     """Convert an existing Linkage to graph representation.
 
     Maps existing joint types to graph nodes:
@@ -240,7 +238,7 @@ def linkage_to_graph(linkage: Linkage) -> LinkageGraph:
     return graph
 
 
-def graph_to_linkage(graph: LinkageGraph) -> Linkage:
+def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     """Convert a graph representation to a Linkage.
 
     This function:

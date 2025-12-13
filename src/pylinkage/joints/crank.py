@@ -2,17 +2,13 @@
 Crank joint definition.
 """
 
-from __future__ import annotations
 
 from math import atan2
-from typing import TYPE_CHECKING
 
+from .._types import Coord
 from .. import exceptions as pl_exceptions
 from .. import geometry as pl_geom
 from . import joint as pl_joint
-
-if TYPE_CHECKING:
-    from .._types import Coord
 
 
 class Crank(pl_joint.Joint):

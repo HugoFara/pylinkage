@@ -2,7 +2,6 @@
 Basic geometry features with numba optimization.
 """
 
-from __future__ import annotations
 
 import math
 from typing import TYPE_CHECKING
@@ -10,7 +9,7 @@ from typing import TYPE_CHECKING
 from numba import njit
 
 if TYPE_CHECKING:
-    from .._types import Coord, Line
+    pass
 
 
 @njit(cache=True)

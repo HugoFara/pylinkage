@@ -1,16 +1,8 @@
 """Type definitions for the Assur group module."""
 
-from __future__ import annotations
 
-import sys
 from enum import Enum, auto
-
-# TypeAlias is available in typing from Python 3.10+
-# For 3.9 compatibility, we use typing_extensions
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 # Type aliases for node and edge identifiers
 NodeId: TypeAlias = str

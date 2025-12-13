@@ -4,7 +4,6 @@ This module provides functions to serialize and deserialize LinkageGraph
 objects to/from dictionaries and JSON files.
 """
 
-from __future__ import annotations
 
 import json
 from pathlib import Path

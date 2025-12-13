@@ -7,12 +7,10 @@ Created on Wed Jun 16, 15:20:06 2021.
 @author: HugoFara
 """
 
-from __future__ import annotations
-
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from pylinkage.linkage.linkage import Linkage
+    from .linkage.linkage import Linkage
 
 
 class UnbuildableError(Exception):
@@ -38,7 +36,7 @@ class UnderconstrainedError(Exception):
     """The linkage is under-constrained and multiple solutions may exist."""
 
     def __init__(
-        self, linkage: Linkage | str, message: str = 'The linkage is under-constrained!'
+        self, linkage: "Linkage | str", message: str = 'The linkage is under-constrained!'
     ) -> None:
         self.linkage = linkage
         super().__init__(message)

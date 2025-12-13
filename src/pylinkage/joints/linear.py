@@ -2,16 +2,11 @@
 Definition of a linear joint.
 """
 
-from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+from .._types import Coord
 from .. import exceptions as pl_exceptions
 from .. import geometry as geom
 from . import joint as pl_joint
-
-if TYPE_CHECKING:
-    from .._types import Coord
 
 
 class Linear(pl_joint.Joint):

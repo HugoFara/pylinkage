@@ -5,7 +5,6 @@ It should be used for reference only as the search space
 will almost certainly be too big.
 """
 
-from __future__ import annotations
 
 import itertools
 import math
@@ -17,12 +16,12 @@ import numpy as np
 import tqdm
 from numpy.typing import NDArray
 
+from .._types import JointPositions
 from ..exceptions import OptimizationError
 from .collections import MutableAgent
 from .utils import generate_bounds
 
 if TYPE_CHECKING:
-    from .._types import JointPositions
     from ..linkage.linkage import Linkage
 
 
@@ -114,8 +113,8 @@ def fast_variator(
 
 
 def trials_and_errors_optimization(
-    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
-    linkage: Linkage,
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
     parameters: Sequence[float] | None = None,
     n_results: int = 10,
     divisions: int = 5,

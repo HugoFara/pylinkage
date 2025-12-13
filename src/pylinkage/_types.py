@@ -14,23 +14,15 @@ Type Categories:
     Positions: JointPositions - represent joint state during simulation
 """
 
-import sys
 from collections.abc import Callable, Sequence
-from typing import Optional
-
-# TypeAlias is available in typing from Python 3.10+
-# For 3.9 compatibility, we use typing_extensions
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias
-else:
-    from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 # Basic coordinate types
 Coord: TypeAlias = tuple[float, float]
 """A 2D coordinate as (x, y)."""
 
 # Coordinate that may contain None (for uninitialized joints)
-MaybeCoord: TypeAlias = tuple[Optional[float], Optional[float]]
+MaybeCoord: TypeAlias = tuple[float | None, float | None]
 """A 2D coordinate that may contain None values."""
 
 Coord3: TypeAlias = tuple[float, float, float]
@@ -44,7 +36,7 @@ Loci: TypeAlias = tuple[Locus, ...]
 """Multiple loci, one per joint in a linkage."""
 
 # Constraint types - may contain None for uninitialized constraints
-Constraints: TypeAlias = tuple[Optional[float], ...]
+Constraints: TypeAlias = tuple[float | None, ...]
 """A sequence of geometric constraints (distances, angles), may contain None."""
 
 Bounds: TypeAlias = tuple[Sequence[float], Sequence[float]]

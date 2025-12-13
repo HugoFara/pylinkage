@@ -6,7 +6,6 @@ enables Assur group decomposition and provides an alternative syntax
 for defining linkages.
 """
 
-from __future__ import annotations
 
 import copy
 from dataclasses import dataclass, field
@@ -15,7 +14,10 @@ from typing import TYPE_CHECKING
 from ._types import EdgeId, JointType, NodeId, NodeRole
 
 if TYPE_CHECKING:
-    from .._types import MaybeCoord
+    pass
+
+# Type alias for positions that may have None coordinates
+_MaybeCoord = tuple[float | None, float | None]
 
 
 @dataclass
@@ -43,7 +45,7 @@ class Node:
     id: NodeId
     joint_type: JointType = JointType.REVOLUTE
     role: NodeRole = NodeRole.DRIVEN
-    position: MaybeCoord = (None, None)
+    position: _MaybeCoord = (None, None)
     angle: float | None = None
     initial_angle: float | None = None
     name: str | None = None
@@ -308,7 +310,7 @@ class LinkageGraph:
         """
         return len(self._adjacency.get(node_id, []))
 
-    def copy(self) -> LinkageGraph:
+    def copy(self) -> "LinkageGraph":
         """Create a deep copy of the graph.
 
         Returns:

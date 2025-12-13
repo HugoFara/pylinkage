@@ -2,16 +2,14 @@
 Definition of the different joints used for pylinkage.
 """
 
-from __future__ import annotations
 
 import abc
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from .._types import Constraints, Coord, MaybeCoord
+from .._types import Constraints, Coord, MaybeCoord
 
 
-def joint_syntax_parser(joint: Joint | Coord | None) -> Joint | Static | None:
+def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | Static | None":
     """
     Syntactic parser that understand a joint definition.
 
@@ -37,16 +35,16 @@ class Joint(abc.ABC):
 
     x: float | None
     y: float | None
-    joint0: Joint | Static | None
-    joint1: Joint | Static | None
+    joint0: "Joint | Static | None"
+    joint1: "Joint | Static | None"
     name: str
 
     def __init__(
         self,
         x: float | None = 0,
         y: float | None = 0,
-        joint0: Joint | Coord | None = None,
-        joint1: Joint | Coord | None = None,
+        joint0: "Joint | Coord | None" = None,
+        joint1: "Joint | Coord | None" = None,
         name: str | None = None,
     ) -> None:
         """
@@ -67,7 +65,7 @@ class Joint(abc.ABC):
         """Represent an object with class name, coordinates, name and state."""
         return f"{self.__class__.__name__}(x={self.x}, y={self.y}, name={self.name})"
 
-    def __get_joints__(self) -> tuple[Joint | Static | None, Joint | Static | None]:
+    def __get_joints__(self) -> "tuple[Joint | Static | None, Joint | Static | None]":
         """Return constraint joints as a tuple."""
         return self.joint0, self.joint1
 
@@ -162,14 +160,14 @@ class Static(Joint):
         """
         pass
 
-    def set_anchor0(self, joint: Joint | Coord) -> None:
+    def set_anchor0(self, joint: "Joint | Coord") -> None:
         """First joint anchor.
 
         :param joint: Joint to set as anchor.
         """
         self.joint0 = joint_syntax_parser(joint)
 
-    def set_anchor1(self, joint: Joint | Coord) -> None:
+    def set_anchor1(self, joint: "Joint | Coord") -> None:
         """Second joint anchor.
 
         :param joint: Joint to set as anchor.

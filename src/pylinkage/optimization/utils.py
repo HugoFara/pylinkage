@@ -6,19 +6,17 @@ Created on Mon Jul 12 00:00:01 2021.
 @author: HugoFara
 """
 
-from __future__ import annotations
-
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
 
+from .._types import JointPositions
 from ..exceptions import OptimizationError
 from ..linkage.analysis import kinematic_default_test
 
 if TYPE_CHECKING:
-    from .._types import JointPositions
     from ..linkage.linkage import Linkage
 
 
@@ -49,7 +47,7 @@ def generate_bounds(
 
 def kinematic_maximization(
     func: Callable[..., float],
-) -> Callable[[Linkage, Iterable[float], JointPositions | None], float]:
+) -> "Callable[[Linkage, Iterable[float], JointPositions | None], float]":
     """Standard run for any linkage before a complete fitness evaluation.
 
     This decorator makes a kinematic simulation, before passing the loci to the
@@ -62,7 +60,7 @@ def kinematic_maximization(
 
 def kinematic_minimization(
     func: Callable[..., float],
-) -> Callable[[Linkage, Iterable[float], JointPositions | None], float]:
+) -> "Callable[[Linkage, Iterable[float], JointPositions | None], float]":
     """Standard run for any linkage before a complete fitness evaluation.
 
     This decorator makes a kinematic simulation, before passing the loci to the

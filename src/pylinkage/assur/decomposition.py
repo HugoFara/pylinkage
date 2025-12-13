@@ -10,17 +10,12 @@ The decomposition algorithm:
 4. Returns groups in solving order
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
 
+from .._types import Coord
 from ._types import JointType, NodeId, NodeRole
 from .graph import LinkageGraph
 from .groups import AssurGroup, DyadRRP, DyadRRR
-
-if TYPE_CHECKING:
-    from .._types import Coord
 
 
 @dataclass

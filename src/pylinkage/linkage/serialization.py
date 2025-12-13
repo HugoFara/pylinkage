@@ -4,7 +4,6 @@ Serialization support for linkages.
 Provides JSON serialization and deserialization for Linkage objects.
 """
 
-from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -216,7 +215,7 @@ def joint_from_dict(
     return result
 
 
-def linkage_to_dict(linkage: Linkage) -> dict[str, Any]:
+def linkage_to_dict(linkage: "Linkage") -> dict[str, Any]:
     """Convert a linkage to a dictionary representation.
 
     Args:
@@ -261,7 +260,7 @@ def _is_dependency_satisfied(
     return ref_name is None or ref_name in joints_by_name
 
 
-def linkage_from_dict(data: dict[str, Any]) -> Linkage:
+def linkage_from_dict(data: dict[str, Any]) -> "Linkage":
     """Create a linkage from a dictionary representation.
 
     This performs a two-pass reconstruction:
@@ -331,7 +330,7 @@ def linkage_from_dict(data: dict[str, Any]) -> Linkage:
     )
 
 
-def save_to_json(linkage: Linkage, path: str | Path) -> None:
+def save_to_json(linkage: "Linkage", path: str | Path) -> None:
     """Save a linkage to a JSON file.
 
     Args:
@@ -344,7 +343,7 @@ def save_to_json(linkage: Linkage, path: str | Path) -> None:
         json.dump(data, f, indent=2)
 
 
-def load_from_json(path: str | Path) -> Linkage:
+def load_from_json(path: str | Path) -> "Linkage":
     """Load a linkage from a JSON file.
 
     Args:

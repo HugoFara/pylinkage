@@ -5,18 +5,14 @@ It is also called pin joint or hinge joint, and used to be
 called a pivot joint in this project.
 """
 
-from __future__ import annotations
 
 import warnings
 from math import atan2
-from typing import TYPE_CHECKING
 
+from .._types import Circle, Coord
 from .. import exceptions as pl_exceptions
 from .. import geometry as pl_geom
 from . import joint as pl_joint
-
-if TYPE_CHECKING:
-    from .._types import Circle, Coord
 
 
 class Revolute(pl_joint.Joint):

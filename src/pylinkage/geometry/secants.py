@@ -5,17 +5,12 @@ The geometry module provides general geometry functions.
 It is used extensively, so each function is optimized with numba.
 """
 
-from __future__ import annotations
-
 import math
-from typing import TYPE_CHECKING
 
 from numba import njit
 
+from .._types import Circle, Coord
 from .core import dist
-
-if TYPE_CHECKING:
-    from .._types import Circle, Coord
 
 # Return type constants for circle_intersect
 INTERSECTION_NONE = 0

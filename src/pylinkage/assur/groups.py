@@ -14,23 +14,18 @@ Assur groups are classified by:
 Class I groups (k=1) are dyads - two binary links, three joints.
 """
 
-from __future__ import annotations
-
 import math
 import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
 
+from .._types import Coord
 from ..exceptions import UnbuildableError
 from ..geometry import circle_intersect, cyl_to_cart
 from ..geometry.core import get_nearest_point
 from ..geometry.secants import circle_line_from_points_intersection
 from ._types import JointType, NodeId
-
-if TYPE_CHECKING:
-    from .._types import Coord
-    from .graph import LinkageGraph
+from .graph import LinkageGraph
 
 
 @dataclass

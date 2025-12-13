@@ -52,6 +52,8 @@ __all__ = [
     "swarm_tiled_repr",
 ]
 
+# Assur group module for graph-based linkage representation
+from . import assur as assur
 from .exceptions import (
     HypostaticError as HypostaticError,  # Deprecated alias
 )
@@ -140,8 +142,5 @@ from .visualizer import (
 from .visualizer import (
     swarm_tiled_repr as swarm_tiled_repr,
 )
-
-# Assur group module for graph-based linkage representation
-from . import assur as assur
 
 __version__ = "0.6.0"
