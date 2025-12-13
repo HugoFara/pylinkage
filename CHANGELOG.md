@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Serialization: adds linkage serialization features.
 - Typing: adds typing.
 - Test: adds complete testing coverage.
+- Adds support for Python 3.14.
 
 ### Changed
 
@@ -22,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `__find_solving_order__()` is now properly tested.
+
+## Removed
+
+- Removed support for Python 3.9.
 
 ## [0.6.0] - 2024-10-02
 
