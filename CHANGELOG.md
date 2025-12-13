@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Typing: adds typing.
 - Test: adds complete testing coverage.
 - Adds support for Python 3.14.
+- Hypergraph as the base theory for linkages.
 
 ### Changed
 
