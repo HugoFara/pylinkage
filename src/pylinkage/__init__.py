@@ -147,4 +147,4 @@ from .visualizer import (
     swarm_tiled_repr as swarm_tiled_repr,
 )
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
