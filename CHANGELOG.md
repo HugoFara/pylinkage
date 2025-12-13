@@ -20,7 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switches to `uv`.
 - Renames `HypostaticError` to `UnderconstrainedError` and `hyperstaticity()` to `indeterminacy()`.
   Old names kept as deprecated aliases.
-- Adds an internal solver with numba, almost 100x faster!
+- Separate linkage definition from actual solving:
+  - The internal solver is now numba + NumPy, almost 100x faster!
+  - The user-facing code is now based on [Assur groups](https://en.wikipedia.org/wiki/Assur_group), that is more formal. 
 
 ### Fixed
 

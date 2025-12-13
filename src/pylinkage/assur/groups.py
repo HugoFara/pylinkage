@@ -12,6 +12,10 @@ Assur groups are classified by:
 - Order: related to the number of binary links
 
 Class I groups (k=1) are dyads - two binary links, three joints.
+
+The actual solving logic is delegated to the solver module, which provides
+numba-optimized implementations. This module focuses on the graph-based
+representation and orchestration.
 """
 
 import math
@@ -21,9 +25,7 @@ from dataclasses import dataclass, field
 
 from .._types import Coord
 from ..exceptions import UnbuildableError
-from ..geometry import circle_intersect, cyl_to_cart
-from ..geometry.core import get_nearest_point
-from ..geometry.secants import circle_line_from_points_intersection
+from ..solver.joints import solve_linear, solve_revolute
 from ._types import JointType, NodeId
 from .graph import LinkageGraph
 
@@ -155,8 +157,9 @@ class DyadRRR(AssurGroup):
         graph: LinkageGraph,
         previous_positions: dict[NodeId, Coord],
     ) -> dict[NodeId, Coord]:
-        """Solve the RRR dyad using circle-circle intersection.
+        """Solve the RRR dyad using the solver's circle-circle intersection.
 
+        Delegates to solver.joints.solve_revolute() for the actual computation.
         The internal node is at the intersection of two circles centered
         at the anchor nodes. When two solutions exist, the one nearest
         to the current position is chosen (hysteresis).
@@ -192,52 +195,26 @@ class DyadRRR(AssurGroup):
         if self.distance0 is None or self.distance1 is None:
             raise ValueError("Distances not set for DyadRRR")
 
-        # Find intersection using scalar parameters
-        result = circle_intersect(
+        # Get current position for disambiguation (hysteresis)
+        current_node = graph.nodes[internal_id]
+        current_pos = current_node.position
+        current_x = current_pos[0] if current_pos[0] is not None else pos0[0]
+        current_y = current_pos[1] if current_pos[1] is not None else pos0[1]
+
+        # Delegate to solver function (single source of truth)
+        new_x, new_y = solve_revolute(
+            current_x, current_y,
             pos0[0], pos0[1], self.distance0,
-            pos1[0], pos1[1], self.distance1
+            pos1[0], pos1[1], self.distance1,
         )
 
-        if result[0] == 0:
+        if math.isnan(new_x):
             raise UnbuildableError(
                 internal_id,
                 message=f"No circle intersection for RRR dyad at {internal_id}"
             )
 
-        # Get current position for disambiguation
-        current_node = graph.nodes[internal_id]
-        current_pos = current_node.position
-
-        if result[0] == 1:
-            # Tangent circles - unique solution
-            new_pos: Coord = (result[1], result[2])
-        elif result[0] == 2:
-            # Two solutions - pick nearest to current position
-            if current_pos[0] is not None and current_pos[1] is not None:
-                new_pos = get_nearest_point(
-                    current_pos[0], current_pos[1],
-                    result[1], result[2],
-                    result[3], result[4]
-                )
-            else:
-                new_pos = (result[1], result[2])  # Default to first solution
-        else:  # result[0] == 3 - Infinite solutions (coincident circles)
-            warnings.warn(
-                f"Node {internal_id} has infinite solutions (coincident circles), "
-                "position will be arbitrary",
-                stacklevel=2,
-            )
-            # Project current position onto circle
-            if current_pos[0] is not None and current_pos[1] is not None:
-                angle = math.atan2(
-                    current_pos[1] - pos0[1],
-                    current_pos[0] - pos0[0]
-                )
-                new_pos = cyl_to_cart(self.distance0, angle, pos0[0], pos0[1])
-            else:
-                new_pos = cyl_to_cart(self.distance0, 0.0, pos0[0], pos0[1])
-
-        return {internal_id: new_pos}
+        return {internal_id: (new_x, new_y)}
 
     @classmethod
     def can_form(
@@ -318,7 +295,9 @@ class DyadRRP(AssurGroup):
         graph: LinkageGraph,
         previous_positions: dict[NodeId, Coord],
     ) -> dict[NodeId, Coord]:
-        """Solve the RRP dyad using circle-line intersection.
+        """Solve the RRP dyad using the solver's circle-line intersection.
+
+        Delegates to solver.joints.solve_linear() for the actual computation.
 
         Args:
             graph: The linkage graph.
@@ -355,35 +334,27 @@ class DyadRRP(AssurGroup):
         pos_line1 = previous_positions[self.line_node1]
         pos_line2 = previous_positions[self.line_node2]
 
-        result = circle_line_from_points_intersection(
+        # Get current position for disambiguation (hysteresis)
+        current_node = graph.nodes[internal_id]
+        current_pos = current_node.position
+        current_x = current_pos[0] if current_pos[0] is not None else pos_anchor[0]
+        current_y = current_pos[1] if current_pos[1] is not None else pos_anchor[1]
+
+        # Delegate to solver function (single source of truth)
+        new_x, new_y = solve_linear(
+            current_x, current_y,
             pos_anchor[0], pos_anchor[1], self.revolute_distance,
             pos_line1[0], pos_line1[1],
-            pos_line2[0], pos_line2[1]
+            pos_line2[0], pos_line2[1],
         )
 
-        if result[0] == 0:
+        if math.isnan(new_x):
             raise UnbuildableError(
                 internal_id,
                 message=f"No circle-line intersection for RRP dyad at {internal_id}"
             )
 
-        current_node = graph.nodes[internal_id]
-        current_pos = current_node.position
-
-        if result[0] == 1:
-            new_pos: Coord = (result[1], result[2])
-        else:
-            # Two solutions - pick nearest
-            if current_pos[0] is not None and current_pos[1] is not None:
-                new_pos = get_nearest_point(
-                    current_pos[0], current_pos[1],
-                    result[1], result[2],
-                    result[3], result[4]
-                )
-            else:
-                new_pos = (result[1], result[2])
-
-        return {internal_id: new_pos}
+        return {internal_id: (new_x, new_y)}
 
     @classmethod
     def can_form(

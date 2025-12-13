@@ -21,6 +21,10 @@ features you would like to see!
   - [Visualization](#visualization)
   - [Optimization](#optimization)
 - [Project Structure](#project-structure)
+- [Architecture](#architecture)
+  - [Abstraction Levels](#abstraction-levels)
+  - [Key Design Principles](#key-design-principles)
+  - [Performance](#performance)
 - [Requirements](#requirements)
 - [Contributing](#contributing)
 
@@ -332,6 +336,92 @@ The recommended workflow for using pylinkage is:
 3. **Simulate** (optional): Run `linkage.step()` to compute motion
 4. **Optimize**: Use `pylinkage.optimization` functions to find optimal dimensions
 5. **Visualize**: Display results with `pylinkage.visualizer`
+
+## Architecture
+
+Pylinkage is organized into distinct abstraction layers, from low-level numerics
+to high-level user APIs. This design ensures separation of concerns and enables
+both ease of use and high performance.
+
+### Abstraction Levels
+
+```text
+Level 0: Geometry (pure numba math primitives)
+├── geometry/core.py       → cyl_to_cart, get_nearest_point, dist
+└── geometry/secants.py    → circle_intersect, circle_line_intersection
+         ↑ Single source of mathematical truth
+
+Level 1: Solver (numba-compiled Assur group solvers)
+└── solver/joints.py
+    ├── solve_crank()      → Driver rotation
+    ├── solve_revolute()   → RRR dyad (circle-circle intersection)
+    ├── solve_linear()     → RRP dyad (circle-line intersection)
+    └── solve_fixed()      → Deterministic polar constraint
+         ↑ Single source of solving logic (used by all higher layers)
+
+Level 2: Hypergraph (abstract mathematical structures)
+└── hypergraph/
+    ├── core.py            → Node, Edge, Hyperedge
+    ├── graph.py           → HypergraphLinkage
+    └── components.py      → Component, Port (reusable subgraphs)
+         ↑ Foundational graph theory (no dependencies on assur)
+
+Level 3: Assur (kinematic theory built on hypergraph)
+└── assur/
+    ├── graph.py           → LinkageGraph, Node, Edge
+    ├── groups.py          → DyadRRR, DyadRRP (delegate to solver)
+    └── decomposition.py   → Assur group decomposition algorithm
+         ↑ Formal kinematic analysis
+
+Level 4: User API (thin wrappers for ease of use)
+├── joints/
+│   ├── crank.py           → Crank (calls solve_crank)
+│   ├── revolute.py        → Revolute (calls solve_revolute)
+│   ├── linear.py          → Linear (calls solve_linear)
+│   └── fixed.py           → Fixed (calls solve_fixed)
+└── linkage/
+    └── linkage.py         → Linkage class (orchestrates simulation)
+         ↑ Validation + delegation to solver
+
+Level 5: Applications
+├── optimization/          → PSO, grid search algorithms
+├── visualizer/            → Matplotlib, Plotly, SVG backends
+└── bridge/                → Linkage ↔ SolverData conversion
+```
+
+### Key Design Principles
+
+1. **Single Source of Truth**: The `solver/joints.py` module contains the
+   canonical implementations of all solving algorithms. Joint classes and
+   Assur groups delegate to these functions.
+
+2. **Hypergraph as Foundation**: The `hypergraph` module provides abstract
+   mathematical structures. The `assur` module builds kinematic theory on top
+   of it, not the other way around.
+
+3. **Pure Numerics in Solver**: The solver module uses only numpy and numba
+   with no Python object dependencies. This enables maximum performance for
+   optimization loops.
+
+4. **Thin User API**: Joint classes (`Crank`, `Revolute`, etc.) are thin
+   wrappers that handle validation and user-friendly errors, then delegate
+   to solver functions.
+
+5. **Assur Group Theory**: The package is built on [Assur group][assur-wiki]
+   decomposition, a formal approach to analyzing planar linkages:
+   - **RRR dyad** (3 revolute joints): Solved via circle-circle intersection
+   - **RRP dyad** (2 revolute + 1 prismatic): Solved via circle-line intersection
+
+[assur-wiki]: https://en.wikipedia.org/wiki/Assur_group
+
+### Performance
+
+The solver provides two simulation methods:
+
+- `linkage.step()`: Python-based, ~300-400k steps/sec
+- `linkage.step_fast()`: Numba-compiled, ~1.5-2.5M steps/sec (4-7x faster)
+
+Use `step_fast()` for optimization loops where performance matters.
 
 ## Requirements
 

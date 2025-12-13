@@ -1,16 +1,32 @@
 """
-Definition of a linear joint.
+Definition of a linear joint (RRP dyad).
+
+A linear joint is positioned at the intersection of a circle and a line.
+The circle is centered at a revolute anchor, and the line is defined by
+two other joints. This corresponds to an RRP (two revolute, one prismatic)
+dyad in Assur group theory.
+
+This is a thin wrapper around the solver's solve_linear function.
 """
 
+import math
 
 from .._types import Coord
 from .. import exceptions as pl_exceptions
-from .. import geometry as geom
+from ..solver.joints import solve_linear
 from . import joint as pl_joint
 
 
 class Linear(pl_joint.Joint):
-    """Define a point constrained by a prismatic joint and a revolute joint."""
+    """Linear joint (RRP dyad) - circle-line intersection.
+
+    The position is computed as the intersection of:
+    - Circle: centered at joint0 with radius revolute_radius
+    - Line: passing through joint1 and joint2
+
+    When two solutions exist, the nearest to the current position
+    is chosen (hysteresis for continuity during simulation).
+    """
 
     __slots__ = "revolute_radius", "joint2"
 
@@ -43,7 +59,7 @@ class Linear(pl_joint.Joint):
         self.joint2 = pl_joint.joint_syntax_parser(joint2)
 
     def reload(self, dt: float = 1) -> None:
-        """Compute position of revolute joint, with the three linked joints.
+        """Compute position using solver (RRP dyad - circle-line).
 
         :param dt: Unused, but preserves the object structure.
         """
@@ -51,35 +67,44 @@ class Linear(pl_joint.Joint):
             raise pl_exceptions.NotCompletelyDefinedError(self, "joint0 is not defined")
         if self.joint1 is None or self.joint2 is None:
             raise pl_exceptions.NotCompletelyDefinedError(self, "joint1 or joint2 is not defined")
-        positions_circle = (*self.joint0.coord(), self.revolute_radius)
-        if None in positions_circle:
+
+        # Validate all required values
+        if self.joint0.x is None or self.joint0.y is None:
             raise pl_exceptions.UnbuildableError(
-                self,
-                message="Joint has missing constraints. "
-                        "Current constraints are " + str(positions_circle)
+                self, message="joint0 has None coordinates"
             )
-        # Type assertions after validation
-        assert self.joint0.x is not None and self.joint0.y is not None
-        assert self.revolute_radius is not None
-        assert self.joint1.x is not None and self.joint1.y is not None
-        assert self.joint2.x is not None and self.joint2.y is not None
-        result = geom.circle_line_from_points_intersection(
-            self.joint0.x, self.joint0.y, self.revolute_radius,
+        if self.revolute_radius is None:
+            raise pl_exceptions.UnbuildableError(
+                self, message="revolute_radius is not set"
+            )
+        if self.joint1.x is None or self.joint1.y is None:
+            raise pl_exceptions.UnbuildableError(
+                self, message="joint1 has None coordinates"
+            )
+        if self.joint2.x is None or self.joint2.y is None:
+            raise pl_exceptions.UnbuildableError(
+                self, message="joint2 has None coordinates"
+            )
+
+        if self.x is None or self.y is None:
+            # Initialize to a reasonable position
+            self.x = self.joint0.x
+            self.y = self.joint0.y
+
+        # Delegate to solver function (single source of truth)
+        new_x, new_y = solve_linear(
+            self.x, self.y,
+            self.joint0.x, self.joint0.y,
+            self.revolute_radius,
             self.joint1.x, self.joint1.y,
-            self.joint2.x, self.joint2.y
+            self.joint2.x, self.joint2.y,
         )
-        if result[0] == 0:
+
+        # Handle unbuildable case
+        if math.isnan(new_x):
             raise pl_exceptions.UnbuildableError(self)
-        elif result[0] == 1:
-            self.x, self.y = result[1], result[2]
-        else:
-            # Go to the nearest point
-            assert self.x is not None and self.y is not None
-            self.x, self.y = geom.get_nearest_point(
-                self.x, self.y,
-                result[1], result[2],
-                result[3], result[4]
-            )
+
+        self.x, self.y = new_x, new_y
 
     def get_constraints(self) -> tuple[float | None]:
         """Return the only distance constraint for this joint."""

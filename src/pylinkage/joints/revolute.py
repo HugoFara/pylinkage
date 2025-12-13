@@ -1,22 +1,32 @@
 """
-Definition of a revolute joint.
+Definition of a revolute joint (RRR dyad).
 
-It is also called pin joint or hinge joint, and used to be
-called a pivot joint in this project.
+A revolute joint is positioned at the intersection of two circles,
+each centered at a parent joint. This corresponds to an RRR (three
+revolute joints) dyad in Assur group theory.
+
+This is a thin wrapper around the solver's solve_revolute function.
 """
 
-
+import math
 import warnings
-from math import atan2
 
 from .._types import Circle, Coord
 from .. import exceptions as pl_exceptions
-from .. import geometry as pl_geom
+from ..solver.joints import solve_revolute
 from . import joint as pl_joint
 
 
 class Revolute(pl_joint.Joint):
-    """Center of a revolute joint."""
+    """Revolute joint (RRR dyad) - circle-circle intersection.
+
+    The position is computed as the intersection of two circles:
+    - Circle 1: centered at joint0 with radius r0
+    - Circle 2: centered at joint1 with radius r1
+
+    When two solutions exist, the nearest to the current position
+    is chosen (hysteresis for continuity during simulation).
+    """
 
     __slots__ = "r0", "r1"
 
@@ -90,58 +100,67 @@ class Revolute(pl_joint.Joint):
         raise ValueError(f'{joint} is not in joints of {self}')
 
     def reload(self, dt: float = 1) -> None:
-        """Compute the position of revolute joint, use the two linked joints.
+        """Compute position using solver (RRR dyad - circle-circle).
 
         :param dt: Unused, but preserves the object structure.
         """
         if self.joint0 is None:
             return
-        # Fixed joint as reference. In links, we only keep fixed objects
+
+        # Validate both parents are available
         joints = self.__get_joints__()
         ref = tuple(x for x in joints if x is not None and None not in x.coord())
+
         if len(ref) == 0:
-            # Don't change coordinates (irrelevant)
             return
         if len(ref) == 1:
             warnings.warn(
-                f"Unable to set coordinates of revolute joint {self.name}:"
-                "Only one constraint is set."
+                f"Unable to set coordinates of revolute joint {self.name}: "
+                "Only one constraint is set. Coordinates unchanged",
+                stacklevel=2,
+            )
+            return
+
+        # Validate constraints
+        if self.r0 is None or self.r1 is None:
+            warnings.warn(
+                f"Revolute joint {self.name} missing distance constraints. "
                 "Coordinates unchanged",
                 stacklevel=2,
             )
-        elif len(ref) == 2:
-            # Most common case, optimized here
-            c0 = self.__get_joint_as_circle__(0)
-            c1 = self.__get_joint_as_circle__(1)
-            intersections = pl_geom.circle_intersect(
-                c0[0], c0[1], c0[2],
-                c1[0], c1[1], c1[2]
+            return
+
+        if self.x is None or self.y is None:
+            # Initialize to a reasonable position if not set
+            self.x = self.joint0.x if self.joint0.x is not None else 0.0
+            self.y = self.joint0.y if self.joint0.y is not None else 0.0
+
+        # Check for coincident circles (same center, same radius) - edge case
+        # This is a degenerate case where infinite solutions exist
+        dx = self.joint1.x - self.joint0.x  # type: ignore[operator]
+        dy = self.joint1.y - self.joint0.y  # type: ignore[operator]
+        dist_sq = dx * dx + dy * dy
+        if dist_sq < 1e-10 and abs(self.r0 - self.r1) < 1e-10:
+            warnings.warn(
+                f"Joint {self.name} has an infinite number of "
+                "solutions, position will be arbitrary",
+                stacklevel=2,
             )
-            if intersections[0] == 0:
-                raise pl_exceptions.UnbuildableError(self)
-            if intersections[0] == 1:
-                self.x, self.y = intersections[1], intersections[2]
-            elif intersections[0] == 2:
-                assert self.x is not None and self.y is not None
-                self.x, self.y = pl_geom.get_nearest_point(
-                    self.x, self.y,
-                    intersections[1], intersections[2],
-                    intersections[3], intersections[4]
-                )
-            elif intersections[0] == 3:
-                warnings.warn(
-                    f"Joint {self.name} has an infinite number of"
-                    "solutions, position will be arbitrary",
-                    stacklevel=2,
-                )
-                # We project position on circle of possible positions
-                assert self.joint0.x is not None and self.joint0.y is not None
-                assert self.x is not None and self.y is not None
-                assert self.r0 is not None
-                angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
-                self.x, self.y = pl_geom.cyl_to_cart(
-                    self.r0, angle, self.joint0.x, self.joint0.y
-                )
+
+        # Delegate to solver function (single source of truth)
+        new_x, new_y = solve_revolute(
+            self.x, self.y,
+            self.joint0.x, self.joint0.y,  # type: ignore[arg-type]
+            self.r0,
+            self.joint1.x, self.joint1.y,  # type: ignore[arg-type]
+            self.r1,
+        )
+
+        # Handle unbuildable case
+        if math.isnan(new_x):
+            raise pl_exceptions.UnbuildableError(self)
+
+        self.x, self.y = new_x, new_y
 
     def get_constraints(self) -> tuple[float | None, float | None]:
         """Return the two constraining distances of this joint."""

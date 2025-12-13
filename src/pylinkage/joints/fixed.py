@@ -1,18 +1,30 @@
 """
-Fixed joint.
+Fixed joint (deterministic constraint).
+
+A fixed joint has a position fully determined by its two parent joints
+with no ambiguity. It uses polar coordinates relative to the line
+between the two parents.
+
+This is a thin wrapper around the solver's solve_fixed function.
 """
-
-
-import math
 
 from .._types import Coord
 from .. import exceptions as pl_exceptions
-from .. import geometry as pl_geom
+from ..solver.joints import solve_fixed
 from . import joint as pl_joint
 
 
 class Fixed(pl_joint.Joint):
-    """Define a joint using parents locations only, with no ambiguity."""
+    """Fixed joint - deterministic polar constraint.
+
+    The position is fully determined by:
+    - joint0: Origin point
+    - joint1: Reference point for angle measurement
+    - r: Distance from joint0
+    - angle: Angle offset from the joint0→joint1 direction
+
+    Unlike Revolute (RRR dyad), this has a unique solution.
+    """
 
     __slots__ = "r", "angle"
 
@@ -47,30 +59,30 @@ class Fixed(pl_joint.Joint):
         self.r = distance
 
     def reload(self, dt: float = 1) -> None:
-        """Compute point coordinates.
-
-        We know point position relative to its two parents, which gives a local
-        space.
-        We know the orientation of local space, so we can solve the
-        whole. Local space is defined by link[0] as the origin and
-        (link[0], link[1]) as abscissas axis.
+        """Compute position using solver (deterministic constraint).
 
         :param dt: Unused, but preserves the object structure.
         """
         if self.joint0 is None or self.joint1 is None:
             raise pl_exceptions.UnderconstrainedError(f'Not enough constraints for {self}')
-        # Type assertions after validation
-        assert self.joint0.x is not None and self.joint0.y is not None
-        assert self.joint1.x is not None and self.joint1.y is not None
-        assert self.r is not None and self.angle is not None
-        # Rotation angle of local space relative to global
-        rot = math.atan2(
-            self.joint1.y - self.joint0.y,
-            self.joint1.x - self.joint0.x,
-        )
-        # Position in global space
-        self.x, self.y = pl_geom.cyl_to_cart(
-            self.r, self.angle + rot, self.joint0.x, self.joint0.y
+        if self.joint0.x is None or self.joint0.y is None:
+            raise pl_exceptions.UnderconstrainedError(
+                f'{self.joint0} has None coordinates.'
+            )
+        if self.joint1.x is None or self.joint1.y is None:
+            raise pl_exceptions.UnderconstrainedError(
+                f'{self.joint1} has None coordinates.'
+            )
+        if self.r is None or self.angle is None:
+            raise pl_exceptions.UnderconstrainedError(
+                f'{self} has None constraints (r={self.r}, angle={self.angle}).'
+            )
+
+        # Delegate to solver function (single source of truth)
+        self.x, self.y = solve_fixed(
+            self.joint0.x, self.joint0.y,
+            self.joint1.x, self.joint1.y,
+            self.r, self.angle
         )
 
     def get_constraints(self) -> tuple[float | None, float | None]:
