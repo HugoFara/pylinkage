@@ -1,6 +1,9 @@
 # Project can generate several videos
 *.mp4
 
+# Backup files
+*.bak
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -71,8 +74,9 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx documentation
+# Sphinx documentation build artifacts
 docs/_build/
+docs/_doctrees/
 docs/.doctrees
 docs/.buildinfo
 
@@ -132,6 +136,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# ruff
+.ruff_cache/
 
 # Pyre type checker
 .pyre/

@@ -1,46 +1,106 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "pylinkage"
+version = "0.6.0"
 authors = [
     {name = "Hugo Farajallah", email = "pylinkage@hugofara.net"},
 ]
 description = "Build and optimize planar linkages using PSO"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 keywords = [
     "linkage", "mechanism", "optimization",
     "particle swarm optimization"
 ]
 license = {text = "MIT License"}
 classifiers = [
-	"Development Status :: 4 - Beta",
+    "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-	"Topic :: Scientific/Engineering",
-	"Topic :: Scientific/Engineering :: Artificial Intelligence",
-	"Programming Language :: Python :: 3",
-	"Programming Language :: Python :: 3.9",
-	"Programming Language :: Python :: 3.10",
-	"Programming Language :: Python :: 3.11",
-	"Programming Language :: Python :: 3.12",
-	"Environment :: Console",
-	"Intended Audience :: Science/Research",
-	"Intended Audience :: Legal Industry",
-	"Intended Audience :: End Users/Desktop",
-	"Operating System :: OS Independent"
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
 ]
 dependencies = [
-	"numpy",
-	"tqdm",
-	"matplotlib",
-	"pyswarms"
+    "numpy>=1.20.2",
+    "tqdm>=4.40.0",
+    "matplotlib>=3.3.4",
+    "pyswarms>=1.3.0",
+    "typing_extensions>=4.0.0;python_version<'3.10'",
 ]
-dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.4.0",
+    "hypothesis>=6.0.0",
+]
+docs = [
+    "sphinx>=7.4.2",
+    "sphinx-rtd-theme>=2.0.0",
+    "myst-parser>=3.0.1",
+]
 
 [project.urls]
 Homepage = "https://hugofara.github.io/pylinkage/"
 Documentation = "https://hugofara.github.io/pylinkage/"
 Repository = "https://github.com/HugoFara/pylinkage"
 Changelog = "https://github.com/hugofara/pylinkage/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pylinkage"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "SIM",    # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pylinkage"]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.4.0",
+    "hypothesis>=6.0.0",
+    "sphinx>=7.4.2",
+    "sphinx-rtd-theme>=2.0.0",
+    "myst-parser>=3.0.1",
+]
