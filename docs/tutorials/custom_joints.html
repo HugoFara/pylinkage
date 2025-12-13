@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Joint Creation &mdash; pylinkage 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08553120"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced Optimization Techniques" href="advanced_optimization.html" />
+    <link rel="prev" title="Getting Started" href="getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Joint Creation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-joint-interface">Understanding the Joint Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-slider-joint">Example: Slider Joint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-define-the-class">Step 1: Define the Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-implement-get-constraints">Step 2: Implement get_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-implement-set-constraints">Step 3: Implement set_constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-implement-reload">Step 4: Implement reload</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-slider-implementation">Complete Slider Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-custom-joint">Using the Custom Joint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-oscillating-joint">Example: Oscillating Joint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Custom Joint Creation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/custom_joints.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-joint-creation">
+<h1>Custom Joint Creation<a class="headerlink" href="#custom-joint-creation" title="Link to this heading"></a></h1>
+<p>This tutorial shows how to create custom joint types by extending the base
+<code class="docutils literal notranslate"><span class="pre">Joint</span></code> class. Custom joints let you model specialized mechanical constraints
+not covered by the built-in joint types.</p>
+<section id="understanding-the-joint-interface">
+<h2>Understanding the Joint Interface<a class="headerlink" href="#understanding-the-joint-interface" title="Link to this heading"></a></h2>
+<p>All joints in pylinkage inherit from the abstract <code class="docutils literal notranslate"><span class="pre">Joint</span></code> class and must
+implement three methods:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_constraints()</span></code>: Returns the geometric constraints (distances, angles)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code>: Sets the geometric constraints</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reload(dt)</span></code>: Computes the joint’s position based on its parents and constraints</p></li>
+</ol>
+<p>The base <code class="docutils literal notranslate"><span class="pre">Joint</span></code> class provides:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>: Current position coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">joint0</span></code>, <code class="docutils literal notranslate"><span class="pre">joint1</span></code>: Parent joints (can be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Human-readable identifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coord()</span></code>: Returns <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> tuple</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_coord(x,</span> <span class="pre">y)</span></code>: Sets position</p></li>
+</ul>
+</section>
+<section id="example-slider-joint">
+<h2>Example: Slider Joint<a class="headerlink" href="#example-slider-joint" title="Link to this heading"></a></h2>
+<p>Let’s create a slider joint that moves along a line defined by two parent points.
+Unlike <code class="docutils literal notranslate"><span class="pre">Linear</span></code> which constrains to an infinite line, our slider will be
+constrained to move only between its parent points.</p>
+<section id="step-1-define-the-class">
+<h3>Step 1: Define the Class<a class="headerlink" href="#step-1-define-the-class" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.joints.joint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Joint</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Slider</span><span class="p">(</span><span class="n">Joint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that slides between two parent points.</span>
+
+<span class="sd">    The joint&#39;s position is determined by a parameter ``t`` where:</span>
+<span class="sd">    - t=0 means the joint is at joint0&#39;s position</span>
+<span class="sd">    - t=1 means the joint is at joint1&#39;s position</span>
+<span class="sd">    - Values between 0 and 1 interpolate linearly</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">joint0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">joint1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Slider joint.</span>
+
+<span class="sd">        :param x: Initial x position.</span>
+<span class="sd">        :param y: Initial y position.</span>
+<span class="sd">        :param joint0: First parent joint (start of slide).</span>
+<span class="sd">        :param joint1: Second parent joint (end of slide).</span>
+<span class="sd">        :param t: Position parameter (0 to 1).</span>
+<span class="sd">        :param name: Joint name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">joint0</span><span class="p">,</span> <span class="n">joint1</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-implement-get-constraints">
+<h3>Step 2: Implement get_constraints<a class="headerlink" href="#step-2-implement-get-constraints" title="Link to this heading"></a></h3>
+<p>Return the geometric parameters that define this joint’s motion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the slide parameter as constraint.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-implement-set-constraints">
+<h3>Step 3: Implement set_constraints<a class="headerlink" href="#step-3-implement-set-constraints" title="Link to this heading"></a></h3>
+<p>Accept new constraint values:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the slide parameter.</span>
+
+<span class="sd">    :param t: New position parameter (0 to 1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-implement-reload">
+<h3>Step 4: Implement reload<a class="headerlink" href="#step-4-implement-reload" title="Link to this heading"></a></h3>
+<p>Compute the joint’s position based on parent positions and constraints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recompute position by interpolating between parents.</span>
+
+<span class="sd">    :param dt: Time step (unused for this joint type).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Get parent positions</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span><span class="o">.</span><span class="n">coord</span><span class="p">()</span>
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint1</span><span class="o">.</span><span class="n">coord</span><span class="p">()</span>
+
+    <span class="c1"># Linear interpolation</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-slider-implementation">
+<h2>Complete Slider Implementation<a class="headerlink" href="#complete-slider-implementation" title="Link to this heading"></a></h2>
+<p>Here’s the complete custom joint:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.joints.joint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Joint</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Slider</span><span class="p">(</span><span class="n">Joint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that slides between two parent points.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">joint0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">joint1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">joint0</span><span class="p">,</span> <span class="n">joint1</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span><span class="o">.</span><span class="n">coord</span><span class="p">()</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint1</span><span class="o">.</span><span class="n">coord</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-the-custom-joint">
+<h2>Using the Custom Joint<a class="headerlink" href="#using-the-custom-joint" title="Link to this heading"></a></h2>
+<p>Here’s how to use the slider in a linkage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+<span class="c1"># Define anchor points</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;P1&quot;</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;P2&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create slider between points</span>
+<span class="n">slider</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span>
+    <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>        <span class="c1"># Start in the middle</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Slider&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a crank to drive motion</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Connect crank to slider with a revolute joint</span>
+<span class="n">connector</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="n">slider</span><span class="p">,</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Connector&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Note: For this to work, slider.t would need to be updated</span>
+<span class="c1"># based on the mechanism&#39;s geometry, which requires more</span>
+<span class="c1"># sophisticated constraint solving.</span>
+</pre></div>
+</div>
+</section>
+<section id="example-oscillating-joint">
+<h2>Example: Oscillating Joint<a class="headerlink" href="#example-oscillating-joint" title="Link to this heading"></a></h2>
+<p>Here’s another example: a joint that oscillates sinusoidally over time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.joints.joint</span><span class="w"> </span><span class="kn">import</span> <span class="n">Joint</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Oscillator</span><span class="p">(</span><span class="n">Joint</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that moves sinusoidally around a center point.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;amplitude&quot;</span><span class="p">,</span> <span class="s2">&quot;frequency&quot;</span><span class="p">,</span> <span class="s2">&quot;phase&quot;</span><span class="p">,</span> <span class="s2">&quot;_time&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">joint0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">frequency</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">phase</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an oscillating joint.</span>
+
+<span class="sd">        :param joint0: Center point of oscillation.</span>
+<span class="sd">        :param amplitude: Maximum displacement from center.</span>
+<span class="sd">        :param frequency: Oscillation frequency.</span>
+<span class="sd">        :param phase: Phase offset in radians.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">joint0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">=</span> <span class="n">amplitude</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">phase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">amplitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">=</span> <span class="n">amplitude</span>
+        <span class="k">if</span> <span class="n">frequency</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>
+        <span class="k">if</span> <span class="n">phase</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="n">phase</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">+=</span> <span class="n">dt</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">joint0</span><span class="o">.</span><span class="n">coord</span><span class="p">()</span>
+
+        <span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">center_x</span> <span class="o">+</span> <span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">center_y</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<p>When creating custom joints:</p>
+<ol class="arabic simple">
+<li><p><strong>Use __slots__</strong>: Define <code class="docutils literal notranslate"><span class="pre">__slots__</span></code> with your additional attributes to
+save memory and prevent accidental attribute creation.</p></li>
+<li><p><strong>Handle None parents</strong>: Check if parent joints are <code class="docutils literal notranslate"><span class="pre">None</span></code> in <code class="docutils literal notranslate"><span class="pre">reload()</span></code>.</p></li>
+<li><p><strong>Return tuples from get_constraints</strong>: Always return a tuple, even if empty.</p></li>
+<li><p><strong>Document constraints</strong>: Clearly document what each constraint value means.</p></li>
+<li><p><strong>Consider optimization</strong>: If your joint will be used in optimization,
+ensure constraints are continuous values that can be interpolated.</p></li>
+<li><p><strong>Validate inputs</strong>: Consider raising <code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code> if
+required parameters are missing.</p></li>
+</ol>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize linkages with custom joints</p></li>
+<li><p>See <a class="reference internal" href="../api/pylinkage.joints.html#module-pylinkage.joints" title="pylinkage.joints"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.joints</span></code></a> for built-in joint implementations</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_optimization.html" class="btn btn-neutral float-right" title="Advanced Optimization Techniques" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

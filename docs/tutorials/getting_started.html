@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; pylinkage 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=08553120"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Custom Joint Creation" href="custom_joints.html" />
+    <link rel="prev" title="Changelog" href="../changeloglink.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-concepts">Core Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#joint-types">Joint Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#your-first-linkage-four-bar-mechanism">Your First Linkage: Four-Bar Mechanism</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-import-pylinkage">Step 1: Import pylinkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-define-the-joints">Step 2: Define the Joints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-create-the-linkage">Step 3: Create the Linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-simulate-the-motion">Step 4: Simulate the Motion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-visualize-the-linkage">Step 5: Visualize the Linkage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-constraint-system">Understanding the Constraint System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#handling-errors">Handling Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tests/modules.html">tests</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/getting_started.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>This tutorial introduces the core concepts of pylinkage and walks you through
+building and simulating your first linkage mechanism.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install pylinkage using pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pylinkage
+</pre></div>
+</div>
+<p>Or with uv:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>add<span class="w"> </span>pylinkage
+</pre></div>
+</div>
+</section>
+<section id="core-concepts">
+<h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h2>
+<p>Pylinkage models planar linkage mechanisms using three main components:</p>
+<ol class="arabic simple">
+<li><p><strong>Joints</strong>: Points that connect linkage members (bars). Different joint types
+define different motion constraints.</p></li>
+<li><p><strong>Linkage</strong>: A collection of joints that form a complete mechanism.</p></li>
+<li><p><strong>Simulation</strong>: The process of computing joint positions as the mechanism moves.</p></li>
+</ol>
+<section id="joint-types">
+<h3>Joint Types<a class="headerlink" href="#joint-types" title="Link to this heading"></a></h3>
+<p>Pylinkage provides several joint types:</p>
+<ul class="simple">
+<li><p><strong>Static</strong>: A fixed point in space (used as an anchor/frame)</p></li>
+<li><p><strong>Crank</strong>: A rotating motor joint that drives the mechanism</p></li>
+<li><p><strong>Revolute</strong>: A pin joint connecting two parent joints with distance constraints</p></li>
+<li><p><strong>Fixed</strong>: A joint with fixed distance constraints to two parents</p></li>
+<li><p><strong>Linear</strong>: A joint constrained to move along a line</p></li>
+</ul>
+</section>
+</section>
+<section id="your-first-linkage-four-bar-mechanism">
+<h2>Your First Linkage: Four-Bar Mechanism<a class="headerlink" href="#your-first-linkage-four-bar-mechanism" title="Link to this heading"></a></h2>
+<p>A four-bar linkage is the simplest closed-loop mechanism. Let’s build one step by step.</p>
+<section id="step-1-import-pylinkage">
+<h3>Step 1: Import pylinkage<a class="headerlink" href="#step-1-import-pylinkage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-define-the-joints">
+<h3>Step 2: Define the Joints<a class="headerlink" href="#step-2-define-the-joints" title="Link to this heading"></a></h3>
+<p>We need a crank (motor) and a revolute joint to close the loop:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the crank (motor) joint</span>
+<span class="c1"># - Fixed at origin (0, 0)</span>
+<span class="c1"># - Rotates with radius 1</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                    <span class="c1"># Initial position</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>               <span class="c1"># Anchor point (fixed in space)</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>                  <span class="c1"># Initial angle (radians)</span>
+    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                  <span class="c1"># Crank arm length</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Create the revolute joint (closes the loop)</span>
+<span class="c1"># - Connects to the crank and a fixed point</span>
+<span class="c1"># - Constrained by two distances</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>                    <span class="c1"># Initial position</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>                <span class="c1"># First parent: the crank</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>               <span class="c1"># Second parent: fixed point</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                 <span class="c1"># Distance from crank</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                 <span class="c1"># Distance from fixed point</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-create-the-linkage">
+<h3>Step 3: Create the Linkage<a class="headerlink" href="#step-3-create-the-linkage" title="Link to this heading"></a></h3>
+<p>Wrap the joints in a <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>         <span class="c1"># All joints in the mechanism</span>
+    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>          <span class="c1"># Order to solve (crank first, then pin)</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-simulate-the-motion">
+<h3>Step 4: Simulate the Motion<a class="headerlink" href="#step-4-simulate-the-motion" title="Link to this heading"></a></h3>
+<p>Run a simulation to see the mechanism move through a complete cycle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate one complete revolution</span>
+<span class="c1"># Returns positions of all joints at each step</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+
+<span class="c1"># Each element in loci is a tuple of joint positions</span>
+<span class="c1"># loci[0] = ((crank_x, crank_y), (pin_x, pin_y)) at step 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulation steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final crank position: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final output position: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-5-visualize-the-linkage">
+<h3>Step 5: Visualize the Linkage<a class="headerlink" href="#step-5-visualize-the-linkage" title="Link to this heading"></a></h3>
+<p>Use the built-in visualizer to see the mechanism in action:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show an animated visualization</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This opens a matplotlib window showing the linkage animating through its motion cycle.</p>
+</section>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<p>Here’s the complete code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+<span class="c1"># Define joints</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
+    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<span class="p">)</span>
+
+<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Create linkage</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>
+    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Visualize</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-the-constraint-system">
+<h2>Understanding the Constraint System<a class="headerlink" href="#understanding-the-constraint-system" title="Link to this heading"></a></h2>
+<p>Each joint has constraints that define its relationship to parent joints.
+You can get and set these constraints programmatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all constraints as a flat list</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constraints: </span><span class="si">{</span><span class="n">constraints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: [0.31, 1, 3, 1]</span>
+<span class="c1"># (crank angle, crank distance, revolute distance0, revolute distance1)</span>
+
+<span class="c1"># Modify constraints</span>
+<span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Change crank angle</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+
+<span class="c1"># Get joint positions</span>
+<span class="n">coords</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joint positions: </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="handling-errors">
+<h2>Handling Errors<a class="headerlink" href="#handling-errors" title="Link to this heading"></a></h2>
+<p>Some configurations are geometrically impossible. Pylinkage raises
+<code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code> when a linkage cannot be assembled:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Try to step with invalid constraints</span>
+    <span class="n">invalid_linkage</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">pl</span><span class="o">.</span><span class="n">UnbuildableError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Linkage cannot be built with these constraints&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<p>Now that you understand the basics:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Joint Creation</span></a> - Learn to create custom joint types</p></li>
+<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize linkage geometry with PSO</p></li>
+<li><p>See the <a class="reference internal" href="../examples/examples.html"><span class="doc">examples package</span></a> for more complex mechanisms</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../changeloglink.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_joints.html" class="btn btn-neutral float-right" title="Custom Joint Creation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

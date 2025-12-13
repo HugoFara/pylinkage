@@ -47,6 +47,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/advanced_optimization.html">Advanced Optimization Techniques</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
@@ -148,7 +154,7 @@
 <p>Test Fixed_Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestFixed.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815808)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestFixed.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=127003755301376)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestFixed.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -289,7 +295,7 @@
 <p>Test Pivot Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestPivot.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815232)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestPivot.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=127003755299936)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestPivot.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -319,19 +325,62 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestPivotDeprecation">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestPivotDeprecation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestPivotDeprecation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Test Pivot class deprecation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestPivotDeprecation.test_pivot_deprecation_warning">
+<span class="sig-name descname"><span class="pre">test_pivot_deprecation_warning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestPivotDeprecation.test_pivot_deprecation_warning" title="Link to this definition"></a></dt>
+<dd><p>Test that Pivot emits deprecation warning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestPivotDeprecation.test_pivot_inherits_revolute">
+<span class="sig-name descname"><span class="pre">test_pivot_inherits_revolute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestPivotDeprecation.test_pivot_inherits_revolute" title="Link to this definition"></a></dt>
+<dd><p>Test that Pivot still works as Revolute.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.joints.test_joints.</span></span><span class="sig-name descname"><span class="pre">TestRevolute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
 <p>Test Revolute Joint.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.pivot1">
-<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=129902516815424)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.pivot1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pivot1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Revolute(x=0,</span> <span class="pre">y=0,</span> <span class="pre">name=127003755300032)</span></em><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.pivot1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_buildable">
 <span class="sig-name descname"><span class="pre">test_buildable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_buildable" title="Link to this definition"></a></dt>
 <dd><p>Upper intersect test.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_circle_method">
+<span class="sig-name descname"><span class="pre">test_circle_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_circle_method" title="Link to this definition"></a></dt>
+<dd><p>Test circle method returns correct circle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_circle_method_invalid_joint">
+<span class="sig-name descname"><span class="pre">test_circle_method_invalid_joint</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_circle_method_invalid_joint" title="Link to this definition"></a></dt>
+<dd><p>Test circle raises ValueError for unknown joint.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_get_constraints">
+<span class="sig-name descname"><span class="pre">test_get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test get_constraints returns distances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_get_joint_as_circle_invalid_index">
+<span class="sig-name descname"><span class="pre">test_get_joint_as_circle_invalid_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_get_joint_as_circle_invalid_index" title="Link to this definition"></a></dt>
+<dd><p>Test __get_joint_as_circle__ raises for invalid index.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -344,6 +393,54 @@
 <dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_no_intersect">
 <span class="sig-name descname"><span class="pre">test_no_intersect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_no_intersect" title="Link to this definition"></a></dt>
 <dd><p>Test system almost breaking.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_reload_coincident_circles_warning">
+<span class="sig-name descname"><span class="pre">test_reload_coincident_circles_warning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_reload_coincident_circles_warning" title="Link to this definition"></a></dt>
+<dd><p>Test reload with coincident circles emits warning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_reload_no_joint0">
+<span class="sig-name descname"><span class="pre">test_reload_no_joint0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_reload_no_joint0" title="Link to this definition"></a></dt>
+<dd><p>Test reload with no joint0 does nothing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_reload_one_constraint_warning">
+<span class="sig-name descname"><span class="pre">test_reload_one_constraint_warning</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_reload_one_constraint_warning" title="Link to this definition"></a></dt>
+<dd><p>Test reload with only one valid constraint emits warning.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_set_anchor0">
+<span class="sig-name descname"><span class="pre">test_set_anchor0</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_set_anchor0" title="Link to this definition"></a></dt>
+<dd><p>Test set_anchor0 method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_set_anchor1">
+<span class="sig-name descname"><span class="pre">test_set_anchor1</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_set_anchor1" title="Link to this definition"></a></dt>
+<dd><p>Test set_anchor1 method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_set_anchor_with_tuple">
+<span class="sig-name descname"><span class="pre">test_set_anchor_with_tuple</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_set_anchor_with_tuple" title="Link to this definition"></a></dt>
+<dd><p>Test set_anchor with tuple creates Static.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_set_constraints">
+<span class="sig-name descname"><span class="pre">test_set_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Test set_constraints updates distances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.joints.test_joints.TestRevolute.test_set_constraints_partial">
+<span class="sig-name descname"><span class="pre">test_set_constraints_partial</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.joints.test_joints.TestRevolute.test_set_constraints_partial" title="Link to this definition"></a></dt>
+<dd><p>Test set_constraints with None keeps existing value.</p>
 </dd></dl>
 
 <dl class="py method">

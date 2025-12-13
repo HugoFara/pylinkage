@@ -14,6 +14,12 @@ Welcome to pylinkage's documentation!
    changeloglink
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Tutorials
+
+   tutorials/index
+
+.. toctree::
    :maxdepth: 3
    :caption: Packages
 

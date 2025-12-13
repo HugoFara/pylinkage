@@ -47,6 +47,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/advanced_optimization.html">Advanced Optimization Techniques</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Packages</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
@@ -64,6 +70,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-pylinkage.exceptions">pylinkage.exceptions module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.exceptions.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.exceptions.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.exceptions.OptimizationError"><code class="docutils literal notranslate"><span class="pre">OptimizationError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.exceptions.UnbuildableError"><code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.exceptions.UnderconstrainedError"><code class="docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code></a></li>
 </ul>
@@ -75,6 +82,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.OptimizationError"><code class="docutils literal notranslate"><span class="pre">OptimizationError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Revolute"><code class="docutils literal notranslate"><span class="pre">Revolute</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
@@ -428,11 +436,21 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.best_score"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress.best_score</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.current_iteration"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress.current_iteration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.is_complete"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress.is_complete</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.progress_fraction"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress.progress_fraction</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.OptimizationProgress.total_iterations"><code class="docutils literal notranslate"><span class="pre">OptimizationProgress.total_iterations</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.generate_bounds"><code class="docutils literal notranslate"><span class="pre">generate_bounds()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.kinematic_maximization"><code class="docutils literal notranslate"><span class="pre">kinematic_maximization()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.kinematic_minimization"><code class="docutils literal notranslate"><span class="pre">kinematic_minimization()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.particle_swarm_optimization"><code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.particle_swarm_optimization_async"><code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization_async()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.trials_and_errors_optimization"><code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html#pylinkage.optimization.trials_and_errors_optimization_async"><code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization_async()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -482,6 +500,13 @@
 <em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.exceptions.</span></span><span class="sig-name descname"><span class="pre">NotCompletelyDefinedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'The</span> <span class="pre">joint</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">completely</span> <span class="pre">defined!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.exceptions.NotCompletelyDefinedError" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>The linkage definition is incomplete.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pylinkage.exceptions.OptimizationError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.exceptions.</span></span><span class="sig-name descname"><span class="pre">OptimizationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Optimization</span> <span class="pre">failed'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.exceptions.OptimizationError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Should be raised when the optimization process fails.</p>
 </dd></dl>
 
 <dl class="py exception">
@@ -963,6 +988,13 @@ All cranks rotate by their self.angle * dt. The default is 1.
 <p>The linkage definition is incomplete.</p>
 </dd></dl>
 
+<dl class="py exception">
+<dt class="sig sig-object py" id="pylinkage.OptimizationError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">OptimizationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Optimization</span> <span class="pre">failed'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.OptimizationError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Should be raised when the optimization process fails.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Pivot">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pl_joint.Joint</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Coord</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pl_joint.Joint</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Coord</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Pivot" title="Link to this definition"></a></dt>
@@ -1213,6 +1245,37 @@ with automatic setup and teardown.</p>
 - (3, (float, float, float)) if the intersection is a circle.</p>
 </dd>
 </dl>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Two circles that intersect at two points</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">circle_intersect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Number of intersections</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="go">(0.5, 0.866025)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Circles too far apart (no intersection)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">circle_intersect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">(0,)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Tangent circles (one intersection)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">circle_intersect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">(1.0, 0.0)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Same circle</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">circle_intersect</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1226,6 +1289,19 @@ with automatic setup and teardown.</p>
 <li><p><strong>theta</strong> – Angle starting from abscissa axis.</p></li>
 <li><p><strong>ori</strong> – Origin point (Default value = (0, 0)).</p></li>
 </ul>
+</dd>
+</dl>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyl_to_cart</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Point at angle 0</span>
+<span class="go">(1.0, 0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">cyl_to_cart</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># Point at 90 degrees</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="go">(0.0, 1.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyl_to_cart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ori</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># With offset origin</span>
+<span class="go">(3.0, 1.0)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -1245,6 +1321,9 @@ shape center[x] / min_ratio.
 shape center[x] * max_factor.
 (Default value = 5).</p></li>
 </ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#pylinkage.OptimizationError" title="pylinkage.OptimizationError"><strong>OptimizationError</strong></a> – If min_ratio or max_factor are not positive.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1320,6 +1399,17 @@ decorated function. In case of error, the penalty value is float(‘inf’).</p>
 <dd class="field-odd"><p><strong>vec</strong> – Vector to get norm from.</p>
 </dd>
 </dl>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="go">5.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">0.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1349,7 +1439,8 @@ The default is .2.</p></li>
 <li><p><strong>follower</strong> – Social coefficient, c2 in pyswarms. The default is .5.</p></li>
 <li><p><strong>neighbors</strong> – Number of neighbors to consider. The default is 17.</p></li>
 <li><p><strong>iters</strong> – Number of iterations to describe. The default is 200.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound). (Default value = None).</p></li>
+<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).
+(Default value = None).</p></li>
 <li><p><strong>order_relation</strong> – How to compare scores.
 There should not be anything else than the built-in
 max and min functions.
@@ -1361,6 +1452,9 @@ The default is max.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of Agents: best score, best dimensions and initial positions.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pylinkage.OptimizationError" title="pylinkage.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1441,6 +1535,17 @@ fps: Number of frames per second for the output video.</p>
 <dd class="field-even"><p>Computed squared distance.</p>
 </dd>
 </dl>
+<dl>
+<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sqr_dist</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="go">25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqr_dist</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sqr_dist</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1515,6 +1620,9 @@ The default is None.</p></li>
 <dd class="field-even"><p>3-uplet of score, dimensions and initial position for each Linkage to
 return.
 Its size is {n_results}.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pylinkage.OptimizationError" title="pylinkage.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or no valid solution is found.</p>
 </dd>
 </dl>
 </dd></dl>
