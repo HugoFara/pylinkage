@@ -39,6 +39,7 @@ dependencies = [
     "pyswarms>=1.3.0",
     "plotly>=6.5.0",
     "drawsvg>=2.4.0",
+    "sympy>=1.12",
 ]
 
 [project.optional-dependencies]

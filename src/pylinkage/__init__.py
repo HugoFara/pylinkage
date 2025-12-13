@@ -14,6 +14,8 @@ Created on Thu Jun 10 21:30:52 2021
 __all__ = [
     # Assur group module
     "assur",
+    # Symbolic computation module
+    "symbolic",
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
@@ -55,6 +57,9 @@ __all__ = [
 
 # Assur group module for graph-based linkage representation
 from . import assur as assur
+
+# Symbolic computation module using SymPy
+from . import symbolic as symbolic
 from .exceptions import (
     HypostaticError as HypostaticError,  # Deprecated alias
 )
