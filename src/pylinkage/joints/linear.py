@@ -68,19 +68,23 @@ class Linear(pl_joint.Joint):
         assert self.revolute_radius is not None
         assert self.joint1.x is not None and self.joint1.y is not None
         assert self.joint2.x is not None and self.joint2.y is not None
-        positions = geom.circle_line_from_points_intersection(
-            (self.joint0.x, self.joint0.y, self.revolute_radius),
-            (self.joint1.x, self.joint1.y),
-            (self.joint2.x, self.joint2.y)
+        result = geom.circle_line_from_points_intersection(
+            self.joint0.x, self.joint0.y, self.revolute_radius,
+            self.joint1.x, self.joint1.y,
+            self.joint2.x, self.joint2.y
         )
-        if len(positions) == 0:
+        if result[0] == 0:
             raise pl_exceptions.UnbuildableError(self)
-        elif len(positions) == 1:
-            self.x, self.y = positions[0]
+        elif result[0] == 1:
+            self.x, self.y = result[1], result[2]
         else:
-            # Got to the nearest point
+            # Go to the nearest point
             assert self.x is not None and self.y is not None
-            self.x, self.y = geom.get_nearest_point((self.x, self.y), positions[0], positions[1])
+            self.x, self.y = geom.get_nearest_point(
+                self.x, self.y,
+                result[1], result[2],
+                result[3], result[4]
+            )
 
     def get_constraints(self) -> tuple[float | None]:
         """Return the only distance constraint for this joint."""

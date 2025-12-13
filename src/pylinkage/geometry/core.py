@@ -1,143 +1,130 @@
 """
-Basic geometry features.
+Basic geometry features with numba optimization.
 """
 
 from __future__ import annotations
 
 import math
-import warnings
 from typing import TYPE_CHECKING
+
+from numba import njit
 
 if TYPE_CHECKING:
     from .._types import Coord, Line
 
 
-dist = math.dist
+@njit(cache=True)
+def dist(x1: float, y1: float, x2: float, y2: float) -> float:
+    """
+    Distance between two points.
+
+    :param x1: X coordinate of first point.
+    :param y1: Y coordinate of first point.
+    :param x2: X coordinate of second point.
+    :param y2: Y coordinate of second point.
+    :return: Euclidean distance.
+    """
+    dx = x1 - x2
+    dy = y1 - y2
+    return math.sqrt(dx * dx + dy * dy)
 
 
-def sqr_dist(point1: Coord, point2: Coord) -> float:
+@njit(cache=True)
+def sqr_dist(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Square of the distance between two points.
 
-    Faster than dist.
+    Faster than dist when only comparing distances.
 
-    :param point1: First point to compare.
-    :param point2: Second point.
-
-    :return: Computed squared distance.
-
-    Examples:
-        >>> sqr_dist((0, 0), (3, 4))
-        25
-        >>> sqr_dist((1, 1), (1, 1))
-        0
-        >>> sqr_dist((0, 0), (1, 1))
-        2
+    :param x1: X coordinate of first point.
+    :param y1: Y coordinate of first point.
+    :param x2: X coordinate of second point.
+    :param y2: Y coordinate of second point.
+    :return: Squared distance.
     """
-    return (point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2
+    dx = x1 - x2
+    dy = y1 - y2
+    return dx * dx + dy * dy
 
 
+@njit(cache=True)
 def get_nearest_point(
-    reference_point: Coord,
-    first_point: Coord,
-    second_point: Coord,
-) -> Coord:
+    ref_x: float,
+    ref_y: float,
+    p1_x: float,
+    p1_y: float,
+    p2_x: float,
+    p2_y: float,
+) -> tuple[float, float]:
     """
     Return the point closer to the reference.
 
-    :param reference_point: Point to compare to.
-    :param first_point: First point candidate.
-    :param second_point: Second point candidate.
-    :return: Either first point or second point.
-
-    Examples:
-        >>> get_nearest_point((0, 0), (1, 0), (5, 0))
-        (1, 0)
-        >>> get_nearest_point((0, 0), (3, 4), (0, 1))
-        (0, 1)
-        >>> get_nearest_point((1, 1), (1, 1), (2, 2))  # reference matches first
-        (1, 1)
+    :param ref_x: X coordinate of reference point.
+    :param ref_y: Y coordinate of reference point.
+    :param p1_x: X coordinate of first candidate.
+    :param p1_y: Y coordinate of first candidate.
+    :param p2_x: X coordinate of second candidate.
+    :param p2_y: Y coordinate of second candidate.
+    :return: Coordinates of the nearest point.
     """
-    if reference_point in (first_point, second_point):
-        return reference_point
-    if sqr_dist(reference_point, first_point) < sqr_dist(reference_point, second_point):
-        return first_point
-    return second_point
+    d1 = sqr_dist(ref_x, ref_y, p1_x, p1_y)
+    d2 = sqr_dist(ref_x, ref_y, p2_x, p2_y)
+    if d1 < d2:
+        return (p1_x, p1_y)
+    return (p2_x, p2_y)
 
 
-def norm(vec: Coord) -> float:
+@njit(cache=True)
+def norm(x: float, y: float) -> float:
     """
     Return the norm of a 2-dimensional vector.
 
-    :param vec: Vector to get norm from.
-
-    Examples:
-        >>> norm((3, 4))
-        5.0
-        >>> norm((0, 0))
-        0.0
-        >>> norm((1, 0))
-        1.0
+    :param x: X component.
+    :param y: Y component.
+    :return: Vector magnitude.
     """
-    return math.sqrt(vec[0] ** 2 + vec[1] ** 2)
+    return math.sqrt(x * x + y * y)
 
 
+@njit(cache=True)
 def cyl_to_cart(
     radius: float,
     theta: float,
-    ori: Coord = (0, 0),
-) -> Coord:
+    ori_x: float = 0.0,
+    ori_y: float = 0.0,
+) -> tuple[float, float]:
     """Convert polar coordinates into cartesian.
 
-    :param radius: Distance from ori.
+    :param radius: Distance from origin.
     :param theta: Angle starting from abscissa axis.
-    :param ori: Origin point (Default value = (0, 0)).
-
-    Examples:
-        >>> import math
-        >>> cyl_to_cart(1, 0)  # Point at angle 0
-        (1.0, 0.0)
-        >>> x, y = cyl_to_cart(1, math.pi / 2)  # Point at 90 degrees
-        >>> (round(x, 10), round(y, 10))
-        (0.0, 1.0)
-        >>> cyl_to_cart(2, 0, ori=(1, 1))  # With offset origin
-        (3.0, 1.0)
+    :param ori_x: Origin X coordinate (Default value = 0.0).
+    :param ori_y: Origin Y coordinate (Default value = 0.0).
+    :return: Cartesian coordinates (x, y).
     """
-    return radius * math.cos(theta) + ori[0], radius * math.sin(theta) + ori[1]
+    return (radius * math.cos(theta) + ori_x, radius * math.sin(theta) + ori_y)
 
 
-def line_from_points(first_point: Coord, second_point: Coord) -> Line:
+def line_from_points(
+    first_x: float,
+    first_y: float,
+    second_x: float,
+    second_y: float,
+) -> tuple[float, float, float]:
     """
     A cartesian equation of the line joining two points.
 
-    :param first_point: One point of the line.
-    :param second_point: Another point on the line.
+    :param first_x: X coordinate of first point.
+    :param first_y: Y coordinate of first point.
+    :param second_x: X coordinate of second point.
+    :param second_y: Y coordinate of second point.
     :return: A cartesian equation of this line (a, b, c) where ax + by + c = 0.
-
-    Examples:
-        >>> line_from_points((0, 0), (1, 0))  # Horizontal line y=0
-        (0, 1, 0.0)
-        >>> line_from_points((0, 0), (0, 1))  # Vertical line x=0
-        (-1, 0, 0.0)
-        >>> line_from_points((0, 0), (1, 1))  # Diagonal line y=x
-        (-1, 1, 0.0)
-        >>> line_from_points((0, 1), (1, 1))  # Horizontal line y=1
-        (0, 1, -1.0)
     """
-    if first_point == second_point:
-        warnings.warn(
-            "Cannot choose a line, inputs points are the same!",
-            stacklevel=2,
-        )
-        return 0, 0, 0
-    director = (
-        second_point[0] - first_point[0],
-        second_point[1] - first_point[1],
-    )
+    if first_x == second_x and first_y == second_y:
+        return (0.0, 0.0, 0.0)
+    director_x = second_x - first_x
+    director_y = second_y - first_y
     # The barycenter should give more precision
-    mean = (
-        (first_point[0] + second_point[0]) / 2,
-        (first_point[1] + second_point[1]) / 2,
-    )
-    equilibrium = mean[0] * director[1] - mean[1] * director[0]
-    return -director[1], director[0], equilibrium
+    mean_x = (first_x + second_x) / 2
+    mean_y = (first_y + second_y) / 2
+    equilibrium = mean_x * director_y - mean_y * director_x
+    return (-director_y, director_x, equilibrium)

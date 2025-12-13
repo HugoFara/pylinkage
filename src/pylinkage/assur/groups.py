@@ -197,12 +197,11 @@ class DyadRRR(AssurGroup):
         if self.distance0 is None or self.distance1 is None:
             raise ValueError("Distances not set for DyadRRR")
 
-        # Build circles
-        circle0 = (pos0[0], pos0[1], self.distance0)
-        circle1 = (pos1[0], pos1[1], self.distance1)
-
-        # Find intersection
-        result = circle_intersect(circle0, circle1)
+        # Find intersection using scalar parameters
+        result = circle_intersect(
+            pos0[0], pos0[1], self.distance0,
+            pos1[0], pos1[1], self.distance1
+        )
 
         if result[0] == 0:
             raise UnbuildableError(
@@ -216,16 +215,17 @@ class DyadRRR(AssurGroup):
 
         if result[0] == 1:
             # Tangent circles - unique solution
-            new_pos: Coord = result[1]  # type: ignore
+            new_pos: Coord = (result[1], result[2])
         elif result[0] == 2:
             # Two solutions - pick nearest to current position
-            sol1: Coord = result[1]  # type: ignore
-            sol2: Coord = result[2]  # type: ignore
             if current_pos[0] is not None and current_pos[1] is not None:
-                current: Coord = (current_pos[0], current_pos[1])
-                new_pos = get_nearest_point(current, sol1, sol2)
+                new_pos = get_nearest_point(
+                    current_pos[0], current_pos[1],
+                    result[1], result[2],
+                    result[3], result[4]
+                )
             else:
-                new_pos = sol1  # Default to first solution
+                new_pos = (result[1], result[2])  # Default to first solution
         else:  # result[0] == 3 - Infinite solutions (coincident circles)
             warnings.warn(
                 f"Node {internal_id} has infinite solutions (coincident circles), "
@@ -238,9 +238,9 @@ class DyadRRR(AssurGroup):
                     current_pos[1] - pos0[1],
                     current_pos[0] - pos0[0]
                 )
-                new_pos = cyl_to_cart(self.distance0, angle, pos0)
+                new_pos = cyl_to_cart(self.distance0, angle, pos0[0], pos0[1])
             else:
-                new_pos = cyl_to_cart(self.distance0, 0, pos0)
+                new_pos = cyl_to_cart(self.distance0, 0.0, pos0[0], pos0[1])
 
         return {internal_id: new_pos}
 
@@ -360,13 +360,13 @@ class DyadRRP(AssurGroup):
         pos_line1 = previous_positions[self.line_node1]
         pos_line2 = previous_positions[self.line_node2]
 
-        circle = (pos_anchor[0], pos_anchor[1], self.revolute_distance)
-
-        intersections = circle_line_from_points_intersection(
-            circle, pos_line1, pos_line2
+        result = circle_line_from_points_intersection(
+            pos_anchor[0], pos_anchor[1], self.revolute_distance,
+            pos_line1[0], pos_line1[1],
+            pos_line2[0], pos_line2[1]
         )
 
-        if len(intersections) == 0:
+        if result[0] == 0:
             raise UnbuildableError(
                 internal_id,
                 message=f"No circle-line intersection for RRP dyad at {internal_id}"
@@ -375,17 +375,18 @@ class DyadRRP(AssurGroup):
         current_node = graph.nodes[internal_id]
         current_pos = current_node.position
 
-        if len(intersections) == 1:
-            new_pos: Coord = intersections[0]
+        if result[0] == 1:
+            new_pos: Coord = (result[1], result[2])
         else:
             # Two solutions - pick nearest
             if current_pos[0] is not None and current_pos[1] is not None:
-                current: Coord = (current_pos[0], current_pos[1])
                 new_pos = get_nearest_point(
-                    current, intersections[0], intersections[1]
+                    current_pos[0], current_pos[1],
+                    result[1], result[2],
+                    result[3], result[4]
                 )
             else:
-                new_pos = intersections[0]
+                new_pos = (result[1], result[2])
 
         return {internal_id: new_pos}
 

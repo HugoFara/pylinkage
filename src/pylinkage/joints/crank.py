@@ -68,7 +68,7 @@ class Crank(pl_joint.Joint):
         rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
         self.x, self.y = pl_geom.cyl_to_cart(
             self.r, rot + self.angle * dt,
-            (self.joint0.x, self.joint0.y)
+            self.joint0.x, self.joint0.y
         )
 
     def get_constraints(self) -> tuple[float | None]:

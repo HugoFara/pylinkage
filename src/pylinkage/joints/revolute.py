@@ -115,24 +115,22 @@ class Revolute(pl_joint.Joint):
             )
         elif len(ref) == 2:
             # Most common case, optimized here
+            c0 = self.__get_joint_as_circle__(0)
+            c1 = self.__get_joint_as_circle__(1)
             intersections = pl_geom.circle_intersect(
-                self.__get_joint_as_circle__(0),
-                self.__get_joint_as_circle__(1)
+                c0[0], c0[1], c0[2],
+                c1[0], c1[1], c1[2]
             )
             if intersections[0] == 0:
                 raise pl_exceptions.UnbuildableError(self)
             if intersections[0] == 1:
-                coord = intersections[1]  # type: ignore[misc]
-                assert isinstance(coord, tuple) and len(coord) == 2
-                self.x, self.y = coord
+                self.x, self.y = intersections[1], intersections[2]
             elif intersections[0] == 2:
                 assert self.x is not None and self.y is not None
-                coord1 = intersections[1]  # type: ignore[misc]
-                coord2 = intersections[2]  # type: ignore[misc]
-                assert isinstance(coord1, tuple) and len(coord1) == 2
-                assert isinstance(coord2, tuple) and len(coord2) == 2
-                self.x, self.y = pl_geom.core.get_nearest_point(
-                    (self.x, self.y), coord1, coord2
+                self.x, self.y = pl_geom.get_nearest_point(
+                    self.x, self.y,
+                    intersections[1], intersections[2],
+                    intersections[3], intersections[4]
                 )
             elif intersections[0] == 3:
                 warnings.warn(
@@ -146,7 +144,7 @@ class Revolute(pl_joint.Joint):
                 assert self.r0 is not None
                 angle = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
                 self.x, self.y = pl_geom.cyl_to_cart(
-                    self.r0, angle, (self.joint0.x, self.joint0.y)
+                    self.r0, angle, self.joint0.x, self.joint0.y
                 )
 
     def get_constraints(self) -> tuple[float | None, float | None]:

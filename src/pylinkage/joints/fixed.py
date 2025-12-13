@@ -74,7 +74,7 @@ class Fixed(pl_joint.Joint):
         )
         # Position in global space
         self.x, self.y = pl_geom.cyl_to_cart(
-            self.r, self.angle + rot, (self.joint0.x, self.joint0.y)
+            self.r, self.angle + rot, self.joint0.x, self.joint0.y
         )
 
     def get_constraints(self) -> tuple[float | None, float | None]:
