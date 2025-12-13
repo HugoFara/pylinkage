@@ -13,12 +13,13 @@ interface ToolButton {
 }
 
 const tools: ToolButton[] = [
-  { mode: 'select', label: 'Select', icon: '👆', description: 'Click to select joints' },
-  { mode: 'add-joint', label: 'Add Joint', icon: '➕', description: 'Click canvas to add joint' },
-  { mode: 'move-joint', label: 'Move', icon: '✋', description: 'Drag joints to move' },
-  { mode: 'delete', label: 'Delete', icon: '🗑️', description: 'Click to delete' },
-  { mode: 'set-ground', label: 'Set Ground', icon: '📍', description: 'Click joint to make ground' },
-  { mode: 'set-crank', label: 'Set Crank', icon: '⚙️', description: 'Click joint to make crank' },
+  { mode: 'select', label: '1: Select', icon: '👆', description: 'Click to select joints (1)' },
+  { mode: 'add-joint', label: '2: Add Joint', icon: '➕', description: 'Click canvas to add joint (2)' },
+  { mode: 'draw-link', label: '3: Draw Link', icon: '🔗', description: 'Click two joints to create link (3)' },
+  { mode: 'move-joint', label: '4: Move', icon: '✋', description: 'Drag joints to move (4)' },
+  { mode: 'delete', label: '5: Delete', icon: '🗑️', description: 'Click to delete (5)' },
+  { mode: 'set-ground', label: '6: Ground', icon: '📍', description: 'Click joint to make ground (6)' },
+  { mode: 'set-crank', label: '7: Crank', icon: '⚙️', description: 'Click joint to make crank (7)' },
 ];
 
 const styles: Record<string, React.CSSProperties> = {
@@ -32,7 +33,9 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     gap: '8px',
     padding: '8px 12px',
-    border: '1px solid #30363d',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#30363d',
     borderRadius: '6px',
     background: '#21262d',
     color: '#e6edf3',

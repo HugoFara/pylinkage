@@ -14,17 +14,19 @@ router = APIRouter(prefix="/examples", tags=["examples"])
 
 def create_four_bar() -> pl.Linkage:
     """Create a classic four-bar linkage."""
+    import math
+
     # Ground pivots
     ground_a = Static(x=0, y=0, name="GroundA")
     ground_d = Static(x=100, y=0, name="GroundD")
 
-    # Crank (input link)
+    # Crank (input link) - use non-zero initial angle
     crank_b = Crank(
         x=30,
         y=40,
         joint0=ground_a,
         distance=50,
-        angle=0,
+        angle=math.atan2(40, 30),  # Initial angle based on position
         name="CrankB",
     )
 
@@ -80,16 +82,18 @@ def create_chebyshev() -> pl.Linkage:
 
 def create_crank_slider() -> pl.Linkage:
     """Create a crank-slider mechanism."""
+    import math
+
     # Ground
     ground = Static(x=0, y=0, name="Ground")
 
-    # Crank
+    # Crank - use non-zero initial angle
     crank = Crank(
         x=30,
         y=40,
         joint0=ground,
         distance=50,
-        angle=0,
+        angle=math.atan2(40, 30),  # Initial angle based on position
         name="Crank",
     )
 
@@ -113,16 +117,18 @@ def create_crank_slider() -> pl.Linkage:
 
 def create_pantograph() -> pl.Linkage:
     """Create a pantograph linkage."""
+    import math
+
     # Fixed pivot
     pivot = Static(x=0, y=0, name="Pivot")
 
-    # Crank arm
+    # Crank arm - use small non-zero angle to avoid division by zero
     crank = Crank(
         x=50,
         y=0,
         joint0=pivot,
         distance=50,
-        angle=0,
+        angle=0.01,  # Small initial angle
         name="Crank",
     )
 
@@ -152,7 +158,7 @@ EXAMPLES: dict[str, tuple[callable, str]] = {
 }
 
 
-@router.get("/", response_model=list[ExampleInfo])
+@router.get("", response_model=list[ExampleInfo])
 def list_examples() -> list[ExampleInfo]:
     """List all available example linkages."""
     result = []

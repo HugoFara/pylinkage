@@ -35,7 +35,7 @@ def create_linkage(data: LinkageCreate) -> LinkageResponse:
     return LinkageResponse(**response_data)
 
 
-@router.get("/", response_model=list[LinkageListItem])
+@router.get("", response_model=list[LinkageListItem])
 def list_linkages(skip: int = 0, limit: int = 100) -> list[LinkageListItem]:
     """List all linkages."""
     items = storage.list_all(skip=skip, limit=limit)

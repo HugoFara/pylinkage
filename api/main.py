@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .config import settings
-from .routers import examples, linkages, simulation
+from .routers import examples, linkages, simulation, websocket
 
 
 @asynccontextmanager
@@ -39,6 +39,7 @@ app.add_middleware(
 app.include_router(linkages.router, prefix="/api")
 app.include_router(simulation.router, prefix="/api")
 app.include_router(examples.router, prefix="/api")
+app.include_router(websocket.router, prefix="/api")
 
 
 @app.get("/health")
@@ -60,6 +61,8 @@ def api_info() -> dict[str, str | list[str]]:
             "/api/linkages/{id}/trajectory",
             "/api/examples",
             "/api/examples/{name}",
+            "/api/ws/simulation/{id}",
+            "/api/ws/simulation-fast/{id}",
         ],
     }
 

@@ -76,43 +76,38 @@ Open http://localhost:5173
 
 ---
 
-## Phase 2: Enhanced Interactivity (PLANNED)
+## Phase 2: Enhanced Interactivity (COMPLETED)
 
 ### 2.1 WebSocket for Live Animation
-Stream simulation frames in real-time instead of fetching all at once.
-
-```python
-# api/routers/websocket.py
-@app.websocket("/ws/simulation/{linkage_id}")
-async def simulation_ws(websocket: WebSocket, linkage_id: str):
-    await websocket.accept()
-    linkage = get_linkage(linkage_id)
-    for frame in linkage.step(iterations=...):
-        await websocket.send_json({"frame": frame})
-        await asyncio.sleep(1/60)
-```
+- [x] Stream simulation frames in real-time via WebSocket
+- [x] Two endpoints: `/ws/simulation/{id}` (frame-by-frame) and `/ws/simulation-fast/{id}` (batch)
+- [x] Progress updates during simulation
+- [x] Optional streaming mode toggle in UI
 
 ### 2.2 Keyboard Shortcuts
-- `Escape`: Switch to select mode
-- `Space`: Toggle animation
-- `Delete/Backspace`: Delete selected joint
-- `Ctrl+Z`: Undo
-- `Ctrl+Shift+Z`: Redo
-- `1-6`: Quick mode selection
+- [x] `Escape`: Switch to select mode
+- [x] `Space`: Toggle animation playback
+- [x] `Delete/Backspace`: Delete selected joint
+- [x] `Ctrl+Z`: Undo
+- [x] `Ctrl+Shift+Z` / `Ctrl+Y`: Redo
+- [x] `1-7`: Quick mode selection (select, add-joint, draw-link, move, delete, ground, crank)
 
 ### 2.3 Direct Joint Manipulation
-When dragging joints, recalculate constraint parameters:
-- Update `distance` for Crank/Fixed
-- Update `distance0`/`distance1` for Revolute
-- Debounced API sync
+- [x] Drag any joint type (Static, Crank, Fixed, Revolute)
+- [x] Automatic constraint recalculation:
+  - Update `distance`/`angle` for Crank/Fixed based on parent position
+  - Update `distance0`/`distance1` for Revolute based on both parents
 
 ### 2.4 Draw Link Mode
-Click two joints to create a Revolute connection between them.
+- [x] Click first joint to start link
+- [x] Visual preview line follows mouse
+- [x] Click second joint to create Revolute connection at midpoint
+- [x] Escape or click empty space to cancel
 
-### Files to Create
-- `api/routers/websocket.py`
-- `frontend/src/hooks/useKeyboardShortcuts.ts`
-- `frontend/src/hooks/useSimulationStream.ts`
+### Files Created (Phase 2)
+- `api/routers/websocket.py` - WebSocket endpoints for simulation streaming
+- `frontend/src/hooks/useKeyboardShortcuts.ts` - Global keyboard shortcut handler
+- `frontend/src/hooks/useSimulationStream.ts` - WebSocket client hook
 
 ---
 
@@ -177,6 +172,11 @@ Step-by-step UI for mechanism synthesis:
 - `frontend/src/stores/editorStore.ts` - UI state
 - `frontend/src/stores/linkageStore.ts` - Linkage data
 - `frontend/src/types/linkage.ts` - TypeScript types
+
+### Created (Phase 2)
+- `api/routers/websocket.py` - WebSocket endpoints for simulation streaming
+- `frontend/src/hooks/useKeyboardShortcuts.ts` - Global keyboard shortcuts
+- `frontend/src/hooks/useSimulationStream.ts` - WebSocket client for streaming
 
 ---
 

@@ -1,12 +1,14 @@
 /**
- * Animation playback controls.
+ * Animation playback controls with REST and WebSocket simulation options.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useEditorStore } from '../../stores/editorStore';
 import { useLinkageStore } from '../../stores/linkageStore';
 import { simulationApi } from '../../api/client';
+import { useSimulationStream } from '../../hooks/useSimulationStream';
+import type { SimulationFrame } from '../../types/linkage';
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
@@ -39,6 +41,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: '#1f6feb',
     color: 'white',
   },
+  streamButton: {
+    background: '#8957e5',
+    color: 'white',
+  },
   buttonDisabled: {
     opacity: 0.6,
     cursor: 'not-allowed',
@@ -65,6 +71,22 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#8b949e',
     cursor: 'pointer',
   },
+  progressBar: {
+    height: '4px',
+    background: '#21262d',
+    borderRadius: '2px',
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    background: '#58a6ff',
+    transition: 'width 0.1s',
+  },
+  keyboardHint: {
+    fontSize: '11px',
+    color: '#6e7681',
+    marginTop: '4px',
+  },
 };
 
 export function AnimationControls() {
@@ -82,8 +104,20 @@ export function AnimationControls() {
   const setLoci = useLinkageStore((s) => s.setLoci);
 
   const animationRef = useRef<number>();
+  const [useStreaming, setUseStreaming] = useState(false);
 
-  // Simulate mutation
+  // Callback for when streaming completes
+  const handleStreamComplete = useCallback((frames: SimulationFrame[]) => {
+    setLoci(frames);
+    setAnimationFrame(0);
+  }, [setLoci, setAnimationFrame]);
+
+  // WebSocket streaming hook
+  const stream = useSimulationStream({
+    onComplete: handleStreamComplete,
+  });
+
+  // REST API simulation mutation
   const simulateMutation = useMutation({
     mutationFn: async () => {
       if (!linkage) throw new Error('No linkage loaded');
@@ -96,6 +130,23 @@ export function AnimationControls() {
       }
     },
   });
+
+  // Handle simulation (REST or WebSocket)
+  const handleSimulate = useCallback(() => {
+    if (!linkage) return;
+
+    if (useStreaming) {
+      // Use WebSocket streaming
+      stream.connect(linkage.id, true); // Fast mode
+      // Wait for connection, then start
+      setTimeout(() => {
+        stream.startStreaming();
+      }, 100);
+    } else {
+      // Use REST API
+      simulateMutation.mutate();
+    }
+  }, [linkage, useStreaming, stream, simulateMutation]);
 
   // Animation loop
   useEffect(() => {
@@ -127,23 +178,64 @@ export function AnimationControls() {
     };
   }, [isAnimating, loci, animationFrame, setAnimationFrame]);
 
+  // Store disconnect in a ref to avoid dependency issues
+  const disconnectRef = useRef(stream.disconnect);
+  disconnectRef.current = stream.disconnect;
+
+  // Cleanup WebSocket on unmount
+  useEffect(() => {
+    return () => {
+      disconnectRef.current();
+    };
+  }, []);
+
   const totalFrames = loci?.length ?? 0;
   const canAnimate = linkage && loci && loci.length > 0;
+  const isLoading = simulateMutation.isPending || stream.isStreaming;
+  const streamProgress = stream.totalFrames > 0
+    ? (stream.progress / stream.totalFrames) * 100
+    : 0;
 
   return (
     <div style={styles.container}>
-      {/* Simulate button */}
-      <button
-        style={{
-          ...styles.button,
-          ...styles.simulateButton,
-          ...((!linkage || simulateMutation.isPending) ? styles.buttonDisabled : {}),
-        }}
-        onClick={() => simulateMutation.mutate()}
-        disabled={!linkage || simulateMutation.isPending}
-      >
-        {simulateMutation.isPending ? 'Simulating...' : 'Run Simulation'}
-      </button>
+      {/* Simulate buttons */}
+      <div style={styles.controls}>
+        <button
+          style={{
+            ...styles.button,
+            ...(useStreaming ? styles.streamButton : styles.simulateButton),
+            ...((!linkage || isLoading) ? styles.buttonDisabled : {}),
+          }}
+          onClick={handleSimulate}
+          disabled={!linkage || isLoading}
+        >
+          {isLoading
+            ? useStreaming
+              ? 'Streaming...'
+              : 'Simulating...'
+            : 'Run Simulation'}
+        </button>
+        <label style={styles.checkbox} title="Use WebSocket streaming (experimental)">
+          <input
+            type="checkbox"
+            checked={useStreaming}
+            onChange={(e) => setUseStreaming(e.target.checked)}
+          />
+          Stream
+        </label>
+      </div>
+
+      {/* Streaming progress bar */}
+      {stream.isStreaming && (
+        <div style={styles.progressBar}>
+          <div
+            style={{
+              ...styles.progressFill,
+              width: `${streamProgress}%`,
+            }}
+          />
+        </div>
+      )}
 
       {/* Play controls */}
       <div style={styles.controls}>
@@ -200,10 +292,20 @@ export function AnimationControls() {
         </label>
       </div>
 
+      {/* Keyboard hints */}
+      <div style={styles.keyboardHint}>
+        Space: Play/Stop | Ctrl+Z: Undo | Del: Delete selected
+      </div>
+
       {/* Error display */}
       {simulateMutation.error && (
-        <p style={{ color: '#f85149', fontSize: '12px' }}>
+        <p style={{ color: '#f85149', fontSize: '12px', margin: 0 }}>
           Error: {(simulateMutation.error as Error).message}
+        </p>
+      )}
+      {stream.error && (
+        <p style={{ color: '#f85149', fontSize: '12px', margin: 0 }}>
+          Stream error: {stream.error}
         </p>
       )}
     </div>
