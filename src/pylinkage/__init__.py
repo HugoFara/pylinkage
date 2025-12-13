@@ -12,6 +12,8 @@ Created on Thu Jun 10 21:30:52 2021
 """
 
 __all__ = [
+    # Assur group module
+    "assur",
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
@@ -138,5 +140,8 @@ from .visualizer import (
 from .visualizer import (
     swarm_tiled_repr as swarm_tiled_repr,
 )
+
+# Assur group module for graph-based linkage representation
+from . import assur as assur
 
 __version__ = "0.6.0"
