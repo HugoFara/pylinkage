@@ -96,21 +96,25 @@ class Linkage:
                 solvable.append(j.joint0)
             if isinstance(j.joint1, Static) and j.joint1 not in solvable:
                 solvable.append(j.joint1)
+        # Track which joints from self.joints have been solved
+        # (solvable may contain implicit Statics not in self.joints)
+        joints_solved = sum(1 for j in self.joints if j in solvable)
         # True if new joints were added in the current pass
         solved_in_pass = True
-        while len(solvable) < len(self.joints) and solved_in_pass:
+        while joints_solved < len(self.joints) and solved_in_pass:
             solved_in_pass = False
             for j in self.joints:
                 if isinstance(j, Static) or j in solvable:
                     continue
                 if j.joint0 in solvable and (isinstance(j, Crank) or j.joint1 in solvable):
                     solvable.append(j)
+                    joints_solved += 1
                     solved_in_pass = True
-        if len(solvable) < len(self.joints):
+        if joints_solved < len(self.joints):
             raise UnderconstrainedError(
-                'Unable to determine automatic order!'
-                'Those joints are left unsolved:'
-                ','.join(str(j) for j in self.joints if j not in solvable)
+                'Unable to determine automatic order! '
+                'Those joints are left unsolved: '
+                + ', '.join(str(j) for j in self.joints if j not in solvable)
             )
         self._solve_order = tuple(solvable)
         return self._solve_order
