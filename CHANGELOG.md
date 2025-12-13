@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- `__find_solving_order__()` is now properly tested.
+- `__find_solving_order__()` is now properly tested and implemented ([#16](https://github.com/HugoFara/pylinkage/issues/16)).
 
 ## Removed
 

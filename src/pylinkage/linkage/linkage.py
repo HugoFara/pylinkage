@@ -75,11 +75,8 @@ class Linkage:
         This method attempts to determine the order in which joints should be solved
         by finding joints whose parent joints are already in the solvable list.
 
-        Note:
-            For this to work correctly, anchor joints (Static instances) must be
-            explicitly included in the joints list, rather than using tuple shortcuts
-            like ``joint0=(0, 0)``. Use ``joint0=Static(0, 0)`` instead and include
-            that Static joint in the Linkage's joints list.
+        Anchor joints (Static instances) are automatically detected from parent
+        references, so tuple shortcuts like ``joint0=(0, 0)`` work correctly.
 
         Returns:
             Tuple of joints in solvable order.
@@ -91,7 +88,14 @@ class Linkage:
             "Automatic solving order is still in experimental stage!",
             stacklevel=2,
         )
+        # Collect all Static joints: both explicit ones in self.joints
+        # and implicit ones created from tuple shortcuts in parent references
         solvable: list[Joint] = [j for j in self.joints if isinstance(j, Static)]
+        for j in self.joints:
+            if isinstance(j.joint0, Static) and j.joint0 not in solvable:
+                solvable.append(j.joint0)
+            if isinstance(j.joint1, Static) and j.joint1 not in solvable:
+                solvable.append(j.joint1)
         # True if new joints were added in the current pass
         solved_in_pass = True
         while len(solvable) < len(self.joints) and solved_in_pass:
@@ -205,6 +209,8 @@ class Linkage:
 
         :returns: Iterable of the joints' coordinates.
         """
+        if not hasattr(self, '_solve_order'):
+            self.__find_solving_order__()
         if iterations is None:
             iterations = self.get_rotation_period()
         for _ in range(iterations):
