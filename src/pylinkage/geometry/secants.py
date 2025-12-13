@@ -53,20 +53,27 @@ def circle_intersect(
     dist_y = y2 - y1
     distance = math.sqrt(dist_x * dist_x + dist_y * dist_y)
 
+    # Use a minimum tolerance for floating-point comparisons
+    # to handle near-tangent cases correctly
+    eps = max(tol, 1e-12 * max(distance, r1, r2, 1.0))
+
     # Circles too far apart
-    if distance > r1 + r2:
+    if distance > r1 + r2 + eps:
         return (INTERSECTION_NONE, 0.0, 0.0, 0.0, 0.0)
 
-    # One circle inside the other
-    if distance < abs(r2 - r1):
+    # One circle inside the other (with tolerance for near-tangent cases)
+    if distance < abs(r2 - r1) - eps:
         return (INTERSECTION_NONE, 0.0, 0.0, 0.0, 0.0)
 
     # Same circle
-    if distance <= tol and abs(r1 - r2) <= tol:
+    if distance <= eps and abs(r1 - r2) <= eps:
         return (INTERSECTION_SAME, x1, y1, r1, 0.0)
 
-    # Check for tangent case
-    is_tangent = abs(abs(r1 - distance) - r2) <= tol
+    # Check for tangent case (internal or external)
+    is_tangent = (
+        abs(distance - (r1 + r2)) <= eps  # External tangent
+        or abs(distance - abs(r1 - r2)) <= eps  # Internal tangent
+    )
 
     # Distance from first circle's center to orthogonal projection
     mid_dist = (r1 * r1 - r2 * r2 + distance * distance) / (2.0 * distance)

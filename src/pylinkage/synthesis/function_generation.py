@@ -276,10 +276,11 @@ def _compute_initial_joint_positions(
         )
 
     # Choose the solution that best matches the expected rocker angle
-    # Expected C position based on rocker angle
+    # Standard convention: θ4 is angle from ground link (positive x) to rocker (DC)
+    # So C = D + rocker_length * (cos(θ4), sin(θ4))
     expected_C = (
-        D[0] + rocker_length * math.cos(math.pi - initial_rocker_angle),
-        D[1] + rocker_length * math.sin(math.pi - initial_rocker_angle),
+        D[0] + rocker_length * math.cos(initial_rocker_angle),
+        D[1] + rocker_length * math.sin(initial_rocker_angle),
     )
 
     if n_intersections == 1:
@@ -575,19 +576,32 @@ def verify_function_generation(
                 errors.append(float("inf"))
                 continue
 
-        # Choose the solution consistent with the original configuration
+        # Choose the solution that gives θ4 closest to the expected value
+        # This handles branch selection correctly for synthesis verification
         C = (x1, y1)
+        theta4_1 = math.atan2(y1 - D[1], x1 - D[0])
         if n_intersections == 2:
-            # Choose based on which is closer to the initial configuration
-            dist1 = (x1 - initial_C[0]) ** 2 + (y1 - initial_C[1]) ** 2
-            dist2 = (x2 - initial_C[0]) ** 2 + (y2 - initial_C[1]) ** 2
-            if dist2 < dist1:
+            theta4_2 = math.atan2(y2 - D[1], x2 - D[0])
+
+            # Compute angle errors for both solutions (with wraparound)
+            err1 = theta4_1 - expected_theta4
+            while err1 > math.pi:
+                err1 -= 2 * math.pi
+            while err1 < -math.pi:
+                err1 += 2 * math.pi
+
+            err2 = theta4_2 - expected_theta4
+            while err2 > math.pi:
+                err2 -= 2 * math.pi
+            while err2 < -math.pi:
+                err2 += 2 * math.pi
+
+            if abs(err2) < abs(err1):
                 C = (x2, y2)
+                theta4_1 = theta4_2
 
         # Calculate actual rocker angle theta4
-        # Convention: C = D + rocker_length * (cos(π - θ4), sin(π - θ4))
-        # So: θ4 = atan2(C.y - D.y, D.x - C.x)
-        actual_theta4 = math.atan2(C[1] - D[1], D[0] - C[0])
+        actual_theta4 = theta4_1
 
         # Compute angle error (handle wraparound)
         error = actual_theta4 - expected_theta4

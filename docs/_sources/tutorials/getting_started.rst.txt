@@ -124,6 +124,23 @@ Use the built-in visualizer to see the mechanism in action:
 
 This opens a matplotlib window showing the linkage animating through its motion cycle.
 
+.. figure:: /../assets/fourbar_static.png
+   :width: 600px
+   :align: center
+   :alt: Four-bar linkage with joint paths
+
+   A four-bar linkage showing the paths traced by each joint during simulation.
+
+To see multiple positions of the linkage overlaid, you can run the simulation
+and plot at different crank angles:
+
+.. figure:: /../assets/fourbar_multiposition.png
+   :width: 600px
+   :align: center
+   :alt: Four-bar linkage at multiple positions
+
+   The same four-bar shown at 8 different positions throughout its motion cycle.
+
 Complete Example
 ----------------
 

@@ -50,10 +50,24 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#core-features">Core Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-topics">Advanced Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="synthesis.html">Linkage Synthesis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="symbolic.html">Symbolic Computation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="graph_representation.html">Graph-Based Linkage Representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-reference">Quick Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -97,59 +111,78 @@
   <section id="tutorials">
 <h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h1>
 <p>Step-by-step guides to help you get started with pylinkage and master its features.</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>New to pylinkage? Start here to learn the fundamentals.</p>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#core-concepts">Core Concepts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#your-first-linkage-four-bar-mechanism">Your First Linkage: Four-Bar Mechanism</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#complete-example">Complete Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#understanding-the-constraint-system">Understanding the Constraint System</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#handling-errors">Handling Errors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html#next-steps">Next Steps</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#understanding-the-joint-interface">Understanding the Joint Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#example-slider-joint">Example: Slider Joint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#complete-slider-implementation">Complete Slider Implementation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#using-the-custom-joint">Using the Custom Joint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#example-oscillating-joint">Example: Oscillating Joint</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#best-practices">Best Practices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html#next-steps">Next Steps</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#overview-of-optimization">Overview of Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#defining-a-fitness-function">Defining a Fitness Function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#example-optimizing-for-path-shape">Example: Optimizing for Path Shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#particle-swarm-optimization-parameters">Particle Swarm Optimization Parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#generating-bounds">Generating Bounds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#grid-search-optimization">Grid Search Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#multi-objective-optimization">Multi-Objective Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#constraint-preservation">Constraint Preservation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#optimizing-initial-positions">Optimizing Initial Positions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#visualizing-optimization-progress">Visualizing Optimization Progress</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#async-optimization">Async Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html#next-steps">Next Steps</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#setting-up-angular-velocity">Setting Up Angular Velocity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#running-kinematics-simulation">Running Kinematics Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#querying-joint-velocities">Querying Joint Velocities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#optimizing-for-velocity-characteristics">Optimizing for Velocity Characteristics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#combined-path-and-velocity-optimization">Combined Path and Velocity Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#visualizing-velocity-vectors">Visualizing Velocity Vectors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#performance-considerations">Performance Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics_optimization.html#next-steps">Next Steps</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 </ul>
 </div>
+</section>
+<section id="core-features">
+<h2>Core Features<a class="headerlink" href="#core-features" title="Link to this heading"></a></h2>
+<p>Learn to use pylinkage’s main capabilities.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+</ul>
+</div>
+</section>
+<section id="advanced-topics">
+<h2>Advanced Topics<a class="headerlink" href="#advanced-topics" title="Link to this heading"></a></h2>
+<p>Dive deeper into specialized features.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="synthesis.html">Linkage Synthesis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbolic.html">Symbolic Computation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph_representation.html">Graph-Based Linkage Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+</ul>
+</div>
+</section>
+<section id="quick-reference">
+<h2>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Tutorial</p></th>
+<th class="head"><p>What You’ll Learn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a></p></td>
+<td><p>Create joints, build linkages, run simulations, basic visualization</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization Backends</span></a></p></td>
+<td><p>Matplotlib animations, Plotly interactive plots, SVG export</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a></p></td>
+<td><p>PSO optimization, fitness functions, bounds, multi-objective</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a></p></td>
+<td><p>Velocity analysis, acceleration, kinematic-based optimization</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="synthesis.html"><span class="doc">Linkage Synthesis</span></a></p></td>
+<td><p>Function/path/motion generation, Burmester theory, Grashof analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="symbolic.html"><span class="doc">Symbolic Computation</span></a></p></td>
+<td><p>SymPy expressions, analytical gradients, symbolic optimization</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="graph_representation.html"><span class="doc">Graph-Based Linkage Representation</span></a></p></td>
+<td><p>Assur groups, hypergraphs, component libraries, structural analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Joint Creation</span></a></p></td>
+<td><p>Extend the Joint class, custom constraint types</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 

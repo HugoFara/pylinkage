@@ -43,6 +43,16 @@ uv run mypy pylinkage
 uv build
 ```
 
+## Documentation
+
+Build the documentation locally:
+
+```bash
+uv run sphinx-build -b html docs/source docs/
+```
+
+Then open `docs/index.html` in your browser.
+
 ## Release
 
 This section is mainly intended for maintainers.

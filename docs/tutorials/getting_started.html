@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Custom Joint Creation" href="custom_joints.html" />
+    <link rel="next" title="Visualization Backends" href="visualization.html" />
     <link rel="prev" title="Tutorials" href="index.html" /> 
 </head>
 
@@ -50,28 +50,22 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#core-concepts">Core Concepts</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#joint-types">Joint Types</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#getting-started">Getting Started</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Getting Started</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core-concepts">Core Concepts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#your-first-linkage-four-bar-mechanism">Your First Linkage: Four-Bar Mechanism</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#understanding-the-constraint-system">Understanding the Constraint System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#handling-errors">Handling Errors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#your-first-linkage-four-bar-mechanism">Your First Linkage: Four-Bar Mechanism</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-import-pylinkage">Step 1: Import pylinkage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-define-the-joints">Step 2: Define the Joints</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-create-the-linkage">Step 3: Create the Linkage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-simulate-the-motion">Step 4: Simulate the Motion</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-visualize-the-linkage">Step 5: Visualize the Linkage</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#complete-example">Complete Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#understanding-the-constraint-system">Understanding the Constraint System</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#handling-errors">Handling Errors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#core-features">Core Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -220,6 +214,22 @@ define different motion constraints.</p></li>
 </pre></div>
 </div>
 <p>This opens a matplotlib window showing the linkage animating through its motion cycle.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/fourbar_static.png"><img alt="Four-bar linkage with joint paths" src="../_images/fourbar_static.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">A four-bar linkage showing the paths traced by each joint during simulation.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>To see multiple positions of the linkage overlaid, you can run the simulation
+and plot at different crank angles:</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/fourbar_multiposition.png"><img alt="Four-bar linkage at multiple positions" src="../_images/fourbar_multiposition.png" style="width: 600px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">The same four-bar shown at 8 different positions throughout its motion cycle.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 </section>
 </section>
 <section id="complete-example">
@@ -305,7 +315,7 @@ You can get and set these constraints programmatically:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="custom_joints.html" class="btn btn-neutral float-right" title="Custom Joint Creation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="visualization.html" class="btn btn-neutral float-right" title="Visualization Backends" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
