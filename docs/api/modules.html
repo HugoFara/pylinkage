@@ -42,7 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
@@ -60,6 +65,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
 </ul>
 
         </div>
@@ -111,9 +117,9 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.crank">pylinkage.joints.crank module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.fixed">pylinkage.joints.fixed module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.joint">pylinkage.joints.joint module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.linear">pylinkage.joints.linear module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage-joints-linear-module">pylinkage.joints.linear module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.revolute">pylinkage.joints.revolute module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.static">pylinkage.joints.static module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage-joints-static-module">pylinkage.joints.static module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints">Module contents</a></li>
 </ul>
 </li>
@@ -173,14 +179,12 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.get_constraints"><code class="docutils literal notranslate"><span class="pre">Linear.get_constraints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.joint2"><code class="docutils literal notranslate"><span class="pre">Linear.joint2</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.reload"><code class="docutils literal notranslate"><span class="pre">Linear.reload()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.revolute_radius"><code class="docutils literal notranslate"><span class="pre">Linear.revolute_radius</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.set_constraints"><code class="docutils literal notranslate"><span class="pre">Linear.set_constraints()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_coords"><code class="docutils literal notranslate"><span class="pre">Linkage.get_coords()</span></code></a></li>
@@ -195,6 +199,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_num_constraints"><code class="docutils literal notranslate"><span class="pre">Linkage.set_num_constraints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.simulation"><code class="docutils literal notranslate"><span class="pre">Linkage.simulation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
 </ul>
@@ -204,6 +209,14 @@
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Pivot.r0"><code class="docutils literal notranslate"><span class="pre">Pivot.r0</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Pivot.r1"><code class="docutils literal notranslate"><span class="pre">Pivot.r1</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic"><code class="docutils literal notranslate"><span class="pre">Prismatic</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.get_constraints"><code class="docutils literal notranslate"><span class="pre">Prismatic.get_constraints()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.joint2"><code class="docutils literal notranslate"><span class="pre">Prismatic.joint2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.reload"><code class="docutils literal notranslate"><span class="pre">Prismatic.reload()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.revolute_radius"><code class="docutils literal notranslate"><span class="pre">Prismatic.revolute_radius</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.set_constraints"><code class="docutils literal notranslate"><span class="pre">Prismatic.set_constraints()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Revolute"><code class="docutils literal notranslate"><span class="pre">Revolute</span></code></a><ul>

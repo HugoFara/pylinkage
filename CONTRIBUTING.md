@@ -47,16 +47,31 @@ uv build
 
 This section is mainly intended for maintainers.
 
-1. Update the version in `pyproject.toml` and `pylinkage/__init__.py`.
-2. Update CHANGELOG.md with release date and edit subsection titles.
-3. Regenerate the documentation (uses Sphinx):
+1. Update CHANGELOG.md with release date and edit subsection titles.
+2. Regenerate the documentation (uses Sphinx):
 
    ```bash
-   uv run sphinx-build -b html sphinx/ docs/
+   uv run sphinx-build -b html docs/source docs/
    ```
 
-4. Commit and add a tag (e.g., v0.4.0).
+3. Bump the version (updates `pyproject.toml` and `src/pylinkage/__init__.py`, commits, and tags):
+
+   ```bash
+   uv run bump-my-version bump patch  # For bug fixes (0.6.0 → 0.6.1)
+   uv run bump-my-version bump minor  # For new features (0.6.0 → 0.7.0)
+   uv run bump-my-version bump major  # For breaking changes (0.6.0 → 1.0.0)
+   ```
+
+   Use `--dry-run` to preview changes without applying them.
+
+4. Push the commit and tag:
+
+   ```bash
+   git push && git push --tags
+   ```
+
 5. Publish a new [GitHub release](https://github.com/HugoFara/pylinkage/releases).
+   This triggers automatic PyPI publishing.
 
 ## Caveats
 
