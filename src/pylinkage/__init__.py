@@ -12,6 +12,8 @@ Created on Thu Jun 10 21:30:52 2021
 """
 
 __all__ = [
+    # Assur group module
+    "assur",
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
@@ -27,7 +29,8 @@ __all__ = [
     # Joints
     "Crank",
     "Fixed",
-    "Linear",
+    "Linear",  # Deprecated alias for Prismatic
+    "Prismatic",
     "Revolute",
     "Static",
     "Pivot",
@@ -50,6 +53,8 @@ __all__ = [
     "swarm_tiled_repr",
 ]
 
+# Assur group module for graph-based linkage representation
+from . import assur as assur
 from .exceptions import (
     HypostaticError as HypostaticError,  # Deprecated alias
 )
@@ -87,7 +92,10 @@ from .joints import (
     Fixed as Fixed,
 )
 from .joints import (
-    Linear as Linear,
+    Linear as Linear,  # Deprecated alias for Prismatic
+)
+from .joints import (
+    Prismatic as Prismatic,
 )
 from .joints import (
     Revolute as Revolute,

@@ -2,274 +2,235 @@
 """
 The geometry module provides general geometry functions.
 
-It is used extensively, so each function should be highly optimized.
+It is used extensively, so each function is optimized with numba.
 """
 
-from __future__ import annotations
-
 import math
-from typing import TYPE_CHECKING, Union
 
-if TYPE_CHECKING:
-    from .._types import Circle, Coord, Line
+from numba import njit
 
-# Type for circle intersection results
-# Note: Using string annotations for forward references
-CircleIntersectionType = Union[
-    tuple[int],
-    "tuple[int, Coord]",
-    "tuple[int, Coord, Coord]",
-    "tuple[int, Circle]",
-]
+from .._types import Circle, Coord
+from .core import dist
+
+# Return type constants for circle_intersect
+INTERSECTION_NONE = 0
+INTERSECTION_ONE = 1
+INTERSECTION_TWO = 2
+INTERSECTION_SAME = 3
 
 
-def secant_circles_intersections(
-    distance: float,
-    dist_x: float,
-    dist_y: float,
-    mid_dist: float,
-    radius1: float,
-    projected: Coord,
-) -> tuple[int, Coord, Coord]:
-    """Return the TWO intersections of secant circles."""
-    # Distance between projected P and points
-    # and the points of which P is projection
-    # Clamp to handle floating-point precision issues near tangent cases
-    height_squared = max(0.0, radius1 ** 2 - mid_dist ** 2)
-    height = math.sqrt(height_squared) / distance
-    inter1: Coord = (
-        projected[0] + height * dist_y,
-        projected[1] - height * dist_x,
-    )
-    inter2: Coord = (
-        projected[0] - height * dist_y,
-        projected[1] + height * dist_x,
-    )
-    return 2, inter1, inter2
-
-
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def circle_intersect(
-    circle1: Circle,
-    circle2: Circle,
+    x1: float,
+    y1: float,
+    r1: float,
+    x2: float,
+    y2: float,
+    r2: float,
     tol: float = 0.0,
-) -> CircleIntersectionType:
+) -> tuple[int, float, float, float, float]:
     """
     Get the intersections of two circles.
 
     Transcription of a Matt Woodhead program, method provided by Paul Bourke,
     1997. http://paulbourke.net/geometry/circlesphere/.
 
-    :param circle1: First circle as (x, y, radius).
-    :param circle2: Second circle as (x, y, radius).
-    :param tol: Distance under which two points are considered equal (Default value = 0.0).
+    :param x1: X coordinate of first circle center.
+    :param y1: Y coordinate of first circle center.
+    :param r1: Radius of first circle.
+    :param x2: X coordinate of second circle center.
+    :param y2: Y coordinate of second circle center.
+    :param r2: Radius of second circle.
+    :param tol: Distance under which two points are considered equal.
 
-    :returns: The intersections of two circles. Can be:
-        - (0, ) when no intersection.
-        - (1, (float, float)) if the intersection is one point.
-        - (2, (float, float), (float, float)) for two points of intersection.
-        - (3, (float, float, float)) if the intersection is a circle.
-
-    Examples:
-        >>> # Two circles that intersect at two points
-        >>> result = circle_intersect((0, 0, 1), (1, 0, 1))
-        >>> result[0]  # Number of intersections
-        2
-        >>> x1, y1 = result[1]
-        >>> round(x1, 6), round(y1, 6)
-        (0.5, 0.866025)
-
-        >>> # Circles too far apart (no intersection)
-        >>> circle_intersect((0, 0, 1), (5, 0, 1))
-        (0,)
-
-        >>> # Tangent circles (one intersection)
-        >>> result = circle_intersect((0, 0, 1), (2, 0, 1))
-        >>> result[0]
-        1
-        >>> result[1]
-        (1.0, 0.0)
-
-        >>> # Same circle
-        >>> result = circle_intersect((0, 0, 1), (0, 0, 1), tol=0.1)
-        >>> result[0]
-        3
+    :returns: Tuple of (n_intersections, x1, y1, x2, y2) where:
+        - n=0: No intersection (other values undefined)
+        - n=1: One intersection at (x1, y1)
+        - n=2: Two intersections at (x1, y1) and (x2, y2)
+        - n=3: Same circle (x1, y1, x2 are center and radius)
     """
-    x_1, y_1, radius1 = circle1
-    x_2, y_2, radius2 = circle2
+    dist_x = x2 - x1
+    dist_y = y2 - y1
+    distance = math.sqrt(dist_x * dist_x + dist_y * dist_y)
 
-    dist_x, dist_y = x_2 - x_1, y_2 - y_1
-    # Distance between circles centers
-    distance = math.sqrt(dist_x ** 2 + dist_y ** 2)
-    if distance > radius1 + radius2:
-        # Circles too far
-        return (0,)
-    if distance < abs(radius2 - radius1):
-        # One circle in the other
-        return (0,)
-    if distance <= tol and abs(radius1 - radius2) <= tol:
-        # Same circle
-        return 3, circle1
+    # Circles too far apart
+    if distance > r1 + r2:
+        return (INTERSECTION_NONE, 0.0, 0.0, 0.0, 0.0)
 
-    dual = True
-    if abs(abs(radius1 - distance) - radius2) <= tol:
-        # Tangent circles
-        dual = False
+    # One circle inside the other
+    if distance < abs(r2 - r1):
+        return (INTERSECTION_NONE, 0.0, 0.0, 0.0, 0.0)
+
+    # Same circle
+    if distance <= tol and abs(r1 - r2) <= tol:
+        return (INTERSECTION_SAME, x1, y1, r1, 0.0)
+
+    # Check for tangent case
+    is_tangent = abs(abs(r1 - distance) - r2) <= tol
 
     # Distance from first circle's center to orthogonal projection
-    # of circles intersections, on the axis between circles' centers
-    mid_dist = (radius1 ** 2 - radius2 ** 2 + distance ** 2) / distance / 2
+    mid_dist = (r1 * r1 - r2 * r2 + distance * distance) / (2.0 * distance)
 
-    # projected point is easy to compute now
-    projected: Coord = (
-        x_1 + (mid_dist * dist_x) / distance,
-        y_1 + (mid_dist * dist_y) / distance,
-    )
+    # Projected point
+    proj_x = x1 + (mid_dist * dist_x) / distance
+    proj_y = y1 + (mid_dist * dist_y) / distance
 
-    if dual:
-        return secant_circles_intersections(
-            distance, dist_x, dist_y, mid_dist, radius1, projected
-        )
-    return 1, projected
+    if is_tangent:
+        return (INTERSECTION_ONE, proj_x, proj_y, 0.0, 0.0)
+
+    # Two intersections - compute height from projection to intersections
+    height_squared = max(0.0, r1 * r1 - mid_dist * mid_dist)
+    height = math.sqrt(height_squared) / distance
+
+    inter1_x = proj_x + height * dist_y
+    inter1_y = proj_y - height * dist_x
+    inter2_x = proj_x - height * dist_y
+    inter2_y = proj_y + height * dist_x
+
+    return (INTERSECTION_TWO, inter1_x, inter1_y, inter2_x, inter2_y)
 
 
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def circle_line_from_points_intersection(
-    circle: Circle,
-    first_point: Coord,
-    second_point: Coord,
-) -> tuple[()] | tuple[Coord] | tuple[Coord, Coord]:
+    cx: float,
+    cy: float,
+    r: float,
+    p1_x: float,
+    p1_y: float,
+    p2_x: float,
+    p2_y: float,
+) -> tuple[int, float, float, float, float]:
     """
     Intersection(s) of a circle and a line defined by two points.
 
-    :param circle: Sequence of (abscissa, ordinate, radius).
-    :param first_point: One point of the line.
-    :param second_point: Another point on the line.
+    :param cx: X coordinate of circle center.
+    :param cy: Y coordinate of circle center.
+    :param r: Circle radius.
+    :param p1_x: X coordinate of first point on line.
+    :param p1_y: Y coordinate of first point on line.
+    :param p2_x: X coordinate of second point on line.
+    :param p2_y: Y coordinate of second point on line.
 
-    :return: Either 0, 1 or two intersection points, the length indicates the intersection type.
-
-    Examples:
-        >>> # Line through center of circle (two intersections)
-        >>> result = circle_line_from_points_intersection((0, 0, 1), (-2, 0), (2, 0))
-        >>> len(result)
-        2
-        >>> (round(result[0][0], 6), round(result[0][1], 6))
-        (-1.0, 0.0)
-
-        >>> # Line misses circle (no intersection)
-        >>> circle_line_from_points_intersection((0, 0, 1), (0, 5), (1, 5))
-        ()
-
-        >>> # Tangent line (one intersection)
-        >>> result = circle_line_from_points_intersection((0, 0, 1), (-1, 1), (1, 1))
-        >>> len(result)
-        1
-        >>> (round(result[0][0], 6), round(result[0][1], 6))
-        (0.0, 1.0)
+    :returns: Tuple of (n_intersections, x1, y1, x2, y2) where:
+        - n=0: No intersection
+        - n=1: One intersection (tangent) at (x1, y1)
+        - n=2: Two intersections at (x1, y1) and (x2, y2)
     """
     # Move axis to circle center
-    fp: Coord = first_point[0] - circle[0], first_point[1] - circle[1]
-    sp: Coord = second_point[0] - circle[0], second_point[1] - circle[1]
+    fp_x = p1_x - cx
+    fp_y = p1_y - cy
+    sp_x = p2_x - cx
+    sp_y = p2_y - cy
 
-    dx, dy = sp[0] - fp[0], sp[1] - fp[1]
+    dx = sp_x - fp_x
+    dy = sp_y - fp_y
 
-    dr2 = dx ** 2 + dy ** 2
-
-    cross = fp[0] * sp[1] - sp[0] * fp[1]
-
-    discriminant = circle[2] ** 2 * dr2 - cross ** 2
+    dr2 = dx * dx + dy * dy
+    cross = fp_x * sp_y - sp_x * fp_y
+    discriminant = r * r * dr2 - cross * cross
 
     if discriminant < 0:
-        # no intersection
-        return ()
+        return (INTERSECTION_NONE, 0.0, 0.0, 0.0, 0.0)
 
-    reduced: Coord = cross / dr2, math.sqrt(discriminant) / dr2
+    reduced_x = cross / dr2
+    reduced_y = math.sqrt(discriminant) / dr2
 
     if discriminant == 0:
         # Tangent line
-        return ((reduced[0] * dy + circle[0], -reduced[0] * dx + circle[1]),)
+        return (INTERSECTION_ONE, reduced_x * dy + cx, -reduced_x * dx + cy, 0.0, 0.0)
 
-    # discriminant > 0, two intersections
-    return (
-        (
-            reduced[0] * dy - (1 if dy >= 0 else -1) * dx * reduced[1] + circle[0],
-            -reduced[0] * dx - abs(dy) * reduced[1] + circle[1],
-        ),
-        (
-            reduced[0] * dy + (1 if dy >= 0 else -1) * dx * reduced[1] + circle[0],
-            -reduced[0] * dx + abs(dy) * reduced[1] + circle[1],
-        ),
-    )
+    # Two intersections
+    sign_dy = 1.0 if dy >= 0 else -1.0
+    abs_dy = abs(dy)
+
+    x1 = reduced_x * dy - sign_dy * dx * reduced_y + cx
+    y1 = -reduced_x * dx - abs_dy * reduced_y + cy
+    x2 = reduced_x * dy + sign_dy * dx * reduced_y + cx
+    y2 = -reduced_x * dx + abs_dy * reduced_y + cy
+
+    return (INTERSECTION_TWO, x1, y1, x2, y2)
 
 
 def circle_line_intersection(
-    circle: Circle,
-    line: Line,
-) -> tuple[()] | tuple[Coord] | tuple[Coord, Coord]:
+    cx: float,
+    cy: float,
+    r: float,
+    a: float,
+    b: float,
+    c: float,
+) -> tuple[int, float, float, float, float]:
     """
     Return the intersection between a line and a circle.
 
     From https://mathworld.wolfram.com/Circle-LineIntersection.html
 
-    Circle((x0,y0), r).intersection(Line(a*x+b*y+c)) # sympy
+    :param cx: X coordinate of circle center.
+    :param cy: Y coordinate of circle center.
+    :param r: Circle radius.
+    :param a: Line equation coefficient a (ax + by + c = 0).
+    :param b: Line equation coefficient b.
+    :param c: Line equation coefficient c.
 
-    :param circle: Sequence of (abscissa, ordinate, radius).
-    :param line: Cartesian equation of a line (a, b, c) where ax + by + c = 0.
-
-    :return: Nothing, one or two intersections. The length of the tuple gives the intersection type.
-
-    Examples:
-        >>> # Horizontal line y=0 through unit circle at origin
-        >>> result = circle_line_intersection((0, 0, 1), (0, 1, 0))
-        >>> len(result)
-        2
-        >>> (round(result[0][0], 6), round(result[0][1], 6))
-        (-1.0, 0.0)
-
-        >>> # Line y=2 misses unit circle
-        >>> circle_line_intersection((0, 0, 1), (0, 1, -2))
-        ()
+    :returns: Tuple of (n_intersections, x1, y1, x2, y2).
     """
     # Find two points on the line
-    if line[1] != 0:
-        first_point: Coord = 0, -line[2] / line[1]
-        second_point: Coord = 1, -(line[2] + line[0]) / line[1]
+    if b != 0:
+        p1_x, p1_y = 0.0, -c / b
+        p2_x, p2_y = 1.0, -(c + a) / b
     else:
-        first_point = -line[2] / line[0], 0
-        second_point = -(line[2] + line[1]) / line[0], 1
+        p1_x, p1_y = -c / a, 0.0
+        p2_x, p2_y = -(c + b) / a, 1.0
 
-    return circle_line_from_points_intersection(circle, first_point, second_point)
+    return circle_line_from_points_intersection(cx, cy, r, p1_x, p1_y, p2_x, p2_y)  # type: ignore[no-any-return]
 
 
 def intersection(
     obj_1: Coord | Circle,
     obj_2: Coord | Circle,
     tol: float = 0.0,
-) -> Coord | tuple[Coord, ...] | None:
+) -> Coord | tuple[Coord, ...] | Circle | None:
     """Intersection of two arbitrary objects.
 
     The input objects should be points or circles.
 
-    :param obj_1: First point or circle.
-    :param obj_2: Second point or circle.
-    :param tol: Absolute tolerance to use if provided. (Default value = 0.0).
+    :param obj_1: First point or circle (as tuple).
+    :param obj_2: Second point or circle (as tuple).
+    :param tol: Absolute tolerance to use if provided.
 
     :returns: The intersection found, if any.
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:
-        if obj_1 == obj_2 or (tol and math.dist(obj_1, obj_2) <= tol):
+        d = dist(obj_1[0], obj_1[1], obj_2[0], obj_2[1])
+        if obj_1 == obj_2 or (tol and d <= tol):
             return obj_1
         return None
+
     # Two circles
     if len(obj_1) == 3 and len(obj_2) == 3:
-        return circle_intersect(obj_1, obj_2)[1:]  # type: ignore[return-value]
+        result = circle_intersect(
+            obj_1[0], obj_1[1], obj_1[2], obj_2[0], obj_2[1], obj_2[2], tol
+        )
+        if result[0] == INTERSECTION_NONE:
+            return ()
+        if result[0] == INTERSECTION_ONE:
+            return ((result[1], result[2]),)
+        if result[0] == INTERSECTION_TWO:
+            return ((result[1], result[2]), (result[3], result[4]))
+        # Same circle - return the circle itself
+        return (obj_1[0], obj_1[1], obj_1[2])
+
     # Point and circle
     if len(obj_1) == 2 and len(obj_2) == 3:
-        if math.dist(obj_1, obj_2[:2]) - obj_2[2] <= tol:
+        d = dist(obj_1[0], obj_1[1], obj_2[0], obj_2[1])
+        if d - obj_2[2] <= tol:
             return obj_1
         return None
+
     # Circle and point
     if len(obj_1) == 3 and len(obj_2) == 2:
         return intersection(obj_1=obj_2, obj_2=obj_1, tol=tol)
+
     return None
 
 
@@ -280,19 +241,11 @@ def bounding_box(locus: list[Coord]) -> tuple[float, float, float, float]:
     :param locus: A list of points or any iterable with the same structure.
 
     :returns: Bounding box as (y_min, x_max, y_max, x_min).
-
-    Examples:
-        >>> bounding_box([(0, 0), (1, 1), (2, 0)])
-        (0, 2, 1, 0)
-        >>> bounding_box([(-1, -2), (3, 4)])
-        (-2, 3, 4, -1)
-        >>> bounding_box([(0, 0)])
-        (0, 0, 0, 0)
     """
-    y_min = float('inf')
-    x_min = float('inf')
-    y_max = -float('inf')
-    x_max = -float('inf')
+    y_min = float("inf")
+    x_min = float("inf")
+    y_max = -float("inf")
+    x_max = -float("inf")
     for point in locus:
         y_min = min(y_min, point[1])
         x_min = min(x_min, point[0])

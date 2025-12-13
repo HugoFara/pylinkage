@@ -243,12 +243,88 @@ pareto_front.solutions  # List of non-dominated solutions
 
 ---
 
+## Priority 8: Standard Linkage Description Formats
+
+**Status:** Not implemented
+**Impact:** Medium - Interoperability with other tools
+
+Support industry-standard and academic formats for linkage definition import/export:
+
+### Target Formats
+
+- **Graph-based (JSON/YAML)** - Nodes for joints, edges for links. Simple and portable.
+- **URDF** - ROS ecosystem standard, XML-based robot description
+- **SDF** - Gazebo simulation description format
+- **Kinematic graph adjacency matrix** - Pure numerical representation for analysis
+
+### Proposed API
+
+```python
+# Export to various formats
+linkage.to_urdf("linkage.urdf")
+linkage.to_json("linkage.json")
+linkage.to_graph()  # Returns networkx graph
+
+# Import from formats
+from pylinkage.io import from_urdf, from_json, from_graph
+
+linkage = from_urdf("robot.urdf", base_link="base", end_link="tool")
+linkage = from_json("mechanism.json")
+linkage = from_graph(nx_graph, joint_types={...})
+
+# Graph-based JSON schema
+{
+    "joints": [
+        {"id": "A", "type": "static", "position": [0, 0]},
+        {"id": "B", "type": "crank", "parent": "A", "radius": 30},
+        {"id": "C", "type": "revolute", "parents": ["B", "D"], "distances": [80, 60]},
+        {"id": "D", "type": "static", "position": [100, 0]}
+    ],
+    "driver": "B",
+    "metadata": {"name": "four-bar", "units": "mm"}
+}
+
+# Adjacency matrix representation
+adjacency = linkage.to_adjacency_matrix()
+#        J0  J1  J2  J3
+# Link0 [ 1,  1,  0,  0]  # ground-crank
+# Link1 [ 0,  1,  1,  0]  # crank-coupler
+# Link2 [ 0,  0,  1,  1]  # coupler-rocker
+# Link3 [ 1,  0,  0,  1]  # ground-rocker
+```
+
+### Format Comparison
+
+| Format | Closed Loops | Readability | Tool Support | Use Case |
+|--------|--------------|-------------|--------------|----------|
+| JSON/YAML | Yes | High | Universal | General interchange |
+| URDF | Partial | High | ROS/Gazebo | Robotics integration |
+| SDF | Partial | High | Gazebo | Simulation |
+| Graph/Matrix | Yes | Low | NetworkX | Academic analysis |
+| D-H Parameters | No | Low | Robotics libs | Serial chains only |
+
+### Implementation Approach
+
+1. Define a canonical JSON schema for planar linkages
+2. Implement `to_json()` / `from_json()` as the primary interchange format
+3. Add URDF export for ROS ecosystem compatibility
+4. Provide `to_graph()` for integration with NetworkX for graph analysis
+5. Document schema for third-party tool integration
+
+### Dependencies
+
+- `networkx` for graph representation (optional)
+- Standard library `json` / `xml.etree` for serialization
+
+---
+
 ## Implementation Order Recommendation
 
 1. **Velocity & Acceleration** - Core kinematics, no new dependencies
 2. **Transmission Angle** - Simple to implement, high value for mechanism quality
 3. **CAD Export (SVG first)** - Practical value, minimal dependency
-4. **Interactive Visualization** - UX improvement
-5. **Sensitivity Analysis** - Engineering rigor for manufacturing
-6. **Synthesis Methods** - Advanced design capability
-7. **Multi-Objective Optimization** - Niche use case
+4. **Standard Description Formats (JSON first)** - Enables interoperability, minimal dependencies
+5. **Interactive Visualization** - UX improvement
+6. **Sensitivity Analysis** - Engineering rigor for manufacturing
+7. **Synthesis Methods** - Advanced design capability
+8. **Multi-Objective Optimization** - Niche use case

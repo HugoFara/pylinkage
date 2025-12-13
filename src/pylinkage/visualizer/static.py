@@ -2,11 +2,10 @@
 Static (not animated) visualization.
 """
 
-from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ..joints import Fixed, Linear, Revolute
+from ..joints import Fixed, Prismatic, Revolute
 from ..joints.revolute import Pivot
 from .core import _get_color
 
@@ -20,10 +19,10 @@ if TYPE_CHECKING:
 
 
 def plot_static_linkage(
-    linkage: Linkage,
-    axis: Axes,
-    loci: Iterable[tuple[Coord, ...]],
-    locus_highlights: list[list[Coord]] | None = None,
+    linkage: "Linkage",
+    axis: "Axes",
+    loci: "Iterable[tuple[Coord, ...]]",
+    locus_highlights: "list[list[Coord]] | None" = None,
     show_legend: bool = False,
 ) -> None:
     """Plot a linkage without movement.
@@ -54,22 +53,22 @@ def plot_static_linkage(
         pos = joint.coord()
         par_pos = joint.joint0.coord()
         axis.plot(
-            [par_pos[0], pos[0]], [par_pos[1], pos[1]],
+            [par_pos[0], pos[0]], [par_pos[1], pos[1]],  # type: ignore[arg-type]
             c=_get_color(joint), linewidth=.3
         )
         # Then second parent
         if isinstance(joint, (Fixed, Pivot, Revolute)) and joint.joint1 is not None:
             par_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], pos[0]], [par_pos[1], pos[1]],
+                [par_pos[0], pos[0]], [par_pos[1], pos[1]],  # type: ignore[arg-type]
                 c=_get_color(joint), linewidth=.3
             )
-        elif isinstance(joint, Linear) and joint.joint1 is not None and joint.joint2 is not None:
+        elif isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
             # Different ordering
             par_pos = joint.joint2.coord()
             other_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],
+                [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],  # type: ignore[arg-type]
                 c=_get_color(joint), linewidth=.3
             )
 

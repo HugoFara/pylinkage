@@ -4,13 +4,12 @@ Serialization support for linkages.
 Provides JSON serialization and deserialization for Linkage objects.
 """
 
-from __future__ import annotations
 
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ..joints import Crank, Fixed, Linear, Revolute, Static
+from ..joints import Crank, Fixed, Prismatic, Revolute, Static
 from ..joints.joint import Joint
 
 if TYPE_CHECKING:
@@ -22,7 +21,8 @@ JOINT_TYPES: dict[str, type[Joint]] = {
     "Static": Static,
     "Crank": Crank,
     "Fixed": Fixed,
-    "Linear": Linear,
+    "Linear": Prismatic,  # Backward compatible alias
+    "Prismatic": Prismatic,
     "Revolute": Revolute,
 }
 
@@ -97,7 +97,7 @@ def joint_to_dict(joint: Joint, linkage_joints: tuple[Joint, ...] | None = None)
     elif isinstance(joint, Revolute):
         data["distance0"] = joint.r0
         data["distance1"] = joint.r1
-    elif isinstance(joint, Linear):
+    elif isinstance(joint, Prismatic):
         data["revolute_radius"] = joint.revolute_radius
         if hasattr(joint, "joint2") and joint.joint2 is not None:
             data["joint2"] = _serialize_joint_ref(joint.joint2, linkage_joints)
@@ -199,9 +199,9 @@ def joint_from_dict(
             distance1=data.get("distance1"),
             name=data.get("name"),
         )
-    elif cls == Linear:
+    elif cls == Prismatic:
         joint2 = _resolve_joint_ref(data.get("joint2"), joints_by_name)
-        result = Linear(
+        result = Prismatic(
             x=data.get("x", 0),
             y=data.get("y", 0),
             joint0=joint0,
@@ -216,7 +216,7 @@ def joint_from_dict(
     return result
 
 
-def linkage_to_dict(linkage: Linkage) -> dict[str, Any]:
+def linkage_to_dict(linkage: "Linkage") -> dict[str, Any]:
     """Convert a linkage to a dictionary representation.
 
     Args:
@@ -261,7 +261,7 @@ def _is_dependency_satisfied(
     return ref_name is None or ref_name in joints_by_name
 
 
-def linkage_from_dict(data: dict[str, Any]) -> Linkage:
+def linkage_from_dict(data: dict[str, Any]) -> "Linkage":
     """Create a linkage from a dictionary representation.
 
     This performs a two-pass reconstruction:
@@ -331,7 +331,7 @@ def linkage_from_dict(data: dict[str, Any]) -> Linkage:
     )
 
 
-def save_to_json(linkage: Linkage, path: str | Path) -> None:
+def save_to_json(linkage: "Linkage", path: str | Path) -> None:
     """Save a linkage to a JSON file.
 
     Args:
@@ -344,7 +344,7 @@ def save_to_json(linkage: Linkage, path: str | Path) -> None:
         json.dump(data, f, indent=2)
 
 
-def load_from_json(path: str | Path) -> Linkage:
+def load_from_json(path: str | Path) -> "Linkage":
     """Load a linkage from a JSON file.
 
     Args:

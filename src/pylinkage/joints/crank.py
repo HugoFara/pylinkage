@@ -1,22 +1,22 @@
 """
 Crank joint definition.
+
+A crank is a driver joint that rotates around a fixed anchor point.
+This is a thin wrapper around the solver's solve_crank function.
 """
 
-from __future__ import annotations
-
-from math import atan2
-from typing import TYPE_CHECKING
-
 from .. import exceptions as pl_exceptions
-from .. import geometry as pl_geom
+from .._types import Coord
+from ..solver.joints import solve_crank
 from . import joint as pl_joint
-
-if TYPE_CHECKING:
-    from .._types import Coord
 
 
 class Crank(pl_joint.Joint):
-    """Define a crank joint."""
+    """Define a crank (rotary driver) joint.
+
+    The crank rotates around its anchor point (joint0) at a constant
+    angular velocity. It is the primary driver for linkage mechanisms.
+    """
 
     __slots__ = "r", "angle"
 
@@ -49,7 +49,7 @@ class Crank(pl_joint.Joint):
         self.r, self.angle = distance, angle
 
     def reload(self, dt: float = 1) -> None:
-        """Make a step of crank.
+        """Make a step of crank using solver function.
 
         :param dt: Fraction of steps to take (Default value = 1).
         """
@@ -60,15 +60,22 @@ class Crank(pl_joint.Joint):
                 f'{self.joint0} has None coordinates. '
                 f'{self} cannot be calculated'
             )
-        # Type assertions after validation
-        assert self.joint0.x is not None and self.joint0.y is not None
-        assert self.x is not None and self.y is not None
-        assert self.r is not None and self.angle is not None
-        # Rotation angle of local space relative to global
-        rot = atan2(self.y - self.joint0.y, self.x - self.joint0.x)
-        self.x, self.y = pl_geom.cyl_to_cart(
-            self.r, rot + self.angle * dt,
-            (self.joint0.x, self.joint0.y)
+        if self.x is None or self.y is None:
+            raise pl_exceptions.UnderconstrainedError(
+                f'{self} has None coordinates.'
+            )
+        if self.r is None or self.angle is None:
+            raise pl_exceptions.UnderconstrainedError(
+                f'{self} has None constraints (r={self.r}, angle={self.angle}).'
+            )
+
+        # Delegate to solver function (single source of truth)
+        j0x = self.joint0.x if self.joint0 is not None else 0.0
+        j0y = self.joint0.y if self.joint0 is not None else 0.0
+        self.x, self.y = solve_crank(
+            self.x, self.y,
+            j0x or 0.0, j0y or 0.0,
+            self.r, self.angle, dt
         )
 
     def get_constraints(self) -> tuple[float | None]:

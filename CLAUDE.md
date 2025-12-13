@@ -73,9 +73,32 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
   - `core.py`: Distance calculations, coordinate conversions
   - `secants.py`: Circle-circle and circle-line intersections
 
-- **src/pylinkage/visualizer/**: Matplotlib-based visualization
-  - `static.py`: Static linkage plots
-  - `animated.py`: `show_linkage()` for animated GIF output
+- **src/pylinkage/visualizer/**: Multi-backend visualization
+  - `static.py`, `animated.py`: Matplotlib backend (`show_linkage()`, GIF output)
+  - `plotly_viz.py`: Plotly backend for interactive HTML (`plot_linkage_plotly()`)
+  - `drawsvg_viz.py`: drawsvg backend for publication-quality SVG (`save_linkage_svg()`)
+  - `pso_plots.py`: PSO visualization dashboards
+
+- **src/pylinkage/hypergraph/**: Hierarchical hypergraph representation (new)
+  - Abstract mathematical foundation for linkage definition
+  - `HypergraphLinkage`: Graph with nodes, edges, and hyperedges
+  - `Component`: Reusable linkage subgraph with ports and parameters
+  - `HierarchicalLinkage`: Composition of component instances
+  - Built-in components: `FOURBAR`, `CRANK_SLIDER`, `DYAD`
+  - Conversion functions: `to_linkage()`, `from_linkage()`, `to_assur_graph()`
+
+- **src/pylinkage/assur/**: Assur group decomposition
+  - Graph-based representation using formal kinematic theory
+  - `LinkageGraph`: Nodes (joints) and edges (links)
+  - Assur groups: `DyadRRR`, `DyadRRP`, `DyadRPR`, `DyadPRR`
+  - `decompose_assur_groups()`: Structural decomposition algorithm
+  - `graph_to_linkage()`: Convert graph representation to Linkage
+
+- **src/pylinkage/solver/**: High-performance numba simulation backend
+  - Pure-numba JIT-compiled solver for optimization hot loops
+  - `SolverData`: Numeric arrays replacing Python objects
+  - `simulate()`: Fast trajectory computation
+  - `linkage_to_solver_data()`: Convert Linkage for fast simulation
 
 ### Key Patterns
 
@@ -85,6 +108,18 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
 2. Wrap joints in a `Linkage(joints=..., order=...)`
 3. Call `linkage.step()` to simulate one full rotation cycle
 4. Use `show_linkage()` to visualize
+
+**Alternative Definition via Hypergraph:**
+
+1. Use component instances from library (`FOURBAR`, `DYAD`, etc.)
+2. Connect via `HierarchicalLinkage` with `Connection` objects
+3. Call `flatten()` then `to_linkage()` to get simulatable Linkage
+
+**Alternative Definition via Assur Graph:**
+
+1. Create `LinkageGraph` with `Node` and `Edge` objects
+2. Use `decompose_assur_groups()` for structural analysis
+3. Call `graph_to_linkage()` to convert to Linkage
 
 **Optimization Flow:**
 
@@ -107,6 +142,8 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
 
 ## Dependencies
 
-Core: numpy, matplotlib, pyswarms, tqdm
+Requires Python >= 3.10
+
+Core: numpy, numba, matplotlib, pyswarms, tqdm, plotly, drawsvg
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser

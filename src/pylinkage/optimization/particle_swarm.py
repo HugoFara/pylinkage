@@ -6,7 +6,6 @@ Created on Fri Mar 8, 13:51:45 2019.
 @author: HugoFara
 """
 
-from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any
@@ -24,8 +23,8 @@ if TYPE_CHECKING:
 
 
 def particle_swarm_optimization(
-    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
-    linkage: Linkage,
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
     center: Sequence[float] | float | None = None,
     dimensions: int | None = None,
     n_particles: int = 100,

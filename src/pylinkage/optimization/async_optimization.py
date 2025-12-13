@@ -11,7 +11,6 @@ Created on 2025.
 @author: HugoFara
 """
 
-from __future__ import annotations
 
 import asyncio
 from collections.abc import Callable, Sequence
@@ -57,8 +56,8 @@ ProgressCallback = Callable[[OptimizationProgress], None]
 
 
 async def particle_swarm_optimization_async(
-    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
-    linkage: Linkage,
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
     center: Sequence[float] | float | None = None,
     dimensions: int | None = None,
     n_particles: int = 100,
@@ -170,8 +169,8 @@ async def particle_swarm_optimization_async(
 
 
 async def trials_and_errors_optimization_async(
-    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
-    linkage: Linkage,
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
     parameters: Sequence[float] | None = None,
     n_results: int = 10,
     divisions: int = 5,

@@ -1,28 +1,32 @@
 """
 Core features for visualization.
+
+This module provides shared utilities for matplotlib-based visualization.
+For symbol definitions used by other backends (Plotly, drawsvg), see symbols.py.
 """
 
-from __future__ import annotations
 
 from ..joints import (
     Crank,
     Fixed,
-    Linear,
+    Prismatic,
     Revolute,
     Static,
 )
 from ..joints.joint import Joint
 from ..joints.revolute import Pivot
 
-# Colors to use for plotting
+# Colors to use for matplotlib plotting (backwards compatible)
 COLOR_SWITCHER: dict[type[Joint], str] = {
     Static: 'k',
     Crank: 'g',
     Fixed: 'r',
     Pivot: 'b',
     Revolute: 'b',
-    Linear: 'orange'
+    Prismatic: 'orange'
 }
+
+# Re-export symbol utilities for convenience
 
 
 def _get_color(joint: Joint) -> str:

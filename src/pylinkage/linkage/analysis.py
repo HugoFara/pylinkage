@@ -2,22 +2,21 @@
 Analysis tools for linkages.
 """
 
-from __future__ import annotations
 
 from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING
 
+from .._types import BoundingBox, Coord, JointPositions
 from ..exceptions import UnbuildableError
 
 if TYPE_CHECKING:
-    from .._types import BoundingBox, Coord, JointPositions
     from .linkage import Linkage
 
 
 def kinematic_default_test(
     func: Callable[..., float],
     error_penalty: float,
-) -> Callable[[Linkage, Iterable[float], JointPositions | None], float]:
+) -> "Callable[[Linkage, Iterable[float], JointPositions | None], float]":
     """Standard run for any linkage before a complete fitness evaluation.
 
     This decorator makes a kinematic simulation, before passing the loci to the
@@ -29,7 +28,7 @@ def kinematic_default_test(
     """
 
     def wrapper(
-        linkage: Linkage,
+        linkage: "Linkage",
         params: Iterable[float],
         init_pos: JointPositions | None = None,
     ) -> float:

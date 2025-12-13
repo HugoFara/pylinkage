@@ -12,16 +12,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Serialization: adds linkage serialization features.
 - Typing: adds typing.
 - Test: adds complete testing coverage.
+- Adds support for Python 3.14.
+- Hypergraph as the base theory for linkages.
 
 ### Changed
 
 - Switches to `uv`.
 - Renames `HypostaticError` to `UnderconstrainedError` and `hyperstaticity()` to `indeterminacy()`.
   Old names kept as deprecated aliases.
+- Separate linkage definition from actual solving:
+  - The internal solver is now numba + NumPy, almost 100x faster!
+  - The user-facing code is now based on [Assur groups](https://en.wikipedia.org/wiki/Assur_group), that is more formal. 
 
 ### Fixed
 
-- `__find_solving_order__()` is now properly tested.
+- `__find_solving_order__()` is now properly tested and implemented ([#16](https://github.com/HugoFara/pylinkage/issues/16)).
+
+## Deprecated
+
+- `Linear` joint term is now deprecated in favor of `Prismatic`.
+
+## Removed
+
+- Removed support for Python 3.9.
 
 ## [0.6.0] - 2024-10-02
 

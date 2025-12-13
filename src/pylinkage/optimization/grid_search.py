@@ -5,7 +5,6 @@ It should be used for reference only as the search space
 will almost certainly be too big.
 """
 
-from __future__ import annotations
 
 import itertools
 import math
@@ -17,12 +16,12 @@ import numpy as np
 import tqdm
 from numpy.typing import NDArray
 
+from .._types import JointPositions
 from ..exceptions import OptimizationError
 from .collections import MutableAgent
 from .utils import generate_bounds
 
 if TYPE_CHECKING:
-    from .._types import JointPositions
     from ..linkage.linkage import Linkage
 
 
@@ -114,8 +113,8 @@ def fast_variator(
 
 
 def trials_and_errors_optimization(
-    eval_func: Callable[[Linkage, Sequence[float], JointPositions], float],
-    linkage: Linkage,
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
     parameters: Sequence[float] | None = None,
     n_results: int = 10,
     divisions: int = 5,
@@ -181,10 +180,10 @@ def trials_and_errors_optimization(
     }
     if 'sequential' in kwargs and kwargs['sequential']:
         variations_generator: Generator[Any, None, None] = sequential_variator(
-            center, divisions, bounds
+            center, divisions, bounds  # type: ignore[arg-type]
         )
     else:
-        variations_generator = fast_variator(divisions, bounds)
+        variations_generator = fast_variator(divisions, bounds)  # type: ignore[arg-type]
     order_relation: Callable[[float, float], float] = kwargs.get('order_relation', max)
     verbose: bool = 'verbose' in kwargs and kwargs['verbose']
     # Iterable of all possible dimensions
