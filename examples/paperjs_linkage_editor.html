@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Paper.js Linkage Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.18/paper-full.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+        }
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+        #sidebar {
+            width: 280px;
+            padding: 20px;
+            background: #161b22;
+            border-right: 1px solid #30363d;
+            overflow-y: auto;
+        }
+        #canvas-container {
+            flex: 1;
+            position: relative;
+            background: #0d1117;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+        h2 {
+            margin: 0 0 8px 0;
+            color: #58a6ff;
+            font-size: 18px;
+        }
+        .subtitle {
+            color: #8b949e;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #30363d;
+        }
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8b949e;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .mode-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            margin: 4px 0;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            text-align: left;
+            transition: all 0.15s;
+            background: #21262d;
+            color: #e6edf3;
+        }
+        .mode-btn:hover {
+            background: #30363d;
+            border-color: #8b949e;
+        }
+        .mode-btn.active {
+            background: #1f6feb;
+            border-color: #1f6feb;
+            color: white;
+        }
+        .mode-btn .icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 8px;
+            text-align: center;
+        }
+        .action-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.15s;
+        }
+        #animate-btn {
+            background: #238636;
+            color: white;
+        }
+        #animate-btn:hover { background: #2ea043; }
+        #animate-btn.active {
+            background: #da3633;
+        }
+        #clear-btn {
+            background: #21262d;
+            border: 1px solid #f85149;
+            color: #f85149;
+        }
+        #clear-btn:hover {
+            background: #f85149;
+            color: white;
+        }
+        .io-btn {
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+        }
+        .io-btn:hover {
+            background: #30363d;
+        }
+        .info-box {
+            padding: 12px;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #8b949e;
+        }
+        .info-box strong {
+            color: #e6edf3;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            padding: 8px;
+            background: #21262d;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        .stat-label {
+            font-size: 10px;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+        .hidden { display: none; }
+        #json-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+        }
+        .modal-content h3 {
+            margin: 0 0 16px 0;
+            color: #e6edf3;
+        }
+        .modal-content textarea {
+            width: 100%;
+            height: 300px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            padding: 12px;
+            resize: vertical;
+        }
+        .modal-buttons {
+            margin-top: 16px;
+            text-align: right;
+        }
+        .modal-buttons button {
+            padding: 8px 16px;
+            margin-left: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-primary {
+            background: #238636;
+            color: white;
+        }
+        .btn-secondary {
+            background: #21262d;
+            border: 1px solid #30363d !important;
+            color: #e6edf3;
+        }
+        .workflow-hint {
+            background: #1c2128;
+            border-left: 3px solid #58a6ff;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        .workflow-hint ol {
+            margin: 8px 0 0 0;
+            padding-left: 20px;
+        }
+        .workflow-hint li {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="sidebar">
+            <h2>Linkage Editor</h2>
+            <div class="subtitle">Paper.js + Pylinkage</div>
+
+            <div class="workflow-hint">
+                <strong>Recommended workflow:</strong>
+                <ol>
+                    <li>Draw <strong>rigid bodies</strong> (bars)</li>
+                    <li>Add <strong>joints</strong> at connection points</li>
+                    <li>Set <strong>ground</strong> and <strong>crank</strong></li>
+                    <li>Animate to verify motion</li>
+                </ol>
+            </div>
+
+            <div class="section">
+                <div class="section-title">1. Rigid Bodies</div>
+                <button class="mode-btn active" data-mode="body">
+                    <span class="icon">━</span>Draw Body
+                </button>
+                <button class="mode-btn" data-mode="move-body">
+                    <span class="icon">✋</span>Move Body
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">2. Joints</div>
+                <button class="mode-btn" data-mode="joint">
+                    <span class="icon">●</span>Add Joint
+                </button>
+                <button class="mode-btn" data-mode="ground">
+                    <span class="icon">▼</span>Set Ground
+                </button>
+                <button class="mode-btn" data-mode="crank">
+                    <span class="icon">↻</span>Set Crank
+                </button>
+                <button class="mode-btn" data-mode="move-joint">
+                    <span class="icon">✋</span>Move Joint
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">3. Edit</div>
+                <button class="mode-btn" data-mode="delete">
+                    <span class="icon">✕</span>Delete
+                </button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Simulation</div>
+                <button class="action-btn" id="animate-btn">▶ Animate</button>
+                <button class="action-btn" id="clear-btn">Clear</button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Import / Export</div>
+                <button class="action-btn io-btn" id="export-btn">📤 Export JSON</button>
+                <button class="action-btn io-btn" id="import-btn">📥 Import JSON</button>
+                <button class="action-btn io-btn" id="export-py-btn">🐍 Python Code</button>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Statistics</div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="body-count">0</div>
+                        <div class="stat-label">Bodies</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="joint-count">0</div>
+                        <div class="stat-label">Joints</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="ground-count">0</div>
+                        <div class="stat-label">Ground</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="crank-count">0</div>
+                        <div class="stat-label">Cranks</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Tips:</strong><br>
+                • Bodies are rigid bars connecting joints<br>
+                • Joints on same position auto-connect<br>
+                • Need 1 ground + 1 crank minimum to animate<br>
+                • Export JSON for use with Pylinkage
+            </div>
+        </div>
+
+        <div id="canvas-container">
+            <canvas id="canvas" resize></canvas>
+        </div>
+    </div>
+
+    <!-- JSON Modal -->
+    <div id="json-modal" class="hidden" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">Export JSON</h3>
+            <textarea id="json-textarea" spellcheck="false"></textarea>
+            <div class="modal-buttons">
+                <button class="btn-secondary" id="modal-cancel">Cancel</button>
+                <button class="btn-primary" id="modal-copy">Copy</button>
+                <button class="btn-primary hidden" id="modal-import">Import</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/paperscript" canvas="canvas">
+        // ============================================
+        // Data Structures
+        // ============================================
+
+        var bodies = [];    // Rigid bodies: {shape, startJoint, endJoint, length, id}
+        var joints = [];    // Joints: {shape, position, type, bodies[], id}
+        var cranks = [];    // Crank info: {joint, groundJoint, radius, angle}
+
+        var mode = 'body';
+        var bodyStart = null;       // Temp point when drawing body
+        var bodyPreview = null;     // Preview line while drawing
+        var dragTarget = null;      // Item being dragged
+        var isAnimating = false;
+
+        // Visual settings
+        var JOINT_RADIUS = 8;
+        var BODY_WIDTH = 6;
+
+        var COLORS = {
+            body: '#8b949e',
+            bodyHover: '#c9d1d9',
+            bodyPreview: '#58a6ff',
+            joint: '#58a6ff',
+            jointHover: '#79c0ff',
+            ground: '#f85149',
+            crank: '#d29922',
+            groundLine: '#30363d'
+        };
+
+        // ============================================
+        // Ground Reference Line
+        // ============================================
+
+        var groundY = view.size.height - 60;
+        var groundGroup = new Group();
+
+        function drawGround() {
+            groundGroup.removeChildren();
+
+            var line = new Path.Line(
+                new Point(0, groundY),
+                new Point(view.size.width, groundY)
+            );
+            line.strokeColor = COLORS.groundLine;
+            line.strokeWidth = 2;
+            line.dashArray = [8, 4];
+            groundGroup.addChild(line);
+
+            for (var x = 20; x < view.size.width; x += 25) {
+                var hatch = new Path.Line(
+                    new Point(x, groundY),
+                    new Point(x - 12, groundY + 18)
+                );
+                hatch.strokeColor = COLORS.groundLine;
+                hatch.strokeWidth = 1;
+                groundGroup.addChild(hatch);
+            }
+
+            groundGroup.sendToBack();
+        }
+        drawGround();
+
+        view.onResize = function() {
+            groundY = view.size.height - 60;
+            drawGround();
+        };
+
+        // ============================================
+        // Joint Management
+        // ============================================
+
+        function createJoint(position, type) {
+            type = type || 'free';
+
+            // Check for existing joint at this position
+            var existing = findJointAt(position, 15);
+            if (existing) {
+                return existing;
+            }
+
+            var circle = new Path.Circle(position, JOINT_RADIUS);
+            circle.fillColor = getJointColor(type);
+            circle.strokeColor = '#ffffff';
+            circle.strokeWidth = 2;
+
+            var joint = {
+                shape: circle,
+                position: position.clone(),
+                type: type,
+                bodies: [],
+                id: joints.length
+            };
+
+            joints.push(joint);
+            updateStats();
+            return joint;
+        }
+
+        function getJointColor(type) {
+            switch(type) {
+                case 'ground': return COLORS.ground;
+                case 'crank': return COLORS.crank;
+                default: return COLORS.joint;
+            }
+        }
+
+        function findJointAt(point, tolerance) {
+            tolerance = tolerance || JOINT_RADIUS + 5;
+            for (var i = 0; i < joints.length; i++) {
+                if (joints[i].position.getDistance(point) < tolerance) {
+                    return joints[i];
+                }
+            }
+            return null;
+        }
+
+        function updateJointPosition(joint, newPos) {
+            joint.position = newPos.clone();
+            joint.shape.position = newPos;
+
+            // Update connected bodies
+            for (var i = 0; i < joint.bodies.length; i++) {
+                updateBodyShape(joint.bodies[i]);
+            }
+        }
+
+        // ============================================
+        // Rigid Body Management
+        // ============================================
+
+        function createBody(startJoint, endJoint) {
+            // Check if body already exists between these joints
+            for (var i = 0; i < bodies.length; i++) {
+                var b = bodies[i];
+                if ((b.startJoint === startJoint && b.endJoint === endJoint) ||
+                    (b.startJoint === endJoint && b.endJoint === startJoint)) {
+                    return null;
+                }
+            }
+
+            var line = new Path.Line(startJoint.position, endJoint.position);
+            line.strokeColor = COLORS.body;
+            line.strokeWidth = BODY_WIDTH;
+            line.strokeCap = 'round';
+
+            var body = {
+                shape: line,
+                startJoint: startJoint,
+                endJoint: endJoint,
+                length: startJoint.position.getDistance(endJoint.position),
+                id: bodies.length
+            };
+
+            startJoint.bodies.push(body);
+            endJoint.bodies.push(body);
+            bodies.push(body);
+
+            // Send bodies behind joints
+            line.sendToBack();
+            drawGround();
+
+            updateStats();
+            return body;
+        }
+
+        function updateBodyShape(body) {
+            body.shape.segments[0].point = body.startJoint.position;
+            body.shape.segments[1].point = body.endJoint.position;
+        }
+
+        function findBodyAt(point) {
+            for (var i = 0; i < bodies.length; i++) {
+                var body = bodies[i];
+                // Check distance to line segment
+                var dist = distanceToSegment(point,
+                    body.startJoint.position,
+                    body.endJoint.position);
+                if (dist < BODY_WIDTH + 5) {
+                    return body;
+                }
+            }
+            return null;
+        }
+
+        function distanceToSegment(p, a, b) {
+            var ab = b - a;
+            var ap = p - a;
+            var t = Math.max(0, Math.min(1, ap.dot(ab) / ab.dot(ab)));
+            var closest = a + ab * t;
+            return p.getDistance(closest);
+        }
+
+        // ============================================
+        // Crank Management
+        // ============================================
+
+        function setCrank(joint) {
+            // Find connected ground joint
+            var groundJoint = null;
+            for (var i = 0; i < joint.bodies.length; i++) {
+                var body = joint.bodies[i];
+                var other = body.startJoint === joint ? body.endJoint : body.startJoint;
+                if (other.type === 'ground') {
+                    groundJoint = other;
+                    break;
+                }
+            }
+
+            if (!groundJoint) {
+                console.log('Crank must be connected to a ground joint');
+                return false;
+            }
+
+            // Remove existing crank definition for this joint
+            removeCrank(joint);
+
+            joint.type = 'crank';
+            joint.shape.fillColor = COLORS.crank;
+
+            var radius = joint.position.getDistance(groundJoint.position);
+            var angle = (joint.position - groundJoint.position).angle;
+
+            cranks.push({
+                joint: joint,
+                groundJoint: groundJoint,
+                radius: radius,
+                initialAngle: angle,
+                angle: angle
+            });
+
+            updateStats();
+            return true;
+        }
+
+        function setGround(joint) {
+            joint.type = 'ground';
+            joint.shape.fillColor = COLORS.ground;
+            updateStats();
+        }
+
+        function removeCrank(joint) {
+            for (var i = cranks.length - 1; i >= 0; i--) {
+                if (cranks[i].joint === joint) {
+                    cranks.splice(i, 1);
+                }
+            }
+        }
+
+        // ============================================
+        // Kinematic Solver
+        // ============================================
+
+        function solveKinematics() {
+            if (cranks.length === 0) return;
+
+            // Update crank positions
+            for (var c = 0; c < cranks.length; c++) {
+                var crank = cranks[c];
+                var newPos = crank.groundJoint.position + new Point({
+                    length: crank.radius,
+                    angle: crank.angle
+                });
+                crank.joint.position = newPos;
+                crank.joint.shape.position = newPos;
+            }
+
+            // Iterative constraint solver
+            for (var iter = 0; iter < 20; iter++) {
+                var maxError = 0;
+
+                for (var i = 0; i < bodies.length; i++) {
+                    var body = bodies[i];
+                    var j1 = body.startJoint;
+                    var j2 = body.endJoint;
+
+                    var j1Fixed = j1.type === 'ground' || j1.type === 'crank';
+                    var j2Fixed = j2.type === 'ground' || j2.type === 'crank';
+
+                    if (j1Fixed && j2Fixed) continue;
+
+                    var currentDist = j1.position.getDistance(j2.position);
+                    var diff = body.length - currentDist;
+                    maxError = Math.max(maxError, Math.abs(diff));
+
+                    if (Math.abs(diff) < 0.001) continue;
+
+                    var direction = (j2.position - j1.position).normalize();
+                    var correction = direction * (diff / 2);
+
+                    if (!j1Fixed) {
+                        j1.position = j1.position - correction;
+                        j1.shape.position = j1.position;
+                    }
+                    if (!j2Fixed) {
+                        j2.position = j2.position + correction;
+                        j2.shape.position = j2.position;
+                    }
+                }
+
+                if (maxError < 0.001) break;
+            }
+
+            // Update body visuals
+            for (var i = 0; i < bodies.length; i++) {
+                updateBodyShape(bodies[i]);
+            }
+        }
+
+        // ============================================
+        // Animation
+        // ============================================
+
+        function onFrame(event) {
+            if (!isAnimating || cranks.length === 0) return;
+
+            for (var i = 0; i < cranks.length; i++) {
+                cranks[i].angle += 1.5;
+            }
+
+            solveKinematics();
+        }
+
+        // ============================================
+        // Mouse Interaction
+        // ============================================
+
+        function onMouseDown(event) {
+            var joint = findJointAt(event.point);
+            var body = !joint ? findBodyAt(event.point) : null;
+
+            switch(mode) {
+                case 'body':
+                    // Start drawing a body
+                    bodyStart = event.point.clone();
+                    bodyPreview = new Path.Line(bodyStart, bodyStart);
+                    bodyPreview.strokeColor = COLORS.bodyPreview;
+                    bodyPreview.strokeWidth = BODY_WIDTH;
+                    bodyPreview.strokeCap = 'round';
+                    bodyPreview.dashArray = [8, 4];
+                    break;
+
+                case 'move-body':
+                    if (body) {
+                        dragTarget = body;
+                    }
+                    break;
+
+                case 'joint':
+                    if (body && !joint) {
+                        // Add joint on a body - split the body
+                        var newJoint = createJoint(event.point, 'free');
+                        // Don't split, just add joint at click point
+                    } else if (!joint) {
+                        createJoint(event.point, 'free');
+                    }
+                    break;
+
+                case 'ground':
+                    if (joint) {
+                        setGround(joint);
+                    }
+                    break;
+
+                case 'crank':
+                    if (joint && joint.type !== 'ground') {
+                        if (!setCrank(joint)) {
+                            // Flash feedback - crank needs ground connection
+                            joint.shape.fillColor = '#ff0000';
+                            setTimeout(function() {
+                                joint.shape.fillColor = getJointColor(joint.type);
+                            }, 200);
+                        }
+                    }
+                    break;
+
+                case 'move-joint':
+                    if (joint && joint.type !== 'ground') {
+                        dragTarget = joint;
+                    }
+                    break;
+
+                case 'delete':
+                    if (joint) {
+                        deleteJoint(joint);
+                    } else if (body) {
+                        deleteBody(body);
+                    }
+                    break;
+            }
+        }
+
+        function onMouseDrag(event) {
+            if (mode === 'body' && bodyPreview) {
+                bodyPreview.segments[1].point = event.point;
+            }
+            else if (mode === 'move-joint' && dragTarget && dragTarget.shape) {
+                if (!isAnimating) {
+                    updateJointPosition(dragTarget, event.point);
+                    // Update body lengths in design mode
+                    for (var i = 0; i < dragTarget.bodies.length; i++) {
+                        var b = dragTarget.bodies[i];
+                        b.length = b.startJoint.position.getDistance(b.endJoint.position);
+                    }
+                    // Update crank radius if applicable
+                    for (var i = 0; i < cranks.length; i++) {
+                        if (cranks[i].joint === dragTarget) {
+                            cranks[i].radius = dragTarget.position.getDistance(
+                                cranks[i].groundJoint.position);
+                        }
+                    }
+                }
+            }
+            else if (mode === 'move-body' && dragTarget) {
+                var delta = event.delta;
+                // Move both joints of the body (if not fixed)
+                if (dragTarget.startJoint.type !== 'ground') {
+                    updateJointPosition(dragTarget.startJoint,
+                        dragTarget.startJoint.position + delta);
+                }
+                if (dragTarget.endJoint.type !== 'ground') {
+                    updateJointPosition(dragTarget.endJoint,
+                        dragTarget.endJoint.position + delta);
+                }
+            }
+        }
+
+        function onMouseUp(event) {
+            if (mode === 'body' && bodyPreview) {
+                var endPoint = event.point;
+                var length = bodyStart.getDistance(endPoint);
+
+                if (length > 20) {
+                    // Create joints at start and end
+                    var startJoint = createJoint(bodyStart);
+                    var endJoint = createJoint(endPoint);
+                    createBody(startJoint, endJoint);
+                }
+
+                bodyPreview.remove();
+                bodyPreview = null;
+                bodyStart = null;
+            }
+
+            dragTarget = null;
+        }
+
+        function onMouseMove(event) {
+            // Hover effects
+            for (var i = 0; i < joints.length; i++) {
+                var joint = joints[i];
+                var isHover = joint.position.getDistance(event.point) < JOINT_RADIUS + 5;
+                joint.shape.fillColor = isHover ? COLORS.jointHover : getJointColor(joint.type);
+            }
+
+            for (var i = 0; i < bodies.length; i++) {
+                var body = bodies[i];
+                var dist = distanceToSegment(event.point,
+                    body.startJoint.position, body.endJoint.position);
+                body.shape.strokeColor = dist < BODY_WIDTH + 5 ? COLORS.bodyHover : COLORS.body;
+            }
+        }
+
+        // ============================================
+        // Delete Operations
+        // ============================================
+
+        function deleteJoint(joint) {
+            // Remove associated bodies first
+            var bodiesToRemove = joint.bodies.slice();
+            for (var i = 0; i < bodiesToRemove.length; i++) {
+                deleteBody(bodiesToRemove[i]);
+            }
+
+            // Remove from cranks
+            removeCrank(joint);
+
+            // Remove joint
+            var idx = joints.indexOf(joint);
+            if (idx >= 0) {
+                joints[idx].shape.remove();
+                joints.splice(idx, 1);
+            }
+
+            updateStats();
+        }
+
+        function deleteBody(body) {
+            // Remove from joints' body lists
+            var idx1 = body.startJoint.bodies.indexOf(body);
+            if (idx1 >= 0) body.startJoint.bodies.splice(idx1, 1);
+
+            var idx2 = body.endJoint.bodies.indexOf(body);
+            if (idx2 >= 0) body.endJoint.bodies.splice(idx2, 1);
+
+            // Remove body
+            var idx = bodies.indexOf(body);
+            if (idx >= 0) {
+                bodies[idx].shape.remove();
+                bodies.splice(idx, 1);
+            }
+
+            updateStats();
+        }
+
+        function clearAll() {
+            for (var i = 0; i < joints.length; i++) {
+                joints[i].shape.remove();
+            }
+            for (var i = 0; i < bodies.length; i++) {
+                bodies[i].shape.remove();
+            }
+            joints = [];
+            bodies = [];
+            cranks = [];
+            bodyStart = null;
+            if (bodyPreview) {
+                bodyPreview.remove();
+                bodyPreview = null;
+            }
+            updateStats();
+        }
+
+        // ============================================
+        // Import / Export
+        // ============================================
+
+        function exportJSON() {
+            var data = {
+                version: "1.0",
+                bodies: bodies.map(function(b, i) {
+                    return {
+                        id: i,
+                        startJoint: joints.indexOf(b.startJoint),
+                        endJoint: joints.indexOf(b.endJoint),
+                        length: b.length
+                    };
+                }),
+                joints: joints.map(function(j, i) {
+                    return {
+                        id: i,
+                        x: Math.round(j.position.x * 100) / 100,
+                        y: Math.round(j.position.y * 100) / 100,
+                        type: j.type
+                    };
+                })
+            };
+            return JSON.stringify(data, null, 2);
+        }
+
+        function importJSON(jsonStr) {
+            try {
+                var data = JSON.parse(jsonStr);
+
+                clearAll();
+
+                // Create joints
+                for (var i = 0; i < data.joints.length; i++) {
+                    var jd = data.joints[i];
+                    createJoint(new Point(jd.x, jd.y), jd.type);
+                }
+
+                // Create bodies
+                for (var i = 0; i < data.bodies.length; i++) {
+                    var bd = data.bodies[i];
+                    var startJoint = joints[bd.startJoint];
+                    var endJoint = joints[bd.endJoint];
+                    if (startJoint && endJoint) {
+                        createBody(startJoint, endJoint);
+                    }
+                }
+
+                // Setup cranks
+                for (var i = 0; i < joints.length; i++) {
+                    if (joints[i].type === 'crank') {
+                        setCrank(joints[i]);
+                    }
+                }
+
+                return true;
+            } catch (e) {
+                console.error('Import failed:', e);
+                return false;
+            }
+        }
+
+        function exportPython() {
+            var lines = [
+                '"""',
+                'Pylinkage definition exported from Paper.js editor',
+                '"""',
+                'from pylinkage.joints import Static, Crank, Revolute',
+                'from pylinkage.linkage import Linkage',
+                '',
+                '# Joint definitions'
+            ];
+
+            // Map joints to variable names
+            var jointNames = {};
+            var groundJoints = [];
+            var crankJoints = [];
+            var freeJoints = [];
+
+            for (var i = 0; i < joints.length; i++) {
+                var j = joints[i];
+                if (j.type === 'ground') {
+                    jointNames[i] = 'ground_' + groundJoints.length;
+                    groundJoints.push(i);
+                } else if (j.type === 'crank') {
+                    jointNames[i] = 'crank_' + crankJoints.length;
+                    crankJoints.push(i);
+                } else {
+                    jointNames[i] = 'joint_' + freeJoints.length;
+                    freeJoints.push(i);
+                }
+            }
+
+            // Generate ground joints (Static)
+            for (var i = 0; i < groundJoints.length; i++) {
+                var idx = groundJoints[i];
+                var j = joints[idx];
+                var name = jointNames[idx];
+                lines.push(name + ' = Static(x=' + j.position.x.toFixed(1) +
+                          ', y=' + j.position.y.toFixed(1) + ')');
+            }
+
+            lines.push('');
+
+            // Generate crank joints
+            for (var i = 0; i < crankJoints.length; i++) {
+                var idx = crankJoints[i];
+                var j = joints[idx];
+                var name = jointNames[idx];
+
+                // Find connected ground
+                var groundName = null;
+                var distance = 0;
+                for (var b = 0; b < j.bodies.length; b++) {
+                    var body = j.bodies[b];
+                    var other = body.startJoint === j ? body.endJoint : body.startJoint;
+                    if (other.type === 'ground') {
+                        groundName = jointNames[joints.indexOf(other)];
+                        distance = body.length;
+                        break;
+                    }
+                }
+
+                if (groundName) {
+                    lines.push(name + ' = Crank(');
+                    lines.push('    x=' + j.position.x.toFixed(1) + ',');
+                    lines.push('    y=' + j.position.y.toFixed(1) + ',');
+                    lines.push('    joint0=' + groundName + ',');
+                    lines.push('    distance=' + distance.toFixed(1) + ',');
+                    lines.push('    angle=0  # Starting angle');
+                    lines.push(')');
+                }
+            }
+
+            lines.push('');
+
+            // Generate free joints (Revolute)
+            for (var i = 0; i < freeJoints.length; i++) {
+                var idx = freeJoints[i];
+                var j = joints[idx];
+                var name = jointNames[idx];
+
+                // Find two parent joints
+                var parents = [];
+                var distances = [];
+                for (var b = 0; b < j.bodies.length && parents.length < 2; b++) {
+                    var body = j.bodies[b];
+                    var other = body.startJoint === j ? body.endJoint : body.startJoint;
+                    var otherIdx = joints.indexOf(other);
+                    parents.push(jointNames[otherIdx]);
+                    distances.push(body.length);
+                }
+
+                if (parents.length >= 2) {
+                    lines.push(name + ' = Revolute(');
+                    lines.push('    x=' + j.position.x.toFixed(1) + ',');
+                    lines.push('    y=' + j.position.y.toFixed(1) + ',');
+                    lines.push('    joint0=' + parents[0] + ',');
+                    lines.push('    distance0=' + distances[0].toFixed(1) + ',');
+                    lines.push('    joint1=' + parents[1] + ',');
+                    lines.push('    distance1=' + distances[1].toFixed(1));
+                    lines.push(')');
+                } else if (parents.length === 1) {
+                    lines.push('# ' + name + ' has only one connection - needs another parent');
+                    lines.push('# ' + name + ' = Revolute(...)');
+                }
+            }
+
+            lines.push('');
+            lines.push('# Create linkage');
+
+            // Build joint list in order
+            var allJointNames = groundJoints.map(function(i) { return jointNames[i]; })
+                .concat(crankJoints.map(function(i) { return jointNames[i]; }))
+                .concat(freeJoints.map(function(i) { return jointNames[i]; }));
+
+            lines.push('linkage = Linkage(');
+            lines.push('    joints=[');
+            for (var i = 0; i < allJointNames.length; i++) {
+                var comma = i < allJointNames.length - 1 ? ',' : '';
+                lines.push('        ' + allJointNames[i] + comma);
+            }
+            lines.push('    ]');
+            lines.push(')');
+
+            lines.push('');
+            lines.push('# Simulate and visualize');
+            lines.push('from pylinkage.visualizer import show_linkage');
+            lines.push('linkage.step()');
+            lines.push('show_linkage(linkage)');
+
+            return lines.join('\n');
+        }
+
+        // ============================================
+        // UI Updates
+        // ============================================
+
+        function updateStats() {
+            document.getElementById('body-count').textContent = bodies.length;
+            document.getElementById('joint-count').textContent = joints.length;
+            document.getElementById('ground-count').textContent =
+                joints.filter(function(j) { return j.type === 'ground'; }).length;
+            document.getElementById('crank-count').textContent = cranks.length;
+        }
+
+        // Expose to DOM
+        window.editorSetMode = function(newMode) {
+            mode = newMode;
+        };
+
+        window.editorToggleAnimation = function() {
+            isAnimating = !isAnimating;
+            return isAnimating;
+        };
+
+        window.editorClearAll = clearAll;
+        window.editorExportJSON = exportJSON;
+        window.editorImportJSON = importJSON;
+        window.editorExportPython = exportPython;
+
+    </script>
+
+    <script>
+        // ============================================
+        // DOM Event Handlers
+        // ============================================
+
+        // Mode buttons
+        document.querySelectorAll('.mode-btn[data-mode]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.mode-btn[data-mode]').forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                this.classList.add('active');
+                window.editorSetMode(this.dataset.mode);
+            });
+        });
+
+        // Animate button
+        document.getElementById('animate-btn').addEventListener('click', function() {
+            var animating = window.editorToggleAnimation();
+            this.textContent = animating ? '⏸ Stop' : '▶ Animate';
+            this.classList.toggle('active', animating);
+        });
+
+        // Clear button
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            if (confirm('Clear all bodies and joints?')) {
+                window.editorClearAll();
+            }
+        });
+
+        // Modal handling
+        var modal = document.getElementById('json-modal');
+        var textarea = document.getElementById('json-textarea');
+        var modalTitle = document.getElementById('modal-title');
+        var copyBtn = document.getElementById('modal-copy');
+        var importBtn = document.getElementById('modal-import');
+        var isImportMode = false;
+
+        function showModal(title, content, importMode) {
+            modalTitle.textContent = title;
+            textarea.value = content;
+            isImportMode = importMode;
+            textarea.readOnly = !importMode;
+
+            copyBtn.style.display = importMode ? 'none' : 'inline-block';
+            importBtn.style.display = importMode ? 'inline-block' : 'none';
+
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            textarea.focus();
+            if (!importMode) textarea.select();
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('modal-cancel').addEventListener('click', hideModal);
+
+        copyBtn.addEventListener('click', function() {
+            textarea.select();
+            navigator.clipboard.writeText(textarea.value);
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() {
+                copyBtn.textContent = 'Copy';
+                hideModal();
+            }, 1000);
+        });
+
+        importBtn.addEventListener('click', function() {
+            if (window.editorImportJSON(textarea.value)) {
+                hideModal();
+            } else {
+                alert('Invalid JSON format');
+            }
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) hideModal();
+        });
+
+        // Export/Import buttons
+        document.getElementById('export-btn').addEventListener('click', function() {
+            showModal('Export JSON', window.editorExportJSON(), false);
+        });
+
+        document.getElementById('import-btn').addEventListener('click', function() {
+            showModal('Import JSON', '', true);
+        });
+
+        document.getElementById('export-py-btn').addEventListener('click', function() {
+            showModal('Python Code', window.editorExportPython(), false);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (modal.classList.contains('hidden')) {
+                switch(e.key) {
+                    case 'Escape':
+                        window.editorSetMode('body');
+                        document.querySelectorAll('.mode-btn[data-mode]').forEach(function(b) {
+                            b.classList.toggle('active', b.dataset.mode === 'body');
+                        });
+                        break;
+                    case ' ':
+                        e.preventDefault();
+                        document.getElementById('animate-btn').click();
+                        break;
+                    case 'Delete':
+                    case 'Backspace':
+                        if (document.activeElement.tagName !== 'TEXTAREA') {
+                            window.editorSetMode('delete');
+                            document.querySelectorAll('.mode-btn[data-mode]').forEach(function(b) {
+                                b.classList.toggle('active', b.dataset.mode === 'delete');
+                            });
+                        }
+                        break;
+                }
+            } else if (e.key === 'Escape') {
+                hideModal();
+            }
+        });
+    </script>
+</body>
+</html>

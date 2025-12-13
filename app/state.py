@@ -44,6 +44,8 @@ def set_linkage(linkage: pl.Linkage) -> None:
     state.linkage_dict = linkage.to_dict()
     state.loci = None  # Clear cached loci
     state.error_message = None
+    # Increment linkage version to reset all visualization widgets
+    st.session_state.linkage_version = st.session_state.get("linkage_version", 0) + 1
 
 
 def clear_linkage() -> None:

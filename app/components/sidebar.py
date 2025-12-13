@@ -83,32 +83,34 @@ def _render_joint_list() -> None:
         joint_name = joint.name or "(unnamed)"
         is_selected = selected_joint == joint_name
 
-        # Joint row
-        col1, col2, col3 = st.sidebar.columns([3, 1, 1])
+        # Joint row with name and buttons on separate lines for clarity
+        type_abbrev = {
+            "Static": "S",
+            "Crank": "C",
+            "Revolute": "R",
+            "Fixed": "F",
+            "Prismatic": "P",
+        }
+        abbrev = type_abbrev.get(joint_type, "?")
 
-        with col1:
-            # Show joint type icon and name
-            type_icons = {
-                "Static": "pin",
-                "Crank": "crank",
-                "Revolute": "rev",
-                "Fixed": "fix",
-                "Prismatic": "slide",
-            }
-            icon = type_icons.get(joint_type, "?")
-            label = f"[{icon}] **{joint_name}**" if is_selected else f"[{icon}] {joint_name}"
-            st.write(label)
+        # Joint name
+        if is_selected:
+            st.sidebar.markdown(f"**[{abbrev}] {joint_name}**")
+        else:
+            st.sidebar.write(f"[{abbrev}] {joint_name}")
 
-        with col2:
-            if st.button("Edit", key=f"edit_{joint_name}"):
+        # Buttons in a row below the name
+        btn_col1, btn_col2, btn_col3 = st.sidebar.columns([1, 1, 1])
+        with btn_col1:
+            edit_label = "Close" if is_selected else "Edit"
+            if st.button(edit_label, key=f"edit_{joint_name}", use_container_width=True):
                 if is_selected:
-                    set_selected_joint(None)  # Toggle off
+                    set_selected_joint(None)
                 else:
                     set_selected_joint(joint_name)
                 st.rerun()
-
-        with col3:
-            if st.button("Del", key=f"del_{joint_name}"):
+        with btn_col2:
+            if st.button("Del", key=f"del_{joint_name}", use_container_width=True):
                 new_linkage, error = delete_joint_from_linkage(linkage, joint_name)
                 if error:
                     st.sidebar.error(error)
@@ -119,6 +121,8 @@ def _render_joint_list() -> None:
                 if selected_joint == joint_name:
                     set_selected_joint(None)
                 st.rerun()
+        with btn_col3:
+            pass  # Empty column for spacing
 
         # Show edit form if selected
         if is_selected:

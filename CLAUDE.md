@@ -44,6 +44,13 @@ uv build                             # Build wheel and sdist
 uv run sphinx-build -b html docs/source docs/  # Build documentation
 ```
 
+### Running the Web App
+
+```bash
+uv sync --extra app                  # Install Streamlit dependency
+uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
+```
+
 ## Architecture
 
 ### Package Structure
@@ -115,6 +122,14 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
   - `optimization.py`: `SymbolicOptimizer` for gradient-based optimization
   - `geometry.py`: Symbolic geometry primitives
 
+- **src/pylinkage/bridge/**: Conversion utilities between representations
+  - Bridges between Linkage, Assur graph, Hypergraph, and Solver representations
+
+- **app/**: Streamlit-based web editor for interactive linkage design
+  - `main.py`: Entry point, run with `uv run streamlit run app/main.py`
+  - `components/`: UI components (sidebar, visualization panel)
+  - `state.py`: Session state management
+
 ### Key Patterns
 
 **Linkage Definition Flow:**
@@ -174,6 +189,8 @@ uv run sphinx-build -b html docs/source docs/  # Build documentation
 
 Requires Python >= 3.10
 
-Core: numpy, numba, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
+Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser
+
+App (optional): streamlit
