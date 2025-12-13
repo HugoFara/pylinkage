@@ -470,7 +470,8 @@ def animate_kinematics(
             animation.save(save_path, fps=fps)
 
     plt.tight_layout()
-    plt.show(block=False)
-    plt.pause(duration)
+    if plt.isinteractive() or plt.get_backend() not in ("agg", "Agg"):
+        plt.show(block=False)
+        plt.pause(duration)
 
     return fig

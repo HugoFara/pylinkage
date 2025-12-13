@@ -293,7 +293,8 @@ def animate_parallel_coordinates(
         writer = anim.FFMpegWriter(fps=24, bitrate=1800)
         animation.save(save_path, writer=writer)
 
-    plt.show(block=False)
+    if plt.isinteractive() or plt.get_backend() not in ("agg", "Agg"):
+        plt.show(block=False)
     return animation
 
 
@@ -611,5 +612,6 @@ def animate_dashboard(
         writer = anim.FFMpegWriter(fps=24, bitrate=1800)
         animation.save(save_path, writer=writer)
 
-    plt.show(block=False)
+    if plt.isinteractive() or plt.get_backend() not in ("agg", "Agg"):
+        plt.show(block=False)
     return animation

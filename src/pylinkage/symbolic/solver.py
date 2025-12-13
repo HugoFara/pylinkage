@@ -157,8 +157,10 @@ def compute_trajectory_numeric(
         y_func = sp.lambdify(all_symbols, y_expr, modules=["numpy"])
 
         # Evaluate at all theta values
-        x_vals = x_func(theta_arr, *param_vals)
-        y_vals = y_func(theta_arr, *param_vals)
+        # Suppress warnings for invalid sqrt (unbuildable configurations produce NaN)
+        with np.errstate(invalid="ignore"):
+            x_vals = x_func(theta_arr, *param_vals)
+            y_vals = y_func(theta_arr, *param_vals)
 
         # Handle scalar results (for static joints)
         if np.isscalar(x_vals):

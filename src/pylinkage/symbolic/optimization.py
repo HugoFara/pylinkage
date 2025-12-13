@@ -162,15 +162,17 @@ class SymbolicOptimizer:
         params = [param_values[n] for n in self.param_names]
 
         # Evaluate at all theta values and average
+        # Suppress warnings for invalid sqrt (unbuildable configurations produce NaN)
         values = []
-        for t in theta_samples:
-            try:
-                val = float(self._objective_func(t, *params))
-                if np.isfinite(val):
-                    values.append(val)
-            except (ValueError, ZeroDivisionError, TypeError):
-                # Skip invalid points (e.g., unbuildable configurations)
-                pass
+        with np.errstate(invalid="ignore"):
+            for t in theta_samples:
+                try:
+                    val = float(self._objective_func(t, *params))
+                    if np.isfinite(val):
+                        values.append(val)
+                except (ValueError, ZeroDivisionError, TypeError):
+                    # Skip invalid points (e.g., unbuildable configurations)
+                    pass
 
         if not values:
             return float("inf")
@@ -200,16 +202,18 @@ class SymbolicOptimizer:
         params = [param_values[n] for n in self.param_names]
 
         # Evaluate gradient at all theta values and average
+        # Suppress warnings for invalid sqrt (unbuildable configurations produce NaN)
         grads: list[list[float]] = [[] for _ in self._gradient_funcs]
 
-        for t in theta_samples:
-            try:
-                for i, g_func in enumerate(self._gradient_funcs):
-                    val = float(g_func(t, *params))
-                    if np.isfinite(val):
-                        grads[i].append(val)
-            except (ValueError, ZeroDivisionError, TypeError):
-                pass
+        with np.errstate(invalid="ignore"):
+            for t in theta_samples:
+                try:
+                    for i, g_func in enumerate(self._gradient_funcs):
+                        val = float(g_func(t, *params))
+                        if np.isfinite(val):
+                            grads[i].append(val)
+                except (ValueError, ZeroDivisionError, TypeError):
+                    pass
 
         result = []
         for g_vals in grads:

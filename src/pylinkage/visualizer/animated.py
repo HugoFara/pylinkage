@@ -184,8 +184,9 @@ def show_linkage(
         linkage, fig, ax2, loci, interval=1000 / fps
     )
     plt.tight_layout()
-    plt.show(block=False)
-    plt.pause(duration)
+    if plt.isinteractive() or plt.get_backend() not in ("agg", "Agg"):
+        plt.show(block=False)
+        plt.pause(duration)
     plt.close()
     if save:
         writer = anim.FFMpegWriter(fps=fps, bitrate=3600)

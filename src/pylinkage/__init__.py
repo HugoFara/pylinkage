@@ -16,6 +16,8 @@ __all__ = [
     "assur",
     # Symbolic computation module
     "symbolic",
+    # Synthesis module
+    "synthesis",
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
@@ -60,6 +62,9 @@ from . import assur as assur
 
 # Symbolic computation module using SymPy
 from . import symbolic as symbolic
+
+# Classical mechanism synthesis module
+from . import synthesis as synthesis
 from .exceptions import (
     HypostaticError as HypostaticError,  # Deprecated alias
 )
