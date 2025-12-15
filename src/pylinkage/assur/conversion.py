@@ -3,11 +3,17 @@
 This module provides functions to convert between the graph-based
 Assur group representation and the existing joint-based Linkage class.
 
+.. deprecated:: 0.8.0
+    The ``graph_to_linkage()`` function converts to the legacy Linkage class.
+    For new code, use ``graph_to_mechanism()`` from ``assur.mechanism_conversion``
+    which converts directly to the new Mechanism model.
+
 This enables interoperability between the two systems:
 - Define linkages using graph syntax, convert to Linkage for simulation
 - Analyze existing Linkages by converting to graph representation
 """
 
+import warnings
 from typing import TYPE_CHECKING
 
 from ..joints import Prismatic
@@ -244,6 +250,20 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
 def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     """Convert a graph representation to a Linkage.
 
+    .. deprecated:: 0.8.0
+        Use ``graph_to_mechanism()`` instead for direct conversion to the new
+        Mechanism model. This function converts to the legacy Linkage class.
+
+        Example migration::
+
+            # Old (deprecated):
+            from pylinkage.assur import graph_to_linkage
+            linkage = graph_to_linkage(graph)
+
+            # New (preferred):
+            from pylinkage.assur import graph_to_mechanism
+            mechanism = graph_to_mechanism(graph)
+
     This function:
     1. Decomposes the graph into Assur groups
     2. Creates appropriate Joint instances for each element
@@ -263,6 +283,13 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
+    warnings.warn(
+        "graph_to_linkage() is deprecated. Use graph_to_mechanism() from "
+        "pylinkage.assur.mechanism_conversion for direct conversion "
+        "to the new Mechanism model.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     from ..joints import Crank, Revolute, Static
     from ..joints.joint import Joint, _StaticBase
     from ..linkage.linkage import Linkage as LinkageClass

@@ -60,7 +60,10 @@ __all__ = [
     "decompose_assur_groups",
     "validate_decomposition",
     "solve_decomposition",
-    # Conversion to/from Linkage
+    # Conversion to/from Mechanism (preferred)
+    "graph_to_mechanism",
+    "mechanism_to_graph",
+    # Conversion to/from Linkage (deprecated)
     "linkage_to_graph",
     "graph_to_linkage",
     # Conversion to/from Hypergraph
@@ -75,6 +78,7 @@ __all__ = [
 
 from ._types import EdgeId, JointType, NodeId, NodeRole
 from .conversion import graph_to_linkage, linkage_to_graph
+from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph
 from .decomposition import (
     DecompositionResult,
     decompose_assur_groups,

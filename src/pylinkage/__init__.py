@@ -20,6 +20,14 @@ __all__ = [
     "symbolic",
     # Synthesis module
     "synthesis",
+    # Canonical types (from _types.py)
+    "JointType",
+    "NodeRole",
+    "NodeId",
+    "EdgeId",
+    "HyperedgeId",
+    "ComponentId",
+    "PortId",
     # Exceptions
     "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
@@ -70,6 +78,17 @@ from . import symbolic as symbolic
 
 # Classical mechanism synthesis module
 from . import synthesis as synthesis
+
+# Canonical types (single source of truth for kinematic types)
+from ._types import (
+    ComponentId as ComponentId,
+    EdgeId as EdgeId,
+    HyperedgeId as HyperedgeId,
+    JointType as JointType,
+    NodeId as NodeId,
+    NodeRole as NodeRole,
+    PortId as PortId,
+)
 from .exceptions import (
     HypostaticError as HypostaticError,  # Deprecated alias
 )

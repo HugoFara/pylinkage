@@ -1,46 +1,39 @@
 """Type definitions for the hypergraph module.
 
-This module provides type aliases and enums used throughout the hypergraph
-representation of planar linkages.
+This module re-exports canonical types from pylinkage._types for backward
+compatibility. New code should import directly from pylinkage._types.
+
+.. deprecated:: 0.8.0
+    Import types directly from ``pylinkage._types`` instead of this module.
+    This module is maintained for backward compatibility only.
+
+Example:
+    Preferred::
+
+        from pylinkage._types import JointType, NodeRole, NodeId
+
+    Deprecated (but still works)::
+
+        from pylinkage.hypergraph._types import JointType, NodeRole
 """
 
+# Re-export all types from the canonical source
+from .._types import (
+    ComponentId,
+    EdgeId,
+    HyperedgeId,
+    JointType,
+    NodeId,
+    NodeRole,
+    PortId,
+)
 
-from enum import Enum, auto
-from typing import TypeAlias
-
-# Type aliases for identifiers
-NodeId: TypeAlias = str
-EdgeId: TypeAlias = str
-HyperedgeId: TypeAlias = str
-ComponentId: TypeAlias = str
-PortId: TypeAlias = str
-
-
-class JointType(Enum):
-    """Kinematic joint type for graph nodes.
-
-    Attributes:
-        REVOLUTE: Pin joint allowing rotation (R).
-        PRISMATIC: Slider joint allowing translation (P).
-    """
-
-    REVOLUTE = auto()
-    PRISMATIC = auto()
-
-    def __str__(self) -> str:
-        """Return single-letter representation."""
-        return self.name[0]
-
-
-class NodeRole(Enum):
-    """Role of a node in the linkage mechanism.
-
-    Attributes:
-        GROUND: Fixed frame point that does not move.
-        DRIVER: Input/motor joint that provides motion.
-        DRIVEN: Position computed from constraints (part of Assur groups).
-    """
-
-    GROUND = auto()
-    DRIVER = auto()
-    DRIVEN = auto()
+__all__ = [
+    "ComponentId",
+    "EdgeId",
+    "HyperedgeId",
+    "JointType",
+    "NodeId",
+    "NodeRole",
+    "PortId",
+]

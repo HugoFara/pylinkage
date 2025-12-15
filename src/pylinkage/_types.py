@@ -12,10 +12,75 @@ Type Categories:
     Geometry: Circle, Line, BoundingBox - represent geometric primitives
     Functions: FitnessFunc - callable types for optimization
     Positions: JointPositions - represent joint state during simulation
+    Kinematic: JointType, NodeRole - kinematic joint classification
+    Identifiers: NodeId, EdgeId, etc. - string identifiers for graph elements
 """
 
 from collections.abc import Callable, Sequence
+from enum import IntEnum
 from typing import TypeAlias
+
+
+# =============================================================================
+# Kinematic Enums (canonical definitions)
+# =============================================================================
+
+
+class JointType(IntEnum):
+    """Kinematic joint type.
+
+    This enum classifies joints by their allowed degrees of freedom.
+    Values are explicit integers for serialization stability.
+
+    Attributes:
+        REVOLUTE: Pin joint allowing rotation (R). 1 DOF rotation.
+        PRISMATIC: Slider joint allowing translation (P). 1 DOF translation.
+        GROUND: Fixed revolute joint on frame. Special case for mechanism module.
+    """
+
+    REVOLUTE = 1
+    PRISMATIC = 2
+    GROUND = 3  # Fixed revolute on frame
+
+    def __str__(self) -> str:
+        """Return single-letter representation (R, P, G)."""
+        return self.name[0]
+
+
+class NodeRole(IntEnum):
+    """Role of a node/joint in the mechanism.
+
+    Classifies joints by their kinematic role in the linkage structure.
+
+    Attributes:
+        GROUND: Fixed frame point that does not move.
+        DRIVER: Input/motor joint that provides motion (actuated).
+        DRIVEN: Position computed from constraints (passive, part of Assur groups).
+    """
+
+    GROUND = 0
+    DRIVER = 1
+    DRIVEN = 2
+
+
+# =============================================================================
+# Identifier Type Aliases (for graph representations)
+# =============================================================================
+
+NodeId: TypeAlias = str
+"""Unique identifier for a node/joint in a graph."""
+
+EdgeId: TypeAlias = str
+"""Unique identifier for an edge/link in a graph."""
+
+HyperedgeId: TypeAlias = str
+"""Unique identifier for a hyperedge (multi-joint rigid body) in a hypergraph."""
+
+ComponentId: TypeAlias = str
+"""Unique identifier for a reusable component in hierarchical linkages."""
+
+PortId: TypeAlias = str
+"""Unique identifier for a port (connection point) on a component."""
 
 # Basic coordinate types
 Coord: TypeAlias = tuple[float, float]

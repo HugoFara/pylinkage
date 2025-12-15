@@ -47,8 +47,11 @@ from ._types import (
 # Component system
 from .components import Component, ParameterMapping, ParameterSpec, Port
 
-# Conversion functions (to/from Linkage only - for Assur conversion use assur module)
+# Conversion functions
+# Legacy (deprecated): to_linkage, from_linkage
+# Preferred: to_mechanism, from_mechanism
 from .conversion import from_linkage, to_linkage
+from .mechanism_conversion import from_mechanism, to_mechanism
 
 # Core graph elements
 from .core import Edge, Hyperedge, Node
@@ -108,7 +111,11 @@ __all__ = [
     "ComponentInstance",
     "Connection",
     "HierarchicalLinkage",
-    # Conversion (to/from Linkage - for Assur use assur.from_hypergraph/to_hypergraph)
+    # Conversion
+    # Preferred (new Mechanism model):
+    "to_mechanism",
+    "from_mechanism",
+    # Legacy (deprecated, converts to Linkage):
     "to_linkage",
     "from_linkage",
     # Serialization

@@ -13,21 +13,22 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from enum import IntEnum
 from typing import TYPE_CHECKING
 
-from .._types import Coord, MaybeCoord
+from .._types import Coord, JointType, MaybeCoord
+
+# Re-export JointType for backward compatibility
+__all__ = [
+    "JointType",
+    "Joint",
+    "RevoluteJoint",
+    "PrismaticJoint",
+    "GroundJoint",
+    "AnyJoint",
+]
 
 if TYPE_CHECKING:
     from .link import Link
-
-
-class JointType(IntEnum):
-    """Enumeration of joint types."""
-
-    REVOLUTE = 1
-    PRISMATIC = 2
-    GROUND = 3  # Special case of revolute fixed to frame
 
 
 @dataclass(eq=False)

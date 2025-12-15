@@ -3,11 +3,17 @@
 This module provides functions to convert between the hypergraph
 representation and the joint-based Linkage class.
 
+.. deprecated:: 0.8.0
+    The ``to_linkage()`` function converts to the legacy Linkage class.
+    For new code, use ``to_mechanism()`` from ``hypergraph.mechanism_conversion``
+    which converts directly to the new Mechanism model.
+
 The hypergraph is the foundational mathematical layer. Conversion to
 Linkage enables simulation. For conversion to/from Assur graph
 representation, use the assur.hypergraph_conversion module.
 """
 
+import warnings
 from typing import TYPE_CHECKING
 
 from ..joints.joint import Joint
@@ -21,6 +27,20 @@ if TYPE_CHECKING:
 
 def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
     """Convert a HypergraphLinkage to a joint-based Linkage.
+
+    .. deprecated:: 0.8.0
+        Use ``to_mechanism()`` instead for direct conversion to the new
+        Mechanism model. This function converts to the legacy Linkage class.
+
+        Example migration::
+
+            # Old (deprecated):
+            from pylinkage.hypergraph import to_linkage
+            linkage = to_linkage(hypergraph)
+
+            # New (preferred):
+            from pylinkage.hypergraph import to_mechanism
+            mechanism = to_mechanism(hypergraph)
 
     This converts the hypergraph directly to a Linkage that can be used
     for simulation. The conversion maps nodes to joints based on their
@@ -39,6 +59,13 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
         >>> for coords in linkage.step():
         ...     print(coords)
     """
+    warnings.warn(
+        "to_linkage() is deprecated. Use to_mechanism() from "
+        "pylinkage.hypergraph.mechanism_conversion for direct conversion "
+        "to the new Mechanism model.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     from ..joints import Crank, Prismatic, Revolute, Static
     from ..joints.joint import Joint
     from ..linkage.linkage import Linkage as LinkageClass

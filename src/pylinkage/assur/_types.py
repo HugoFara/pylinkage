@@ -1,11 +1,10 @@
 """Type definitions for the Assur group module.
 
-This module re-exports types from hypergraph._types for consistency.
-The hypergraph module provides the canonical definitions as the
-foundational mathematical layer.
+This module re-exports canonical types from pylinkage._types for consistency.
+The _types module is the single source of truth for kinematic type definitions.
 """
 
-# Re-export from the canonical source (hypergraph is the foundational layer)
-from ..hypergraph._types import EdgeId, JointType, NodeId, NodeRole
+# Re-export from the canonical source
+from .._types import EdgeId, JointType, NodeId, NodeRole
 
 __all__ = ["NodeId", "EdgeId", "JointType", "NodeRole"]
