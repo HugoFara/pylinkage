@@ -14,6 +14,8 @@ Created on Thu Jun 10 21:30:52 2021
 __all__ = [
     # Assur group module
     "assur",
+    # Dyads module (user-facing API for mechanism building)
+    "dyads",
     # Mechanism module (new Links + Joints model)
     "mechanism",
     # Symbolic computation module
@@ -69,6 +71,9 @@ __all__ = [
 
 # Assur group module for graph-based linkage representation
 from . import assur as assur
+
+# Dyads module - user-facing API for mechanism building
+from . import dyads as dyads
 
 # Mechanism module - new Links + Joints model
 from . import mechanism as mechanism

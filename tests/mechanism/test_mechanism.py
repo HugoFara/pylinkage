@@ -1,6 +1,8 @@
 """Tests for the mechanism module.
 
-These tests verify the new Links + Joints model works correctly.
+These tests verify the low-level Links + Joints model works correctly.
+
+Note: For dyad factory function tests, see tests/dyads/test_dyads.py.
 """
 
 import math
@@ -16,10 +18,6 @@ from pylinkage.mechanism import (
     Mechanism,
     PrismaticJoint,
     RevoluteJoint,
-    create_crank,
-    create_fixed_dyad,
-    create_rrp_dyad,
-    create_rrr_dyad,
     mechanism_from_dict,
     mechanism_to_dict,
 )
@@ -118,60 +116,6 @@ class TestLinks:
         assert abs(A.y - 1.0) < 1e-10
 
 
-class TestDyads:
-    """Tests for dyad factory functions."""
-
-    def test_create_crank(self):
-        """Test creating a crank."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
-        driver, output = create_crank(
-            O, radius=2.0, angular_velocity=0.1, initial_angle=0.0
-        )
-
-        assert isinstance(driver, DriverLink)
-        assert isinstance(output, RevoluteJoint)
-        assert driver.radius == 2.0
-        assert output.position == (2.0, 0.0)
-
-    def test_create_rrr_dyad(self):
-        """Test creating an RRR dyad."""
-        A = RevoluteJoint(id="A", position=(0.0, 0.0))
-        B = RevoluteJoint(id="B", position=(4.0, 0.0))
-
-        link1, link2, C = create_rrr_dyad(
-            A, B, distance1=3.0, distance2=3.0, name="dyad"
-        )
-
-        assert isinstance(C, RevoluteJoint)
-        # C should be at intersection of circles
-        # Two circles: center (0,0) r=3, center (4,0) r=3
-        # Intersection at (2, sqrt(5)) or (2, -sqrt(5))
-        assert abs(C.x - 2.0) < 1e-10
-        assert abs(abs(C.y) - math.sqrt(5)) < 1e-10
-
-    def test_create_rrr_dyad_unbuildable(self):
-        """Test that unbuildable RRR dyad raises error."""
-        A = RevoluteJoint(id="A", position=(0.0, 0.0))
-        B = RevoluteJoint(id="B", position=(10.0, 0.0))
-
-        # Circles too far apart to intersect
-        with pytest.raises(ValueError, match="unbuildable"):
-            create_rrr_dyad(A, B, distance1=1.0, distance2=1.0)
-
-    def test_create_fixed_dyad(self):
-        """Test creating a fixed angular dyad."""
-        A = RevoluteJoint(id="A", position=(0.0, 0.0))
-        B = RevoluteJoint(id="B", position=(1.0, 0.0))
-
-        link1, link2, C = create_fixed_dyad(
-            A, B, distance=1.0, angle=math.pi / 2, name="fixed"
-        )
-
-        # C should be perpendicular to AB at distance 1 from A
-        assert abs(C.x - 0.0) < 1e-10
-        assert abs(C.y - 1.0) < 1e-10
-
-
 class TestMechanism:
     """Tests for the Mechanism class."""
 
@@ -194,17 +138,25 @@ class TestMechanism:
         assert mechanism.ground == ground
 
     def test_four_bar_creation(self):
-        """Test creating a four-bar linkage."""
+        """Test creating a four-bar linkage with low-level API."""
         # Ground joints
         O1 = GroundJoint(id="O1", position=(0.0, 0.0))
         O2 = GroundJoint(id="O2", position=(2.0, 0.0))
         ground = GroundLink(id="ground", joints=[O1, O2])
 
-        # Create crank
-        crank, A = create_crank(O1, radius=1.0, angular_velocity=0.1)
+        # Create crank manually
+        A = RevoluteJoint(id="A", position=(1.0, 0.0))
+        crank = DriverLink(
+            id="crank",
+            joints=[O1, A],
+            motor_joint=O1,
+            angular_velocity=0.1,
+        )
 
-        # Create coupler via RRR dyad
-        link1, link2, B = create_rrr_dyad(A, O2, distance1=2.0, distance2=1.5)
+        # Create coupler joint and links manually
+        B = RevoluteJoint(id="B", position=(2.5, 1.0))  # Approximate position
+        link1 = Link(id="link1", joints=[A, B])
+        link2 = Link(id="link2", joints=[O2, B])
 
         mechanism = Mechanism(
             name="Four-Bar",

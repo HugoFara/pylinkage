@@ -1,42 +1,24 @@
 """Mechanism module - proper Links + Joints model for planar linkages.
 
-This module provides a clear, intuitive API for defining planar mechanisms
+This module provides the low-level API for defining planar mechanisms
 using standard mechanical engineering terminology:
 
 - **Joints** are actual connection points (revolute pins, prismatic sliders)
 - **Links** are rigid bodies connecting joints
-- **Dyads** are factory functions for common Assur groups
+- **Mechanism** orchestrates joints and links for simulation
 
-This contrasts with the legacy `joints` module where "joints" were actually
-Assur groups (combinations of multiple joints and links).
+For a higher-level API using Assur group building blocks, see ``pylinkage.dyads``.
 
 Basic Usage:
     >>> from pylinkage.mechanism import (
     ...     Mechanism, GroundJoint, GroundLink,
-    ...     create_crank, create_rrr_dyad,
+    ...     RevoluteJoint, Link, DriverLink,
     ... )
     >>>
     >>> # Create ground joints
     >>> O1 = GroundJoint("O1", position=(0.0, 0.0))
     >>> O2 = GroundJoint("O2", position=(2.0, 0.0))
     >>> ground = GroundLink("ground", joints=[O1, O2])
-    >>>
-    >>> # Create crank (driver link + output joint)
-    >>> crank, A = create_crank(O1, radius=1.0, angular_velocity=0.1)
-    >>>
-    >>> # Create rocker via RRR dyad
-    >>> link1, link2, B = create_rrr_dyad(A, O2, distance1=2.0, distance2=1.5)
-    >>>
-    >>> # Build mechanism
-    >>> mechanism = Mechanism(
-    ...     name="Four-Bar",
-    ...     joints=[O1, O2, A, B],
-    ...     links=[ground, crank, link1, link2],
-    ... )
-    >>>
-    >>> # Simulate
-    >>> for positions in mechanism.step():
-    ...     print(positions)
 
 Classes:
     Joint: Base class for all joints
@@ -50,12 +32,6 @@ Classes:
 
     Mechanism: The main orchestrator class
 
-Factory Functions:
-    create_crank: Create a driver crank mechanism
-    create_rrr_dyad: Create an RRR dyad (circle-circle intersection)
-    create_rrp_dyad: Create an RRP dyad (circle-line intersection)
-    create_fixed_dyad: Create a fixed angular constraint
-
 Conversion:
     mechanism_from_linkage: Convert legacy Linkage to Mechanism
     mechanism_to_linkage: Convert Mechanism to legacy Linkage
@@ -65,6 +41,9 @@ Serialization:
     mechanism_from_dict: Deserialize from dictionary
     mechanism_to_json: Save to JSON file
     mechanism_from_json: Load from JSON file
+
+See Also:
+    pylinkage.dyads: High-level API using Assur group building blocks
 """
 
 # Joint classes
@@ -88,14 +67,6 @@ from .link import (
 
 # Mechanism class
 from .mechanism import Mechanism
-
-# Dyad factory functions
-from .dyads import (
-    create_crank,
-    create_fixed_dyad,
-    create_rrp_dyad,
-    create_rrr_dyad,
-)
 
 # Conversion utilities
 from .conversion import (
@@ -133,11 +104,6 @@ __all__ = [
     "AnyLink",
     # Mechanism
     "Mechanism",
-    # Factory functions
-    "create_crank",
-    "create_rrr_dyad",
-    "create_rrp_dyad",
-    "create_fixed_dyad",
     # Conversion
     "mechanism_from_linkage",
     "mechanism_to_linkage",
