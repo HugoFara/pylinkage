@@ -10,6 +10,7 @@ import unittest
 import pylinkage as pl
 from pylinkage.exceptions import UnbuildableError
 from pylinkage.joints import Crank, Fixed, Prismatic, Revolute, Static
+from pylinkage.joints.joint import _StaticBase
 from pylinkage.linkage.analysis import bounding_box, movement_bounding_box
 from pylinkage.optimization.utils import (
     generate_bounds,
@@ -463,8 +464,9 @@ class TestSerializationSupport(unittest.TestCase):
         loaded = pl.Linkage.from_dict(data)
 
         self.assertEqual(len(loaded.joints), 4)
-        self.assertIsInstance(loaded.joints[0], Static)
-        self.assertIsInstance(loaded.joints[1], Static)
+        # Deserialization uses _StaticBase to avoid deprecation warnings
+        self.assertIsInstance(loaded.joints[0], _StaticBase)
+        self.assertIsInstance(loaded.joints[1], _StaticBase)
         self.assertIsInstance(loaded.joints[2], Crank)
         self.assertIsInstance(loaded.joints[3], Revolute)
 

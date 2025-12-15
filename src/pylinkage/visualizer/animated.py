@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
 from ..exceptions import UnbuildableError
 from ..joints import Crank, Static
+from ..joints.joint import _StaticBase
 from ..linkage.analysis import movement_bounding_box
 from .core import _get_color
 from .static import plot_static_linkage
@@ -58,16 +59,17 @@ def update_animated_plot(
         # Draw a link to the first parent if it exists
         if joint.joint0 is None:
             continue
-        if isinstance(joint.joint0, Static):
+        # Use _StaticBase to match both user-created Static and internal _StaticBase
+        if isinstance(joint.joint0, _StaticBase):
             par_locus = joint.joint0.coord()
         else:
             par_locus = locus[linkage.joints.index(joint.joint0)]
         im = next(image)
         im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
         # Then second parent
-        if isinstance(joint, (Crank, Static)):
+        if isinstance(joint, (Crank, _StaticBase)):
             continue
-        if isinstance(joint.joint1, Static):
+        if isinstance(joint.joint1, _StaticBase):
             par_locus = joint.joint1.coord()
         else:
             par_locus = locus[linkage.joints.index(joint.joint1)]
@@ -106,7 +108,7 @@ def plot_kinematic_linkage(
             if parent is not None:
                 images.append(axis.plot(
                     [], [], c=_get_color(joint),
-                    animated=isinstance(joint, Static)
+                    animated=isinstance(joint, _StaticBase)
                 )[0])
 
     animation = anim.FuncAnimation(

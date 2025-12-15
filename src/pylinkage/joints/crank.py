@@ -3,7 +3,13 @@ Crank joint definition.
 
 A crank is a driver joint that rotates around a fixed anchor point.
 This is a thin wrapper around the solver's solve_crank function.
+
+.. deprecated:: 0.7.0
+    The `Crank` class is deprecated. Use `pylinkage.mechanism.create_crank()`
+    instead for clearer terminology. Crank will be removed in version 1.0.0.
 """
+
+import warnings
 
 from .. import exceptions as pl_exceptions
 from .._types import Coord
@@ -16,6 +22,12 @@ class Crank(pl_joint.Joint):
 
     The crank rotates around its anchor point (joint0) at a constant
     angular velocity. It is the primary driver for linkage mechanisms.
+
+    .. deprecated:: 0.7.0
+        Use :func:`pylinkage.mechanism.create_crank` instead.
+        The Crank class conflates a joint with a driver link. The new API
+        separates these concepts: `create_crank()` returns a `DriverLink`
+        and a `RevoluteJoint` (the crank output).
 
     Attributes:
         r: Distance from anchor to crank (radius).
@@ -56,7 +68,17 @@ class Crank(pl_joint.Joint):
         :param name: Human-readable name. The default is None.
         :param omega: Angular velocity in rad/s for kinematics. The default is None.
         :param alpha: Angular acceleration in rad/s² for kinematics. The default is None.
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.create_crank()` instead.
         """
+        warnings.warn(
+            "Crank is deprecated and will be removed in version 1.0.0. "
+            "Use pylinkage.mechanism.create_crank() instead. "
+            "Example: crank_link, output_joint = create_crank(ground_joint, radius, angular_velocity)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(x, y, joint0, name=name)
         self.r, self.angle = distance, angle
         self.omega = omega

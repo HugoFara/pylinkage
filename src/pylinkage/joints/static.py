@@ -1,8 +1,13 @@
 """
 Static joint definition file.
+
+.. deprecated:: 0.7.0
+    The `Static` class is deprecated. Use `pylinkage.mechanism.GroundJoint`
+    instead for clearer terminology. Static will be removed in version 1.0.0.
 """
 
 
+import warnings
 from typing import TYPE_CHECKING
 
 from . import joint as pl_joint
@@ -15,6 +20,11 @@ class Static(pl_joint.Joint):
     """Special case of Joint that should not move.
 
     Mostly used for the frame.
+
+    .. deprecated:: 0.7.0
+        Use :class:`pylinkage.mechanism.GroundJoint` instead.
+        This class represents a ground joint (fixed point on the frame),
+        not a generic "static" object. The new API uses clearer terminology.
     """
 
     __slots__: tuple[str, ...] = ()
@@ -28,7 +38,17 @@ class Static(pl_joint.Joint):
             x: Position on horizontal axis.
             y: Position on vertical axis.
             name: Friendly name for human readability.
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.GroundJoint` instead.
         """
+        warnings.warn(
+            "Static is deprecated and will be removed in version 1.0.0. "
+            "Use pylinkage.mechanism.GroundJoint instead for clearer terminology. "
+            "Example: GroundJoint('name', position=(x, y))",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(x, y, name=name)
 
     def reload(self, dt: float = 1) -> None:

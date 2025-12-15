@@ -6,6 +6,10 @@ each centered at a parent joint. This corresponds to an RRR (three
 revolute joints) dyad in Assur group theory.
 
 This is a thin wrapper around the solver's solve_revolute function.
+
+.. deprecated:: 0.7.0
+    The `Revolute` class is deprecated. Use `pylinkage.mechanism.create_rrr_dyad()`
+    instead for clearer terminology. Revolute will be removed in version 1.0.0.
 """
 
 import math
@@ -26,6 +30,13 @@ class Revolute(pl_joint.Joint):
 
     When two solutions exist, the nearest to the current position
     is chosen (hysteresis for continuity during simulation).
+
+    .. deprecated:: 0.7.0
+        Use :func:`pylinkage.mechanism.create_rrr_dyad` instead.
+        Despite its name, this class is NOT a single revolute joint - it's an
+        RRR dyad (2 links + 3 revolute joints). The new API uses clearer
+        terminology: `create_rrr_dyad()` returns two `Link` objects and one
+        `RevoluteJoint`.
     """
 
     __slots__ = "r0", "r1"
@@ -60,7 +71,18 @@ class Revolute(pl_joint.Joint):
             (Default value = None).
         :param name: Friendly name for human readability.
             (Default value = None).
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.create_rrr_dyad()` instead.
         """
+        warnings.warn(
+            "Revolute is deprecated and will be removed in version 1.0.0. "
+            "Despite its name, Revolute is an RRR dyad (2 links + 3 joints), not a single joint. "
+            "Use pylinkage.mechanism.create_rrr_dyad() instead. "
+            "Example: link1, link2, joint = create_rrr_dyad(anchor1, anchor2, dist1, dist2)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(x, y, joint0, joint1, name)
         self.r0, self.r1 = distance0, distance1
 

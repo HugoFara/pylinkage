@@ -41,6 +41,7 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
         >>> print(f"Nodes: {list(graph.nodes.keys())}")
     """
     from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+    from ..joints.joint import _StaticBase
 
     graph = LinkageGraph(name=linkage.name)
 
@@ -80,7 +81,8 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
             node_id = f"{node_id}_{i}"
 
         # Determine node properties based on joint type
-        if isinstance(joint, Static):
+        # Use _StaticBase to match both user-created Static and internal _StaticBase
+        if isinstance(joint, _StaticBase):
             role = NodeRole.GROUND
             joint_type = JointType.REVOLUTE
         elif isinstance(joint, Crank):
@@ -262,7 +264,7 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
         ...     print(coords)
     """
     from ..joints import Crank, Revolute, Static
-    from ..joints.joint import Joint
+    from ..joints.joint import Joint, _StaticBase
     from ..linkage.linkage import Linkage as LinkageClass
 
     # Decompose to get solving order
@@ -271,14 +273,14 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     joints: list[Joint] = []
     node_to_joint: dict[NodeId, Joint] = {}
 
-    # Create ground joints (Static)
+    # Create ground joints (use _StaticBase to avoid deprecation warnings)
     for node_id in decomposition.ground:
         node = graph.nodes[node_id]
         pos = node.position
         x = pos[0] if pos[0] is not None else 0.0
         y = pos[1] if pos[1] is not None else 0.0
 
-        joint = Static(
+        joint = _StaticBase(
             x=x,
             y=y,
             name=node.name,

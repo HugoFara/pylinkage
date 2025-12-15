@@ -4,11 +4,12 @@ Definition of the different joints used for pylinkage.
 
 
 import abc
+import warnings
 
 from .._types import Constraints, Coord, MaybeCoord
 
 
-def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | Static | None":
+def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | _StaticBase | None":
     """
     Syntactic parser that understand a joint definition.
 
@@ -16,11 +17,12 @@ def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | Static | None
     :type joint: Joint | tuple[float, float] | None
 
     :return: New static joint definition if possible, or None.
-    :rtype: Joint | Static | None
+    :rtype: Joint | _StaticBase | None
     """
     if joint is None or isinstance(joint, Joint):
         return joint
-    return Static(*joint)
+    # Use _StaticBase internally to avoid deprecation warnings
+    return _StaticBase(*joint)
 
 
 class Joint(abc.ABC):
@@ -34,8 +36,8 @@ class Joint(abc.ABC):
 
     x: float | None
     y: float | None
-    joint0: "Joint | Static | None"
-    joint1: "Joint | Static | None"
+    joint0: "Joint | _StaticBase | None"
+    joint1: "Joint | _StaticBase | None"
     name: str
     _velocity: tuple[float, float] | None
     _acceleration: tuple[float, float] | None
@@ -68,7 +70,7 @@ class Joint(abc.ABC):
         """Represent an object with class name, coordinates, name and state."""
         return f"{self.__class__.__name__}(x={self.x}, y={self.y}, name={self.name})"
 
-    def __get_joints__(self) -> "tuple[Joint | Static | None, Joint | Static | None]":
+    def __get_joints__(self) -> "tuple[Joint | _StaticBase | None, Joint | _StaticBase | None]":
         """Return constraint joints as a tuple."""
         return self.joint0, self.joint1
 
@@ -148,10 +150,11 @@ class Joint(abc.ABC):
         )
 
 
-class Static(Joint):
-    """Special case of Joint that should not move.
+class _StaticBase(Joint):
+    """Internal base class for static joints (no deprecation warning).
 
-    Mostly used for the frame.
+    This is used internally by joint_syntax_parser to avoid triggering
+    deprecation warnings when converting coordinate tuples to joints.
     """
 
     __slots__ = ()
@@ -162,15 +165,7 @@ class Static(Joint):
         y: float = 0,
         name: str | None = None,
     ) -> None:
-        """
-        A Static joint is a point in space to use as anchor by other joints.
-
-        It is NOT a kind of joint as viewed in engineering terms!
-
-        :param x: Position on horizontal axis. The default is 0.
-        :param y: Position on vertical axis. The default is O.
-        :param name: Friendly name for human readability. The default is None.
-        """
+        """Create a static joint (internal use)."""
         super().__init__(x, y, name=name)
 
     def reload(self, dt: float = 1) -> None:
@@ -204,3 +199,44 @@ class Static(Joint):
         :param joint: Joint to set as anchor.
         """
         self.joint1 = joint_syntax_parser(joint)
+
+
+class Static(_StaticBase):
+    """Special case of Joint that should not move.
+
+    Mostly used for the frame.
+
+    .. deprecated:: 0.7.0
+        Use :class:`pylinkage.mechanism.GroundJoint` instead.
+        This class represents a ground joint (fixed point on the frame),
+        not a generic "static" object. The new API uses clearer terminology.
+    """
+
+    __slots__ = ()
+
+    def __init__(
+        self,
+        x: float = 0,
+        y: float = 0,
+        name: str | None = None,
+    ) -> None:
+        """
+        A Static joint is a point in space to use as anchor by other joints.
+
+        It is NOT a kind of joint as viewed in engineering terms!
+
+        :param x: Position on horizontal axis. The default is 0.
+        :param y: Position on vertical axis. The default is O.
+        :param name: Friendly name for human readability. The default is None.
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.GroundJoint` instead.
+        """
+        warnings.warn(
+            "Static is deprecated and will be removed in version 1.0.0. "
+            "Use pylinkage.mechanism.GroundJoint instead for clearer terminology. "
+            "Example: GroundJoint('name', position=(x, y))",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        super().__init__(x, y, name=name)

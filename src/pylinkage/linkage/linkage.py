@@ -19,7 +19,7 @@ from numpy.typing import NDArray
 from .._types import JointPositions
 from ..exceptions import UnderconstrainedError
 from ..joints import Crank, Fixed, Revolute, Static
-from ..joints.joint import Joint
+from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from ..solver import SolverData
@@ -90,11 +90,12 @@ class Linkage:
         )
         # Collect all Static joints: both explicit ones in self.joints
         # and implicit ones created from tuple shortcuts in parent references
-        solvable: list[Joint] = [j for j in self.joints if isinstance(j, Static)]
+        # Use _StaticBase to match both user-created Static and internal _StaticBase
+        solvable: list[Joint] = [j for j in self.joints if isinstance(j, _StaticBase)]
         for j in self.joints:
-            if isinstance(j.joint0, Static) and j.joint0 not in solvable:
+            if isinstance(j.joint0, _StaticBase) and j.joint0 not in solvable:
                 solvable.append(j.joint0)
-            if isinstance(j.joint1, Static) and j.joint1 not in solvable:
+            if isinstance(j.joint1, _StaticBase) and j.joint1 not in solvable:
                 solvable.append(j.joint1)
         # Track which joints from self.joints have been solved
         # (solvable may contain implicit Statics not in self.joints)
@@ -104,7 +105,7 @@ class Linkage:
         while joints_solved < len(self.joints) and solved_in_pass:
             solved_in_pass = False
             for j in self.joints:
-                if isinstance(j, Static) or j in solvable:
+                if isinstance(j, _StaticBase) or j in solvable:
                     continue
                 if j.joint0 in solvable and (isinstance(j, Crank) or j.joint1 in solvable):
                     solvable.append(j)
@@ -180,7 +181,7 @@ class Linkage:
         mobilities = 1
         kinematic_undetermined = 0
         for j in self.joints:
-            if isinstance(j, (Static, Fixed)):
+            if isinstance(j, (_StaticBase, Fixed)):
                 pass
             elif isinstance(j, Crank):
                 solids += 1
@@ -484,7 +485,7 @@ class Linkage:
             # Is in charge of redistributing constraints
             dispatcher = iter(constraints)
             for joint in self.joints:
-                if isinstance(joint, Static):
+                if isinstance(joint, _StaticBase):
                     pass
                 elif isinstance(joint, Crank):
                     joint.set_constraints(next(dispatcher))  # type: ignore[arg-type]

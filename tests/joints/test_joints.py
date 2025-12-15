@@ -11,7 +11,7 @@ import unittest
 from pylinkage import UnbuildableError
 from pylinkage.exceptions import NotCompletelyDefinedError
 from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
-from pylinkage.joints.joint import joint_syntax_parser
+from pylinkage.joints.joint import joint_syntax_parser, _StaticBase
 from pylinkage.joints.revolute import Pivot
 from pylinkage.joints.static import Static as StaticFromModule
 
@@ -30,9 +30,10 @@ class TestJointSyntaxParser(unittest.TestCase):
         self.assertIs(result, joint)
 
     def test_tuple_input(self):
-        """Test that a tuple creates a Static joint."""
+        """Test that a tuple creates a static joint (_StaticBase to avoid deprecation)."""
         result = joint_syntax_parser((3.0, 4.0))
-        self.assertIsInstance(result, Static)
+        # joint_syntax_parser uses _StaticBase to avoid deprecation warnings
+        self.assertIsInstance(result, _StaticBase)
         self.assertEqual(result.coord(), (3.0, 4.0))
 
 
@@ -129,7 +130,8 @@ class TestStaticJoint(unittest.TestCase):
         """Test setting anchors with tuple coordinates."""
         static = Static(0, 0)
         static.set_anchor0((5, 5))
-        self.assertIsInstance(static.joint0, Static)
+        # joint_syntax_parser uses _StaticBase to avoid deprecation warnings
+        self.assertIsInstance(static.joint0, _StaticBase)
         self.assertEqual(static.joint0.coord(), (5, 5))
 
 
@@ -347,9 +349,11 @@ class TestPrismaticJoint(unittest.TestCase):
                 joint2=self.line_end,
                 revolute_radius=2,
             )
-            self.assertEqual(len(w), 1)
-            self.assertTrue(issubclass(w[0].category, DeprecationWarning))
-            self.assertIn("Linear is deprecated", str(w[0].message))
+            # Now emits 2 warnings: Linear alias deprecation + Prismatic class deprecation
+            self.assertEqual(len(w), 2)
+            messages = [str(warning.message) for warning in w]
+            self.assertTrue(any("Linear is deprecated" in msg for msg in messages))
+            self.assertTrue(any("Prismatic is deprecated" in msg for msg in messages))
 
 
 class TestPivot(unittest.TestCase):
@@ -477,10 +481,11 @@ class TestRevolute(unittest.TestCase):
         self.assertEqual(joint.r1, 3.0)
 
     def test_set_anchor_with_tuple(self):
-        """Test set_anchor with tuple creates Static."""
+        """Test set_anchor with tuple creates static joint."""
         joint = Revolute(0, 0)
         joint.set_anchor0((5, 5), distance=1.0)
-        self.assertIsInstance(joint.joint0, Static)
+        # joint_syntax_parser uses _StaticBase to avoid deprecation warnings
+        self.assertIsInstance(joint.joint0, _StaticBase)
         self.assertEqual(joint.joint0.coord(), (5, 5))
 
     def test_circle_method(self):
@@ -637,9 +642,11 @@ class TestPivotDeprecation(unittest.TestCase):
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             Pivot(0, 0)
-            self.assertEqual(len(w), 1)
-            self.assertTrue(issubclass(w[0].category, DeprecationWarning))
-            self.assertIn("deprecated", str(w[0].message).lower())
+            # Now emits 2 warnings: Pivot alias deprecation + Revolute class deprecation
+            self.assertEqual(len(w), 2)
+            messages = [str(warning.message) for warning in w]
+            self.assertTrue(any("Pivot" in msg and "deprecated" in msg for msg in messages))
+            self.assertTrue(any("Revolute" in msg and "deprecated" in msg for msg in messages))
 
     def test_pivot_inherits_revolute(self):
         """Test that Pivot still works as Revolute."""

@@ -14,6 +14,8 @@ Created on Thu Jun 10 21:30:52 2021
 __all__ = [
     # Assur group module
     "assur",
+    # Mechanism module (new Links + Joints model)
+    "mechanism",
     # Symbolic computation module
     "symbolic",
     # Synthesis module
@@ -59,6 +61,9 @@ __all__ = [
 
 # Assur group module for graph-based linkage representation
 from . import assur as assur
+
+# Mechanism module - new Links + Joints model
+from . import mechanism as mechanism
 
 # Symbolic computation module using SymPy
 from . import symbolic as symbolic

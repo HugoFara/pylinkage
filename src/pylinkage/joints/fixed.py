@@ -6,7 +6,13 @@ with no ambiguity. It uses polar coordinates relative to the line
 between the two parents.
 
 This is a thin wrapper around the solver's solve_fixed function.
+
+.. deprecated:: 0.7.0
+    The `Fixed` class is deprecated. Use `pylinkage.mechanism.create_fixed_dyad()`
+    instead for clearer terminology. Fixed will be removed in version 1.0.0.
 """
+
+import warnings
 
 from .. import exceptions as pl_exceptions
 from .._types import Coord
@@ -24,6 +30,11 @@ class Fixed(pl_joint.Joint):
     - angle: Angle offset from the joint0→joint1 direction
 
     Unlike Revolute (RRR dyad), this has a unique solution.
+
+    .. deprecated:: 0.7.0
+        Use :func:`pylinkage.mechanism.create_fixed_dyad` instead.
+        This class represents a fixed angular constraint (deterministic dyad),
+        not a "fixed joint". The new API uses clearer terminology.
     """
 
     __slots__ = "r", "angle"
@@ -53,7 +64,17 @@ class Fixed(pl_joint.Joint):
             None.
         :param angle: Angle (joint1, joint0, self). Should be in radian and in trigonometric
             order. The default is None.
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.create_fixed_dyad()` instead.
         """
+        warnings.warn(
+            "Fixed is deprecated and will be removed in version 1.0.0. "
+            "Use pylinkage.mechanism.create_fixed_dyad() instead. "
+            "Example: link1, link2, joint = create_fixed_dyad(anchor1, anchor2, distance, angle)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(x, y, joint0, joint1, name)
         self.angle = angle
         self.r = distance

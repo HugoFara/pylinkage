@@ -10,15 +10,17 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from ..joints import Crank, Fixed, Prismatic, Revolute, Static
-from ..joints.joint import Joint
+from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from .linkage import Linkage
 
 
 # Mapping from joint type names to classes
+# Note: Use _StaticBase for Static to avoid triggering deprecation warnings
+# when deserializing. Users can still create Static explicitly if needed.
 JOINT_TYPES: dict[str, type[Joint]] = {
-    "Static": Static,
+    "Static": _StaticBase,  # Use internal class to avoid deprecation warnings
     "Crank": Crank,
     "Fixed": Fixed,
     "Linear": Prismatic,  # Backward compatible alias
@@ -51,7 +53,8 @@ def _serialize_joint_ref(
 
     # Otherwise, it's likely an implicit Static joint from tuple conversion
     # Serialize it inline with its coordinates
-    if isinstance(joint_ref, Static):
+    # Use _StaticBase to match both user-created Static and internal _StaticBase
+    if isinstance(joint_ref, _StaticBase):
         return {
             "inline": True,
             "type": "Static",
@@ -164,8 +167,9 @@ def joint_from_dict(
     joint1 = _resolve_joint_ref(data.get("joint1"), joints_by_name)
 
     result: Joint
-    if cls == Static:
-        result = Static(
+    # Use _StaticBase for Static to avoid triggering deprecation warnings
+    if cls == _StaticBase or cls == Static:
+        result = _StaticBase(
             x=data.get("x", 0),
             y=data.get("y", 0),
             name=data.get("name"),

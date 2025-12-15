@@ -7,6 +7,10 @@ two other joints. This corresponds to an RRP (two revolute, one prismatic)
 dyad in Assur group theory.
 
 This is a thin wrapper around the solver's solve_linear function.
+
+.. deprecated:: 0.7.0
+    The `Prismatic` class is deprecated. Use `pylinkage.mechanism.create_rrp_dyad()`
+    instead for clearer terminology. Prismatic will be removed in version 1.0.0.
 """
 
 import math
@@ -27,6 +31,13 @@ class Prismatic(pl_joint.Joint):
 
     When two solutions exist, the nearest to the current position
     is chosen (hysteresis for continuity during simulation).
+
+    .. deprecated:: 0.7.0
+        Use :func:`pylinkage.mechanism.create_rrp_dyad` instead.
+        Despite its name, this class is NOT a single prismatic joint - it's an
+        RRP dyad (2 links including a slider). The new API uses clearer
+        terminology: `create_rrp_dyad()` returns two `Link` objects and one
+        `PrismaticJoint`.
     """
 
     __slots__ = "revolute_radius", "joint2"
@@ -54,7 +65,18 @@ class Prismatic(pl_joint.Joint):
         :param joint2: Second joint or point defining the axis. The default is None.
         :param revolute_radius: Distance from joint0 to the current Joint. The default is None.
         :param name: Friendly name for human readability. The default is None.
+
+        .. deprecated:: 0.7.0
+            Use `pylinkage.mechanism.create_rrp_dyad()` instead.
         """
+        warnings.warn(
+            "Prismatic is deprecated and will be removed in version 1.0.0. "
+            "Despite its name, Prismatic is an RRP dyad (2 links + slider), not a single joint. "
+            "Use pylinkage.mechanism.create_rrp_dyad() instead. "
+            "Example: link1, link2, joint = create_rrp_dyad(anchor, line_p1, line_p2, distance)",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         super().__init__(x, y, joint0, joint1, name)
         self.revolute_radius = revolute_radius
         self.joint2 = pl_joint.joint_syntax_parser(joint2)
