@@ -8,8 +8,12 @@ The decomposition algorithm:
 2. Identifies driver (input) nodes
 3. Iteratively finds solvable Assur groups where all anchors are known
 4. Returns groups in solving order
+
+IMPORTANT: This module provides structural decomposition only.
+For solving kinematics, use pylinkage.solver.solve.solve_decomposition().
 """
 
+import warnings
 from dataclasses import dataclass, field
 
 from .._types import Coord
@@ -305,6 +309,10 @@ def solve_decomposition(
 ) -> dict[NodeId, Coord]:
     """Solve the kinematics using a decomposition result.
 
+    .. deprecated::
+        Use :func:`pylinkage.solver.solve.solve_decomposition` instead.
+        This function is provided for backward compatibility only.
+
     This function computes the positions of all nodes by solving
     the Assur groups in order.
 
@@ -320,34 +328,12 @@ def solve_decomposition(
         UnbuildableError: If any group cannot be solved.
         ValueError: If required positions are missing.
     """
-    if result.graph is None:
-        raise ValueError("DecompositionResult has no graph reference")
+    warnings.warn(
+        "assur.decomposition.solve_decomposition is deprecated. "
+        "Use pylinkage.solver.solve.solve_decomposition instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    from ..solver.solve import solve_decomposition as _solve_decomposition
 
-    graph = result.graph
-    positions: dict[NodeId, Coord] = {}
-
-    # Initialize with ground and driver positions
-    for node_id in result.ground:
-        node = graph.nodes[node_id]
-        if initial_positions and node_id in initial_positions:
-            positions[node_id] = initial_positions[node_id]
-        elif node.position[0] is not None and node.position[1] is not None:
-            positions[node_id] = (node.position[0], node.position[1])
-        else:
-            raise ValueError(f"Ground node {node_id} has no position")
-
-    for node_id in result.drivers:
-        node = graph.nodes[node_id]
-        if initial_positions and node_id in initial_positions:
-            positions[node_id] = initial_positions[node_id]
-        elif node.position[0] is not None and node.position[1] is not None:
-            positions[node_id] = (node.position[0], node.position[1])
-        else:
-            raise ValueError(f"Driver node {node_id} has no position")
-
-    # Solve each group in order
-    for group in result.groups:
-        new_positions = group.solve(graph, positions)
-        positions.update(new_positions)
-
-    return positions
+    return _solve_decomposition(result, initial_positions)

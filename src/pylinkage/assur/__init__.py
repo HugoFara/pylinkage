@@ -4,37 +4,34 @@ This module provides a graph-based representation of linkage mechanisms
 and tools for Assur group decomposition. It offers an alternative way
 to define and analyze linkages using formal kinematic theory.
 
+IMPORTANT: This module defines logical/structural properties only.
+Assur groups are pure data classes without solving behavior.
+Use pylinkage.solver.solve.solve_group() for position computation.
+
 Key components:
+- AssurMechanism: Wrapper adding Assur analysis to a Mechanism
 - LinkageGraph: Graph representation with nodes (joints) and edges (links)
 - AssurGroup: Base class for Assur groups (structural units)
 - DyadRRR, DyadRRP: Class I Assur groups (dyads)
 - decompose_assur_groups: Decomposition algorithm
-- Conversion functions between graph and Linkage representations
+- Conversion functions between graph and Mechanism representations
 
 Example usage:
 
-    >>> from pylinkage.assur import (
-    ...     LinkageGraph, Node, Edge,
-    ...     JointType, NodeRole,
-    ...     graph_to_linkage, decompose_assur_groups
-    ... )
+    >>> from pylinkage.mechanism import Mechanism
+    >>> from pylinkage.assur import AssurMechanism
     >>>
-    >>> # Create a four-bar linkage using graph syntax
-    >>> graph = LinkageGraph(name="Four-bar")
-    >>> graph.add_node(Node("A", role=NodeRole.GROUND, position=(0, 0)))
-    >>> graph.add_node(Node("D", role=NodeRole.GROUND, position=(3, 0)))
-    >>> graph.add_node(Node("B", role=NodeRole.DRIVER, position=(0, 1), angle=0.31))
-    >>> graph.add_node(Node("C", role=NodeRole.DRIVEN, position=(3, 2)))
-    >>> graph.add_edge(Edge("AB", source="A", target="B", distance=1))
-    >>> graph.add_edge(Edge("BC", source="B", target="C", distance=3))
-    >>> graph.add_edge(Edge("CD", source="C", target="D", distance=1))
+    >>> # Wrap a mechanism for Assur analysis
+    >>> mechanism = Mechanism(joints=[...], links=[...])
+    >>> assur = AssurMechanism(mechanism)
     >>>
-    >>> # Analyze the structure
-    >>> result = decompose_assur_groups(graph)
-    >>> print(f"Groups: {[g.joint_signature for g in result.groups]}")
+    >>> # Access structural properties
+    >>> print(f"DOF: {assur.degree_of_freedom}")
+    >>> print(f"Groups: {[g.joint_signature for g in assur.assur_groups]}")
     >>>
-    >>> # Convert to Linkage for simulation
-    >>> linkage = graph_to_linkage(graph)
+    >>> # Simulation via delegation
+    >>> for positions in assur.step():
+    ...     print(positions)
 """
 
 __all__ = [
@@ -43,11 +40,16 @@ __all__ = [
     "NodeRole",
     "NodeId",
     "EdgeId",
+    # Wrapper class
+    "AssurMechanism",
+    # Analysis results
+    "MobilityResult",
+    "StructuralAnalysis",
     # Graph structures
     "LinkageGraph",
     "Node",
     "Edge",
-    # Assur groups
+    # Assur groups (pure data classes)
     "AssurGroup",
     "DyadRRR",
     "DyadRRP",
@@ -59,7 +61,7 @@ __all__ = [
     "DecompositionResult",
     "decompose_assur_groups",
     "validate_decomposition",
-    "solve_decomposition",
+    "solve_decomposition",  # deprecated, use solver.solve.solve_decomposition
     # Conversion to/from Mechanism (preferred)
     "graph_to_mechanism",
     "mechanism_to_graph",
@@ -77,8 +79,9 @@ __all__ = [
 ]
 
 from ._types import EdgeId, JointType, NodeId, NodeRole
+from .analysis import MobilityResult, StructuralAnalysis
+from .assur_mechanism import AssurMechanism
 from .conversion import graph_to_linkage, linkage_to_graph
-from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph
 from .decomposition import (
     DecompositionResult,
     decompose_assur_groups,
@@ -96,6 +99,7 @@ from .groups import (
     identify_dyad_type,
 )
 from .hypergraph_conversion import from_hypergraph, to_hypergraph
+from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph
 from .serialization import (
     graph_from_dict,
     graph_from_json,

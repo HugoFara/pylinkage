@@ -14,6 +14,7 @@ from pylinkage.assur import (
     NodeRole,
 )
 from pylinkage.exceptions import UnbuildableError
+from pylinkage.solver.solve import solve_group
 
 
 class TestDyadRRR:
@@ -53,7 +54,7 @@ class TestDyadRRR:
             "B": (1.0, 0.0),
         }
 
-        result = dyad.solve(graph, previous_positions)
+        result = solve_group(dyad, previous_positions, graph)
         assert "C" in result
         x, y = result["C"]
 
@@ -83,7 +84,7 @@ class TestDyadRRR:
             "B": (2.0, 0.0),
         }
 
-        result = dyad.solve(graph, previous_positions)
+        result = solve_group(dyad, previous_positions, graph)
         x, y = result["C"]
 
         # Tangent point is at (1, 0)
@@ -112,7 +113,7 @@ class TestDyadRRR:
         }
 
         with pytest.raises(UnbuildableError):
-            dyad.solve(graph, previous_positions)
+            solve_group(dyad, previous_positions, graph)
 
     def test_dyad_rrr_solve_missing_anchor_raises(self):
         """Test that missing anchor position raises ValueError."""
@@ -130,7 +131,7 @@ class TestDyadRRR:
         previous_positions = {"A": (0.0, 0.0)}  # Missing B
 
         with pytest.raises(ValueError, match="position not found"):
-            dyad.solve(graph, previous_positions)
+            solve_group(dyad, previous_positions, graph)
 
     def test_dyad_rrr_can_form(self):
         """Test can_form method."""
@@ -189,7 +190,7 @@ class TestDyadRRP:
             "L2": (2.0, 1.0),
         }
 
-        result = dyad.solve(graph, previous_positions)
+        result = solve_group(dyad, previous_positions, graph)
         x, y = result["C"]
 
         # Should be at (1, 1) - the nearest intersection to initial position
@@ -218,4 +219,4 @@ class TestDyadRRP:
         }
 
         with pytest.raises(UnbuildableError):
-            dyad.solve(graph, previous_positions)
+            solve_group(dyad, previous_positions, graph)

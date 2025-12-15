@@ -30,6 +30,18 @@ from .joints import (
     solve_linear,
     solve_revolute,
 )
+
+# Group solvers (standalone functions for Assur groups)
+from .groups import (
+    solve_rrp_dyad,
+    solve_rrr_dyad,
+)
+
+# High-level solving API
+from .solve import (
+    solve_decomposition,
+    solve_group,
+)
 from .simulation import (
     first_nan_step,
     has_nan_positions,
@@ -94,6 +106,12 @@ __all__ = [
     "solve_revolute_velocity",
     "solve_fixed_velocity",
     "solve_prismatic_velocity",
+    # Group solvers
+    "solve_rrr_dyad",
+    "solve_rrp_dyad",
+    # High-level solving
+    "solve_group",
+    "solve_decomposition",
     # Simulation
     "step_single",
     "step_single_velocity",

@@ -5,7 +5,7 @@ which are the fundamental structural units in planar mechanism decomposition.
 
 An Assur group is a kinematic substructure with DOF = 0 when attached to
 the frame (or previously solved groups). It represents the minimal structural
-unit that can be solved independently.
+unit that can be identified and analyzed independently.
 
 Assur groups are classified by:
 - Class (k): number of links minus 1 divided by 2 for dyads
@@ -13,18 +13,15 @@ Assur groups are classified by:
 
 Class I groups (k=1) are dyads - two binary links, three joints.
 
-The actual solving logic is delegated to the solver module, which provides
-numba-optimized implementations. This module focuses on the graph-based
-representation and orchestration.
+IMPORTANT: These classes are pure data structures defining logical properties.
+They do NOT contain solving behavior. Use pylinkage.solver.solve.solve_group()
+to compute positions.
 """
 
-import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from typing import Any
 
-from .._types import Coord
-from ..exceptions import UnbuildableError
-from ..solver.joints import solve_linear, solve_revolute
 from ._types import JointType, NodeId
 from .graph import LinkageGraph
 
@@ -35,17 +32,20 @@ class AssurGroup(ABC):
 
     An Assur group is a kinematic substructure with DOF = 0 when
     attached to the frame (or previously solved groups). It represents
-    the minimal structural unit that can be solved independently.
+    the minimal structural unit that can be identified independently.
+
+    This is a pure data class defining structural properties only.
+    Use pylinkage.solver.solve.solve_group() to compute positions.
 
     Attributes:
-        internal_nodes: Node IDs that are part of this group (positions computed).
-        anchor_nodes: Node IDs that connect this group to the rest (must be solved first).
+        internal_nodes: Node IDs that are part of this group.
+        anchor_nodes: Node IDs that connect this group to the rest.
         internal_edges: Edge IDs within this group.
 
     Subclasses must implement:
         - group_class: The class k of this Assur group
         - joint_signature: String like "RRR", "RRP", etc.
-        - solve: Compute positions of internal nodes
+        - constraints: Dict of constraint values for this group
         - can_form: Check if given elements can form this group type
     """
 
@@ -73,28 +73,13 @@ class AssurGroup(ABC):
         """
         ...
 
+    @property
     @abstractmethod
-    def solve(
-        self,
-        graph: LinkageGraph,
-        previous_positions: dict[NodeId, Coord],
-    ) -> dict[NodeId, Coord]:
-        """Solve the positions of internal nodes.
+    def constraints(self) -> dict[str, Any]:
+        """Return the constraint values for this group.
 
-        Given the positions of anchor nodes (from previous_positions),
-        compute the positions of all internal nodes using the geometric
-        constraints stored in the graph.
-
-        Args:
-            graph: The full linkage graph containing constraint information.
-            previous_positions: Already-solved node positions (anchors + earlier groups).
-
-        Returns:
-            Mapping from internal node IDs to their computed (x, y) positions.
-
-        Raises:
-            UnbuildableError: If the configuration is geometrically impossible.
-            ValueError: If constraints or anchors are missing.
+        Returns a dict mapping constraint names to their values.
+        This allows solvers to access constraint data uniformly.
         """
         ...
 
@@ -135,6 +120,9 @@ class DyadRRR(AssurGroup):
     - Circle 1: centered at anchor0 with radius distance0
     - Circle 2: centered at anchor1 with radius distance1
 
+    This is a pure data class. Use pylinkage.solver.solve.solve_group()
+    to compute positions.
+
     Attributes:
         distance0: Distance from anchor0 to internal node.
         distance1: Distance from anchor1 to internal node.
@@ -151,69 +139,13 @@ class DyadRRR(AssurGroup):
     def joint_signature(self) -> str:
         return "RRR"
 
-    def solve(
-        self,
-        graph: LinkageGraph,
-        previous_positions: dict[NodeId, Coord],
-    ) -> dict[NodeId, Coord]:
-        """Solve the RRR dyad using the solver's circle-circle intersection.
-
-        Delegates to solver.joints.solve_revolute() for the actual computation.
-        The internal node is at the intersection of two circles centered
-        at the anchor nodes. When two solutions exist, the one nearest
-        to the current position is chosen (hysteresis).
-
-        Args:
-            graph: The linkage graph.
-            previous_positions: Positions of anchor nodes.
-
-        Returns:
-            Dict mapping the internal node ID to its computed position.
-
-        Raises:
-            UnbuildableError: If circles don't intersect (impossible config).
-            ValueError: If distances are not set or wrong number of nodes.
-        """
-        if len(self.internal_nodes) != 1:
-            raise ValueError("DyadRRR must have exactly 1 internal node")
-        if len(self.anchor_nodes) != 2:
-            raise ValueError("DyadRRR must have exactly 2 anchor nodes")
-
-        internal_id = self.internal_nodes[0]
-        anchor0_id, anchor1_id = self.anchor_nodes
-
-        # Get anchor positions
-        if anchor0_id not in previous_positions:
-            raise ValueError(f"Anchor {anchor0_id} position not found")
-        if anchor1_id not in previous_positions:
-            raise ValueError(f"Anchor {anchor1_id} position not found")
-
-        pos0 = previous_positions[anchor0_id]
-        pos1 = previous_positions[anchor1_id]
-
-        if self.distance0 is None or self.distance1 is None:
-            raise ValueError("Distances not set for DyadRRR")
-
-        # Get current position for disambiguation (hysteresis)
-        current_node = graph.nodes[internal_id]
-        current_pos = current_node.position
-        current_x = current_pos[0] if current_pos[0] is not None else pos0[0]
-        current_y = current_pos[1] if current_pos[1] is not None else pos0[1]
-
-        # Delegate to solver function (single source of truth)
-        new_x, new_y = solve_revolute(
-            current_x, current_y,
-            pos0[0], pos0[1], self.distance0,
-            pos1[0], pos1[1], self.distance1,
-        )
-
-        if math.isnan(new_x):
-            raise UnbuildableError(
-                internal_id,
-                message=f"No circle intersection for RRR dyad at {internal_id}"
-            )
-
-        return {internal_id: (new_x, new_y)}
+    @property
+    def constraints(self) -> dict[str, Any]:
+        """Return the constraint values for this RRR dyad."""
+        return {
+            "distance0": self.distance0,
+            "distance1": self.distance1,
+        }
 
     @classmethod
     def can_form(
@@ -271,6 +203,9 @@ class DyadRRP(AssurGroup):
     - A circle centered at revolute_anchor with radius revolute_distance
     - A line passing through line_node1 and line_node2
 
+    This is a pure data class. Use pylinkage.solver.solve.solve_group()
+    to compute positions.
+
     Attributes:
         revolute_distance: Distance from revolute anchor to internal node.
         line_node1: First node defining the prismatic axis.
@@ -289,71 +224,14 @@ class DyadRRP(AssurGroup):
     def joint_signature(self) -> str:
         return "RRP"
 
-    def solve(
-        self,
-        graph: LinkageGraph,
-        previous_positions: dict[NodeId, Coord],
-    ) -> dict[NodeId, Coord]:
-        """Solve the RRP dyad using the solver's circle-line intersection.
-
-        Delegates to solver.joints.solve_linear() for the actual computation.
-
-        Args:
-            graph: The linkage graph.
-            previous_positions: Positions of anchor and line-defining nodes.
-
-        Returns:
-            Dict mapping the internal node ID to its computed position.
-
-        Raises:
-            UnbuildableError: If circle and line don't intersect.
-            ValueError: If constraints or nodes are missing.
-        """
-        if len(self.internal_nodes) != 1:
-            raise ValueError("DyadRRP must have exactly 1 internal node")
-        if len(self.anchor_nodes) < 1:
-            raise ValueError("DyadRRP must have at least 1 anchor node")
-
-        internal_id = self.internal_nodes[0]
-        revolute_anchor = self.anchor_nodes[0]
-
-        # Validate all required positions exist
-        if revolute_anchor not in previous_positions:
-            raise ValueError(f"Anchor {revolute_anchor} position not found")
-        if self.line_node1 is None or self.line_node2 is None:
-            raise ValueError("Line nodes not set for DyadRRP")
-        if self.line_node1 not in previous_positions:
-            raise ValueError(f"Line node {self.line_node1} position not found")
-        if self.line_node2 not in previous_positions:
-            raise ValueError(f"Line node {self.line_node2} position not found")
-        if self.revolute_distance is None:
-            raise ValueError("Revolute distance not set for DyadRRP")
-
-        pos_anchor = previous_positions[revolute_anchor]
-        pos_line1 = previous_positions[self.line_node1]
-        pos_line2 = previous_positions[self.line_node2]
-
-        # Get current position for disambiguation (hysteresis)
-        current_node = graph.nodes[internal_id]
-        current_pos = current_node.position
-        current_x = current_pos[0] if current_pos[0] is not None else pos_anchor[0]
-        current_y = current_pos[1] if current_pos[1] is not None else pos_anchor[1]
-
-        # Delegate to solver function (single source of truth)
-        new_x, new_y = solve_linear(
-            current_x, current_y,
-            pos_anchor[0], pos_anchor[1], self.revolute_distance,
-            pos_line1[0], pos_line1[1],
-            pos_line2[0], pos_line2[1],
-        )
-
-        if math.isnan(new_x):
-            raise UnbuildableError(
-                internal_id,
-                message=f"No circle-line intersection for RRP dyad at {internal_id}"
-            )
-
-        return {internal_id: (new_x, new_y)}
+    @property
+    def constraints(self) -> dict[str, Any]:
+        """Return the constraint values for this RRP dyad."""
+        return {
+            "revolute_distance": self.revolute_distance,
+            "line_node1": self.line_node1,
+            "line_node2": self.line_node2,
+        }
 
     @classmethod
     def can_form(
@@ -390,6 +268,7 @@ class DyadRPR(AssurGroup):
     """RPR Dyad: Revolute-Prismatic-Revolute configuration.
 
     This is a stub implementation for extensibility.
+    Solving is not yet implemented in the solver module.
     """
 
     @property
@@ -400,12 +279,10 @@ class DyadRPR(AssurGroup):
     def joint_signature(self) -> str:
         return "RPR"
 
-    def solve(
-        self,
-        graph: LinkageGraph,
-        previous_positions: dict[NodeId, Coord],
-    ) -> dict[NodeId, Coord]:
-        raise NotImplementedError("RPR dyad solving not yet implemented")
+    @property
+    def constraints(self) -> dict[str, Any]:
+        """Return the constraint values for this RPR dyad."""
+        return {}  # Not yet implemented
 
     @classmethod
     def can_form(
@@ -422,6 +299,7 @@ class DyadPRR(AssurGroup):
     """PRR Dyad: Prismatic-Revolute-Revolute configuration.
 
     This is a stub implementation for extensibility.
+    Solving is not yet implemented in the solver module.
     """
 
     @property
@@ -432,12 +310,10 @@ class DyadPRR(AssurGroup):
     def joint_signature(self) -> str:
         return "PRR"
 
-    def solve(
-        self,
-        graph: LinkageGraph,
-        previous_positions: dict[NodeId, Coord],
-    ) -> dict[NodeId, Coord]:
-        raise NotImplementedError("PRR dyad solving not yet implemented")
+    @property
+    def constraints(self) -> dict[str, Any]:
+        """Return the constraint values for this PRR dyad."""
+        return {}  # Not yet implemented
 
     @classmethod
     def can_form(
