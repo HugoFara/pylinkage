@@ -1,20 +1,25 @@
 """Dyads - Assur group building blocks for planar linkages.
 
-This module provides the primary user-facing API for building
-planar linkage mechanisms using Assur group formalism.
+This module provides true Assur group dyads (0 DOF structural units):
 
 Classes:
-    Ground: Fixed point on the frame (ground link)
-    Crank: Motor-driven rotary input
     RRRDyad: Circle-circle intersection (two links meeting at one joint)
     RRPDyad: Circle-line intersection (slider mechanism)
     FixedDyad: Deterministic polar projection
-    Linkage: Container orchestrating dyads into a mechanism
+    BinaryDyad: Base class for binary Assur groups
+
+For other kinematic elements, use the appropriate modules:
+    - pylinkage.components: Ground, base classes (Component, ConnectedComponent)
+    - pylinkage.actuators: Crank, LinearActuator
+    - pylinkage.simulation: Linkage
 
 Example:
     Build and simulate a four-bar linkage::
 
-        from pylinkage.dyads import Ground, Crank, RRRDyad, Linkage
+        from pylinkage.components import Ground
+        from pylinkage.actuators import Crank
+        from pylinkage.dyads import RRRDyad
+        from pylinkage.simulation import Linkage
 
         # Ground points
         O1 = Ground(0.0, 0.0, name="O1")
@@ -36,36 +41,52 @@ Example:
         for positions in linkage.step():
             print(positions)
 
-Migration from joints/:
-    The deprecated ``pylinkage.joints`` module has been replaced by this module.
-    Migration is straightforward:
-
-    - ``Static(x, y)`` -> ``Ground(x, y)``
-    - ``Crank(joint0=A, distance=r, angle=v)`` -> ``Crank(anchor=A, radius=r, angular_velocity=v)``
-    - ``Revolute(joint0=A, joint1=B, distance0=d0, distance1=d1)`` ->
-      ``RRRDyad(anchor1=A, anchor2=B, distance1=d0, distance2=d1)``
-    - ``Prismatic(...)`` -> ``RRPDyad(...)``
-    - ``Fixed(...)`` -> ``FixedDyad(...)``
+Backwards Compatibility:
+    For convenience, this module re-exports items from their canonical locations:
+    - Ground: from pylinkage.components
+    - Crank, LinearActuator: from pylinkage.actuators
+    - Linkage: from pylinkage.simulation
+    - Dyad, ConnectedDyad: aliases for Component, ConnectedComponent
 """
 
+# Primary exports - true Assur groups
+# Actuators
+from ..actuators import Crank as Crank
+from ..actuators import LinearActuator as LinearActuator
+
+# Re-exports for backwards compatibility
+# Base classes (with proper aliases)
+from ..components import Component as Component
+from ..components import ConnectedComponent as ConnectedComponent
+from ..components import ConnectedDyad as ConnectedDyad  # Alias for ConnectedComponent
+from ..components import Dyad as Dyad  # Alias for Component
+
+# Ground from components
+from ..components import Ground as Ground
+from ..components import _AnchorProxy as _AnchorProxy
+
+# Linkage container
+from ..simulation import Linkage as Linkage
 from ._base import BinaryDyad as BinaryDyad
-from ._base import ConnectedDyad as ConnectedDyad
-from ._base import Dyad as Dyad
-from .crank import Crank as Crank
 from .fixed import FixedDyad as FixedDyad
-from .ground import Ground as Ground
-from .linkage import Linkage as Linkage
 from .rrp import RRPDyad as RRPDyad
 from .rrr import RRRDyad as RRRDyad
 
 __all__ = [
-    "Dyad",
-    "ConnectedDyad",
-    "BinaryDyad",
-    "Ground",
-    "Crank",
+    # True Assur groups (primary exports)
     "RRRDyad",
     "RRPDyad",
     "FixedDyad",
+    "BinaryDyad",
+    # Re-exports for backwards compatibility
+    "Ground",
+    "Crank",
+    "LinearActuator",
     "Linkage",
+    # Base classes
+    "Component",
+    "ConnectedComponent",
+    "Dyad",  # Alias for Component
+    "ConnectedDyad",  # Alias for ConnectedComponent
+    "_AnchorProxy",
 ]

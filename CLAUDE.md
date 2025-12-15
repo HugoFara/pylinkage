@@ -56,14 +56,41 @@ uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
 
 ### Package Structure
 
-- **src/pylinkage/joints/**: Joint types that form linkage building blocks
+- **src/pylinkage/components/**: Base classes and fixed frame elements
+  - `Component`: Abstract base class for all kinematic elements
+  - `ConnectedComponent`: Base for elements with parent connections
+  - `Ground`: Fixed point on the frame (ground link)
+  - `_AnchorProxy`: Proxy for actuator output connections
+
+- **src/pylinkage/actuators/**: Motor-driven input drivers
+  - `Crank`: Motor-driven rotary input (rotating around ground)
+  - `LinearActuator`: Motor-driven linear input (oscillating piston/cylinder)
+
+- **src/pylinkage/dyads/**: Pure Assur groups (0 DOF structural units)
+  - `RRRDyad`: Circle-circle intersection (two links meeting at one joint)
+  - `RRPDyad`: Circle-line intersection (slider mechanism)
+  - `FixedDyad`: Deterministic polar projection
+  - `BinaryDyad`: Base class for binary Assur groups
+  - Note: Re-exports Ground, Crank, LinearActuator, Linkage for backwards compatibility
+
+- **src/pylinkage/simulation/**: Simulation containers
+  - `Linkage`: Container orchestrating components into a mechanism
+
+- **src/pylinkage/mechanism/**: Low-level Links + Joints model
+  - `Joint`, `RevoluteJoint`, `PrismaticJoint`, `GroundJoint`: Joint classes
+  - `Link`, `DriverLink`, `GroundLink`: Rigid body classes
+  - `Mechanism`: Main orchestrator class
+  - Conversion: `mechanism_from_linkage()`, `mechanism_to_linkage()`
+  - Serialization: `mechanism_to_json()`, `mechanism_from_json()`
+
+- **src/pylinkage/joints/**: Joint types (legacy, use `dyads` for new code)
   - `Static`: Fixed point in space (base class for all joints)
   - `Crank`: Rotating motor joint (creates a motor + pin joint)
   - `Revolute`: Pin joint connecting two parents
     (creates 3 internal pin joints forming a deformable triangle)
   - `Pivot`: Low-level pin joint (used internally by Revolute)
   - `Fixed`: Static joint with fixed distance constraints
-  - `Linear`: Joint constrained to move along a line
+  - `Prismatic`: Joint constrained to move along a line (`Linear` is deprecated alias)
 
 - **src/pylinkage/linkage/**: Linkage class that orchestrates joint collections
   - `Linkage`: Main class managing joints, solving order, and simulation
@@ -133,7 +160,17 @@ uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
 
 ### Key Patterns
 
-**Linkage Definition Flow:**
+**Component-Based Definition Flow (Preferred API):**
+
+1. Create `Ground` points for fixed frame locations (from `pylinkage.components`)
+2. Create `Crank` or `LinearActuator` for motor-driven input (from `pylinkage.actuators`)
+3. Add `RRRDyad` or `RRPDyad` for constrained connections (from `pylinkage.dyads`)
+4. Wrap in `Linkage` and call `step()` to simulate (from `pylinkage.simulation`)
+5. Use `show_linkage()` to visualize
+
+Note: For backwards compatibility, all classes can still be imported from `pylinkage.dyads`.
+
+**Legacy Linkage Definition Flow:**
 
 1. Create joint instances (Crank, Revolute, etc.) with parent references
 2. Wrap joints in a `Linkage(joints=..., order=...)`
@@ -186,6 +223,19 @@ uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
 - `UnderconstrainedError`: Raised when a linkage is underconstrained (too few constraints)
 - `NotCompletelyDefinedError`: Raised when joint parameters are incomplete
 
+**API Migration (joints → components/actuators/dyads):**
+
+The `pylinkage.joints` module is deprecated. Use the new modular structure:
+
+- `Static(x, y)` → `Ground(x, y)` from `pylinkage.components`
+- `Crank(joint0=A, distance=r, angle=v)` → `Crank(anchor=A, radius=r, angular_velocity=v)` from `pylinkage.actuators`
+- `Revolute(joint0=A, joint1=B, distance0=d0, distance1=d1)` → `RRRDyad(anchor1=A, anchor2=B, distance1=d0, distance2=d1)` from `pylinkage.dyads`
+- `Linear(...)` → `RRPDyad(...)` from `pylinkage.dyads`
+- `Fixed(...)` → `FixedDyad(...)` from `pylinkage.dyads`
+- New: `LinearActuator(anchor=A, angle=θ, stroke=s, velocity=v)` from `pylinkage.actuators`
+
+All classes are also re-exported from `pylinkage.dyads` for backwards compatibility.
+
 ## Dependencies
 
 Requires Python >= 3.10
@@ -193,5 +243,3 @@ Requires Python >= 3.10
 Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser, taskipy
-
-App (optional): streamlit

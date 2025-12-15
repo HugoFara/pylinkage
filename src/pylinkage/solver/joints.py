@@ -125,6 +125,60 @@ def solve_fixed(
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
+def solve_linear_actuator(
+    current_extension: float,
+    direction: float,
+    anchor_x: float,
+    anchor_y: float,
+    angle: float,
+    stroke: float,
+    velocity: float,
+    dt: float,
+) -> tuple[float, float, float, float]:
+    """Solve linear actuator position using oscillating linear motion.
+
+    The linear actuator moves along a line at constant velocity,
+    reversing direction when it reaches stroke limits.
+
+    Args:
+        current_extension: Current extension from anchor (0 to stroke).
+        direction: Current movement direction (+1.0 or -1.0).
+        anchor_x: X position of the anchor (fixed end).
+        anchor_y: Y position of the anchor (fixed end).
+        angle: Direction angle in radians (from +x axis).
+        stroke: Maximum extension distance.
+        velocity: Linear velocity magnitude (units per time step).
+        dt: Time step.
+
+    Returns:
+        Tuple of (new_x, new_y, new_extension, new_direction).
+    """
+    # Update extension
+    new_extension = current_extension + direction * velocity * dt
+
+    # Handle bouncing at stroke limits
+    new_direction = direction
+    if new_extension >= stroke:
+        new_extension = stroke - (new_extension - stroke)
+        new_direction = -1.0
+    elif new_extension <= 0.0:
+        new_extension = -new_extension
+        new_direction = 1.0
+
+    # Clamp to valid range (safety for large dt)
+    if new_extension > stroke:
+        new_extension = stroke
+    elif new_extension < 0.0:
+        new_extension = 0.0
+
+    # Compute position from extension and angle
+    new_x = anchor_x + new_extension * math.cos(angle)
+    new_y = anchor_y + new_extension * math.sin(angle)
+
+    return (new_x, new_y, new_extension, new_direction)
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_linear(
     current_x: float,
     current_y: float,

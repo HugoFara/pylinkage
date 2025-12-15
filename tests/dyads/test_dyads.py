@@ -12,6 +12,7 @@ from pylinkage.dyads import (
     Crank,
     FixedDyad,
     Ground,
+    LinearActuator,
     Linkage,
     RRPDyad,
     RRRDyad,
@@ -99,6 +100,133 @@ class TestCrank:
         crank.reload(dt=1.0)
         assert crank.x == pytest.approx(0.0)
         assert crank.y == pytest.approx(1.0)
+
+
+class TestLinearActuator:
+    """Tests for LinearActuator dyad."""
+
+    def test_linear_actuator_creation(self):
+        """Test creating a linear actuator."""
+        O = Ground(0.0, 0.0, name="O")
+        actuator = LinearActuator(
+            anchor=O, angle=0.0, stroke=2.0, velocity=0.1, name="actuator"
+        )
+
+        assert actuator.anchor == O
+        assert actuator.angle == 0.0
+        assert actuator.stroke == 2.0
+        assert actuator.velocity == 0.1
+        # Initial position at extension 0 should be at anchor
+        assert actuator.x == pytest.approx(0.0)
+        assert actuator.y == pytest.approx(0.0)
+
+    def test_linear_actuator_with_angle(self):
+        """Test creating a linear actuator with non-zero angle."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(
+            anchor=O,
+            angle=math.pi / 2,  # 90 degrees (vertical)
+            stroke=2.0,
+            velocity=0.1,
+            initial_extension=1.0,
+        )
+
+        # Initial position at 90 degrees with extension 1 should be (0, 1)
+        assert actuator.x == pytest.approx(0.0)
+        assert actuator.y == pytest.approx(1.0)
+
+    def test_linear_actuator_output(self):
+        """Test linear actuator output proxy."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0)
+
+        assert actuator.output.position == actuator.position
+        assert actuator.output.x == actuator.x
+        assert actuator.output.y == actuator.y
+
+    def test_linear_actuator_constraints(self):
+        """Test linear actuator constraints (stroke, velocity)."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.1)
+
+        assert actuator.get_constraints() == (2.0, 0.1)
+
+        actuator.set_constraints(3.0, 0.2)
+        assert actuator.stroke == 3.0
+        assert actuator.velocity == 0.2
+        assert actuator.get_constraints() == (3.0, 0.2)
+
+    def test_linear_actuator_reload(self):
+        """Test that linear actuator moves on reload."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.5)
+
+        # Initial position at anchor
+        assert actuator.x == pytest.approx(0.0)
+        assert actuator.y == pytest.approx(0.0)
+        assert actuator.extension == pytest.approx(0.0)
+
+        # After one step (move 0.5 units along x-axis)
+        actuator.reload(dt=1.0)
+        assert actuator.x == pytest.approx(0.5)
+        assert actuator.y == pytest.approx(0.0)
+        assert actuator.extension == pytest.approx(0.5)
+
+    def test_linear_actuator_oscillation(self):
+        """Test that linear actuator oscillates at stroke limits."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(
+            anchor=O, angle=0.0, stroke=1.0, velocity=0.6, initial_extension=0.0
+        )
+
+        # Move forward: 0 -> 0.6
+        actuator.reload(dt=1.0)
+        assert actuator.extension == pytest.approx(0.6)
+
+        # Move forward: 0.6 -> 1.0, then bounce to 0.8 (overshoot by 0.2)
+        actuator.reload(dt=1.0)
+        assert actuator.extension == pytest.approx(0.8)
+        assert actuator._direction == -1.0  # Now moving backward
+
+        # Move backward: 0.8 -> 0.2
+        actuator.reload(dt=1.0)
+        assert actuator.extension == pytest.approx(0.2)
+
+    def test_linear_actuator_with_initial_extension(self):
+        """Test creating actuator with initial extension."""
+        O = Ground(1.0, 1.0)
+        actuator = LinearActuator(
+            anchor=O, angle=0.0, stroke=3.0, velocity=0.1, initial_extension=1.5
+        )
+
+        # Initial position should be anchor + (1.5, 0)
+        assert actuator.x == pytest.approx(2.5)
+        assert actuator.y == pytest.approx(1.0)
+        assert actuator.extension == pytest.approx(1.5)
+
+    def test_linear_actuator_invalid_stroke(self):
+        """Test that invalid stroke raises error."""
+        O = Ground(0.0, 0.0)
+
+        with pytest.raises(ValueError, match="Stroke must be positive"):
+            LinearActuator(anchor=O, angle=0.0, stroke=0.0, velocity=0.1)
+
+        with pytest.raises(ValueError, match="Stroke must be positive"):
+            LinearActuator(anchor=O, angle=0.0, stroke=-1.0, velocity=0.1)
+
+    def test_linear_actuator_invalid_initial_extension(self):
+        """Test that invalid initial extension raises error."""
+        O = Ground(0.0, 0.0)
+
+        with pytest.raises(ValueError, match="Initial extension"):
+            LinearActuator(
+                anchor=O, angle=0.0, stroke=2.0, velocity=0.1, initial_extension=3.0
+            )
+
+        with pytest.raises(ValueError, match="Initial extension"):
+            LinearActuator(
+                anchor=O, angle=0.0, stroke=2.0, velocity=0.1, initial_extension=-0.5
+            )
 
 
 class TestRRRDyad:
@@ -325,6 +453,41 @@ class TestLinkage:
         period = linkage.get_rotation_period()
         assert period == round(math.tau / 0.1)
 
+    def test_linkage_with_linear_actuator(self):
+        """Test creating a linkage with linear actuator."""
+        O = Ground(0.0, 0.0, name="O")
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.1)
+
+        linkage = Linkage([O, actuator], name="Test")
+
+        assert len(linkage.dyads) == 2
+        assert len(linkage._linear_actuators) == 1
+
+    def test_linkage_linear_actuator_period(self):
+        """Test computing period for linear actuator."""
+        O = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, velocity=0.1)
+
+        linkage = Linkage([O, actuator])
+
+        # Full cycle = 2 * stroke / velocity = 2 * 1.0 / 0.1 = 20
+        period = linkage.get_rotation_period()
+        assert period == 20
+
+    def test_linkage_mixed_actuators_period(self):
+        """Test period with both crank and linear actuator."""
+        O = Ground(0.0, 0.0)
+        crank = Crank(anchor=O, radius=1.0, angular_velocity=math.pi / 5)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, velocity=0.2)
+
+        linkage = Linkage([O, crank, actuator])
+
+        # Crank period: tau / (pi/5) = 10 steps
+        # Actuator period: 2 * 1.0 / 0.2 = 10 steps
+        # LCM(10, 10) = 10
+        period = linkage.get_rotation_period()
+        assert period == 10
+
 
 class TestIntegration:
     """Integration tests for the dyads module."""
@@ -378,3 +541,35 @@ class TestIntegration:
         # Should simulate without error
         positions = list(linkage.step(iterations=5))
         assert len(positions) == 5
+
+    def test_linear_actuator_driven_mechanism(self):
+        """Test mechanism driven by linear actuator."""
+        O1 = Ground(0.0, 0.0, name="O1")
+        O2 = Ground(3.0, 0.0, name="O2")
+
+        # Linear actuator driving a four-bar-like mechanism
+        actuator = LinearActuator(
+            anchor=O1,
+            angle=math.pi / 4,  # 45 degrees
+            stroke=1.5,
+            velocity=0.1,
+            initial_extension=0.75,  # Start in middle
+        )
+
+        # Connect a rocker to the actuator output
+        rocker = RRRDyad(
+            anchor1=actuator.output,
+            anchor2=O2,
+            distance1=2.0,
+            distance2=1.5,
+            name="rocker",
+        )
+
+        linkage = Linkage([O1, O2, actuator, rocker], name="Actuator-Driven")
+
+        # Should simulate without error
+        positions = list(linkage.step(iterations=10))
+        assert len(positions) == 10
+
+        # Actuator output should have moved
+        assert positions[-1][2] != positions[0][2]

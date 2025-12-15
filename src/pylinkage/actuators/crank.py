@@ -1,4 +1,4 @@
-"""Crank dyad - motor-driven rotary input.
+"""Crank actuator - motor-driven rotary input.
 
 A crank is a driver link that rotates around a ground anchor
 at a constant angular velocity.
@@ -8,11 +8,10 @@ from __future__ import annotations
 
 import math
 
-from ._base import ConnectedDyad, _AnchorProxy
-from .ground import Ground
+from ..components import ConnectedComponent, Ground, _AnchorProxy
 
 
-class Crank(ConnectedDyad):
+class Crank(ConnectedComponent):
     """A motor-driven rotary input (crank).
 
     A crank rotates around a ground anchor at constant angular velocity,

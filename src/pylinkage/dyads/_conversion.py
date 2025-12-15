@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ..mechanism import Mechanism
-    from .linkage import Linkage
+    from ..simulation import Linkage
 
 
 def to_mechanism(linkage: Linkage) -> Mechanism:
@@ -30,12 +30,12 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
         This is a one-way conversion. Changes to the returned Mechanism
         will not be reflected in the original Linkage.
     """
+    from ..actuators import Crank
+    from ..components import Ground, _AnchorProxy
     from ..mechanism import GroundJoint, Joint, RevoluteJoint
     from ..mechanism import Mechanism as MechMechanism
     from ..mechanism.link import DriverLink, GroundLink, Link
-    from .crank import Crank
     from .fixed import FixedDyad
-    from .ground import Ground
     from .rrp import RRPDyad
     from .rrr import RRRDyad
 
@@ -49,8 +49,8 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
     links: list[Link] = []
     ground_joints: list[Joint] = []
 
-    # First pass: create joints for all dyads
-    for dyad in linkage.dyads:
+    # First pass: create joints for all components
+    for dyad in linkage.components:
         joint: Joint
         if isinstance(dyad, Ground):
             joint = GroundJoint(
@@ -78,7 +78,7 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
         links.append(ground_link)
 
     # Second pass: create links
-    for dyad in linkage.dyads:
+    for dyad in linkage.components:
         joint = dyad_to_joint[id(dyad)]
 
         if isinstance(dyad, Crank):
@@ -95,8 +95,6 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
 
         elif isinstance(dyad, RRRDyad):
             # Create two links connecting to anchors
-            from ._base import _AnchorProxy
-
             anchor1 = (
                 dyad.anchor1._parent
                 if isinstance(dyad.anchor1, _AnchorProxy)
@@ -125,8 +123,6 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
             links.append(link2)
 
         elif isinstance(dyad, RRPDyad):
-            from ._base import _AnchorProxy
-
             rev_anchor = (
                 dyad.revolute_anchor._parent
                 if isinstance(dyad.revolute_anchor, _AnchorProxy)
@@ -150,8 +146,6 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
             links.append(link2)
 
         elif isinstance(dyad, FixedDyad):
-            from ._base import _AnchorProxy
-
             anchor1 = (
                 dyad.anchor1._parent
                 if isinstance(dyad.anchor1, _AnchorProxy)
