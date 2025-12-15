@@ -21,20 +21,22 @@ You will need to have your own fork for this project if you want to submit pull 
 We use pytest. Run tests with:
 
 ```bash
-uv run pytest
+uv run task test
 ```
 
 Run with coverage:
 
 ```bash
-uv run pytest --cov=pylinkage --cov-report=html
+uv run task test-cov
 ```
 
 ## Linting and Type Checking
 
 ```bash
-uv run ruff check .
-uv run mypy pylinkage
+uv run task lint        # Check for issues
+uv run task lint-fix    # Auto-fix issues
+uv run task format      # Format code
+uv run task typecheck   # Run mypy
 ```
 
 ## Building
@@ -48,10 +50,16 @@ uv build
 Build the documentation locally:
 
 ```bash
-uv run sphinx-build -b html docs/source docs/
+uv run task docs
 ```
 
 Then open `docs/index.html` in your browser.
+
+To clean the build artifacts:
+
+```bash
+uv run task docs-clean
+```
 
 ## Release
 

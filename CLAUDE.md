@@ -22,26 +22,27 @@ uv sync --no-dev                     # Install only production dependencies
 ### Testing
 
 ```bash
-uv run pytest                        # Run all tests
+uv run task test                     # Run all tests
+uv run task test-cov                 # Run with coverage
 uv run pytest tests/joints/          # Run specific test directory
 uv run pytest -k "test_buildable"    # Run tests matching pattern
-uv run pytest --cov=pylinkage        # Run with coverage
 ```
 
 ### Linting and Type Checking
 
 ```bash
-uv run ruff check .                  # Lint code
-uv run ruff check . --fix            # Lint and auto-fix
-uv run ruff format .                 # Format code
-uv run mypy src/pylinkage            # Type check
+uv run task lint                     # Lint code
+uv run task lint-fix                 # Lint and auto-fix
+uv run task format                   # Format code
+uv run task typecheck                # Type check
 ```
 
 ### Building
 
 ```bash
 uv build                             # Build wheel and sdist
-uv run sphinx-build -b html docs/source docs/  # Build documentation
+uv run task docs                     # Build documentation
+uv run task docs-clean               # Clean documentation artifacts
 ```
 
 ### Running the Web App
@@ -191,6 +192,6 @@ Requires Python >= 3.10
 
 Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 
-Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser
+Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser, taskipy
 
 App (optional): streamlit

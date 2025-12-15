@@ -116,7 +116,18 @@ dev = [
     "sphinx-rtd-theme>=2.0.0",
     "myst-parser>=3.0.1",
     "bump-my-version>=1.2.5",
+    "taskipy>=1.12.0",
 ]
+
+[tool.taskipy.tasks]
+docs = "sphinx-build -b html docs/source docs/"
+docs-clean = "rm -rf docs/*.html docs/*.js docs/_* docs/objects.inv"
+test = "pytest"
+test-cov = "pytest --cov=pylinkage --cov-report=html"
+lint = "ruff check ."
+lint-fix = "ruff check . --fix"
+format = "ruff format ."
+typecheck = "mypy src/pylinkage"
 
 [tool.bumpversion]
 current_version = "0.7.0"
