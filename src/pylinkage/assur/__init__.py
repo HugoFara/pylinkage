@@ -57,6 +57,12 @@ __all__ = [
     "DyadPRR",
     "DYAD_TYPES",
     "identify_dyad_type",
+    # Signature parsing and hypergraph generation
+    "AssurGroupClass",
+    "AssurSignature",
+    "parse_signature",
+    "signature_to_hypergraph",
+    "signature_to_group_class",
     # Decomposition
     "DecompositionResult",
     "decompose_assur_groups",
@@ -105,4 +111,11 @@ from .serialization import (
     graph_from_json,
     graph_to_dict,
     graph_to_json,
+)
+from .signature import (
+    AssurGroupClass,
+    AssurSignature,
+    parse_signature,
+    signature_to_group_class,
+    signature_to_hypergraph,
 )
