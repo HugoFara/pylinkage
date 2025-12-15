@@ -45,6 +45,27 @@ uv run task typecheck   # Run mypy
 uv build
 ```
 
+## Running the Web App (React + FastAPI)
+
+Install dependencies:
+
+```bash
+uv sync --extra api          # Install FastAPI/uvicorn backend dependencies
+cd frontend && npm install   # Install React frontend dependencies
+```
+
+Run the backend (from project root):
+
+```bash
+uv run task api
+```
+
+Run the frontend (in a separate terminal):
+
+```bash
+uv run task frontend
+```
+
 ## Documentation
 
 Build the documentation locally:
