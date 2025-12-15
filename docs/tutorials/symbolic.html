@@ -57,13 +57,14 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Symbolic Computation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#quick-start">Quick Start</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#illustrated-example-effect-of-link-lengths">Illustrated Example: Effect of Link Lengths</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#creating-symbolic-linkages">Creating Symbolic Linkages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#solving-symbolically">Solving Symbolically</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#computing-trajectories">Computing Trajectories</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#symbolic-optimization">Symbolic Optimization</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#checking-buildability">Checking Buildability</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sensitivity-analysis">Sensitivity Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance-comparison">Performance Comparison</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#converting-back-to-numeric">Converting Back to Numeric</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#example-complete-workflow">Example: Complete Workflow</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-workflow-example">Complete Workflow Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
@@ -124,126 +125,207 @@ Symbolic computation enables:</p>
 <li><p><strong>Exact solutions</strong> without numerical approximation errors</p></li>
 </ul>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/symbolic_trajectory.png"><img alt="Symbolic trajectory analysis" src="../_images/symbolic_trajectory.png" style="width: 800px;" />
+<a class="reference internal image-reference" href="../_images/symbolic_trajectory.png"><img alt="Symbolic trajectory analysis" src="../_images/symbolic_trajectory.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Symbolic computation enables closed-form trajectory expressions and parameter
-sensitivity analysis. Left: coupler curves for different parameter values.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-text">Symbolic computation transforms linkage geometry into algebraic expressions.
+Left: Four-bar linkage configuration. Middle: Symbolic position equations.
+Right: Resulting coupler curve for one full rotation.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">pylinkage.symbolic</span></code> module provides symbolic equivalents of the main
 linkage components:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">SymStatic</span></code>, <code class="docutils literal notranslate"><span class="pre">SymCrank</span></code>, <code class="docutils literal notranslate"><span class="pre">SymRevolute</span></code>: Symbolic joint classes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SymbolicLinkage</span></code>: Container for symbolic joints</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">solve_linkage_symbolically()</span></code>: Derive closed-form trajectory expressions</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">SymbolicOptimizer</span></code>: Gradient-based optimization using analytical derivatives</p></li>
-</ul>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Symbolic Components</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SymStatic</span></code></p></td>
+<td><p>Fixed point (ground anchor)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SymCrank</span></code></p></td>
+<td><p>Rotating motor joint with symbolic radius</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SymRevolute</span></code></p></td>
+<td><p>Pin joint with two parent connections</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SymbolicLinkage</span></code></p></td>
+<td><p>Container for symbolic joints</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">solve_linkage_symbolically()</span></code></p></td>
+<td><p>Derives closed-form trajectory expressions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">compute_trajectory_numeric()</span></code></p></td>
+<td><p>Evaluates symbolic expressions numerically</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SymbolicOptimizer</span></code></p></td>
+<td><p>Gradient-based optimization with analytical derivatives</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <p>Create a symbolic four-bar linkage and get closed-form trajectory expressions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">solve_linkage_symbolically</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
 
 <span class="c1"># Create a four-bar with symbolic parameters</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
-    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>        <span class="c1"># Fixed value</span>
-    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>      <span class="c1"># Symbolic parameter</span>
-    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>    <span class="c1"># Symbolic parameter</span>
-    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>     <span class="c1"># Symbolic parameter</span>
+    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>        <span class="c1"># Fixed: distance between ground pivots</span>
+    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>      <span class="c1"># Symbolic: input crank length</span>
+    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>    <span class="c1"># Symbolic: coupler bar length</span>
+    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>     <span class="c1"># Symbolic: output rocker length</span>
 <span class="p">)</span>
 
-<span class="c1"># Solve symbolically to get trajectory expressions</span>
+<span class="c1"># Get closed-form trajectory expressions</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="n">solve_linkage_symbolically</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
 
-<span class="c1"># Access the symbolic expressions</span>
-<span class="k">for</span> <span class="n">joint_name</span><span class="p">,</span> <span class="p">(</span><span class="n">x_expr</span><span class="p">,</span> <span class="n">y_expr</span><span class="p">)</span> <span class="ow">in</span> <span class="n">solutions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">joint_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  x(theta) = </span><span class="si">{</span><span class="n">x_expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  y(theta) = </span><span class="si">{</span><span class="n">y_expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Print the crank position (simple expression)</span>
+<span class="n">x_crank</span><span class="p">,</span> <span class="n">y_crank</span> <span class="o">=</span> <span class="n">solutions</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Crank x: </span><span class="si">{</span><span class="n">x_crank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Crank y: </span><span class="si">{</span><span class="n">y_crank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Crank:
-  x(theta) = L1*cos(theta)
-  y(theta) = L1*sin(theta)
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Crank x: L1*cos(theta)
+Crank y: L1*sin(theta)
+</pre></div>
+</div>
+<p>The crank position is simply <code class="docutils literal notranslate"><span class="pre">(L1*cos(theta),</span> <span class="pre">L1*sin(theta))</span></code> - a circle of
+radius L1. The coupler point C has a more complex expression involving the
+circle-circle intersection of the coupler and rocker circles.</p>
+</section>
+<section id="illustrated-example-effect-of-link-lengths">
+<h2>Illustrated Example: Effect of Link Lengths<a class="headerlink" href="#illustrated-example-effect-of-link-lengths" title="Link to this heading"></a></h2>
+<p>One of the powerful uses of symbolic computation is exploring how parameters
+affect the linkage behavior. The figure below shows coupler curves for
+different link length values:</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/symbolic_parameter_effects.png"><img alt="Parameter effects on coupler curves" src="../_images/symbolic_parameter_effects.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">How link lengths affect the coupler curve shape. Top-left: varying crank
+length L1. Top-right: varying coupler length L2. Bottom-left: varying rocker
+length L3. Bottom-right: workspace area as a function of L1 and L2.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p><strong>Key observations:</strong></p>
+<ul class="simple">
+<li><p><strong>Shorter crank (L1)</strong>: Smaller, more circular coupler curves</p></li>
+<li><p><strong>Longer crank (L1)</strong>: Larger, more complex curves with possible cusps</p></li>
+<li><p><strong>Coupler length (L2)</strong>: Affects curve height and shape complexity</p></li>
+<li><p><strong>Rocker length (L3)</strong>: Shifts curve position and affects symmetry</p></li>
+</ul>
+<p>Let’s reproduce this analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">compute_trajectory_numeric</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-Output:
-  x(theta) = 4 - L3*cos(acos((L1**2*cos(theta)**2 + ...))
-  y(theta) = L3*sin(acos(...))
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
+    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
+    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
+    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
+
+<span class="c1"># Compare different crank lengths</span>
+<span class="k">for</span> <span class="n">L1</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]:</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="n">L1</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
+    <span class="n">traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+
+    <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>  <span class="c1"># peak-to-peak</span>
+    <span class="n">y_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;L1=</span><span class="si">{</span><span class="n">L1</span><span class="si">}</span><span class="s2">: X range=</span><span class="si">{</span><span class="n">x_range</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, Y range=</span><span class="si">{</span><span class="n">y_range</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The expressions show exactly how each joint’s position depends on the input
-angle <code class="docutils literal notranslate"><span class="pre">theta</span></code> and the link lengths.</p>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>L1=0.5: X range=0.750, Y range=0.474
+L1=1.0: X range=1.500, Y range=1.329
+L1=1.5: X range=2.250, Y range=2.343
+</pre></div>
+</div>
 </section>
 <section id="creating-symbolic-linkages">
 <h2>Creating Symbolic Linkages<a class="headerlink" href="#creating-symbolic-linkages" title="Link to this heading"></a></h2>
-<section id="method-1-using-fourbar-symbolic">
-<h3>Method 1: Using fourbar_symbolic<a class="headerlink" href="#method-1-using-fourbar-symbolic" title="Link to this heading"></a></h3>
-<p>The easiest way to create a symbolic four-bar:</p>
+<p>There are three ways to create symbolic linkages:</p>
+<section id="method-1-fourbar-symbolic-recommended">
+<h3>Method 1: fourbar_symbolic (Recommended)<a class="headerlink" href="#method-1-fourbar-symbolic-recommended" title="Link to this heading"></a></h3>
+<p>The simplest way for standard four-bar linkages:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span>
 
-<span class="c1"># All numeric: specific four-bar</span>
+<span class="c1"># All numeric - specific linkage</span>
 <span class="n">linkage1</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="n">coupler_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
     <span class="n">rocker_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">linkage1</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Parameters: []  (no symbolic parameters)</span>
 
-<span class="c1"># Mixed symbolic/numeric</span>
+<span class="c1"># Mixed symbolic/numeric - for optimization</span>
 <span class="n">linkage2</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>      <span class="c1"># Fixed</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>    <span class="c1"># Optimize this</span>
     <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>  <span class="c1"># Optimize this</span>
     <span class="n">rocker_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>      <span class="c1"># Fixed</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">linkage2</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Parameters: [&#39;L1&#39;, &#39;L2&#39;]</span>
 
-<span class="c1"># All symbolic</span>
+<span class="c1"># All symbolic - for general analysis</span>
 <span class="n">linkage3</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
-    <span class="n">ground_length</span><span class="o">=</span><span class="s2">&quot;L4&quot;</span><span class="p">,</span>
+    <span class="n">ground_length</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
     <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
     <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">linkage3</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Parameters: [&#39;L0&#39;, &#39;L1&#39;, &#39;L2&#39;, &#39;L3&#39;]</span>
 </pre></div>
 </div>
 </section>
-<section id="method-2-building-from-joints">
-<h3>Method 2: Building from Joints<a class="headerlink" href="#method-2-building-from-joints" title="Link to this heading"></a></h3>
+<section id="method-2-building-from-symjoint-classes">
+<h3>Method 2: Building from SymJoint Classes<a class="headerlink" href="#method-2-building-from-symjoint-classes" title="Link to this heading"></a></h3>
 <p>For custom linkage topologies:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">SymStatic</span><span class="p">,</span> <span class="n">SymCrank</span><span class="p">,</span> <span class="n">SymRevolute</span><span class="p">,</span> <span class="n">SymbolicLinkage</span><span class="p">,</span> <span class="n">theta</span>
+    <span class="n">SymStatic</span><span class="p">,</span> <span class="n">SymCrank</span><span class="p">,</span> <span class="n">SymRevolute</span><span class="p">,</span> <span class="n">SymbolicLinkage</span>
 <span class="p">)</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
 
 <span class="c1"># Define symbolic parameters</span>
 <span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;L1 L2 L3&#39;</span><span class="p">,</span> <span class="n">positive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Create joints</span>
-<span class="n">ground</span> <span class="o">=</span> <span class="n">SymStatic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ground&quot;</span><span class="p">)</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">SymCrank</span><span class="p">(</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="n">ground</span><span class="p">,</span>
-    <span class="n">distance</span><span class="o">=</span><span class="n">L1</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
-<span class="p">)</span>
-<span class="n">rocker_ground</span> <span class="o">=</span> <span class="n">SymStatic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;RockerGround&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">SymRevolute</span><span class="p">(</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
-    <span class="n">joint1</span><span class="o">=</span><span class="n">rocker_ground</span><span class="p">,</span>
+<span class="c1"># Create joints in order</span>
+<span class="n">ground_A</span> <span class="o">=</span> <span class="n">SymStatic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">ground_D</span> <span class="o">=</span> <span class="n">SymStatic</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">crank_B</span> <span class="o">=</span> <span class="n">SymCrank</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">ground_A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">L1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<span class="n">coupler_C</span> <span class="o">=</span> <span class="n">SymRevolute</span><span class="p">(</span>
+    <span class="n">parent0</span><span class="o">=</span><span class="n">crank_B</span><span class="p">,</span>
+    <span class="n">parent1</span><span class="o">=</span><span class="n">ground_D</span><span class="p">,</span>
     <span class="n">distance0</span><span class="o">=</span><span class="n">L2</span><span class="p">,</span>
     <span class="n">distance1</span><span class="o">=</span><span class="n">L3</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
 <span class="p">)</span>
 
 <span class="c1"># Assemble linkage</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">SymbolicLinkage</span><span class="p">(</span>
-    <span class="n">joints</span><span class="o">=</span><span class="p">[</span><span class="n">ground</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">rocker_ground</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span>
-    <span class="n">order</span><span class="o">=</span><span class="p">[</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span>
+    <span class="n">joints</span><span class="o">=</span><span class="p">[</span><span class="n">ground_A</span><span class="p">,</span> <span class="n">ground_D</span><span class="p">,</span> <span class="n">crank_B</span><span class="p">,</span> <span class="n">coupler_C</span><span class="p">]</span>
 <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joints: </span><span class="si">{</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Joints: [&#39;A&#39;, &#39;D&#39;, &#39;B&#39;, &#39;C&#39;]</span>
 </pre></div>
 </div>
 </section>
@@ -251,63 +333,36 @@ angle <code class="docutils literal notranslate"><span class="pre">theta</span><
 <h3>Method 3: Converting from Numeric Linkage<a class="headerlink" href="#method-3-converting-from-numeric-linkage" title="Link to this heading"></a></h3>
 <p>Convert an existing numeric linkage to symbolic:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">linkage_to_symbolic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">linkage_to_symbolic</span><span class="p">,</span> <span class="n">get_numeric_parameters</span>
 
 <span class="c1"># Create numeric linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">numeric_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
+<span class="n">ground_A</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">ground_D</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Static</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">ground_A</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<span class="n">revolute</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="n">ground_D</span><span class="p">,</span>
+                       <span class="n">distance0</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="n">numeric</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">ground_A</span><span class="p">,</span> <span class="n">ground_D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">revolute</span><span class="p">),</span>
+                     <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">revolute</span><span class="p">))</span>
 
-<span class="c1"># Convert to symbolic (parameters become symbols)</span>
-<span class="n">symbolic_linkage</span> <span class="o">=</span> <span class="n">linkage_to_symbolic</span><span class="p">(</span>
-    <span class="n">numeric_linkage</span><span class="p">,</span>
-    <span class="n">param_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">],</span>  <span class="c1"># Names for the constraints</span>
-<span class="p">)</span>
+<span class="c1"># Convert to symbolic</span>
+<span class="n">symbolic</span> <span class="o">=</span> <span class="n">linkage_to_symbolic</span><span class="p">(</span><span class="n">numeric</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameters: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">symbolic</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Parameters: [&#39;r_B&#39;, &#39;r0_C&#39;, &#39;r1_C&#39;]</span>
+
+<span class="c1"># Get the original numeric values</span>
+<span class="n">original_values</span> <span class="o">=</span> <span class="n">get_numeric_parameters</span><span class="p">(</span><span class="n">symbolic</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original values: </span><span class="si">{</span><span class="n">original_values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Output: Original values: {&#39;r_B&#39;: 1.0, &#39;r0_C&#39;: 3.0, &#39;r1_C&#39;: 3.0}</span>
 </pre></div>
 </div>
 </section>
 </section>
-<section id="solving-symbolically">
-<h2>Solving Symbolically<a class="headerlink" href="#solving-symbolically" title="Link to this heading"></a></h2>
-<section id="getting-closed-form-expressions">
-<h3>Getting Closed-Form Expressions<a class="headerlink" href="#getting-closed-form-expressions" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">fourbar_symbolic</span><span class="p">,</span>
-    <span class="n">solve_linkage_symbolically</span><span class="p">,</span>
-    <span class="n">theta</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
-
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
-    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
-    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
-    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Get symbolic solutions</span>
-<span class="n">solutions</span> <span class="o">=</span> <span class="n">solve_linkage_symbolically</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-
-<span class="c1"># The coupler/output position as function of theta</span>
-<span class="n">x_output</span><span class="p">,</span> <span class="n">y_output</span> <span class="o">=</span> <span class="n">solutions</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
-
-<span class="c1"># Simplify the expression</span>
-<span class="n">x_simplified</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">x_output</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simplified x: </span><span class="si">{</span><span class="n">x_simplified</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Take derivatives</span>
-<span class="n">dx_dtheta</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x_output</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dx/dtheta: </span><span class="si">{</span><span class="n">dx_dtheta</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Substitute specific values</span>
-<span class="n">x_numeric</span> <span class="o">=</span> <span class="n">x_output</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;L1&#39;</span><span class="p">):</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;L2&#39;</span><span class="p">):</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;L3&#39;</span><span class="p">):</span> <span class="mi">3</span><span class="p">})</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;With L1=1, L2=3, L3=3: </span><span class="si">{</span><span class="n">x_numeric</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="computing-numeric-trajectories">
-<h3>Computing Numeric Trajectories<a class="headerlink" href="#computing-numeric-trajectories" title="Link to this heading"></a></h3>
-<p>Evaluate the symbolic expressions at specific parameter values:</p>
+<section id="computing-trajectories">
+<h2>Computing Trajectories<a class="headerlink" href="#computing-trajectories" title="Link to this heading"></a></h2>
+<section id="numeric-evaluation">
+<h3>Numeric Evaluation<a class="headerlink" href="#numeric-evaluation" title="Link to this heading"></a></h3>
+<p>Evaluate symbolic expressions at specific parameter values:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">compute_trajectory_numeric</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -319,81 +374,97 @@ angle <code class="docutils literal notranslate"><span class="pre">theta</span><
 <span class="p">)</span>
 
 <span class="c1"># Define parameter values</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-    <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-    <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
 
-<span class="c1"># Compute trajectory over angle range</span>
+<span class="c1"># Compute trajectory over full rotation</span>
 <span class="n">theta_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="n">trajectories</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">theta_values</span><span class="p">)</span>
 
-<span class="c1"># Access joint positions</span>
-<span class="c1"># trajectories is a dict: joint_name -&gt; array of shape (n_steps, 2)</span>
-<span class="n">output_positions</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output trajectory shape: </span><span class="si">{</span><span class="n">output_positions</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First position: (</span><span class="si">{</span><span class="n">output_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">output_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Last position: (</span><span class="si">{</span><span class="n">output_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">output_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="c1"># Results are returned as a dictionary</span>
+<span class="c1"># Each joint maps to an (N, 2) array of [x, y] positions</span>
+<span class="n">coupler</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">coupler</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Start: (</span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;At 90 deg: (</span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;At 180 deg: (</span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">coupler</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Output trajectory shape: (100, 2)
-First position: (3.000, 0.000)
-Last position: (2.998, -0.063)
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Shape: (100, 2)
+Start: (3.000, 2.000)
+At 90 deg: (2.646, 2.500)
+At 180 deg: (2.000, 2.000)
 </pre></div>
 </div>
 </section>
-<section id="creating-fast-trajectory-functions">
-<h3>Creating Fast Trajectory Functions<a class="headerlink" href="#creating-fast-trajectory-functions" title="Link to this heading"></a></h3>
-<p>For repeated evaluation, create compiled functions:</p>
+<section id="fast-pre-compiled-functions">
+<h3>Fast Pre-Compiled Functions<a class="headerlink" href="#fast-pre-compiled-functions" title="Link to this heading"></a></h3>
+<p>For repeated evaluations (e.g., in optimization loops), pre-compile the
+symbolic expressions to numpy functions:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">create_trajectory_functions</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
-    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
-    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
-    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Create fast numpy-based functions</span>
-<span class="n">traj_funcs</span> <span class="o">=</span> <span class="n">create_trajectory_functions</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-
-<span class="c1"># Now evaluate very fast</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span><span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">crank_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                           <span class="n">coupler_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rocker_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 
-<span class="c1"># Each call is much faster than compute_trajectory_numeric</span>
-<span class="n">output_x</span> <span class="o">=</span> <span class="n">traj_funcs</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">](</span><span class="n">theta_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-<span class="n">output_y</span> <span class="o">=</span> <span class="n">traj_funcs</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">](</span><span class="n">theta_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+<span class="c1"># Create fast compiled functions</span>
+<span class="n">funcs</span> <span class="o">=</span> <span class="n">create_trajectory_functions</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Computed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">theta_vals</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+<span class="c1"># Each joint has (x_func, y_func, param_symbols)</span>
+<span class="n">x_func</span><span class="p">,</span> <span class="n">y_func</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+
+<span class="c1"># Time comparison</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_trajectory_numeric</span>
+
+<span class="c1"># Method 1: Direct (slower)</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="p">{},</span> <span class="n">theta_vals</span><span class="p">)</span>
+<span class="n">direct_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+<span class="c1"># Method 2: Compiled (faster)</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">x_func</span><span class="p">(</span><span class="n">theta_vals</span><span class="p">)</span>
+    <span class="n">y_func</span><span class="p">(</span><span class="n">theta_vals</span><span class="p">)</span>
+<span class="n">compiled_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Direct: </span><span class="si">{</span><span class="n">direct_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compiled: </span><span class="si">{</span><span class="n">compiled_time</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Speedup: </span><span class="si">{</span><span class="n">direct_time</span><span class="o">/</span><span class="n">compiled_time</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Direct: 0.350s
+Compiled: 0.006s
+Speedup: 58.3x
 </pre></div>
 </div>
 </section>
 </section>
 <section id="symbolic-optimization">
 <h2>Symbolic Optimization<a class="headerlink" href="#symbolic-optimization" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">SymbolicOptimizer</span></code> uses analytical gradients for efficient optimization.</p>
-<figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/symbolic_optimization.png"><img alt="Symbolic optimization process" src="../_images/symbolic_optimization.png" style="width: 800px;" />
+<p>The <code class="docutils literal notranslate"><span class="pre">SymbolicOptimizer</span></code> uses analytical gradients computed from the symbolic
+expressions, enabling fast convergence without numerical gradient approximation.</p>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/symbolic_optimization.png"><img alt="Symbolic optimization process" src="../_images/symbolic_optimization.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Gradient-based optimization using symbolic expressions: convergence plot (left),
-parameter evolution (middle), and before/after comparison (right).</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-text">Optimization example: minimizing distance to target point (3, 1.5).
+Left: trajectory comparison before/after. Middle: distance vs angle.
+Right: numerical results showing 85.8% improvement.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<section id="basic-gradient-based-optimization">
-<h3>Basic Gradient-Based Optimization<a class="headerlink" href="#basic-gradient-based-optimization" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">fourbar_symbolic</span><span class="p">,</span>
-    <span class="n">SymbolicOptimizer</span><span class="p">,</span>
-    <span class="n">compute_trajectory_numeric</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<section id="understanding-symbolicoptimizer">
+<h3>Understanding SymbolicOptimizer<a class="headerlink" href="#understanding-symbolicoptimizer" title="Link to this heading"></a></h3>
+<p>The optimizer works with <strong>symbolic objective functions</strong> that return SymPy
+expressions, not numeric values. The objective is expressed in terms of the
+symbolic trajectory expressions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">SymbolicOptimizer</span>
 
-<span class="c1"># Create symbolic linkage</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
@@ -401,10 +472,16 @@ parameter evolution (middle), and before/after comparison (right).</span><a clas
     <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Define objective: minimize max y-coordinate of output</span>
+<span class="c1"># Symbolic objective: minimize squared distance to point (3, 1.5)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-    <span class="n">output_traj</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">output_traj</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>  <span class="c1"># max y</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    trajectories is a dict of {joint_name: (x_expr, y_expr)}</span>
+<span class="sd">    where x_expr and y_expr are SymPy expressions.</span>
+<span class="sd">    Return a symbolic expression that will be evaluated and differentiated.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>  <span class="c1"># SymPy expressions</span>
+    <span class="n">target_x</span><span class="p">,</span> <span class="n">target_y</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">target_x</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">target_y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="c1"># Create optimizer</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
@@ -412,72 +489,95 @@ parameter evolution (middle), and before/after comparison (right).</span><a clas
 <span class="c1"># Run optimization</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
     <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)},</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)},</span>
 <span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimization succeeded!&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal parameters: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Objective value: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">objective_value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimization failed: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Success: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iterations: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">iterations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal L1: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal L2: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L2&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal L3: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L3&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final objective: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">objective_value</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Optimization succeeded!
-Optimal parameters: {&#39;L1&#39;: 0.5, &#39;L2&#39;: 2.1, &#39;L3&#39;: 1.8}
-Objective value: 1.2345
-</pre></div>
-</div>
-</section>
-<section id="custom-objective-functions">
-<h3>Custom Objective Functions<a class="headerlink" href="#custom-objective-functions" title="Link to this heading"></a></h3>
-<p>Define complex objectives using trajectory data:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">path_following_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize distance from output to a target path.&quot;&quot;&quot;</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>  <span class="c1"># Shape: (n_steps, 2)</span>
-
-    <span class="c1"># Target: straight line from (3, 0) to (3, 2)</span>
-    <span class="n">target_x</span> <span class="o">=</span> <span class="mf">3.0</span>
-    <span class="n">target_y_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
-
-    <span class="c1"># Distance to target line</span>
-    <span class="n">x_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">target_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="n">y_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">target_y_range</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_error</span> <span class="o">+</span> <span class="n">y_error</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">velocity_uniformity_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize velocity variation.&quot;&quot;&quot;</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
-
-    <span class="c1"># Compute velocity (finite differences)</span>
-    <span class="n">velocity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">speeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">velocity</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">velocity</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="c1"># Minimize standard deviation of speed</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">speeds</span><span class="p">)</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">combined_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multi-objective: path + velocity.&quot;&quot;&quot;</span>
-    <span class="n">path_score</span> <span class="o">=</span> <span class="n">path_following_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">)</span>
-    <span class="n">vel_score</span> <span class="o">=</span> <span class="n">velocity_uniformity_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">path_score</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">vel_score</span>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Success: True
+Iterations: 5
+Optimal L1: 0.3000
+Optimal L2: 3.3614
+Optimal L3: 1.8173
+Final objective: 0.046100
 </pre></div>
 </div>
 </section>
-<section id="analytical-gradients">
-<h3>Analytical Gradients<a class="headerlink" href="#analytical-gradients" title="Link to this heading"></a></h3>
-<p>Compute gradients symbolically for analysis:</p>
+<section id="verifying-results">
+<h3>Verifying Results<a class="headerlink" href="#verifying-results" title="Link to this heading"></a></h3>
+<p>Always verify optimization results by computing the actual trajectory:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_trajectory_numeric</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+
+<span class="c1"># Initial trajectory</span>
+<span class="n">initial_traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span> <span class="n">theta_vals</span>
+<span class="p">)</span>
+<span class="n">initial_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">initial_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+
+<span class="c1"># Optimized trajectory</span>
+<span class="n">optimal_traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
+<span class="n">optimal_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">optimal_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initial mean distance: </span><span class="si">{</span><span class="n">initial_dist</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal mean distance: </span><span class="si">{</span><span class="n">optimal_dist</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Improvement: </span><span class="si">{</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">optimal_dist</span><span class="o">/</span><span class="n">initial_dist</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Initial mean distance: 1.3658
+Optimal mean distance: 0.1941
+Improvement: 85.8%
+</pre></div>
+</div>
+</section>
+<section id="example-objective-functions">
+<h3>Example Objective Functions<a class="headerlink" href="#example-objective-functions" title="Link to this heading"></a></h3>
+<p>Here are common objective functions for linkage optimization:</p>
+<p><strong>Minimize distance to target point:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">point_distance_objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">3.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+<p><strong>Maximize y-coordinate:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">maximize_height</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">y</span>  <span class="c1"># Negative because optimizer minimizes</span>
+</pre></div>
+</div>
+<p><strong>Minimize path curvature (prefer straight lines):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">theta</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">minimize_curvature</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+    <span class="c1"># Second derivatives indicate curvature</span>
+    <span class="n">d2x</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">d2y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d2x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d2y</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sensitivity-analysis">
+<h2>Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading"></a></h2>
+<p>Symbolic expressions enable analytical sensitivity analysis - understanding
+how changes in parameters affect the output.</p>
+<section id="computing-sensitivity">
+<h3>Computing Sensitivity<a class="headerlink" href="#computing-sensitivity" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">fourbar_symbolic</span><span class="p">,</span>
-    <span class="n">symbolic_gradient</span><span class="p">,</span>
-    <span class="n">symbolic_hessian</span><span class="p">,</span>
-    <span class="n">theta</span><span class="p">,</span>
+    <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">solve_linkage_symbolically</span><span class="p">,</span> <span class="n">symbolic_gradient</span><span class="p">,</span> <span class="n">theta</span>
 <span class="p">)</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
 
@@ -488,65 +588,126 @@ Objective value: 1.2345
     <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Get the symbolic expression for output x</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_linkage_symbolically</span>
+<span class="c1"># Get symbolic expressions</span>
 <span class="n">solutions</span> <span class="o">=</span> <span class="n">solve_linkage_symbolically</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="n">x_output</span><span class="p">,</span> <span class="n">y_output</span> <span class="o">=</span> <span class="n">solutions</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
+<span class="n">x_coupler</span><span class="p">,</span> <span class="n">y_coupler</span> <span class="o">=</span> <span class="n">solutions</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
 
-<span class="c1"># Compute gradient with respect to parameters</span>
-<span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;L1 L2 L3&#39;</span><span class="p">)</span>
+<span class="c1"># Define parameters</span>
+<span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s2">&quot;L1 L2 L3&quot;</span><span class="p">)</span>
 <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span><span class="p">]</span>
 
-<span class="n">grad_x</span> <span class="o">=</span> <span class="n">symbolic_gradient</span><span class="p">(</span><span class="n">x_output</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gradient of x_output:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">grad_x</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  d/d</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sp</span><span class="o">.</span><span class="n">simplify</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Compute gradients (sensitivity)</span>
+<span class="n">grad_x</span> <span class="o">=</span> <span class="n">symbolic_gradient</span><span class="p">(</span><span class="n">x_coupler</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+<span class="n">grad_y</span> <span class="o">=</span> <span class="n">symbolic_gradient</span><span class="p">(</span><span class="n">y_coupler</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
-<span class="c1"># Compute Hessian for second-order optimization</span>
-<span class="n">hess_x</span> <span class="o">=</span> <span class="n">symbolic_hessian</span><span class="p">(</span><span class="n">x_output</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Hessian shape: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hess_x</span><span class="p">)</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hess_x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Evaluate at a specific configuration</span>
+<span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">L1</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">L2</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">L3</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sensitivity of coupler x-position:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">grad_x</span><span class="p">):</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">evalf</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  dx/d</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">sensitivity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-</section>
-<section id="checking-buildability">
-<h2>Checking Buildability<a class="headerlink" href="#checking-buildability" title="Link to this heading"></a></h2>
-<p>Some parameter combinations result in unbuildable linkages. Check symbolically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">check_buildability</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sympy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<section id="tolerance-analysis-example">
+<h3>Tolerance Analysis Example<a class="headerlink" href="#tolerance-analysis-example" title="Link to this heading"></a></h3>
+<p>Use sensitivity analysis to understand manufacturing tolerance effects:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">compute_trajectory_numeric</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
-    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
-    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
-    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
+    <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
+    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span> <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span>
 <span class="p">)</span>
 
-<span class="c1"># Get buildability condition as symbolic expression</span>
-<span class="n">condition</span> <span class="o">=</span> <span class="n">check_buildability</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Buildability condition: </span><span class="si">{</span><span class="n">condition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Nominal parameters</span>
+<span class="n">nominal</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.1</span>  <span class="c1"># +/- 0.1 manufacturing tolerance</span>
 
-<span class="c1"># This returns an expression that must be &gt;= 0 for the linkage to be buildable</span>
-<span class="c1"># at the given input angle</span>
+<span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">nominal_traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">nominal</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
 
-<span class="c1"># Evaluate for specific parameters</span>
-<span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">symbols</span><span class="p">(</span><span class="s1">&#39;L1 L2 L3&#39;</span><span class="p">)</span>
-<span class="n">is_buildable</span> <span class="o">=</span> <span class="n">condition</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">L1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="n">L2</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">L3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">):</span> <span class="mi">0</span><span class="p">})</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Buildable at theta=0 with L1=1, L2=3, L3=3: </span><span class="si">{</span><span class="n">is_buildable</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Effect of +0.1 tolerance on each parameter:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">]:</span>
+    <span class="n">perturbed</span> <span class="o">=</span> <span class="n">nominal</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">perturbed</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="n">tolerance</span>
+
+    <span class="n">perturbed_traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">perturbed</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
+
+    <span class="c1"># Maximum deviation from nominal</span>
+    <span class="n">deviation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">nominal_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">perturbed_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+        <span class="p">(</span><span class="n">nominal_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">perturbed_traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+    <span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2">: max deviation = </span><span class="si">{</span><span class="n">deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Effect of +0.1 tolerance on each parameter:
+--------------------------------------------------
+  L1: max deviation = 0.1091
+  L2: max deviation = 0.1161
+  L3: max deviation = 0.1161
+</pre></div>
+</div>
+<p>This shows that L2 and L3 are slightly more sensitive than L1, and all
+parameters contribute roughly equally to output deviation.</p>
+</section>
+</section>
+<section id="performance-comparison">
+<h2>Performance Comparison<a class="headerlink" href="#performance-comparison" title="Link to this heading"></a></h2>
+<p>Comparing different computation methods:</p>
+<table class="docutils align-default" id="id5">
+<caption><span class="caption-text">Performance Characteristics</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Speed (100 evals)</p></th>
+<th class="head"><p>Use Case</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Direct symbolic</p></td>
+<td><p>~350ms</p></td>
+<td><p>One-off analysis</p></td>
+<td><p>Easy to use</p></td>
+</tr>
+<tr class="row-odd"><td><p>Compiled functions</p></td>
+<td><p>~6ms</p></td>
+<td><p>Optimization loops</p></td>
+<td><p>60x faster</p></td>
+</tr>
+<tr class="row-even"><td><p>Numba solver</p></td>
+<td><p>~0.01ms</p></td>
+<td><p>Heavy optimization</p></td>
+<td><p>35000x faster</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommendation:</strong></p>
+<ul class="simple">
+<li><p>Use <strong>direct symbolic</strong> for exploration and one-off calculations</p></li>
+<li><p>Use <strong>compiled functions</strong> for parameter sweeps and sensitivity analysis</p></li>
+<li><p>Use <strong>numba solver</strong> (standard <code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code>) for heavy optimization</p></li>
+</ul>
 </section>
 <section id="converting-back-to-numeric">
 <h2>Converting Back to Numeric<a class="headerlink" href="#converting-back-to-numeric" title="Link to this heading"></a></h2>
-<p>After symbolic analysis, convert back to a numeric linkage:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">fourbar_symbolic</span><span class="p">,</span>
-    <span class="n">symbolic_to_linkage</span><span class="p">,</span>
-    <span class="n">get_numeric_parameters</span><span class="p">,</span>
-<span class="p">)</span>
+<p>After symbolic analysis, convert to a standard numeric linkage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar_symbolic</span><span class="p">,</span> <span class="n">symbolic_to_linkage</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 
-<span class="c1"># Create and optimize symbolically</span>
+<span class="c1"># Create symbolic linkage and optimize</span>
 <span class="n">sym_linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
@@ -554,25 +715,35 @@ Objective value: 1.2345
     <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Get the parameter values</span>
-<span class="n">optimal_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.2</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">2.8</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">}</span>
+<span class="c1"># Optimal parameters from optimization</span>
+<span class="n">optimal_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.36</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">1.82</span><span class="p">}</span>
 
 <span class="c1"># Convert to numeric linkage</span>
 <span class="n">numeric_linkage</span> <span class="o">=</span> <span class="n">symbolic_to_linkage</span><span class="p">(</span><span class="n">sym_linkage</span><span class="p">,</span> <span class="n">optimal_params</span><span class="p">)</span>
 
-<span class="c1"># Now use standard visualization</span>
+<span class="c1"># Now use standard visualization and PSO</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">numeric_linkage</span><span class="p">)</span>
 
-<span class="c1"># Or continue with PSO optimization</span>
-<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">numeric_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+<span class="c1"># Fine-tune with PSO if needed</span>
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">output</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span>
+    <span class="n">numeric_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">(),</span>
+    <span class="n">min_ratio</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">max_ratio</span><span class="o">=</span><span class="mf">1.1</span>  <span class="c1"># Search near optimal</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="example-complete-workflow">
-<h2>Example: Complete Workflow<a class="headerlink" href="#example-complete-workflow" title="Link to this heading"></a></h2>
-<p>Here’s a complete example combining symbolic and numeric approaches:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<section id="complete-workflow-example">
+<h2>Complete Workflow Example<a class="headerlink" href="#complete-workflow-example" title="Link to this heading"></a></h2>
+<p>Here’s a complete example showing the symbolic workflow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Complete symbolic analysis and optimization workflow.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">fourbar_symbolic</span><span class="p">,</span>
+    <span class="n">compute_trajectory_numeric</span><span class="p">,</span>
     <span class="n">SymbolicOptimizer</span><span class="p">,</span>
     <span class="n">symbolic_to_linkage</span><span class="p">,</span>
 <span class="p">)</span>
@@ -580,114 +751,80 @@ Objective value: 1.2345
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># Step 1: Create symbolic linkage</span>
-<span class="n">sym_linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Step 1: Create symbolic linkage&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
     <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>
     <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
     <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Parameters: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Step 2: Define objective</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">minimize_workspace</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Minimize the bounding box of the output path.&quot;&quot;&quot;</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;Output&quot;</span><span class="p">]</span>
-    <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">width</span> <span class="o">*</span> <span class="n">height</span>
+<span class="c1"># Step 2: Explore parameter space</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Step 2: Parameter exploration&quot;</span><span class="p">)</span>
+<span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="c1"># Step 3: Optimize symbolically</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">sym_linkage</span><span class="p">,</span> <span class="n">minimize_workspace</span><span class="p">)</span>
+<span class="n">configs</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
+    <span class="n">traj</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  L1=</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: workspace area = </span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Optimize</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Step 3: Gradient-based optimization&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">3.0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
     <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
-        <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">),</span>
-        <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">),</span>
-    <span class="p">},</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)},</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Symbolic optimization result:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Parameters: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Workspace area: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">objective_value</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Success: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Iterations: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">iterations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Optimal: L1=</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;L2=</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L2&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, L3=</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;L3&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Step 4: Convert to numeric and visualize</span>
-<span class="n">numeric_linkage</span> <span class="o">=</span> <span class="n">symbolic_to_linkage</span><span class="p">(</span><span class="n">sym_linkage</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Numeric linkage constraints: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">numeric_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Step 4: Convert and visualize</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Step 4: Convert to numeric and visualize&quot;</span><span class="p">)</span>
+<span class="n">numeric</span> <span class="o">=</span> <span class="n">symbolic_to_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Numeric linkage created with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">numeric</span><span class="o">.</span><span class="n">joints</span><span class="p">)</span><span class="si">}</span><span class="s2"> joints&quot;</span><span class="p">)</span>
 
-<span class="c1"># Step 5: Visualize</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">numeric_linkage</span><span class="p">)</span>
-
-<span class="c1"># Optional Step 6: Fine-tune with PSO if needed</span>
-<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">pso_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
-    <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">output_path</span><span class="p">]</span>
-    <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">output_path</span><span class="p">]</span>
-    <span class="k">return</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">))</span>
-
-<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span>
-    <span class="n">numeric_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">(),</span>
-    <span class="n">min_ratio</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-    <span class="n">max_ratio</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>  <span class="c1"># Search near symbolic optimum</span>
-<span class="p">)</span>
-
-<span class="n">pso_result</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">pso_fitness</span><span class="p">,</span>
-    <span class="n">linkage</span><span class="o">=</span><span class="n">numeric_linkage</span><span class="p">,</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-    <span class="n">n_particles</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-    <span class="n">iters</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">PSO refinement:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Final score: </span><span class="si">{</span><span class="n">pso_result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># pl.show_linkage(numeric)  # Uncomment to visualize</span>
 </pre></div>
 </div>
-</section>
-<section id="performance-considerations">
-<h2>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h2>
-<p>Symbolic computation has different performance characteristics:</p>
-<ol class="arabic simple">
-<li><p><strong>Initial solve is slow</strong>: Deriving symbolic expressions takes time</p></li>
-<li><p><strong>Evaluation can be fast</strong>: Once expressions exist, evaluation is quick</p></li>
-<li><p><strong>Use create_trajectory_functions()</strong>: For repeated evaluation</p></li>
-<li><p><strong>Gradients are exact</strong>: No numerical differentiation errors</p></li>
-<li><p><strong>Memory usage</strong>: Complex expressions can be large</p></li>
-</ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.symbolic</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">fourbar_symbolic</span><span class="p">,</span>
-    <span class="n">compute_trajectory_numeric</span><span class="p">,</span>
-    <span class="n">create_trajectory_functions</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<p><strong>Output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Step 1: Create symbolic linkage
+  Parameters: [&#39;L1&#39;, &#39;L2&#39;, &#39;L3&#39;]
 
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span><span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">crank_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">coupler_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">rocker_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># No symbolic params in this case</span>
-<span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+Step 2: Parameter exploration
+  L1=0.5: workspace area = 0.355
+  L1=1.0: workspace area = 1.993
+  L1=1.5: workspace area = 5.271
 
-<span class="c1"># Method 1: Direct evaluation (slower for repeated calls)</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Direct evaluation: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s for 10 calls&quot;</span><span class="p">)</span>
+Step 3: Gradient-based optimization
+  Success: True
+  Iterations: 5
+  Optimal: L1=0.300, L2=3.361, L3=1.817
 
-<span class="c1"># Method 2: Pre-compiled functions (faster for repeated calls)</span>
-<span class="n">funcs</span> <span class="o">=</span> <span class="n">create_trajectory_functions</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">joint_name</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
-        <span class="n">funcs</span><span class="p">[</span><span class="n">joint_name</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">](</span><span class="n">theta_vals</span><span class="p">)</span>
-        <span class="n">funcs</span><span class="p">[</span><span class="n">joint_name</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">](</span><span class="n">theta_vals</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Compiled functions: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">s for 10 calls&quot;</span><span class="p">)</span>
+Step 4: Convert to numeric and visualize
+  Numeric linkage created with 4 joints
 </pre></div>
 </div>
 </section>
 <section id="next-steps">
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><a class="reference internal" href="synthesis.html"><span class="doc">Linkage Synthesis</span></a> - Classical synthesis methods for linkage design</p></li>
-<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - PSO optimization techniques</p></li>
+<li><p><a class="reference internal" href="synthesis.html"><span class="doc">Linkage Synthesis</span></a> - Design linkages from specifications using classical methods</p></li>
+<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - PSO optimization for complex objectives</p></li>
 <li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.symbolic</span></code> for complete API reference</p></li>
 </ul>
 </section>
