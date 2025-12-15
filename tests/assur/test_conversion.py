@@ -1,4 +1,4 @@
-"""Tests for the conversion module."""
+"""Tests for the conversion module (topology + dimensions separation)."""
 
 import pylinkage as pl
 from pylinkage.assur import (
@@ -9,6 +9,7 @@ from pylinkage.assur import (
     graph_to_linkage,
     linkage_to_graph,
 )
+from pylinkage.dimensions import Dimensions
 
 
 class TestLinkageToGraph:
@@ -19,7 +20,7 @@ class TestLinkageToGraph:
         crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="crank")
         linkage = pl.Linkage(joints=[crank], order=[crank])
 
-        graph = linkage_to_graph(linkage)
+        graph, dimensions = linkage_to_graph(linkage)
 
         # Should have 2 nodes: ground anchor and crank
         assert len(graph.nodes) == 2
@@ -28,7 +29,11 @@ class TestLinkageToGraph:
         crank_node = graph.nodes.get("crank")
         assert crank_node is not None
         assert crank_node.role == NodeRole.DRIVER
-        assert crank_node.angle == 0.31
+
+        # Check driver angle stored in dimensions
+        driver_angle = dimensions.get_driver_angle("crank")
+        assert driver_angle is not None
+        assert abs(driver_angle.initial_angle - 0.31) < 0.01
 
         # Check edge exists
         assert len(graph.edges) == 1
@@ -46,7 +51,7 @@ class TestLinkageToGraph:
         )
         linkage = pl.Linkage(joints=[crank, pin], order=[crank, pin], name="Four-bar")
 
-        graph = linkage_to_graph(linkage)
+        graph, dimensions = linkage_to_graph(linkage)
 
         assert graph.name == "Four-bar"
 
@@ -56,6 +61,9 @@ class TestLinkageToGraph:
 
         # Check edges
         assert len(graph.edges) >= 2
+
+        # Check dimensions has positions
+        assert len(dimensions.node_positions) > 0
 
     def test_convert_with_explicit_static(self):
         """Test converting linkage with explicit Static joints."""
@@ -75,7 +83,7 @@ class TestLinkageToGraph:
             order=[crank, pin]
         )
 
-        graph = linkage_to_graph(linkage)
+        graph, dimensions = linkage_to_graph(linkage)
 
         # Check Static joints become GROUND nodes
         assert graph.nodes["anchor0"].role == NodeRole.GROUND
@@ -87,30 +95,48 @@ class TestLinkageToGraph:
         # Check Revolute becomes DRIVEN
         assert graph.nodes["pin"].role == NodeRole.DRIVEN
 
+        # Check positions stored in dimensions
+        assert "anchor0" in dimensions.node_positions
+        assert "anchor1" in dimensions.node_positions
+
 
 class TestGraphToLinkage:
     """Tests for the graph_to_linkage function."""
 
     def test_convert_simple_graph(self):
         """Test converting a simple graph to linkage."""
+        # Topology only
         graph = LinkageGraph(name="Four-bar")
 
         # Ground points
-        graph.add_node(Node("A", role=NodeRole.GROUND, position=(0.0, 0.0)))
-        graph.add_node(Node("D", role=NodeRole.GROUND, position=(3.0, 0.0)))
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("D", role=NodeRole.GROUND))
 
         # Driver
-        graph.add_node(Node("B", role=NodeRole.DRIVER, position=(0.0, 1.0), angle=0.31))
+        graph.add_node(Node("B", role=NodeRole.DRIVER))
 
         # Driven
-        graph.add_node(Node("C", role=NodeRole.DRIVEN, position=(3.0, 2.0)))
+        graph.add_node(Node("C", role=NodeRole.DRIVEN))
 
         # Edges
-        graph.add_edge(Edge("AB", source="A", target="B", distance=1.0))
-        graph.add_edge(Edge("BC", source="B", target="C", distance=3.0))
-        graph.add_edge(Edge("CD", source="C", target="D", distance=1.0))
+        graph.add_edge(Edge("AB", source="A", target="B"))
+        graph.add_edge(Edge("BC", source="B", target="C"))
+        graph.add_edge(Edge("CD", source="C", target="D"))
 
-        linkage = graph_to_linkage(graph)
+        # Dimensions separate
+        from pylinkage.dimensions import DriverAngle
+        dimensions = Dimensions(
+            node_positions={
+                "A": (0.0, 0.0),
+                "D": (3.0, 0.0),
+                "B": (0.0, 1.0),
+                "C": (3.0, 2.0),
+            },
+            driver_angles={"B": DriverAngle(angular_velocity=0.1, initial_angle=0.31)},
+            edge_distances={"AB": 1.0, "BC": 3.0, "CD": 1.0},
+        )
+
+        linkage = graph_to_linkage(graph, dimensions)
 
         assert linkage.name == "Four-bar"
 
@@ -132,11 +158,11 @@ class TestGraphToLinkage:
         )
         original = pl.Linkage(joints=[crank, pin], order=[crank, pin], name="Test")
 
-        # Convert to graph
-        graph = linkage_to_graph(original)
+        # Convert to graph (returns topology + dimensions)
+        graph, dimensions = linkage_to_graph(original)
 
-        # Convert back to linkage
-        restored = graph_to_linkage(graph)
+        # Convert back to linkage (requires dimensions)
+        restored = graph_to_linkage(graph, dimensions)
 
         # Check name preserved
         assert restored.name == original.name
@@ -146,18 +172,32 @@ class TestGraphToLinkage:
 
     def test_converted_linkage_can_simulate(self):
         """Test that converted linkage can run simulation."""
+        # Topology only
         graph = LinkageGraph(name="Four-bar")
 
-        graph.add_node(Node("A", role=NodeRole.GROUND, position=(0.0, 0.0)))
-        graph.add_node(Node("D", role=NodeRole.GROUND, position=(3.0, 0.0)))
-        graph.add_node(Node("B", role=NodeRole.DRIVER, position=(0.0, 1.0), angle=0.31))
-        graph.add_node(Node("C", role=NodeRole.DRIVEN, position=(3.0, 2.0)))
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("D", role=NodeRole.GROUND))
+        graph.add_node(Node("B", role=NodeRole.DRIVER))
+        graph.add_node(Node("C", role=NodeRole.DRIVEN))
 
-        graph.add_edge(Edge("AB", source="A", target="B", distance=1.0))
-        graph.add_edge(Edge("BC", source="B", target="C", distance=3.0))
-        graph.add_edge(Edge("CD", source="C", target="D", distance=1.0))
+        graph.add_edge(Edge("AB", source="A", target="B"))
+        graph.add_edge(Edge("BC", source="B", target="C"))
+        graph.add_edge(Edge("CD", source="C", target="D"))
 
-        linkage = graph_to_linkage(graph)
+        # Dimensions separate
+        from pylinkage.dimensions import DriverAngle
+        dimensions = Dimensions(
+            node_positions={
+                "A": (0.0, 0.0),
+                "D": (3.0, 0.0),
+                "B": (0.0, 1.0),
+                "C": (3.0, 2.0),
+            },
+            driver_angles={"B": DriverAngle(angular_velocity=0.1, initial_angle=0.31)},
+            edge_distances={"AB": 1.0, "BC": 3.0, "CD": 1.0},
+        )
+
+        linkage = graph_to_linkage(graph, dimensions)
 
         # Should be able to step without error
         step_count = 0
@@ -187,7 +227,7 @@ class TestLinkageToGraphFixed:
             order=[anchor0, anchor1, fixed]
         )
 
-        graph = linkage_to_graph(linkage)
+        graph, dimensions = linkage_to_graph(linkage)
 
         # Check Fixed becomes DRIVEN (deterministic position)
         assert graph.nodes["fixed"].role == NodeRole.DRIVEN
@@ -214,7 +254,7 @@ class TestLinkageToGraphPrismatic:
             order=[anchor, line_start, line_end, prismatic]
         )
 
-        graph = linkage_to_graph(linkage)
+        graph, dimensions = linkage_to_graph(linkage)
 
         # Check Prismatic becomes DRIVEN
         assert graph.nodes["prismatic"].role == NodeRole.DRIVEN

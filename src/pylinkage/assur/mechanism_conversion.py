@@ -5,6 +5,7 @@ and the mechanism model, bypassing the legacy Linkage class.
 
 This is the preferred conversion path for new code:
 - LinkageGraph is the formal kinematic graph representation (Assur theory)
+- Dimensions holds the geometric data (positions, distances, angles)
 - Mechanism is the concrete simulation model with Links + Joints
 
 For backward compatibility with legacy Linkage, use conversion.py instead.
@@ -16,6 +17,7 @@ import math
 from typing import TYPE_CHECKING
 
 from .._types import JointType, NodeId, NodeRole
+from ..dimensions import Dimensions, DriverAngle
 from .decomposition import decompose_assur_groups
 from .graph import Edge, LinkageGraph, Node
 
@@ -23,12 +25,12 @@ if TYPE_CHECKING:
     from ..mechanism import Mechanism
 
 
-def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
-    """Convert a LinkageGraph directly to a Mechanism.
+def graph_to_mechanism(graph: LinkageGraph, dimensions: Dimensions) -> Mechanism:
+    """Convert a LinkageGraph and Dimensions directly to a Mechanism.
 
-    This converts the Assur graph to the mechanism model without going
-    through the legacy Linkage class. This is the preferred conversion
-    path for new code.
+    This converts the Assur graph and dimensions to the mechanism model
+    without going through the legacy Linkage class. This is the preferred
+    conversion path for new code.
 
     The conversion:
     1. Decomposes the graph into Assur groups
@@ -36,7 +38,8 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
     3. Constructs a Mechanism with correct topology
 
     Args:
-        graph: The LinkageGraph to convert.
+        graph: The LinkageGraph defining topology.
+        dimensions: The Dimensions providing positions, distances, angles.
 
     Returns:
         A Mechanism instance ready for simulation.
@@ -47,9 +50,9 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
 
     Example:
         >>> graph = LinkageGraph(name="Four-bar")
-        >>> graph.add_node(Node("A", role=NodeRole.GROUND, position=(0, 0)))
-        >>> # ... add more nodes and edges ...
-        >>> mechanism = graph_to_mechanism(graph)
+        >>> graph.add_node(Node("A", role=NodeRole.GROUND))
+        >>> dims = Dimensions(node_positions={"A": (0, 0)}, ...)
+        >>> mechanism = graph_to_mechanism(graph, dims)
         >>> for positions in mechanism.step():
         ...     print(positions)
     """
@@ -75,9 +78,9 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
     # Create ground joints
     for node_id in decomposition.ground:
         node = graph.nodes[node_id]
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node_id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         ground = GroundJoint(
             id=node_id,
@@ -101,9 +104,9 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
     # Create driver joints and links
     for node_id in decomposition.drivers:
         node = graph.nodes[node_id]
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node_id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         # Create the output joint for the crank
         output_joint = RevoluteJoint(
@@ -117,16 +120,12 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
         # Find ground connection to create driver link
         neighbors = graph.neighbors(node_id)
         motor_joint: GroundJoint | None = None
-        radius: float | None = None
 
         for neighbor_id in neighbors:
             if neighbor_id in decomposition.ground:
                 motor = node_to_joint.get(neighbor_id)
                 if isinstance(motor, GroundJoint):
                     motor_joint = motor
-                    edge = graph.get_edge_between(node_id, neighbor_id)
-                    if edge is not None:
-                        radius = edge.distance
                     break
 
         if motor_joint:
@@ -137,12 +136,16 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
             else:
                 initial_angle = 0.0
 
+            # Get driver angle from dimensions
+            driver_angle = dimensions.get_driver_angle(node_id)
+            angular_velocity = driver_angle.angular_velocity if driver_angle else 0.1
+
             driver = DriverLink(
                 id=f"{node_id}_crank",
                 joints=[motor_joint, output_joint],
                 name=f"{node_id}_crank",
                 motor_joint=motor_joint,
-                angular_velocity=node.angle if node.angle else 0.1,
+                angular_velocity=angular_velocity,
                 initial_angle=initial_angle,
             )
             links.append(driver)
@@ -158,9 +161,9 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
-            pos = node.position
-            x = pos[0] if pos[0] is not None else 0.0
-            y = pos[1] if pos[1] is not None else 0.0
+            pos = dimensions.get_node_position(internal_id)
+            x = pos[0] if pos else 0.0
+            y = pos[1] if pos else 0.0
 
             revolute_joint = RevoluteJoint(
                 id=internal_id,
@@ -199,9 +202,9 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
-            pos = node.position
-            x = pos[0] if pos[0] is not None else 0.0
-            y = pos[1] if pos[1] is not None else 0.0
+            pos = dimensions.get_node_position(internal_id)
+            x = pos[0] if pos else 0.0
+            y = pos[1] if pos else 0.0
 
             # Determine axis from line nodes if available
             line_node1 = getattr(group, "line_node1", None)
@@ -209,11 +212,11 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
             axis = (1.0, 0.0)  # Default horizontal
 
             if line_node1 and line_node2:
-                n1 = graph.nodes.get(line_node1)
-                n2 = graph.nodes.get(line_node2)
-                if n1 and n2 and n1.position[0] is not None and n2.position[0] is not None:
-                    dx = n2.position[0] - n1.position[0]
-                    dy = (n2.position[1] or 0.0) - (n1.position[1] or 0.0)
+                pos1 = dimensions.get_node_position(line_node1)
+                pos2 = dimensions.get_node_position(line_node2)
+                if pos1 and pos2:
+                    dx = pos2[0] - pos1[0]
+                    dy = pos2[1] - pos1[1]
                     length = math.sqrt(dx * dx + dy * dy)
                     if length > 1e-10:
                         axis = (dx / length, dy / length)
@@ -251,8 +254,8 @@ def graph_to_mechanism(graph: LinkageGraph) -> Mechanism:
     )
 
 
-def mechanism_to_graph(mechanism: Mechanism) -> LinkageGraph:
-    """Convert a Mechanism to a LinkageGraph.
+def mechanism_to_graph(mechanism: Mechanism) -> tuple[LinkageGraph, Dimensions]:
+    """Convert a Mechanism to a LinkageGraph and Dimensions.
 
     This converts an existing Mechanism to the Assur graph representation
     for analysis, decomposition, or visualization.
@@ -261,11 +264,11 @@ def mechanism_to_graph(mechanism: Mechanism) -> LinkageGraph:
         mechanism: The Mechanism to convert.
 
     Returns:
-        A LinkageGraph representation.
+        A tuple of (LinkageGraph, Dimensions).
 
     Example:
         >>> mechanism = Mechanism(joints=[...], links=[...])
-        >>> graph = mechanism_to_graph(mechanism)
+        >>> graph, dims = mechanism_to_graph(mechanism)
         >>> decomposition = decompose_assur_groups(graph)
     """
     from ..mechanism import DriverLink, GroundJoint, PrismaticJoint
@@ -275,6 +278,11 @@ def mechanism_to_graph(mechanism: Mechanism) -> LinkageGraph:
     # Track joint -> node mapping
     joint_to_node: dict[str, NodeId] = {}
     edge_counter = 0
+
+    # Dimensional data
+    node_positions: dict[str, tuple[float, float]] = {}
+    driver_angles: dict[str, DriverAngle] = {}
+    edge_distances: dict[str, float] = {}
 
     # Create nodes for all joints
     for joint in mechanism.joints:
@@ -303,21 +311,27 @@ def mechanism_to_graph(mechanism: Mechanism) -> LinkageGraph:
             role = NodeRole.DRIVER if is_driver_output else NodeRole.DRIVEN
             joint_type = JointType.REVOLUTE
 
-        pos = joint.position
         node = Node(
             id=node_id,
             joint_type=joint_type,
             role=role,
-            position=pos,
             name=joint.name,
         )
 
-        # Add driver-specific attributes
+        # Store position in dimensions
+        pos = joint.position
+        if pos[0] is not None and pos[1] is not None:
+            node_positions[node_id] = (pos[0], pos[1])
+
+        # Store driver angle in dimensions
         if role == NodeRole.DRIVER:
             for link in mechanism.links:
                 if isinstance(link, DriverLink):
                     if link.output_joint and link.output_joint.id == joint.id:
-                        node.angle = link.angular_velocity
+                        driver_angles[node_id] = DriverAngle(
+                            angular_velocity=link.angular_velocity,
+                            initial_angle=link.initial_angle,
+                        )
                         break
 
         graph.add_node(node)
@@ -338,14 +352,26 @@ def mechanism_to_graph(mechanism: Mechanism) -> LinkageGraph:
                         # Check if edge already exists
                         existing = graph.get_edge_between(node_a, node_b)
                         if existing is None:
-                            distance = link.get_distance(joint_a, joint_b)
+                            edge_id = f"edge_{edge_counter}"
                             edge = Edge(
-                                id=f"edge_{edge_counter}",
+                                id=edge_id,
                                 source=node_a,
                                 target=node_b,
-                                distance=distance,
                             )
                             graph.add_edge(edge)
+
+                            # Store distance in dimensions
+                            distance = link.get_distance(joint_a, joint_b)
+                            if distance is not None:
+                                edge_distances[edge_id] = distance
+
                             edge_counter += 1
 
-    return graph
+    dimensions = Dimensions(
+        node_positions=node_positions,
+        driver_angles=driver_angles,
+        edge_distances=edge_distances,
+        name=mechanism.name,
+    )
+
+    return graph, dimensions

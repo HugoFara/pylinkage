@@ -251,8 +251,6 @@ def signature_to_hypergraph(
         3  # 2 anchors + 1 internal
         >>> len(graph.edges)
         2  # 2 links
-        >>> graph.edges["link_0"].distance is None
-        True
 
         >>> # With prefix for unique IDs
         >>> leg = signature_to_hypergraph("RRR", prefix="leg1_")
@@ -313,7 +311,6 @@ def _generate_dyad_hypergraph(
     graph.add_node(
         Node(
             id=make_id("anchor_0"),
-            position=(None, None),
             role=NodeRole.DRIVEN,
             joint_type=joint_types[0],
             name=f"Anchor 0 ({_JOINT_TO_CHAR[joint_types[0]]})",
@@ -322,7 +319,6 @@ def _generate_dyad_hypergraph(
     graph.add_node(
         Node(
             id=make_id("anchor_1"),
-            position=(None, None),
             role=NodeRole.DRIVEN,
             joint_type=joint_types[2],
             name=f"Anchor 1 ({_JOINT_TO_CHAR[joint_types[2]]})",
@@ -333,20 +329,18 @@ def _generate_dyad_hypergraph(
     graph.add_node(
         Node(
             id=make_id("internal_0"),
-            position=(None, None),
             role=NodeRole.DRIVEN,
             joint_type=joint_types[1],
             name=f"Internal ({_JOINT_TO_CHAR[joint_types[1]]})",
         )
     )
 
-    # Create edges (links) - NO distance constraints (pure topology)
+    # Create edges (links) - pure topology, no distance constraints
     graph.add_edge(
         Edge(
             id=make_id("link_0"),
             source=make_id("anchor_0"),
             target=make_id("internal_0"),
-            distance=None,
         )
     )
     graph.add_edge(
@@ -354,7 +348,6 @@ def _generate_dyad_hypergraph(
             id=make_id("link_1"),
             source=make_id("internal_0"),
             target=make_id("anchor_1"),
-            distance=None,
         )
     )
 

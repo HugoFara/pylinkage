@@ -1,4 +1,4 @@
-"""Hierarchical linkage composition.
+"""Hierarchical linkage composition (topology only).
 
 This module provides classes for assembling linkages from component instances
 and flattening them to a single HypergraphLinkage for analysis or simulation.
@@ -6,39 +6,39 @@ and flattening them to a single HypergraphLinkage for analysis or simulation.
 
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from ._types import NodeId, PortId
-from .components import Component
 from .core import Edge, Hyperedge, Node
 from .graph import HypergraphLinkage
 
 
 @dataclass
 class ComponentInstance:
-    """An instance of a component with specific parameters.
+    """An instance of a topology with connection ports.
 
-    Represents a concrete instantiation of a Component template with
-    specific parameter values and a unique instance ID.
+    Represents a concrete instantiation of a HypergraphLinkage with
+    defined ports for connecting to other instances.
 
     Attributes:
         id: Unique identifier for this instance within the hierarchy.
-        component: The component type being instantiated.
-        parameters: Parameter values for this instance.
+        topology: The HypergraphLinkage defining this component's structure.
+        ports: Mapping from port IDs to internal node IDs.
         name: Human-readable name for this instance.
 
     Example:
+        >>> topology = HypergraphLinkage(name="leg")
+        >>> # ... add nodes and edges ...
         >>> instance = ComponentInstance(
         ...     id="left_leg",
-        ...     component=leg_component,
-        ...     parameters={"crank_length": 1.5},
+        ...     topology=topology,
+        ...     ports={"input": "A", "output": "B"},
         ...     name="Left Leg"
         ... )
     """
 
     id: str
-    component: Component
-    parameters: dict[str, Any] = field(default_factory=dict)
+    topology: HypergraphLinkage
+    ports: dict[PortId, NodeId] = field(default_factory=dict)
     name: str = ""
 
     def get_qualified_node_id(self, internal_node: NodeId) -> NodeId:
@@ -64,7 +64,9 @@ class ComponentInstance:
         Raises:
             KeyError: If port not found.
         """
-        internal_node = self.component.get_port_node(port_id)
+        if port_id not in self.ports:
+            raise KeyError(f"Port '{port_id}' not found in instance '{self.id}'")
+        internal_node = self.ports[port_id]
         return self.get_qualified_node_id(internal_node)
 
 
@@ -73,7 +75,7 @@ class Connection:
     """Connection between two component ports.
 
     Defines how two component instances are connected via their ports.
-    During flattening, connected ports share the same position.
+    During flattening, connected ports are merged into a single node.
 
     Attributes:
         from_instance: Instance ID of the source component.
@@ -116,8 +118,8 @@ class HierarchicalLinkage:
 
     Example:
         >>> # Create instances
-        >>> leg1 = ComponentInstance("leg1", leg_component, {"length": 2.0})
-        >>> leg2 = ComponentInstance("leg2", leg_component, {"length": 2.0})
+        >>> leg1 = ComponentInstance("leg1", leg_topology, {"input": "A", "output": "B"})
+        >>> leg2 = ComponentInstance("leg2", leg_topology, {"input": "A", "output": "B"})
         >>>
         >>> # Create hierarchical linkage
         >>> linkage = HierarchicalLinkage(
@@ -157,12 +159,12 @@ class HierarchicalLinkage:
             from_inst = self.instances[conn.from_instance]
             to_inst = self.instances[conn.to_instance]
 
-            if conn.from_port not in from_inst.component.ports:
+            if conn.from_port not in from_inst.ports:
                 raise ValueError(
                     f"Connection references unknown port '{conn.from_port}' "
                     f"on instance '{conn.from_instance}'"
                 )
-            if conn.to_port not in to_inst.component.ports:
+            if conn.to_port not in to_inst.ports:
                 raise ValueError(
                     f"Connection references unknown port '{conn.to_port}' "
                     f"on instance '{conn.to_instance}'"
@@ -203,11 +205,11 @@ class HierarchicalLinkage:
         from_inst = self.instances[connection.from_instance]
         to_inst = self.instances[connection.to_instance]
 
-        if connection.from_port not in from_inst.component.ports:
+        if connection.from_port not in from_inst.ports:
             raise ValueError(
                 f"Connection references unknown port '{connection.from_port}'"
             )
-        if connection.to_port not in to_inst.component.ports:
+        if connection.to_port not in to_inst.ports:
             raise ValueError(
                 f"Connection references unknown port '{connection.to_port}'"
             )
@@ -266,10 +268,7 @@ class HierarchicalLinkage:
         added_canonical_nodes: set[NodeId] = set()
 
         for instance_id, instance in self.instances.items():
-            # Apply parameters to get configured component
-            configured = instance.component.copy_with_parameters(instance.parameters)
-
-            for node in configured.internal_graph.nodes.values():
+            for node in instance.topology.nodes.values():
                 qualified_id = instance.get_qualified_node_id(node.id)
                 canonical_id = get_canonical(qualified_id)
 
@@ -286,11 +285,8 @@ class HierarchicalLinkage:
                 flat_graph.add_node(
                     Node(
                         id=canonical_id,
-                        position=node.position,
                         role=node.role,
                         joint_type=node.joint_type,
-                        angle=node.angle,
-                        initial_angle=node.initial_angle,
                         name=qualified_name,
                     )
                 )
@@ -298,9 +294,7 @@ class HierarchicalLinkage:
 
         # Third pass: add edges from all instances
         for instance_id, instance in self.instances.items():
-            configured = instance.component.copy_with_parameters(instance.parameters)
-
-            for edge in configured.internal_graph.edges.values():
+            for edge in instance.topology.edges.values():
                 qualified_source = get_canonical(
                     instance.get_qualified_node_id(edge.source)
                 )
@@ -319,15 +313,12 @@ class HierarchicalLinkage:
                         id=qualified_edge_id,
                         source=qualified_source,
                         target=qualified_target,
-                        distance=edge.distance,
                     )
                 )
 
         # Fourth pass: add hyperedges from all instances
         for instance_id, instance in self.instances.items():
-            configured = instance.component.copy_with_parameters(instance.parameters)
-
-            for hyperedge in configured.internal_graph.hyperedges.values():
+            for hyperedge in instance.topology.hyperedges.values():
                 qualified_nodes = tuple(
                     get_canonical(instance.get_qualified_node_id(n))
                     for n in hyperedge.nodes
@@ -336,22 +327,12 @@ class HierarchicalLinkage:
                 # Deduplicate nodes (in case of merging)
                 unique_nodes = tuple(dict.fromkeys(qualified_nodes))
 
-                # Update constraints with canonical node IDs
-                qualified_constraints: dict[tuple[NodeId, NodeId], float] = {}
-                for (n1, n2), dist in hyperedge.constraints.items():
-                    qn1 = get_canonical(instance.get_qualified_node_id(n1))
-                    qn2 = get_canonical(instance.get_qualified_node_id(n2))
-                    if qn1 != qn2:  # Skip constraints between merged nodes
-                        constraint_key: tuple[NodeId, NodeId] = (min(qn1, qn2), max(qn1, qn2))
-                        qualified_constraints[constraint_key] = dist
-
-                if len(unique_nodes) >= 2 and qualified_constraints:
+                if len(unique_nodes) >= 2:
                     qualified_he_id = f"{instance_id}.{hyperedge.id}"
                     flat_graph.add_hyperedge(
                         Hyperedge(
                             id=qualified_he_id,
                             nodes=unique_nodes,
-                            constraints=qualified_constraints,
                             name=f"{instance_id}.{hyperedge.name}"
                             if hyperedge.name
                             else None,
@@ -368,7 +349,7 @@ class HierarchicalLinkage:
         """
         result = {}
         for inst_id, instance in self.instances.items():
-            for port_id in instance.component.ports:
+            for port_id in instance.ports:
                 key = f"{inst_id}.{port_id}"
                 result[key] = instance.get_port_qualified_node(port_id)
         return result

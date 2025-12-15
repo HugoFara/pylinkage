@@ -1,8 +1,11 @@
-"""Hypergraph-based representation of planar linkages.
+"""Hypergraph-based representation of planar linkages (topology only).
 
 This module provides the HypergraphLinkage class, which represents linkages
 as hypergraphs where nodes are joints and connections can be either binary
 edges or N-way hyperedges (rigid bodies).
+
+This is a pure topological representation - dimensional data (positions,
+distances, angles) is stored separately in a Dimensions object.
 """
 
 
@@ -15,17 +18,21 @@ from .core import Edge, Hyperedge, Node
 
 @dataclass
 class HypergraphLinkage:
-    """Abstract hypergraph representation of a planar linkage.
+    """Pure topological hypergraph representation of a planar linkage.
 
     A linkage is represented as a hypergraph where:
-    - Nodes are joints (revolute R or prismatic P)
-    - Edges are binary links with distance constraints
-    - Hyperedges are N-way rigid bodies with pairwise constraints
+    - Nodes are joints (revolute R or prismatic P) with roles
+    - Edges are binary link connections
+    - Hyperedges are N-way rigid body groupings
+
+    This is a topology-only representation. Dimensional data (positions,
+    distances, angles) is stored separately in a Dimensions object.
 
     This representation enables:
     - First-class rigid body representation via hyperedges
-    - Hierarchical composition via components
-    - Conversion to other representations (Assur, joint-based)
+    - Hierarchical composition
+    - Conversion to other representations (Assur, Mechanism)
+    - Pure structural analysis without geometric constraints
 
     Attributes:
         nodes: Dictionary mapping node IDs to Node objects.
@@ -35,9 +42,9 @@ class HypergraphLinkage:
 
     Example:
         >>> graph = HypergraphLinkage(name="Four-bar")
-        >>> graph.add_node(Node("A", role=NodeRole.GROUND, position=(0, 0)))
-        >>> graph.add_node(Node("B", role=NodeRole.DRIVER, position=(0, 1), angle=0.31))
-        >>> graph.add_edge(Edge("AB", source="A", target="B", distance=1.0))
+        >>> graph.add_node(Node("A", role=NodeRole.GROUND))
+        >>> graph.add_node(Node("B", role=NodeRole.DRIVER))
+        >>> graph.add_edge(Edge("AB", source="A", target="B"))
     """
 
     nodes: dict[NodeId, Node] = field(default_factory=dict)
@@ -326,11 +333,8 @@ class HypergraphLinkage:
             result.add_node(
                 Node(
                     id=node.id,
-                    position=node.position,
                     role=node.role,
                     joint_type=node.joint_type,
-                    angle=node.angle,
-                    initial_angle=node.initial_angle,
                     name=node.name,
                 )
             )
@@ -342,7 +346,6 @@ class HypergraphLinkage:
                     id=edge.id,
                     source=edge.source,
                     target=edge.target,
-                    distance=edge.distance,
                 )
             )
 

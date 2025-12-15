@@ -1,43 +1,36 @@
-"""Graph-based representation of planar linkages.
+"""Graph-based representation of planar linkages (topology only).
 
 This module provides data structures for representing linkages as graphs
 where nodes are joints and edges are rigid links. This representation
 enables Assur group decomposition and provides an alternative syntax
 for defining linkages.
+
+This is a pure topological representation - dimensional data (positions,
+distances, angles) is stored separately in a Dimensions object.
 """
 
 
 import copy
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
 
 from ._types import EdgeId, JointType, NodeId, NodeRole
-
-if TYPE_CHECKING:
-    pass
-
-# Type alias for positions that may have None coordinates
-_MaybeCoord = tuple[float | None, float | None]
 
 
 @dataclass
 class Node:
-    """A joint in the linkage graph.
+    """A joint in the linkage graph (topology only).
 
-    Represents both the topological (connectivity) and geometric
-    (position, constraints) aspects of a joint.
+    Represents the topological aspects of a joint. Dimensional data
+    (position, angles) is stored separately in a Dimensions object.
 
     Attributes:
         id: Unique identifier for this node.
         joint_type: The kinematic joint type (REVOLUTE or PRISMATIC).
         role: The role in the mechanism (GROUND, DRIVER, or DRIVEN).
-        position: Current (x, y) coordinates, may contain None if uninitialized.
-        angle: For DRIVER nodes, the rotation angle per step (radians).
-        initial_angle: For DRIVER nodes, the starting angle (radians).
         name: Human-readable name for display.
 
     Example:
-        >>> node = Node("A", role=NodeRole.GROUND, position=(0, 0))
+        >>> node = Node("A", role=NodeRole.GROUND)
         >>> node.joint_type
         <JointType.REVOLUTE: 1>
     """
@@ -45,9 +38,6 @@ class Node:
     id: NodeId
     joint_type: JointType = JointType.REVOLUTE
     role: NodeRole = NodeRole.DRIVEN
-    position: _MaybeCoord = (None, None)
-    angle: float | None = None
-    initial_angle: float | None = None
     name: str | None = None
 
     def __post_init__(self) -> None:
@@ -68,26 +58,24 @@ class Node:
 
 @dataclass
 class Edge:
-    """A rigid link between two joints.
+    """A rigid link between two joints (topology only).
 
-    Edges represent rigid bodies connecting joints. The constraint
-    (typically distance) depends on the joint types at each end.
+    Edges represent rigid bodies connecting joints. Distance constraints
+    are stored separately in a Dimensions object.
 
     Attributes:
         id: Unique identifier for this edge.
         source: ID of the source node.
         target: ID of the target node.
-        distance: The distance constraint between the nodes (for R-R or R-P).
         body_id: Optional tag for grouping edges that belong to the same rigid body.
 
     Example:
-        >>> edge = Edge("AB", source="A", target="B", distance=1.0)
+        >>> edge = Edge("AB", source="A", target="B")
     """
 
     id: EdgeId
     source: NodeId
     target: NodeId
-    distance: float | None = None
     body_id: str | None = None
 
     def __hash__(self) -> int:
@@ -125,11 +113,14 @@ class Edge:
 
 @dataclass
 class LinkageGraph:
-    """Graph representation of a planar linkage.
+    """Graph representation of a planar linkage (topology only).
 
     A linkage is represented as a graph where:
     - Nodes are joints (revolute R or prismatic P)
-    - Edges are rigid links with distance constraints
+    - Edges are rigid links
+
+    This is a pure topological representation - dimensional data
+    (positions, distances, angles) is stored separately in a Dimensions object.
 
     This representation enables:
     - Assur group decomposition
@@ -143,9 +134,9 @@ class LinkageGraph:
 
     Example:
         >>> graph = LinkageGraph(name="Four-bar")
-        >>> graph.add_node(Node("A", role=NodeRole.GROUND, position=(0, 0)))
-        >>> graph.add_node(Node("B", role=NodeRole.DRIVER, position=(0, 1), angle=0.31))
-        >>> graph.add_edge(Edge("AB", source="A", target="B", distance=1.0))
+        >>> graph.add_node(Node("A", role=NodeRole.GROUND))
+        >>> graph.add_node(Node("B", role=NodeRole.DRIVER))
+        >>> graph.add_edge(Edge("AB", source="A", target="B"))
         >>> graph.neighbors("A")
         ['B']
     """

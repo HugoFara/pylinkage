@@ -1,4 +1,4 @@
-"""Assur group classes for kinematic analysis.
+"""Assur group classes for kinematic analysis (topology only).
 
 This module provides the base class and implementations for Assur groups,
 which are the fundamental structural units in planar mechanism decomposition.
@@ -13,14 +13,14 @@ Assur groups are classified by:
 
 Class I groups (k=1) are dyads - two binary links, three joints.
 
-IMPORTANT: These classes are pure data structures defining logical properties.
-They do NOT contain solving behavior. Use pylinkage.solver.solve.solve_group()
+IMPORTANT: These classes are pure topological data structures.
+They do NOT contain solving behavior or dimensional data.
+Use pylinkage.solver.solve.solve_group() with a Dimensions object
 to compute positions.
 """
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any
 
 from ._types import JointType, NodeId
 from .graph import LinkageGraph
@@ -28,13 +28,14 @@ from .graph import LinkageGraph
 
 @dataclass
 class AssurGroup(ABC):
-    """Base class for Assur groups.
+    """Base class for Assur groups (topology only).
 
     An Assur group is a kinematic substructure with DOF = 0 when
     attached to the frame (or previously solved groups). It represents
     the minimal structural unit that can be identified independently.
 
-    This is a pure data class defining structural properties only.
+    This is a pure topological data class. Dimensional data (distances,
+    angles) is stored separately in a Dimensions object.
     Use pylinkage.solver.solve.solve_group() to compute positions.
 
     Attributes:
@@ -45,7 +46,6 @@ class AssurGroup(ABC):
     Subclasses must implement:
         - group_class: The class k of this Assur group
         - joint_signature: String like "RRR", "RRP", etc.
-        - constraints: Dict of constraint values for this group
         - can_form: Check if given elements can form this group type
     """
 
@@ -73,16 +73,6 @@ class AssurGroup(ABC):
         """
         ...
 
-    @property
-    @abstractmethod
-    def constraints(self) -> dict[str, Any]:
-        """Return the constraint values for this group.
-
-        Returns a dict mapping constraint names to their values.
-        This allows solvers to access constraint data uniformly.
-        """
-        ...
-
     @classmethod
     @abstractmethod
     def can_form(
@@ -106,7 +96,7 @@ class AssurGroup(ABC):
 
 @dataclass
 class DyadRRR(AssurGroup):
-    """RRR Dyad: Three revolute joints forming a triangle.
+    """RRR Dyad: Three revolute joints forming a triangle (topology only).
 
     This is the most common Assur group, equivalent to the Revolute joint.
     It consists of two binary links connecting one internal node to two
@@ -117,19 +107,13 @@ class DyadRRR(AssurGroup):
         anchor0 ----d0---- internal ----d1---- anchor1
 
     The internal node position is found at the intersection of two circles:
-    - Circle 1: centered at anchor0 with radius distance0
-    - Circle 2: centered at anchor1 with radius distance1
+    - Circle 1: centered at anchor0 with radius from Dimensions
+    - Circle 2: centered at anchor1 with radius from Dimensions
 
-    This is a pure data class. Use pylinkage.solver.solve.solve_group()
+    This is a pure topological data class. Distance constraints are stored
+    in a Dimensions object. Use pylinkage.solver.solve.solve_group()
     to compute positions.
-
-    Attributes:
-        distance0: Distance from anchor0 to internal node.
-        distance1: Distance from anchor1 to internal node.
     """
-
-    distance0: float | None = None
-    distance1: float | None = None
 
     @property
     def group_class(self) -> int:
@@ -138,14 +122,6 @@ class DyadRRR(AssurGroup):
     @property
     def joint_signature(self) -> str:
         return "RRR"
-
-    @property
-    def constraints(self) -> dict[str, Any]:
-        """Return the constraint values for this RRR dyad."""
-        return {
-            "distance0": self.distance0,
-            "distance1": self.distance1,
-        }
 
     @classmethod
     def can_form(
@@ -159,7 +135,7 @@ class DyadRRR(AssurGroup):
         Requires:
         - Exactly 1 internal node (revolute type)
         - Exactly 2 anchor nodes
-        - Edges connecting internal to both anchors with distances
+        - Edges connecting internal to both anchors
         """
         if len(internal_node_ids) != 1:
             return False
@@ -178,7 +154,7 @@ class DyadRRR(AssurGroup):
         # Check edges exist to both anchors
         for anchor_id in anchor_node_ids[:2]:
             edge = graph.get_edge_between(internal_id, anchor_id)
-            if edge is None or edge.distance is None:
+            if edge is None:
                 return False
 
         return True
@@ -186,7 +162,7 @@ class DyadRRR(AssurGroup):
 
 @dataclass
 class DyadRRP(AssurGroup):
-    """RRP Dyad: Two revolute joints and one prismatic joint.
+    """RRP Dyad: Two revolute joints and one prismatic joint (topology only).
 
     This corresponds to the Linear joint - a point constrained by a circle
     (from revolute connection) and a line (from prismatic connection).
@@ -200,19 +176,18 @@ class DyadRRP(AssurGroup):
         line_node1 ................... line_node2
 
     The internal node is at the intersection of:
-    - A circle centered at revolute_anchor with radius revolute_distance
+    - A circle centered at revolute_anchor with radius from Dimensions
     - A line passing through line_node1 and line_node2
 
-    This is a pure data class. Use pylinkage.solver.solve.solve_group()
+    This is a pure topological data class. Distance constraints are stored
+    in a Dimensions object. Use pylinkage.solver.solve.solve_group()
     to compute positions.
 
     Attributes:
-        revolute_distance: Distance from revolute anchor to internal node.
-        line_node1: First node defining the prismatic axis.
-        line_node2: Second node defining the prismatic axis.
+        line_node1: First node defining the prismatic axis (topological).
+        line_node2: Second node defining the prismatic axis (topological).
     """
 
-    revolute_distance: float | None = None
     line_node1: NodeId | None = None
     line_node2: NodeId | None = None
 
@@ -224,15 +199,6 @@ class DyadRRP(AssurGroup):
     def joint_signature(self) -> str:
         return "RRP"
 
-    @property
-    def constraints(self) -> dict[str, Any]:
-        """Return the constraint values for this RRP dyad."""
-        return {
-            "revolute_distance": self.revolute_distance,
-            "line_node1": self.line_node1,
-            "line_node2": self.line_node2,
-        }
-
     @classmethod
     def can_form(
         cls,
@@ -243,7 +209,7 @@ class DyadRRP(AssurGroup):
         """Check if nodes form an RRP dyad.
 
         This is more complex than RRR - needs to identify:
-        - One revolute connection (edge with distance)
+        - One revolute connection (edge to anchor)
         - One line constraint (defined by two other nodes)
         """
         if len(internal_node_ids) != 1:
@@ -265,7 +231,7 @@ class DyadRRP(AssurGroup):
 
 @dataclass
 class DyadRPR(AssurGroup):
-    """RPR Dyad: Revolute-Prismatic-Revolute configuration.
+    """RPR Dyad: Revolute-Prismatic-Revolute configuration (topology only).
 
     This is a stub implementation for extensibility.
     Solving is not yet implemented in the solver module.
@@ -279,11 +245,6 @@ class DyadRPR(AssurGroup):
     def joint_signature(self) -> str:
         return "RPR"
 
-    @property
-    def constraints(self) -> dict[str, Any]:
-        """Return the constraint values for this RPR dyad."""
-        return {}  # Not yet implemented
-
     @classmethod
     def can_form(
         cls,
@@ -296,7 +257,7 @@ class DyadRPR(AssurGroup):
 
 @dataclass
 class DyadPRR(AssurGroup):
-    """PRR Dyad: Prismatic-Revolute-Revolute configuration.
+    """PRR Dyad: Prismatic-Revolute-Revolute configuration (topology only).
 
     This is a stub implementation for extensibility.
     Solving is not yet implemented in the solver module.
@@ -309,11 +270,6 @@ class DyadPRR(AssurGroup):
     @property
     def joint_signature(self) -> str:
         return "PRR"
-
-    @property
-    def constraints(self) -> dict[str, Any]:
-        """Return the constraint values for this PRR dyad."""
-        return {}  # Not yet implemented
 
     @classmethod
     def can_form(

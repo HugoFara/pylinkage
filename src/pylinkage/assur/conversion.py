@@ -16,6 +16,7 @@ This enables interoperability between the two systems:
 import warnings
 from typing import TYPE_CHECKING
 
+from ..dimensions import Dimensions, DriverAngle
 from ..joints import Prismatic
 from ._types import JointType, NodeId, NodeRole
 from .decomposition import decompose_assur_groups
@@ -25,8 +26,8 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 
-def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
-    """Convert an existing Linkage to graph representation.
+def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
+    """Convert an existing Linkage to graph representation and Dimensions.
 
     Maps existing joint types to graph nodes:
     - Static -> GROUND node
@@ -39,17 +40,22 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
         linkage: The Linkage to convert.
 
     Returns:
-        LinkageGraph representation of the linkage.
+        Tuple of (LinkageGraph, Dimensions) - topology and dimensional data.
 
     Example:
         >>> linkage = pl.Linkage(joints=[crank, pin], order=[crank, pin])
-        >>> graph = linkage_to_graph(linkage)
+        >>> graph, dims = linkage_to_graph(linkage)
         >>> print(f"Nodes: {list(graph.nodes.keys())}")
     """
     from ..joints import Crank, Fixed, Prismatic, Revolute, Static
     from ..joints.joint import _StaticBase
 
     graph = LinkageGraph(name=linkage.name)
+
+    # Dimensional data
+    node_positions: dict[str, tuple[float, float]] = {}
+    driver_angles: dict[str, DriverAngle] = {}
+    edge_distances: dict[str, float] = {}
 
     # Track joint -> node mapping using object id
     joint_to_node: dict[int, NodeId] = {}
@@ -67,15 +73,18 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
         node_id = f"anchor_{edge_counter}"
         edge_counter += 1
 
-        pos = (coord[0], coord[1]) if coord[0] is not None else (None, None)
         anchor_node = Node(
             id=node_id,
             role=NodeRole.GROUND,
-            position=pos,
             name=node_id,
         )
         graph.add_node(anchor_node)
         joint_to_node[joint_id] = node_id
+
+        # Store position in dimensions
+        if coord[0] is not None and coord[1] is not None:
+            node_positions[node_id] = (coord[0], coord[1])
+
         return node_id
 
     # First pass: create nodes for all joints in the linkage
@@ -106,13 +115,21 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
             id=node_id,
             joint_type=joint_type,
             role=role,
-            position=joint.coord(),
             name=joint.name,
         )
 
-        # Add driver-specific attributes
-        if isinstance(joint, Crank):
-            node.angle = joint.angle
+        # Store position in dimensions
+        coord = joint.coord()
+        if coord[0] is not None and coord[1] is not None:
+            node_positions[node_id] = (coord[0], coord[1])
+
+        # Store driver angle in dimensions
+        if isinstance(joint, Crank) and joint.angle is not None:
+            # joint.angle is the initial angle, angular_velocity defaults to 0.1
+            driver_angles[node_id] = DriverAngle(
+                angular_velocity=0.1,
+                initial_angle=joint.angle,
+            )
 
         graph.add_node(node)
         joint_to_node[id(joint)] = node_id
@@ -128,13 +145,15 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r,
                 )
                 graph.add_edge(edge)
+                if joint.r is not None:
+                    edge_distances[edge_id] = joint.r
                 edge_counter += 1
 
         elif isinstance(joint, Revolute):
@@ -144,13 +163,15 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r0,
                 )
                 graph.add_edge(edge)
+                if joint.r0 is not None:
+                    edge_distances[edge_id] = joint.r0
                 edge_counter += 1
 
             if joint.joint1 is not None:
@@ -158,13 +179,15 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint1, joint.joint1.coord())
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r1,
                 )
                 graph.add_edge(edge)
+                if joint.r1 is not None:
+                    edge_distances[edge_id] = joint.r1
                 edge_counter += 1
 
         elif isinstance(joint, Fixed):
@@ -175,13 +198,15 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r,
                 )
                 graph.add_edge(edge)
+                if joint.r is not None:
+                    edge_distances[edge_id] = joint.r
                 edge_counter += 1
 
             if joint.joint1 is not None:
@@ -194,7 +219,6 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                     id=f"edge_{edge_counter}",
                     source=parent_id,
                     target=node_id,
-                    distance=None,  # Orientation reference only
                 )
                 graph.add_edge(edge)
                 edge_counter += 1
@@ -206,13 +230,15 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.revolute_radius,
                 )
                 graph.add_edge(edge)
+                if joint.revolute_radius is not None:
+                    edge_distances[edge_id] = joint.revolute_radius
                 edge_counter += 1
 
             # Line-defining joints (joint1, joint2)
@@ -225,7 +251,6 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                     id=f"edge_{edge_counter}",
                     source=parent_id,
                     target=node_id,
-                    distance=None,  # Line constraint, not distance
                 )
                 graph.add_edge(edge)
                 edge_counter += 1
@@ -239,16 +264,22 @@ def linkage_to_graph(linkage: "Linkage") -> LinkageGraph:
                     id=f"edge_{edge_counter}",
                     source=parent_id,
                     target=node_id,
-                    distance=None,  # Line constraint, not distance
                 )
                 graph.add_edge(edge)
                 edge_counter += 1
 
-    return graph
+    dimensions = Dimensions(
+        node_positions=node_positions,
+        driver_angles=driver_angles,
+        edge_distances=edge_distances,
+        name=linkage.name,
+    )
+
+    return graph, dimensions
 
 
-def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
-    """Convert a graph representation to a Linkage.
+def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
+    """Convert a graph representation and Dimensions to a Linkage.
 
     .. deprecated:: 0.8.0
         Use ``graph_to_mechanism()`` instead for direct conversion to the new
@@ -258,11 +289,11 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
 
             # Old (deprecated):
             from pylinkage.assur import graph_to_linkage
-            linkage = graph_to_linkage(graph)
+            linkage = graph_to_linkage(graph, dims)
 
             # New (preferred):
             from pylinkage.assur import graph_to_mechanism
-            mechanism = graph_to_mechanism(graph)
+            mechanism = graph_to_mechanism(graph, dims)
 
     This function:
     1. Decomposes the graph into Assur groups
@@ -270,16 +301,17 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     3. Constructs a Linkage with correct solving order
 
     Args:
-        graph: The LinkageGraph to convert.
+        graph: The LinkageGraph defining topology.
+        dimensions: The Dimensions providing positions, distances, angles.
 
     Returns:
         A Linkage instance ready for simulation.
 
     Example:
         >>> graph = LinkageGraph(name="Four-bar")
-        >>> graph.add_node(Node("A", role=NodeRole.GROUND, position=(0, 0)))
-        >>> # ... add more nodes and edges ...
-        >>> linkage = graph_to_linkage(graph)
+        >>> graph.add_node(Node("A", role=NodeRole.GROUND))
+        >>> dims = Dimensions(node_positions={"A": (0, 0)}, ...)
+        >>> linkage = graph_to_linkage(graph, dims)
         >>> for coords in linkage.step():
         ...     print(coords)
     """
@@ -303,9 +335,9 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     # Create ground joints (use _StaticBase to avoid deprecation warnings)
     for node_id in decomposition.ground:
         node = graph.nodes[node_id]
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node_id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         joint = _StaticBase(
             x=x,
@@ -318,9 +350,9 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
     # Create driver joints (Cranks)
     for node_id in decomposition.drivers:
         node = graph.nodes[node_id]
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node_id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         # Find the ground connection
         neighbors = graph.neighbors(node_id)
@@ -332,15 +364,18 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
                 parent_joint = node_to_joint.get(neighbor_id)
                 edge = graph.get_edge_between(node_id, neighbor_id)
                 if edge is not None:
-                    distance = edge.distance
+                    distance = dimensions.get_edge_distance(edge.id)
                 break
+
+        driver_angle = dimensions.get_driver_angle(node_id)
+        angle = driver_angle.angular_velocity if driver_angle else 0.1
 
         crank_joint = Crank(
             x=x,
             y=y,
             joint0=parent_joint,
             distance=distance,
-            angle=node.angle,
+            angle=angle,
             name=node.name,
         )
         joints.append(crank_joint)
@@ -355,16 +390,20 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
-            pos = node.position
-            x = pos[0] if pos[0] is not None else 0.0
-            y = pos[1] if pos[1] is not None else 0.0
+            pos = dimensions.get_node_position(internal_id)
+            x = pos[0] if pos else 0.0
+            y = pos[1] if pos else 0.0
 
             anchor0 = node_to_joint.get(group.anchor_nodes[0])
             anchor1 = node_to_joint.get(group.anchor_nodes[1]) if len(group.anchor_nodes) > 1 else None
 
-            # Get distances from the group
-            distance0 = getattr(group, 'distance0', None)
-            distance1 = getattr(group, 'distance1', None)
+            # Get distances from dimensions using edge IDs
+            distance0: float | None = None
+            distance1: float | None = None
+            if len(group.internal_edges) > 0:
+                distance0 = dimensions.get_edge_distance(group.internal_edges[0])
+            if len(group.internal_edges) > 1:
+                distance1 = dimensions.get_edge_distance(group.internal_edges[1])
 
             revolute_joint = Revolute(
                 x=x,
@@ -385,15 +424,18 @@ def graph_to_linkage(graph: LinkageGraph) -> "Linkage":
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
-            pos = node.position
-            x = pos[0] if pos[0] is not None else 0.0
-            y = pos[1] if pos[1] is not None else 0.0
+            pos = dimensions.get_node_position(internal_id)
+            x = pos[0] if pos else 0.0
+            y = pos[1] if pos else 0.0
 
             anchor = node_to_joint.get(group.anchor_nodes[0]) if group.anchor_nodes else None
             line1 = node_to_joint.get(getattr(group, 'line_node1', None) or '')
             line2 = node_to_joint.get(getattr(group, 'line_node2', None) or '')
 
-            revolute_distance = getattr(group, 'revolute_distance', None)
+            # Get revolute distance from dimensions using edge ID
+            revolute_distance: float | None = None
+            if len(group.internal_edges) > 0:
+                revolute_distance = dimensions.get_edge_distance(group.internal_edges[0])
 
             prismatic_joint = Prismatic(
                 x=x,

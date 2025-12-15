@@ -1,4 +1,4 @@
-"""Tests for HypergraphLinkage class."""
+"""Tests for HypergraphLinkage class (topology only)."""
 
 import pytest
 
@@ -12,7 +12,7 @@ from pylinkage.hypergraph import (
 
 
 class TestHypergraphLinkage:
-    """Tests for the HypergraphLinkage class."""
+    """Tests for the HypergraphLinkage class (topology only)."""
 
     def test_graph_creation_empty(self):
         """Test creating an empty graph."""
@@ -25,7 +25,7 @@ class TestHypergraphLinkage:
     def test_add_node(self):
         """Test adding nodes to graph."""
         graph = HypergraphLinkage()
-        node = Node("A", position=(0, 0), role=NodeRole.GROUND)
+        node = Node("A", role=NodeRole.GROUND)
         graph.add_node(node)
         assert "A" in graph.nodes
         assert graph.nodes["A"] == node
@@ -42,7 +42,7 @@ class TestHypergraphLinkage:
         graph = HypergraphLinkage()
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
-        edge = Edge("AB", "A", "B", 1.0)
+        edge = Edge("AB", "A", "B")
         graph.add_edge(edge)
         assert "AB" in graph.edges
 
@@ -59,7 +59,7 @@ class TestHypergraphLinkage:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         graph.add_node(Node("C"))
-        he = Hyperedge("tri", ("A", "B", "C"), {("A", "B"): 1.0})
+        he = Hyperedge("tri", ("A", "B", "C"))
         graph.add_hyperedge(he)
         assert "tri" in graph.hyperedges
 
@@ -68,7 +68,7 @@ class TestHypergraphLinkage:
         graph = HypergraphLinkage()
         graph.add_node(Node("A"))
         with pytest.raises(ValueError, match="not found"):
-            graph.add_hyperedge(Hyperedge("test", ("A", "B"), {}))
+            graph.add_hyperedge(Hyperedge("test", ("A", "B")))
 
     def test_remove_node(self):
         """Test removing nodes from graph."""
@@ -98,7 +98,7 @@ class TestHypergraphLinkage:
         graph = HypergraphLinkage()
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
-        graph.add_hyperedge(Hyperedge("he", ("A", "B"), {("A", "B"): 1.0}))
+        graph.add_hyperedge(Hyperedge("he", ("A", "B")))
 
         removed = graph.remove_hyperedge("he")
         assert removed.id == "he"
@@ -122,7 +122,7 @@ class TestHypergraphLinkage:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         graph.add_node(Node("C"))
-        graph.add_hyperedge(Hyperedge("he", ("A", "B", "C"), {}))
+        graph.add_hyperedge(Hyperedge("he", ("A", "B", "C")))
 
         neighbors = graph.hyperedge_neighbors("A")
         assert set(neighbors) == {"B", "C"}
@@ -133,7 +133,7 @@ class TestHypergraphLinkage:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         graph.add_node(Node("C"))
-        graph.add_edge(Edge("AB", "A", "B", 1.0))
+        graph.add_edge(Edge("AB", "A", "B"))
 
         edge = graph.get_edge_between("A", "B")
         assert edge is not None
@@ -180,29 +180,28 @@ class TestHypergraphLinkage:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         graph.add_node(Node("C"))
-        graph.add_hyperedge(
-            Hyperedge("tri", ("A", "B", "C"), {("A", "B"): 1.0, ("B", "C"): 2.0})
-        )
+        graph.add_hyperedge(Hyperedge("tri", ("A", "B", "C")))
 
         simple = graph.to_simple_graph()
         assert len(simple.hyperedges) == 0
+        # Hyperedge with 3 nodes creates 2 edges (chain)
         assert len(simple.edges) == 2
 
     def test_copy(self):
         """Test deep copying graph."""
         graph = HypergraphLinkage(name="Original")
-        graph.add_node(Node("A", position=(0, 0)))
-        graph.add_node(Node("B", position=(1, 0)))
-        graph.add_edge(Edge("AB", "A", "B", 1.0))
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("B", role=NodeRole.DRIVER))
+        graph.add_edge(Edge("AB", "A", "B"))
 
         copy = graph.copy()
         assert copy.name == "Original"
         assert "A" in copy.nodes
         assert "AB" in copy.edges
 
-        # Modify original, verify copy is independent
-        graph.nodes["A"].position = (5, 5)  # type: ignore
-        assert copy.nodes["A"].position == (0, 0)
+        # Verify copy is independent (modifying one doesn't affect the other)
+        graph.add_node(Node("C"))
+        assert "C" not in copy.nodes
 
     def test_contains(self):
         """Test __contains__ method."""
@@ -222,3 +221,28 @@ class TestHypergraphLinkage:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         assert len(graph) == 2
+
+    def test_default_name(self):
+        """Test default name is empty string."""
+        graph = HypergraphLinkage()
+        assert graph.name == ""
+
+    def test_custom_name(self):
+        """Test custom name is preserved."""
+        graph = HypergraphLinkage(name="My Linkage")
+        assert graph.name == "My Linkage"
+
+    def test_get_edges_for_node(self):
+        """Test getting all edges connected to a node."""
+        graph = HypergraphLinkage()
+        graph.add_node(Node("A"))
+        graph.add_node(Node("B"))
+        graph.add_node(Node("C"))
+        graph.add_edge(Edge("AB", "A", "B"))
+        graph.add_edge(Edge("AC", "A", "C"))
+        graph.add_edge(Edge("BC", "B", "C"))
+
+        edges_a = [e for e in graph.edges.values() if e.connects("A")]
+        assert len(edges_a) == 2
+        edge_ids = {e.id for e in edges_a}
+        assert edge_ids == {"AB", "AC"}

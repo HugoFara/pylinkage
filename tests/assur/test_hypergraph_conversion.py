@@ -1,4 +1,4 @@
-"""Tests for assur/hypergraph_conversion.py."""
+"""Tests for assur/hypergraph_conversion.py (topology only)."""
 
 import unittest
 
@@ -21,23 +21,20 @@ class TestFromHypergraph(unittest.TestCase):
         """Test converting a simple hypergraph to Assur graph."""
         hg = HypergraphLinkage(name="Test")
 
-        # Add nodes
+        # Add nodes (topology only - no positions)
         hg.add_node(HyperNode(
             id="ground",
             role=HyperNodeRole.GROUND,
-            position=(0.0, 0.0),
             joint_type=HyperJointType.REVOLUTE,
         ))
         hg.add_node(HyperNode(
             id="driver",
             role=HyperNodeRole.DRIVER,
-            position=(1.0, 0.0),
             joint_type=HyperJointType.REVOLUTE,
-            angle=0.1,
         ))
 
-        # Add edge
-        hg.add_edge(HyperEdge(id="e1", source="ground", target="driver", distance=1.0))
+        # Add edge (topology only - no distance)
+        hg.add_edge(HyperEdge(id="e1", source="ground", target="driver"))
 
         # Convert
         assur = from_hypergraph(hg)
@@ -54,14 +51,14 @@ class TestFromHypergraph(unittest.TestCase):
         """Test converting hypergraph with driven node."""
         hg = HypergraphLinkage(name="FourBar")
 
-        hg.add_node(HyperNode(id="g1", role=HyperNodeRole.GROUND, position=(0.0, 0.0)))
-        hg.add_node(HyperNode(id="g2", role=HyperNodeRole.GROUND, position=(3.0, 0.0)))
-        hg.add_node(HyperNode(id="crank", role=HyperNodeRole.DRIVER, position=(1.0, 0.0), angle=0.1))
-        hg.add_node(HyperNode(id="coupler", role=HyperNodeRole.DRIVEN, position=(2.0, 1.0)))
+        hg.add_node(HyperNode(id="g1", role=HyperNodeRole.GROUND))
+        hg.add_node(HyperNode(id="g2", role=HyperNodeRole.GROUND))
+        hg.add_node(HyperNode(id="crank", role=HyperNodeRole.DRIVER))
+        hg.add_node(HyperNode(id="coupler", role=HyperNodeRole.DRIVEN))
 
-        hg.add_edge(HyperEdge(id="e1", source="g1", target="crank", distance=1.0))
-        hg.add_edge(HyperEdge(id="e2", source="crank", target="coupler", distance=2.0))
-        hg.add_edge(HyperEdge(id="e3", source="g2", target="coupler", distance=2.0))
+        hg.add_edge(HyperEdge(id="e1", source="g1", target="crank"))
+        hg.add_edge(HyperEdge(id="e2", source="crank", target="coupler"))
+        hg.add_edge(HyperEdge(id="e3", source="g2", target="coupler"))
 
         assur = from_hypergraph(hg)
 
@@ -72,15 +69,14 @@ class TestFromHypergraph(unittest.TestCase):
         """Test converting hypergraph with prismatic joint."""
         hg = HypergraphLinkage(name="Slider")
 
-        hg.add_node(HyperNode(id="ground", role=HyperNodeRole.GROUND, position=(0.0, 0.0)))
+        hg.add_node(HyperNode(id="ground", role=HyperNodeRole.GROUND))
         hg.add_node(HyperNode(
             id="slider",
             role=HyperNodeRole.DRIVEN,
-            position=(1.0, 0.0),
             joint_type=HyperJointType.PRISMATIC,
         ))
 
-        hg.add_edge(HyperEdge(id="e1", source="ground", target="slider", distance=None))
+        hg.add_edge(HyperEdge(id="e1", source="ground", target="slider"))
 
         assur = from_hypergraph(hg)
 
@@ -94,10 +90,10 @@ class TestToHypergraph(unittest.TestCase):
         """Test converting a simple Assur graph to hypergraph."""
         assur = LinkageGraph(name="Test")
 
-        assur.add_node(AssurNode(id="ground", role=NodeRole.GROUND, position=(0.0, 0.0)))
-        assur.add_node(AssurNode(id="driver", role=NodeRole.DRIVER, position=(1.0, 0.0), angle=0.1))
+        assur.add_node(AssurNode(id="ground", role=NodeRole.GROUND))
+        assur.add_node(AssurNode(id="driver", role=NodeRole.DRIVER))
 
-        assur.add_edge(AssurEdge(id="e1", source="ground", target="driver", distance=1.0))
+        assur.add_edge(AssurEdge(id="e1", source="ground", target="driver"))
 
         hg = to_hypergraph(assur)
 
@@ -113,14 +109,14 @@ class TestToHypergraph(unittest.TestCase):
         """Test converting Assur graph with driven node."""
         assur = LinkageGraph(name="FourBar")
 
-        assur.add_node(AssurNode(id="g1", role=NodeRole.GROUND, position=(0.0, 0.0)))
-        assur.add_node(AssurNode(id="g2", role=NodeRole.GROUND, position=(3.0, 0.0)))
-        assur.add_node(AssurNode(id="crank", role=NodeRole.DRIVER, position=(1.0, 0.0), angle=0.1))
-        assur.add_node(AssurNode(id="coupler", role=NodeRole.DRIVEN, position=(2.0, 1.0)))
+        assur.add_node(AssurNode(id="g1", role=NodeRole.GROUND))
+        assur.add_node(AssurNode(id="g2", role=NodeRole.GROUND))
+        assur.add_node(AssurNode(id="crank", role=NodeRole.DRIVER))
+        assur.add_node(AssurNode(id="coupler", role=NodeRole.DRIVEN))
 
-        assur.add_edge(AssurEdge(id="e1", source="g1", target="crank", distance=1.0))
-        assur.add_edge(AssurEdge(id="e2", source="crank", target="coupler", distance=2.0))
-        assur.add_edge(AssurEdge(id="e3", source="g2", target="coupler", distance=2.0))
+        assur.add_edge(AssurEdge(id="e1", source="g1", target="crank"))
+        assur.add_edge(AssurEdge(id="e2", source="crank", target="coupler"))
+        assur.add_edge(AssurEdge(id="e3", source="g2", target="coupler"))
 
         hg = to_hypergraph(assur)
 
@@ -131,15 +127,14 @@ class TestToHypergraph(unittest.TestCase):
         """Test converting Assur graph with prismatic joint."""
         assur = LinkageGraph(name="Slider")
 
-        assur.add_node(AssurNode(id="ground", role=NodeRole.GROUND, position=(0.0, 0.0)))
+        assur.add_node(AssurNode(id="ground", role=NodeRole.GROUND))
         assur.add_node(AssurNode(
             id="slider",
             role=NodeRole.DRIVEN,
-            position=(1.0, 0.0),
             joint_type=JointType.PRISMATIC,
         ))
 
-        assur.add_edge(AssurEdge(id="e1", source="ground", target="slider", distance=None))
+        assur.add_edge(AssurEdge(id="e1", source="ground", target="slider"))
 
         hg = to_hypergraph(assur)
 
@@ -153,12 +148,12 @@ class TestRoundTrip(unittest.TestCase):
         """Test hypergraph -> assur -> hypergraph preserves structure."""
         original = HypergraphLinkage(name="RoundTrip")
 
-        original.add_node(HyperNode(id="g1", role=HyperNodeRole.GROUND, position=(0.0, 0.0)))
-        original.add_node(HyperNode(id="d1", role=HyperNodeRole.DRIVER, position=(1.0, 0.0), angle=0.2))
-        original.add_node(HyperNode(id="driven", role=HyperNodeRole.DRIVEN, position=(2.0, 1.0)))
+        original.add_node(HyperNode(id="g1", role=HyperNodeRole.GROUND))
+        original.add_node(HyperNode(id="d1", role=HyperNodeRole.DRIVER))
+        original.add_node(HyperNode(id="driven", role=HyperNodeRole.DRIVEN))
 
-        original.add_edge(HyperEdge(id="e1", source="g1", target="d1", distance=1.0))
-        original.add_edge(HyperEdge(id="e2", source="d1", target="driven", distance=2.0))
+        original.add_edge(HyperEdge(id="e1", source="g1", target="d1"))
+        original.add_edge(HyperEdge(id="e2", source="d1", target="driven"))
 
         # Convert to Assur
         assur = from_hypergraph(original)
@@ -174,12 +169,12 @@ class TestRoundTrip(unittest.TestCase):
         """Test assur -> hypergraph -> assur preserves structure."""
         original = LinkageGraph(name="RoundTrip")
 
-        original.add_node(AssurNode(id="g1", role=NodeRole.GROUND, position=(0.0, 0.0)))
-        original.add_node(AssurNode(id="d1", role=NodeRole.DRIVER, position=(1.0, 0.0), angle=0.2))
-        original.add_node(AssurNode(id="driven", role=NodeRole.DRIVEN, position=(2.0, 1.0)))
+        original.add_node(AssurNode(id="g1", role=NodeRole.GROUND))
+        original.add_node(AssurNode(id="d1", role=NodeRole.DRIVER))
+        original.add_node(AssurNode(id="driven", role=NodeRole.DRIVEN))
 
-        original.add_edge(AssurEdge(id="e1", source="g1", target="d1", distance=1.0))
-        original.add_edge(AssurEdge(id="e2", source="d1", target="driven", distance=2.0))
+        original.add_edge(AssurEdge(id="e1", source="g1", target="d1"))
+        original.add_edge(AssurEdge(id="e2", source="d1", target="driven"))
 
         # Convert to hypergraph
         hg = to_hypergraph(original)

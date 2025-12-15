@@ -1,7 +1,10 @@
-"""Serialization support for graph representations.
+"""Serialization support for graph representations (topology only).
 
 This module provides functions to serialize and deserialize LinkageGraph
 objects to/from dictionaries and JSON files.
+
+Note: This module only handles topological data. For dimensional data,
+use the serialization functions in pylinkage.dimensions.
 """
 
 
@@ -14,7 +17,7 @@ from .graph import Edge, LinkageGraph, Node
 
 
 def node_to_dict(node: Node) -> dict[str, Any]:
-    """Convert a Node to a dictionary.
+    """Convert a Node to a dictionary (topology only).
 
     Args:
         node: The Node to convert.
@@ -26,9 +29,6 @@ def node_to_dict(node: Node) -> dict[str, Any]:
         "id": node.id,
         "joint_type": node.joint_type.name,
         "role": node.role.name,
-        "position": list(node.position),
-        "angle": node.angle,
-        "initial_angle": node.initial_angle,
         "name": node.name,
     }
 
@@ -42,20 +42,16 @@ def node_from_dict(data: dict[str, Any]) -> Node:
     Returns:
         A new Node instance.
     """
-    position = tuple(data.get("position", [None, None]))
     return Node(
         id=data["id"],
         joint_type=JointType[data.get("joint_type", "REVOLUTE")],
         role=NodeRole[data.get("role", "DRIVEN")],
-        position=(position[0], position[1]),
-        angle=data.get("angle"),
-        initial_angle=data.get("initial_angle"),
         name=data.get("name"),
     )
 
 
 def edge_to_dict(edge: Edge) -> dict[str, Any]:
-    """Convert an Edge to a dictionary.
+    """Convert an Edge to a dictionary (topology only).
 
     Args:
         edge: The Edge to convert.
@@ -67,7 +63,6 @@ def edge_to_dict(edge: Edge) -> dict[str, Any]:
         "id": edge.id,
         "source": edge.source,
         "target": edge.target,
-        "distance": edge.distance,
         "body_id": edge.body_id,
     }
 
@@ -85,7 +80,6 @@ def edge_from_dict(data: dict[str, Any]) -> Edge:
         id=data["id"],
         source=data["source"],
         target=data["target"],
-        distance=data.get("distance"),
         body_id=data.get("body_id"),
     )
 

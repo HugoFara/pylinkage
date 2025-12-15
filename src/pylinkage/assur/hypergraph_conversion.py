@@ -1,7 +1,11 @@
-"""Conversion between Assur graph and hypergraph representations.
+"""Conversion between Assur graph and hypergraph representations (topology only).
 
 This module provides functions to convert between the Assur LinkageGraph
 and the hypergraph HypergraphLinkage representations.
+
+These conversions are pure topology - no dimensional data is transferred.
+Dimensions are handled separately and passed through to conversion functions
+that need them (e.g., graph_to_mechanism, to_mechanism).
 
 Since assur is built on top of hypergraph (as a formal kinematic theory
 on top of abstract graph math), these conversions live in the assur module.
@@ -19,14 +23,18 @@ if TYPE_CHECKING:
 
 
 def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
-    """Convert a HypergraphLinkage to an Assur LinkageGraph.
+    """Convert a HypergraphLinkage to an Assur LinkageGraph (topology only).
 
     This converts the hypergraph to the simpler graph representation
     used by the Assur decomposition system. Hyperedges are expanded
     to regular edges.
 
+    Both representations are pure topology - no dimensional data is transferred.
+    To convert with dimensions, use this function then pass the same Dimensions
+    object to graph_to_mechanism.
+
     Args:
-        hypergraph: The HypergraphLinkage to convert.
+        hypergraph: The HypergraphLinkage to convert (topology only).
 
     Returns:
         An Assur LinkageGraph suitable for decomposition and analysis.
@@ -55,26 +63,22 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
         HyperJointType.PRISMATIC: JointType.PRISMATIC,
     }
 
-    # Convert nodes
+    # Convert nodes (topology only)
     for node in simple.nodes.values():
         assur_node = AssurNode(
             id=node.id,
             joint_type=joint_type_map[node.joint_type],
             role=role_map[node.role],
-            position=node.position,
-            angle=node.angle,
-            initial_angle=node.initial_angle,
             name=node.name,
         )
         assur_graph.add_node(assur_node)
 
-    # Convert edges
+    # Convert edges (topology only)
     for edge in simple.edges.values():
         assur_edge = AssurEdge(
             id=edge.id,
             source=edge.source,
             target=edge.target,
-            distance=edge.distance,
         )
         assur_graph.add_edge(assur_edge)
 
@@ -82,17 +86,19 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
 
 
 def to_hypergraph(assur_graph: LinkageGraph) -> "HypergraphLinkage":
-    """Convert an Assur LinkageGraph to a HypergraphLinkage.
+    """Convert an Assur LinkageGraph to a HypergraphLinkage (topology only).
 
     This converts from the Assur graph representation to the more
     abstract hypergraph representation. Edges with the same body_id
     are grouped into hyperedges.
 
+    Both representations are pure topology - no dimensional data is transferred.
+
     Args:
-        assur_graph: The Assur LinkageGraph to convert.
+        assur_graph: The Assur LinkageGraph to convert (topology only).
 
     Returns:
-        A HypergraphLinkage representation.
+        A HypergraphLinkage representation (topology only).
 
     Example:
         >>> assur_graph = LinkageGraph(name="Four-bar")
@@ -119,54 +125,46 @@ def to_hypergraph(assur_graph: LinkageGraph) -> "HypergraphLinkage":
         JointType.PRISMATIC: HyperJointType.PRISMATIC,
     }
 
-    # Convert nodes
+    # Convert nodes (topology only)
     for node in assur_graph.nodes.values():
         hyper_node = HyperNode(
             id=node.id,
-            position=node.position,
             role=role_map[node.role],
             joint_type=joint_type_map[node.joint_type],
-            angle=node.angle,
-            initial_angle=node.initial_angle,
             name=node.name,
         )
         hypergraph.add_node(hyper_node)
 
     # Group edges by body_id to potentially create hyperedges
-    body_edges: dict[str | None, list[tuple[str, str, str, float | None]]] = {}
+    body_edges: dict[str | None, list[tuple[str, str, str]]] = {}
     for edge in assur_graph.edges.values():
         body_id = getattr(edge, "body_id", None)
         if body_id not in body_edges:
             body_edges[body_id] = []
-        body_edges[body_id].append((edge.id, edge.source, edge.target, edge.distance))
+        body_edges[body_id].append((edge.id, edge.source, edge.target))
 
     # Convert edges - edges with body_id become hyperedges, others stay as edges
     for body_id, edges in body_edges.items():
         if body_id is not None and len(edges) > 1:
             # Create hyperedge from grouped edges
             nodes_set: set[NodeId] = set()
-            constraints: dict[tuple[str, str], float] = {}
-            for _, source, target, distance in edges:
+            for _, source, target in edges:
                 nodes_set.add(source)
                 nodes_set.add(target)
-                if distance is not None:
-                    constraints[(source, target)] = distance
 
             hyperedge = Hyperedge(
                 id=body_id,
                 nodes=tuple(sorted(nodes_set)),
-                constraints=constraints,
                 name=body_id,
             )
             hypergraph.add_hyperedge(hyperedge)
         else:
             # Keep as regular edges
-            for edge_id, source, target, distance in edges:
+            for edge_id, source, target in edges:
                 hyper_edge = HyperEdge(
                     id=edge_id,
                     source=source,
                     target=target,
-                    distance=distance,
                 )
                 hypergraph.add_edge(hyper_edge)
 

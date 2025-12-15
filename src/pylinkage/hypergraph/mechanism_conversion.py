@@ -4,7 +4,8 @@ This module provides direct conversion between the hypergraph representation
 and the mechanism model, bypassing the legacy Linkage class.
 
 This is the preferred conversion path for new code:
-- HypergraphLinkage is the abstract mathematical representation
+- HypergraphLinkage is the pure topological representation
+- Dimensions holds the geometric data (positions, distances, angles)
 - Mechanism is the concrete simulation model with Links + Joints
 
 For backward compatibility with legacy Linkage, use conversion.py instead.
@@ -16,6 +17,7 @@ import math
 from typing import TYPE_CHECKING
 
 from .._types import JointType, NodeId, NodeRole
+from ..dimensions import Dimensions, DriverAngle
 from .core import Edge, Node
 from .graph import HypergraphLinkage
 
@@ -23,15 +25,15 @@ if TYPE_CHECKING:
     from ..mechanism import Mechanism
 
 
-def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
-    """Convert a HypergraphLinkage directly to a Mechanism.
+def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Mechanism":
+    """Convert a HypergraphLinkage and Dimensions to a Mechanism.
 
-    This converts the hypergraph to the mechanism model without going
-    through the legacy Linkage class. This is the preferred conversion
-    path for new code.
+    This converts the hypergraph topology plus dimensional data to the
+    mechanism model. This is the preferred conversion path for new code.
 
     Args:
-        hypergraph: The HypergraphLinkage to convert.
+        hypergraph: The HypergraphLinkage defining the topology.
+        dimensions: The Dimensions providing positions, distances, angles.
 
     Returns:
         A Mechanism instance ready for simulation.
@@ -42,10 +44,13 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
 
     Example:
         >>> hg = HypergraphLinkage(name="Four-bar")
-        >>> # ... add nodes, edges, hyperedges ...
-        >>> mechanism = to_mechanism(hg)
-        >>> for positions in mechanism.step():
-        ...     print(positions)
+        >>> hg.add_node(Node("A", role=NodeRole.GROUND))
+        >>> hg.add_edge(Edge("AB", "A", "B"))
+        >>> dims = Dimensions(
+        ...     node_positions={"A": (0, 0), "B": (1, 0)},
+        ...     edge_distances={"AB": 1.0},
+        ... )
+        >>> mechanism = to_mechanism(hg, dims)
     """
     from ..mechanism import (
         DriverLink,
@@ -68,9 +73,9 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
 
     # Create ground joints first
     for node in simple.ground_nodes():
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node.id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         ground = GroundJoint(
             id=node.id,
@@ -93,9 +98,9 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
 
     # Create driver joints and links
     for node in simple.driver_nodes():
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node.id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         # Create the output joint for the crank
         output_joint = RevoluteJoint(
@@ -109,7 +114,6 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
         # Find ground connection to create driver link
         neighbors = simple.neighbors(node.id)
         motor_joint: GroundJoint | None = None
-        radius: float | None = None
 
         for neighbor_id in neighbors:
             neighbor = simple.nodes.get(neighbor_id)
@@ -117,25 +121,26 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
                 motor = node_to_joint.get(neighbor_id)
                 if isinstance(motor, GroundJoint):
                     motor_joint = motor
-                    edge = simple.get_edge_between(node.id, neighbor_id)
-                    if edge:
-                        radius = edge.distance
                     break
 
         if motor_joint:
             # Compute initial angle from motor to output
             mx, my = motor_joint.position
-            if mx is not None and my is not None and x is not None and y is not None:
+            if mx is not None and my is not None:
                 initial_angle = math.atan2(y - my, x - mx)
             else:
                 initial_angle = 0.0
+
+            # Get driver angle from dimensions
+            driver_angle = dimensions.get_driver_angle(node.id)
+            angular_velocity = driver_angle.angular_velocity if driver_angle else 0.1
 
             driver = DriverLink(
                 id=f"{node.id}_crank",
                 joints=[motor_joint, output_joint],
                 name=f"{node.id}_crank",
                 motor_joint=motor_joint,
-                angular_velocity=node.angle if node.angle else 0.1,
+                angular_velocity=angular_velocity,
                 initial_angle=initial_angle,
             )
             links.append(driver)
@@ -162,9 +167,9 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
 
             # Need at least 2 solved parents for a driven joint
             if len(parent_ids) >= 2:
-                pos = node.position
-                x = pos[0] if pos[0] is not None else 0.0
-                y = pos[1] if pos[1] is not None else 0.0
+                pos = dimensions.get_node_position(node_id)
+                x = pos[0] if pos else 0.0
+                y = pos[1] if pos else 0.0
 
                 created_joint: Joint
 
@@ -189,15 +194,12 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
                 # Create links to parent joints
                 for i, parent_id in enumerate(parent_ids[:2]):
                     parent_joint = node_to_joint[parent_id]
-                    edge = simple.get_edge_between(node_id, parent_id)
 
                     link = Link(
                         id=f"{node_id}_link{i}",
                         joints=[parent_joint, created_joint],
                         name=f"{node_id}_link{i}",
                     )
-                    # Note: Link length is determined by edge distance in the graph
-                    # The mechanism will use the joint positions to compute distances
                     links.append(link)
 
                 solved_nodes.add(node_id)
@@ -218,8 +220,8 @@ def to_mechanism(hypergraph: HypergraphLinkage) -> Mechanism:
     )
 
 
-def from_mechanism(mechanism: Mechanism) -> HypergraphLinkage:
-    """Convert a Mechanism to a HypergraphLinkage.
+def from_mechanism(mechanism: "Mechanism") -> tuple[HypergraphLinkage, Dimensions]:
+    """Convert a Mechanism to a HypergraphLinkage and Dimensions.
 
     This converts an existing Mechanism to the hypergraph representation
     for analysis, visualization, or manipulation.
@@ -228,11 +230,11 @@ def from_mechanism(mechanism: Mechanism) -> HypergraphLinkage:
         mechanism: The Mechanism to convert.
 
     Returns:
-        A HypergraphLinkage representation.
+        A tuple of (HypergraphLinkage, Dimensions).
 
     Example:
         >>> mechanism = Mechanism(joints=[...], links=[...])
-        >>> hg = from_mechanism(mechanism)
+        >>> hg, dims = from_mechanism(mechanism)
         >>> # Analyze or modify the hypergraph
     """
     from ..mechanism import DriverLink, GroundJoint, PrismaticJoint
@@ -242,6 +244,11 @@ def from_mechanism(mechanism: Mechanism) -> HypergraphLinkage:
     # Track joint -> node mapping
     joint_to_node: dict[str, NodeId] = {}
     edge_counter = 0
+
+    # Dimensional data
+    node_positions: dict[str, tuple[float, float]] = {}
+    driver_angles: dict[str, DriverAngle] = {}
+    edge_distances: dict[str, float] = {}
 
     # Create nodes for all joints
     for joint in mechanism.joints:
@@ -270,21 +277,27 @@ def from_mechanism(mechanism: Mechanism) -> HypergraphLinkage:
             role = NodeRole.DRIVER if is_driver_output else NodeRole.DRIVEN
             joint_type = JointType.REVOLUTE
 
-        pos = joint.position
         node = Node(
             id=node_id,
             joint_type=joint_type,
             role=role,
-            position=pos,
             name=joint.name,
         )
 
-        # Add driver-specific attributes
+        # Store position in dimensions
+        pos = joint.position
+        if pos[0] is not None and pos[1] is not None:
+            node_positions[node_id] = (pos[0], pos[1])
+
+        # Add driver-specific attributes to dimensions
         if role == NodeRole.DRIVER:
             for link in mechanism.links:
                 if isinstance(link, DriverLink):
                     if link.output_joint and link.output_joint.id == joint.id:
-                        node.angle = link.angular_velocity
+                        driver_angles[node_id] = DriverAngle(
+                            angular_velocity=link.angular_velocity,
+                            initial_angle=link.initial_angle,
+                        )
                         break
 
         hypergraph.add_node(node)
@@ -305,14 +318,26 @@ def from_mechanism(mechanism: Mechanism) -> HypergraphLinkage:
                         # Check if edge already exists
                         existing = hypergraph.get_edge_between(node_a, node_b)
                         if existing is None:
-                            distance = link.get_distance(joint_a, joint_b)
+                            edge_id = f"edge_{edge_counter}"
                             edge = Edge(
-                                id=f"edge_{edge_counter}",
+                                id=edge_id,
                                 source=node_a,
                                 target=node_b,
-                                distance=distance,
                             )
                             hypergraph.add_edge(edge)
+
+                            # Store distance in dimensions
+                            distance = link.get_distance(joint_a, joint_b)
+                            if distance is not None:
+                                edge_distances[edge_id] = distance
+
                             edge_counter += 1
 
-    return hypergraph
+    dimensions = Dimensions(
+        node_positions=node_positions,
+        driver_angles=driver_angles,
+        edge_distances=edge_distances,
+        name=mechanism.name,
+    )
+
+    return hypergraph, dimensions

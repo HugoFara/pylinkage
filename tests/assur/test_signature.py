@@ -156,18 +156,6 @@ class TestSignatureToHypergraph:
         graph = signature_to_hypergraph("RRR")
         assert len(graph.edges) == 2
 
-    def test_all_edges_have_no_distance(self):
-        """Test generated graph has no distance constraints."""
-        graph = signature_to_hypergraph("RRR")
-        for edge in graph.edges.values():
-            assert edge.distance is None
-
-    def test_all_nodes_have_no_position(self):
-        """Test generated nodes have no positions."""
-        graph = signature_to_hypergraph("RRR")
-        for node in graph.nodes.values():
-            assert node.position == (None, None)
-
     def test_joint_types_match_signature_rrr(self):
         """Test node joint types match RRR signature."""
         graph = signature_to_hypergraph("RRR")

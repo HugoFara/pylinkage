@@ -16,6 +16,7 @@ representation, use the assur.hypergraph_conversion module.
 import warnings
 from typing import TYPE_CHECKING
 
+from ..dimensions import Dimensions, DriverAngle
 from ..joints.joint import Joint
 from ._types import JointType, NodeId, NodeRole
 from .core import Edge, Node
@@ -25,8 +26,8 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 
-def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
-    """Convert a HypergraphLinkage to a joint-based Linkage.
+def to_linkage(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Linkage":
+    """Convert a HypergraphLinkage and Dimensions to a joint-based Linkage.
 
     .. deprecated:: 0.8.0
         Use ``to_mechanism()`` instead for direct conversion to the new
@@ -36,28 +37,26 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
             # Old (deprecated):
             from pylinkage.hypergraph import to_linkage
-            linkage = to_linkage(hypergraph)
+            linkage = to_linkage(hypergraph, dimensions)
 
             # New (preferred):
             from pylinkage.hypergraph import to_mechanism
-            mechanism = to_mechanism(hypergraph)
+            mechanism = to_mechanism(hypergraph, dimensions)
 
-    This converts the hypergraph directly to a Linkage that can be used
-    for simulation. The conversion maps nodes to joints based on their
-    roles and connections.
+    This converts the hypergraph topology plus dimensions directly to a
+    Linkage that can be used for simulation.
 
     Args:
-        hypergraph: The HypergraphLinkage to convert.
+        hypergraph: The HypergraphLinkage defining the topology.
+        dimensions: The Dimensions providing positions, distances, angles.
 
     Returns:
         A Linkage instance ready for simulation.
 
     Example:
         >>> hg = HypergraphLinkage(name="Four-bar")
-        >>> # ... add nodes, edges, hyperedges ...
-        >>> linkage = to_linkage(hg)
-        >>> for coords in linkage.step():
-        ...     print(coords)
+        >>> dims = Dimensions(node_positions={"A": (0, 0)}, ...)
+        >>> linkage = to_linkage(hg, dims)
     """
     warnings.warn(
         "to_linkage() is deprecated. Use to_mechanism() from "
@@ -79,9 +78,9 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
     # Create ground joints (Static) first
     for node in simple.ground_nodes():
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node.id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         joint = Static(x=x, y=y, name=node.name)
         joints.append(joint)
@@ -89,9 +88,9 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
     # Create driver joints (Cranks)
     for node in simple.driver_nodes():
-        pos = node.position
-        x = pos[0] if pos[0] is not None else 0.0
-        y = pos[1] if pos[1] is not None else 0.0
+        pos = dimensions.get_node_position(node.id)
+        x = pos[0] if pos else 0.0
+        y = pos[1] if pos else 0.0
 
         # Find ground connection
         neighbors = simple.neighbors(node.id)
@@ -104,15 +103,18 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                 parent_joint = node_to_joint.get(neighbor_id)
                 edge = simple.get_edge_between(node.id, neighbor_id)
                 if edge:
-                    distance = edge.distance
+                    distance = dimensions.get_edge_distance(edge.id)
                 break
+
+        driver_angle = dimensions.get_driver_angle(node.id)
+        angle = driver_angle.angular_velocity if driver_angle else 0.1
 
         crank_joint = Crank(
             x=x,
             y=y,
             joint0=parent_joint,
             distance=distance,
-            angle=node.angle,
+            angle=angle,
             name=node.name,
         )
         joints.append(crank_joint)
@@ -142,9 +144,9 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
             # Need at least 2 solved parents for a driven joint
             if len(parent_ids) >= 2:
-                pos = node.position
-                x = pos[0] if pos[0] is not None else 0.0
-                y = pos[1] if pos[1] is not None else 0.0
+                pos = dimensions.get_node_position(node_id)
+                x = pos[0] if pos else 0.0
+                y = pos[1] if pos else 0.0
 
                 # Determine joint type based on connections
                 if node.joint_type == JointType.PRISMATIC:
@@ -156,10 +158,11 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
 
                     for pid in parent_ids:
                         edge = simple.get_edge_between(node_id, pid)
-                        if edge and edge.distance is not None:
+                        edge_dist = dimensions.get_edge_distance(edge.id) if edge else None
+                        if edge_dist is not None:
                             if revolute_parent is None:
                                 revolute_parent = node_to_joint.get(pid)
-                                revolute_dist = edge.distance
+                                revolute_dist = edge_dist
                             else:
                                 line_parents.append(node_to_joint[pid])
                         else:
@@ -182,8 +185,8 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
                     edge0 = simple.get_edge_between(node_id, parent_ids[0])
                     edge1 = simple.get_edge_between(node_id, parent_ids[1])
 
-                    dist0 = edge0.distance if edge0 else None
-                    dist1 = edge1.distance if edge1 else None
+                    dist0 = dimensions.get_edge_distance(edge0.id) if edge0 else None
+                    dist1 = dimensions.get_edge_distance(edge1.id) if edge1 else None
 
                     created_joint = Revolute(
                         x=x,
@@ -215,8 +218,8 @@ def to_linkage(hypergraph: HypergraphLinkage) -> "Linkage":
     )
 
 
-def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
-    """Convert a joint-based Linkage to a HypergraphLinkage.
+def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
+    """Convert a joint-based Linkage to a HypergraphLinkage and Dimensions.
 
     This converts an existing Linkage to the hypergraph representation
     for analysis or manipulation.
@@ -225,15 +228,20 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
         linkage: The Linkage to convert.
 
     Returns:
-        A HypergraphLinkage representation.
+        A tuple of (HypergraphLinkage, Dimensions).
 
     Example:
         >>> linkage = Linkage(joints=[...], order=[...])
-        >>> hg = from_linkage(linkage)
+        >>> hg, dims = from_linkage(linkage)
     """
     from ..joints import Crank, Fixed, Prismatic, Revolute, Static
 
     hypergraph = HypergraphLinkage(name=linkage.name)
+
+    # Dimensional data
+    node_positions: dict[str, tuple[float, float]] = {}
+    driver_angles: dict[str, DriverAngle] = {}
+    edge_distances: dict[str, float] = {}
 
     # Track joint -> node mapping
     joint_to_node: dict[int, NodeId] = {}
@@ -253,15 +261,18 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
         node_id = f"anchor_{edge_counter}"
         edge_counter += 1
 
-        pos = (coord[0], coord[1]) if coord[0] is not None else (None, None)
         anchor_node = Node(
             id=node_id,
             role=NodeRole.GROUND,
-            position=pos,
             name=node_id,
         )
         hypergraph.add_node(anchor_node)
         joint_to_node[joint_id] = node_id
+
+        # Store position in dimensions
+        if coord[0] is not None and coord[1] is not None:
+            node_positions[node_id] = (coord[0], coord[1])
+
         return node_id
 
     # First pass: create nodes for all joints
@@ -290,12 +301,19 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
             id=node_id,
             joint_type=joint_type,
             role=role,
-            position=joint.coord(),
             name=joint.name,
         )
 
-        if isinstance(joint, Crank):
-            node.angle = joint.angle
+        # Store position in dimensions
+        coord = joint.coord()
+        if coord[0] is not None and coord[1] is not None:
+            node_positions[node_id] = (coord[0], coord[1])
+
+        if isinstance(joint, Crank) and joint.angle is not None:
+            driver_angles[node_id] = DriverAngle(
+                angular_velocity=0.1,
+                initial_angle=joint.angle,
+            )
 
         hypergraph.add_node(node)
         joint_to_node[id(joint)] = node_id
@@ -312,13 +330,15 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint0, joint.joint0.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r,
                 )
                 hypergraph.add_edge(edge)
+                if joint.r is not None:
+                    edge_distances[edge_id] = joint.r
                 edge_counter += 1
 
         elif isinstance(joint, Revolute):
@@ -329,13 +349,15 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint0, joint.joint0.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r0,
                 )
                 hypergraph.add_edge(edge)
+                if joint.r0 is not None:
+                    edge_distances[edge_id] = joint.r0
                 edge_counter += 1
 
             if joint.joint1 is not None:
@@ -345,13 +367,15 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint1, joint.joint1.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r1,
                 )
                 hypergraph.add_edge(edge)
+                if joint.r1 is not None:
+                    edge_distances[edge_id] = joint.r1
                 edge_counter += 1
 
         elif isinstance(joint, Fixed):
@@ -362,13 +386,15 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint0, joint.joint0.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.r,
                 )
                 hypergraph.add_edge(edge)
+                if joint.r is not None:
+                    edge_distances[edge_id] = joint.r
                 edge_counter += 1
 
             if joint.joint1 is not None:
@@ -378,11 +404,11 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint1, joint.joint1.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=None,
                 )
                 hypergraph.add_edge(edge)
                 edge_counter += 1
@@ -395,13 +421,15 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint0, joint.joint0.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=joint.revolute_radius,
                 )
                 hypergraph.add_edge(edge)
+                if joint.revolute_radius is not None:
+                    edge_distances[edge_id] = joint.revolute_radius
                 edge_counter += 1
 
             if joint.joint1 is not None:
@@ -411,11 +439,11 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint1, joint.joint1.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=None,
                 )
                 hypergraph.add_edge(edge)
                 edge_counter += 1
@@ -427,13 +455,20 @@ def from_linkage(linkage: "Linkage") -> HypergraphLinkage:
                         joint.joint2, joint.joint2.coord()
                     )
 
+                edge_id = f"edge_{edge_counter}"
                 edge = Edge(
-                    id=f"edge_{edge_counter}",
+                    id=edge_id,
                     source=parent_id,
                     target=node_id,
-                    distance=None,
                 )
                 hypergraph.add_edge(edge)
                 edge_counter += 1
 
-    return hypergraph
+    dimensions = Dimensions(
+        node_positions=node_positions,
+        driver_angles=driver_angles,
+        edge_distances=edge_distances,
+        name=linkage.name,
+    )
+
+    return hypergraph, dimensions

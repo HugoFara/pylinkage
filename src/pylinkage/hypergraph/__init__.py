@@ -1,41 +1,49 @@
-"""Hypergraph-based representation of planar linkages.
+"""Hypergraph-based representation of planar linkages (topology only).
 
 This module provides a hierarchical hypergraph abstraction for defining
 and manipulating planar linkages. It serves as an abstract mathematical
 foundation that can be converted to other representations (Assur graphs,
-joint-based linkages) for different purposes.
+Mechanism) for different purposes.
+
+This is a pure topological representation - dimensional data (positions,
+distances, angles) is stored separately in a Dimensions object.
 
 Key concepts:
 - **HypergraphLinkage**: Abstract graph supporting both edges and hyperedges
-- **Component**: Reusable linkage subgraph with ports and parameters
+- **ComponentInstance**: Instance of a topology with connection ports
 - **HierarchicalLinkage**: Composition of component instances
 
 Example usage::
 
     from pylinkage.hypergraph import (
-        HierarchicalLinkage, ComponentInstance, Connection,
-        FOURBAR, to_linkage
+        HypergraphLinkage, Node, Edge, NodeRole,
+        to_mechanism
+    )
+    from pylinkage.dimensions import Dimensions, DriverAngle
+
+    # Create topology
+    hg = HypergraphLinkage(name="Four-bar")
+    hg.add_node(Node("A", role=NodeRole.GROUND))
+    hg.add_node(Node("B", role=NodeRole.DRIVER))
+    hg.add_node(Node("C", role=NodeRole.DRIVEN))
+    hg.add_node(Node("D", role=NodeRole.GROUND))
+    hg.add_edge(Edge("AB", "A", "B"))
+    hg.add_edge(Edge("BC", "B", "C"))
+    hg.add_edge(Edge("CD", "C", "D"))
+
+    # Create dimensions
+    dims = Dimensions(
+        node_positions={"A": (0, 0), "B": (1, 0), "C": (2, 1), "D": (3, 0)},
+        driver_angles={"B": DriverAngle(0.1)},
+        edge_distances={"AB": 1.0, "BC": 2.0, "CD": 2.0},
     )
 
-    # Create component instances
-    leg1 = ComponentInstance("leg1", FOURBAR, {"crank_length": 1.5})
-    leg2 = ComponentInstance("leg2", FOURBAR, {"crank_length": 1.5})
-
-    # Assemble hierarchy
-    walker = HierarchicalLinkage(
-        instances={"leg1": leg1, "leg2": leg2},
-        connections=[Connection("leg1", "output", "leg2", "input")],
-    )
-
-    # Flatten and simulate
-    flat_graph = walker.flatten()
-    linkage = to_linkage(flat_graph)
-    linkage.step()
+    # Convert to mechanism for simulation
+    mechanism = to_mechanism(hg, dims)
 """
 
 # Types
 from ._types import (
-    ComponentId,
     EdgeId,
     HyperedgeId,
     JointType,
@@ -43,9 +51,6 @@ from ._types import (
     NodeRole,
     PortId,
 )
-
-# Component system
-from .components import Component, ParameterMapping, ParameterSpec, Port
 
 # Conversion functions
 # Legacy (deprecated): to_linkage, from_linkage
@@ -62,21 +67,8 @@ from .graph import HypergraphLinkage
 # Hierarchical composition
 from .hierarchy import ComponentInstance, Connection, HierarchicalLinkage
 
-# Component library
-from .library import (
-    COMPONENT_LIBRARY,
-    CRANK_SLIDER,
-    DYAD,
-    FOURBAR,
-    get_component,
-    list_components,
-    register_component,
-)
-
 # Serialization
 from .serialization import (
-    component_from_dict,
-    component_to_dict,
     graph_from_dict,
     graph_from_json,
     graph_to_dict,
@@ -92,7 +84,6 @@ __all__ = [
     "NodeId",
     "EdgeId",
     "HyperedgeId",
-    "ComponentId",
     "PortId",
     "JointType",
     "NodeRole",
@@ -102,11 +93,6 @@ __all__ = [
     "Hyperedge",
     # Graph
     "HypergraphLinkage",
-    # Components
-    "Port",
-    "ParameterSpec",
-    "ParameterMapping",
-    "Component",
     # Hierarchy
     "ComponentInstance",
     "Connection",
@@ -123,18 +109,8 @@ __all__ = [
     "graph_from_dict",
     "graph_to_json",
     "graph_from_json",
-    "component_to_dict",
-    "component_from_dict",
     "hierarchical_to_dict",
     "hierarchical_from_dict",
     "hierarchical_to_json",
     "hierarchical_from_json",
-    # Library
-    "COMPONENT_LIBRARY",
-    "register_component",
-    "get_component",
-    "list_components",
-    "FOURBAR",
-    "CRANK_SLIDER",
-    "DYAD",
 ]

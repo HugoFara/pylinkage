@@ -1,4 +1,4 @@
-"""Assur group decomposition algorithm.
+"""Assur group decomposition algorithm (topology only).
 
 This module provides algorithms to decompose a linkage graph into
 Assur groups, which enables systematic kinematic analysis.
@@ -9,8 +9,9 @@ The decomposition algorithm:
 3. Iteratively finds solvable Assur groups where all anchors are known
 4. Returns groups in solving order
 
-IMPORTANT: This module provides structural decomposition only.
-For solving kinematics, use pylinkage.solver.solve.solve_decomposition().
+IMPORTANT: This module provides structural/topological decomposition only.
+Assur groups are pure topology. For solving kinematics, use
+pylinkage.solver.solve.solve_decomposition() with a Dimensions object.
 """
 
 import warnings
@@ -177,12 +178,12 @@ def _try_create_rrr_dyad(
     """Try to create an RRR dyad from the given node and known neighbors.
 
     Args:
-        graph: The linkage graph.
+        graph: The linkage graph (topology only).
         internal_id: The candidate internal node.
         known_neighbors: List of known neighbor node IDs.
 
     Returns:
-        A DyadRRR if successful, None otherwise.
+        A DyadRRR if successful (topology only), None otherwise.
     """
     if len(known_neighbors) < 2:
         return None
@@ -195,22 +196,17 @@ def _try_create_rrr_dyad(
 
     anchor0_id, anchor1_id = known_neighbors[0], known_neighbors[1]
 
-    # Get edge distances
+    # Get edges (topology only, no distance check)
     edge0 = graph.get_edge_between(internal_id, anchor0_id)
     edge1 = graph.get_edge_between(internal_id, anchor1_id)
 
     if edge0 is None or edge1 is None:
         return None
 
-    if edge0.distance is None or edge1.distance is None:
-        return None
-
     return DyadRRR(
         internal_nodes=(internal_id,),
         anchor_nodes=(anchor0_id, anchor1_id),
         internal_edges=(edge0.id, edge1.id),
-        distance0=edge0.distance,
-        distance1=edge1.distance,
     )
 
 
@@ -222,29 +218,27 @@ def _try_create_rrp_dyad(
     """Try to create an RRP dyad from the given node and known neighbors.
 
     This is more complex than RRR - we need to identify which connection
-    is the revolute (with distance) and which two define the line.
+    is the revolute anchor and which two define the line.
 
     Args:
-        graph: The linkage graph.
+        graph: The linkage graph (topology only).
         internal_id: The candidate internal node.
         known_neighbors: List of known neighbor node IDs.
 
     Returns:
-        A DyadRRP if successful, None otherwise.
+        A DyadRRP if successful (topology only), None otherwise.
     """
     if len(known_neighbors) < 3:
         return None
 
-    # Find an edge with a distance constraint (revolute connection)
+    # Find the first edge to use as revolute anchor
     revolute_anchor = None
-    revolute_distance = None
     revolute_edge_id = None
 
     for neighbor_id in known_neighbors:
         edge = graph.get_edge_between(internal_id, neighbor_id)
-        if edge is not None and edge.distance is not None:
+        if edge is not None:
             revolute_anchor = neighbor_id
-            revolute_distance = edge.distance
             revolute_edge_id = edge.id
             break
 
@@ -260,7 +254,6 @@ def _try_create_rrp_dyad(
         internal_nodes=(internal_id,),
         anchor_nodes=(revolute_anchor,),
         internal_edges=(revolute_edge_id,) if revolute_edge_id else (),
-        revolute_distance=revolute_distance,
         line_node1=line_nodes[0],
         line_node2=line_nodes[1],
     )
@@ -303,37 +296,3 @@ def validate_decomposition(result: DecompositionResult) -> list[str]:
     return messages
 
 
-def solve_decomposition(
-    result: DecompositionResult,
-    initial_positions: dict[NodeId, Coord] | None = None,
-) -> dict[NodeId, Coord]:
-    """Solve the kinematics using a decomposition result.
-
-    .. deprecated::
-        Use :func:`pylinkage.solver.solve.solve_decomposition` instead.
-        This function is provided for backward compatibility only.
-
-    This function computes the positions of all nodes by solving
-    the Assur groups in order.
-
-    Args:
-        result: The decomposition result with groups in solving order.
-        initial_positions: Optional initial positions for nodes.
-            If not provided, positions from the graph nodes are used.
-
-    Returns:
-        Dictionary mapping all node IDs to their computed (x, y) positions.
-
-    Raises:
-        UnbuildableError: If any group cannot be solved.
-        ValueError: If required positions are missing.
-    """
-    warnings.warn(
-        "assur.decomposition.solve_decomposition is deprecated. "
-        "Use pylinkage.solver.solve.solve_decomposition instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    from ..solver.solve import solve_decomposition as _solve_decomposition
-
-    return _solve_decomposition(result, initial_positions)

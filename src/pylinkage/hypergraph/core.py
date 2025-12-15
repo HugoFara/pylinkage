@@ -2,46 +2,41 @@
 
 This module provides the fundamental data structures for representing
 planar linkages as hypergraphs: Node, Edge, and Hyperedge.
+
+These are pure topological elements - they define structure and connectivity
+only. Dimensional data (positions, distances, angles) is stored separately
+in the Dimensions class (see pylinkage.dimensions).
 """
 
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
 
 from ._types import EdgeId, HyperedgeId, JointType, NodeId, NodeRole
-
-if TYPE_CHECKING:
-    from .._types import MaybeCoord
 
 
 @dataclass
 class Node:
-    """A joint in the linkage hypergraph.
+    """A joint in the linkage hypergraph (topology only).
 
-    Represents both the topological (connectivity) and geometric
-    (position) aspects of a joint.
+    Represents the topological aspect of a joint - its identity, role,
+    and type. Geometric data (position, angles) is stored separately
+    in a Dimensions object.
 
     Attributes:
         id: Unique identifier for this node.
-        position: Current (x, y) coordinates, may contain None if uninitialized.
         role: The role in the mechanism (GROUND, DRIVER, or DRIVEN).
         joint_type: The kinematic joint type (REVOLUTE or PRISMATIC).
-        angle: For DRIVER nodes, the rotation angle per step (radians).
-        initial_angle: For DRIVER nodes, the starting angle (radians).
         name: Human-readable name for display.
 
     Example:
-        >>> node = Node("A", position=(0.0, 0.0), role=NodeRole.GROUND)
+        >>> node = Node("A", role=NodeRole.GROUND)
         >>> node.joint_type
         <JointType.REVOLUTE: 1>
     """
 
     id: NodeId
-    position: "MaybeCoord" = (None, None)
     role: NodeRole = NodeRole.DRIVEN
     joint_type: JointType = JointType.REVOLUTE
-    angle: float | None = None
-    initial_angle: float | None = None
     name: str | None = None
 
     def __post_init__(self) -> None:
@@ -62,25 +57,25 @@ class Node:
 
 @dataclass
 class Edge:
-    """A binary connection between two nodes.
+    """A binary connection between two nodes (topology only).
 
     Edges represent rigid links connecting exactly two joints.
     For N-way rigid bodies (N > 2), use Hyperedge instead.
+
+    Distance constraints are stored separately in a Dimensions object.
 
     Attributes:
         id: Unique identifier for this edge.
         source: ID of the source node.
         target: ID of the target node.
-        distance: The distance constraint between the nodes.
 
     Example:
-        >>> edge = Edge("AB", source="A", target="B", distance=1.0)
+        >>> edge = Edge("AB", source="A", target="B")
     """
 
     id: EdgeId
     source: NodeId
     target: NodeId
-    distance: float | None = None
 
     def __hash__(self) -> int:
         """Hash by id for use in sets and dict keys."""
@@ -117,19 +112,18 @@ class Edge:
 
 @dataclass
 class Hyperedge:
-    """An N-way rigid body connection.
+    """An N-way rigid body connection (topology only).
 
     A hyperedge connects N nodes (joints) that belong to the same
-    rigid link. It stores pairwise distance constraints between
-    these nodes, representing a fully constrained rigid body.
+    rigid link. This is a topological grouping - distance constraints
+    are stored separately in a Dimensions object.
 
     This is more expressive than multiple edges with a shared body_id
-    because it explicitly groups all related constraints together.
+    because it explicitly groups all related nodes together.
 
     Attributes:
         id: Unique identifier for this hyperedge.
         nodes: Tuple of node IDs connected by this rigid body.
-        constraints: Dict mapping node pairs (as sorted tuples) to distances.
         name: Human-readable name for the rigid body.
 
     Example:
@@ -137,37 +131,13 @@ class Hyperedge:
         >>> he = Hyperedge(
         ...     id="triangle",
         ...     nodes=("A", "B", "C"),
-        ...     constraints={
-        ...         ("A", "B"): 1.0,
-        ...         ("B", "C"): 1.5,
-        ...         ("A", "C"): 2.0,
-        ...     },
         ...     name="Triangle Link"
         ... )
     """
 
     id: HyperedgeId
     nodes: tuple[NodeId, ...] = field(default_factory=tuple)
-    constraints: dict[tuple[NodeId, NodeId], float] = field(default_factory=dict)
     name: str | None = None
-
-    def __post_init__(self) -> None:
-        """Validate and normalize constraints."""
-        # Ensure all constraint keys are sorted tuples for consistency
-        normalized: dict[tuple[NodeId, NodeId], float] = {}
-        for (n1, n2), dist in self.constraints.items():
-            key = (min(n1, n2), max(n1, n2))
-            if key in normalized:
-                raise ValueError(f"Duplicate constraint for {key}")
-            normalized[key] = dist
-        object.__setattr__(self, "constraints", normalized)
-
-        # Validate all nodes in constraints are in nodes tuple
-        for n1, n2 in self.constraints:
-            if n1 not in self.nodes or n2 not in self.nodes:
-                raise ValueError(
-                    f"Constraint nodes ({n1}, {n2}) not in hyperedge nodes {self.nodes}"
-                )
 
     def __hash__(self) -> int:
         """Hash by id for use in sets and dict keys."""
@@ -182,29 +152,31 @@ class Hyperedge:
     def to_edges(self, prefix: str = "") -> list[Edge]:
         """Convert hyperedge to regular binary edges.
 
-        Creates one Edge for each pairwise constraint in this hyperedge.
+        Creates one Edge for each pair of adjacent nodes in this hyperedge.
+        For a hyperedge with N nodes, creates N-1 edges forming a chain.
 
         Args:
             prefix: Optional prefix for generated edge IDs.
 
         Returns:
-            List of Edge objects representing all pairwise constraints.
+            List of Edge objects representing pairwise connections.
 
         Example:
-            >>> he = Hyperedge("tri", ("A", "B", "C"), {("A", "B"): 1.0, ("B", "C"): 2.0})
+            >>> he = Hyperedge("tri", ("A", "B", "C"))
             >>> edges = he.to_edges()
             >>> len(edges)
             2
         """
         edges = []
-        for (n1, n2), dist in self.constraints.items():
+        nodes_list = list(self.nodes)
+        for i in range(len(nodes_list) - 1):
+            n1, n2 = nodes_list[i], nodes_list[i + 1]
             edge_id = f"{prefix}{self.id}_{n1}_{n2}" if prefix else f"{self.id}_{n1}_{n2}"
             edges.append(
                 Edge(
                     id=edge_id,
                     source=n1,
                     target=n2,
-                    distance=dist,
                 )
             )
         return edges
@@ -233,8 +205,8 @@ class Hyperedge:
 
         Example:
             >>> edges = [
-            ...     Edge("e1", "A", "B", 1.0),
-            ...     Edge("e2", "B", "C", 2.0),
+            ...     Edge("e1", "A", "B"),
+            ...     Edge("e2", "B", "C"),
             ... ]
             >>> he = Hyperedge.from_edges(edges, "combined")
             >>> "A" in he.nodes
@@ -244,30 +216,13 @@ class Hyperedge:
             raise ValueError("Cannot create hyperedge from empty edge list")
 
         nodes_set: set[NodeId] = set()
-        constraints: dict[tuple[NodeId, NodeId], float] = {}
 
         for edge in edges:
             nodes_set.add(edge.source)
             nodes_set.add(edge.target)
-            if edge.distance is not None:
-                constraints[(edge.source, edge.target)] = edge.distance
 
         return cls(
             id=hyperedge_id,
             nodes=tuple(sorted(nodes_set)),
-            constraints=constraints,
             name=name,
         )
-
-    def get_distance(self, node1: NodeId, node2: NodeId) -> float | None:
-        """Get the distance constraint between two nodes.
-
-        Args:
-            node1: First node ID.
-            node2: Second node ID.
-
-        Returns:
-            The distance constraint, or None if not specified.
-        """
-        key = (min(node1, node2), max(node1, node2))
-        return self.constraints.get(key)

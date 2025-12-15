@@ -1,4 +1,4 @@
-"""Tests for the graph module."""
+"""Tests for the graph module (topology only)."""
 
 import pytest
 
@@ -14,7 +14,6 @@ class TestNode:
         assert node.id == "A"
         assert node.joint_type == JointType.REVOLUTE
         assert node.role == NodeRole.DRIVEN
-        assert node.position == (None, None)
         assert node.name == "A"  # Defaults to id
 
     def test_node_creation_full(self):
@@ -23,22 +22,18 @@ class TestNode:
             id="B",
             joint_type=JointType.PRISMATIC,
             role=NodeRole.DRIVER,
-            position=(1.0, 2.0),
-            angle=0.5,
             name="Motor",
         )
         assert node.id == "B"
         assert node.joint_type == JointType.PRISMATIC
         assert node.role == NodeRole.DRIVER
-        assert node.position == (1.0, 2.0)
-        assert node.angle == 0.5
         assert node.name == "Motor"
 
     def test_node_hash_and_equality(self):
         """Test node hashing and equality."""
-        node1 = Node("A", position=(0, 0))
-        node2 = Node("A", position=(1, 1))  # Same id, different position
-        node3 = Node("B", position=(0, 0))
+        node1 = Node("A")
+        node2 = Node("A", role=NodeRole.GROUND)  # Same id, different role
+        node3 = Node("B")
 
         assert node1 == node2  # Equal by id
         assert node1 != node3
@@ -55,11 +50,15 @@ class TestEdge:
 
     def test_edge_creation(self):
         """Test creating an edge."""
-        edge = Edge("AB", source="A", target="B", distance=1.5)
+        edge = Edge("AB", source="A", target="B")
         assert edge.id == "AB"
         assert edge.source == "A"
         assert edge.target == "B"
-        assert edge.distance == 1.5
+
+    def test_edge_with_body_id(self):
+        """Test creating an edge with body_id."""
+        edge = Edge("AB", source="A", target="B", body_id="link1")
+        assert edge.body_id == "link1"
 
     def test_edge_connects(self):
         """Test edge connects method."""
@@ -99,7 +98,7 @@ class TestLinkageGraph:
     def test_add_node(self):
         """Test adding nodes."""
         graph = LinkageGraph()
-        node = Node("A", position=(0, 0))
+        node = Node("A")
         graph.add_node(node)
 
         assert "A" in graph.nodes
@@ -118,7 +117,7 @@ class TestLinkageGraph:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
 
-        edge = Edge("AB", source="A", target="B", distance=1.0)
+        edge = Edge("AB", source="A", target="B")
         graph.add_edge(edge)
 
         assert "AB" in graph.edges
@@ -151,7 +150,7 @@ class TestLinkageGraph:
         graph.add_node(Node("A"))
         graph.add_node(Node("B"))
         graph.add_node(Node("C"))
-        edge = Edge("AB", source="A", target="B", distance=1.0)
+        edge = Edge("AB", source="A", target="B")
         graph.add_edge(edge)
 
         assert graph.get_edge_between("A", "B") == edge
@@ -219,9 +218,9 @@ class TestLinkageGraph:
     def test_copy(self):
         """Test deep copying a graph."""
         graph = LinkageGraph(name="Original")
-        graph.add_node(Node("A", position=(0, 0)))
-        graph.add_node(Node("B", position=(1, 0)))
-        graph.add_edge(Edge("AB", source="A", target="B", distance=1.0))
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("B", role=NodeRole.DRIVEN))
+        graph.add_edge(Edge("AB", source="A", target="B"))
 
         copy = graph.copy()
 
@@ -229,9 +228,9 @@ class TestLinkageGraph:
         assert len(copy.nodes) == len(graph.nodes)
         assert len(copy.edges) == len(graph.edges)
 
-        # Modify copy shouldn't affect original
-        copy.nodes["A"].position = (5, 5)
-        assert graph.nodes["A"].position == (0, 0)
+        # Modifications to copy shouldn't affect original
+        copy.add_node(Node("C"))
+        assert "C" not in graph.nodes
 
     def test_contains(self):
         """Test __contains__ method."""

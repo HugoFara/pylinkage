@@ -1,4 +1,4 @@
-"""Tests for hypergraph serialization."""
+"""Tests for hypergraph serialization (topology only)."""
 
 import json
 import tempfile
@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from pylinkage.hypergraph import (
-    Component,
     ComponentInstance,
     Connection,
     Edge,
@@ -17,11 +16,6 @@ from pylinkage.hypergraph import (
     JointType,
     Node,
     NodeRole,
-    ParameterMapping,
-    ParameterSpec,
-    Port,
-    component_from_dict,
-    component_to_dict,
     graph_from_dict,
     graph_from_json,
     graph_to_dict,
@@ -32,7 +26,7 @@ from pylinkage.hypergraph import (
 
 
 class TestNodeSerialization:
-    """Tests for node serialization."""
+    """Tests for node serialization (topology only)."""
 
     def test_node_roundtrip(self):
         """Test node serialization roundtrip."""
@@ -40,42 +34,37 @@ class TestNodeSerialization:
 
         node = Node(
             id="test",
-            position=(1.0, 2.0),
             role=NodeRole.DRIVER,
             joint_type=JointType.PRISMATIC,
-            angle=0.5,
             name="Test Node",
         )
         data = node_to_dict(node)
         restored = node_from_dict(data)
 
         assert restored.id == node.id
-        assert restored.position == node.position
         assert restored.role == node.role
         assert restored.joint_type == node.joint_type
-        assert restored.angle == node.angle
         assert restored.name == node.name
 
 
 class TestEdgeSerialization:
-    """Tests for edge serialization."""
+    """Tests for edge serialization (topology only)."""
 
     def test_edge_roundtrip(self):
         """Test edge serialization roundtrip."""
         from pylinkage.hypergraph.serialization import edge_from_dict, edge_to_dict
 
-        edge = Edge("AB", "A", "B", 1.5)
+        edge = Edge("AB", "A", "B")
         data = edge_to_dict(edge)
         restored = edge_from_dict(data)
 
         assert restored.id == edge.id
         assert restored.source == edge.source
         assert restored.target == edge.target
-        assert restored.distance == edge.distance
 
 
 class TestHyperedgeSerialization:
-    """Tests for hyperedge serialization."""
+    """Tests for hyperedge serialization (topology only)."""
 
     def test_hyperedge_roundtrip(self):
         """Test hyperedge serialization roundtrip."""
@@ -87,7 +76,6 @@ class TestHyperedgeSerialization:
         he = Hyperedge(
             id="tri",
             nodes=("A", "B", "C"),
-            constraints={("A", "B"): 1.0, ("B", "C"): 2.0},
             name="Triangle",
         )
         data = hyperedge_to_dict(he)
@@ -95,24 +83,21 @@ class TestHyperedgeSerialization:
 
         assert restored.id == he.id
         assert set(restored.nodes) == set(he.nodes)
-        assert len(restored.constraints) == len(he.constraints)
         assert restored.name == he.name
 
 
 class TestGraphSerialization:
-    """Tests for HypergraphLinkage serialization."""
+    """Tests for HypergraphLinkage serialization (topology only)."""
 
     @pytest.fixture
     def sample_graph(self):
         """Create a sample graph for testing."""
         graph = HypergraphLinkage(name="Sample")
-        graph.add_node(Node("A", position=(0, 0), role=NodeRole.GROUND))
-        graph.add_node(Node("B", position=(1, 0), role=NodeRole.DRIVER, angle=0.1))
-        graph.add_node(Node("C", position=(2, 0), role=NodeRole.DRIVEN))
-        graph.add_edge(Edge("AB", "A", "B", 1.0))
-        graph.add_hyperedge(
-            Hyperedge("he", ("B", "C"), {("B", "C"): 1.5}, name="Link")
-        )
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("B", role=NodeRole.DRIVER))
+        graph.add_node(Node("C", role=NodeRole.DRIVEN))
+        graph.add_edge(Edge("AB", "A", "B"))
+        graph.add_hyperedge(Hyperedge("he", ("B", "C"), name="Link"))
         return graph
 
     def test_graph_to_dict(self, sample_graph):
@@ -145,58 +130,28 @@ class TestGraphSerialization:
             assert len(restored.nodes) == len(sample_graph.nodes)
 
 
-class TestComponentSerialization:
-    """Tests for Component serialization."""
-
-    @pytest.fixture
-    def sample_component(self):
-        """Create a sample component for testing."""
-        graph = HypergraphLinkage(name="Internal")
-        graph.add_node(Node("A", position=(0, 0), role=NodeRole.GROUND))
-        graph.add_node(Node("B", position=(1, 0), role=NodeRole.DRIVEN))
-        graph.add_edge(Edge("AB", "A", "B", 1.0))
-
-        return Component(
-            id="sample",
-            internal_graph=graph,
-            ports={"in": Port("in", "A", "Input"), "out": Port("out", "B", "Output")},
-            parameters={"length": ParameterSpec("length", "Length", default=1.0)},
-            parameter_mappings=[ParameterMapping("length", edge_ids=["AB"])],
-            name="Sample Component",
-        )
-
-    def test_component_roundtrip(self, sample_component):
-        """Test component serialization roundtrip."""
-        data = component_to_dict(sample_component)
-        restored = component_from_dict(data)
-
-        assert restored.id == sample_component.id
-        assert restored.name == sample_component.name
-        assert len(restored.ports) == len(sample_component.ports)
-        assert len(restored.parameters) == len(sample_component.parameters)
-        assert len(restored.parameter_mappings) == len(sample_component.parameter_mappings)
-
-
 class TestHierarchicalSerialization:
-    """Tests for HierarchicalLinkage serialization."""
+    """Tests for HierarchicalLinkage serialization (topology only)."""
 
     @pytest.fixture
     def sample_hierarchical(self):
         """Create a sample hierarchical linkage."""
         graph = HypergraphLinkage()
-        graph.add_node(Node("A", position=(0, 0), role=NodeRole.GROUND))
-        graph.add_node(Node("B", position=(1, 0), role=NodeRole.DRIVEN))
-        graph.add_edge(Edge("AB", "A", "B", 1.0))
-
-        component = Component(
-            id="simple",
-            internal_graph=graph,
-            ports={"in": Port("in", "A"), "out": Port("out", "B")},
-        )
+        graph.add_node(Node("A", role=NodeRole.GROUND))
+        graph.add_node(Node("B", role=NodeRole.DRIVEN))
+        graph.add_edge(Edge("AB", "A", "B"))
 
         linkage = HierarchicalLinkage(name="Test")
-        linkage.add_instance(ComponentInstance("i1", component, {"length": 2.0}))
-        linkage.add_instance(ComponentInstance("i2", component))
+        linkage.add_instance(ComponentInstance(
+            id="i1",
+            topology=graph,
+            ports={"in": "A", "out": "B"},
+        ))
+        linkage.add_instance(ComponentInstance(
+            id="i2",
+            topology=graph,
+            ports={"in": "A", "out": "B"},
+        ))
         linkage.add_connection(Connection("i1", "out", "i2", "in"))
 
         return linkage

@@ -67,7 +67,6 @@ __all__ = [
     "DecompositionResult",
     "decompose_assur_groups",
     "validate_decomposition",
-    "solve_decomposition",  # deprecated, use solver.solve.solve_decomposition
     # Conversion to/from Mechanism (preferred)
     "graph_to_mechanism",
     "mechanism_to_graph",
@@ -91,7 +90,6 @@ from .conversion import graph_to_linkage, linkage_to_graph
 from .decomposition import (
     DecompositionResult,
     decompose_assur_groups,
-    solve_decomposition,
     validate_decomposition,
 )
 from .graph import Edge, LinkageGraph, Node
