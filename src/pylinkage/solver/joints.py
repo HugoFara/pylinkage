@@ -180,6 +180,62 @@ def solve_linear_actuator(
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
+def solve_arc_crank(
+    current_angle: float,
+    direction: float,
+    anchor_x: float,
+    anchor_y: float,
+    radius: float,
+    angle_rate: float,
+    arc_start: float,
+    arc_end: float,
+    dt: float,
+) -> tuple[float, float, float, float]:
+    """Solve arc crank position using oscillating angular motion.
+
+    The arc crank rotates around its anchor point, reversing direction
+    when it reaches the angle limits.
+
+    Args:
+        current_angle: Current angle in radians.
+        direction: Current movement direction (+1.0 or -1.0).
+        anchor_x: X position of the anchor (rotation center).
+        anchor_y: Y position of the anchor (rotation center).
+        radius: Distance from anchor to crank.
+        angle_rate: Angular velocity magnitude (radians per unit time).
+        arc_start: Minimum angle limit in radians.
+        arc_end: Maximum angle limit in radians.
+        dt: Time step.
+
+    Returns:
+        Tuple of (new_x, new_y, new_angle, new_direction).
+    """
+    # Update angle
+    new_angle = current_angle + direction * angle_rate * dt
+
+    # Handle bouncing at angle limits
+    new_direction = direction
+    if new_angle >= arc_end:
+        new_angle = arc_end - (new_angle - arc_end)
+        new_direction = -1.0
+    elif new_angle <= arc_start:
+        new_angle = arc_start + (arc_start - new_angle)
+        new_direction = 1.0
+
+    # Clamp to valid range (safety for large dt)
+    if new_angle > arc_end:
+        new_angle = arc_end
+    elif new_angle < arc_start:
+        new_angle = arc_start
+
+    # Compute position from angle
+    new_x = anchor_x + radius * math.cos(new_angle)
+    new_y = anchor_y + radius * math.sin(new_angle)
+
+    return (new_x, new_y, new_angle, new_direction)
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
 def solve_linear(
     current_x: float,
     current_y: float,

@@ -14,7 +14,7 @@ from ..components import Component, ConnectedComponent, _AnchorProxy
 from ..exceptions import UnderconstrainedError
 
 if TYPE_CHECKING:
-    from ..actuators import Crank, LinearActuator
+    from ..actuators import ArcCrank, Crank, LinearActuator
 
 
 class Linkage:
@@ -39,11 +39,19 @@ class Linkage:
         ...     print(positions)
     """
 
-    __slots__ = ("name", "components", "_cranks", "_linear_actuators", "_solve_order")
+    __slots__ = (
+        "name",
+        "components",
+        "_cranks",
+        "_arc_cranks",
+        "_linear_actuators",
+        "_solve_order",
+    )
 
     name: str
     components: tuple[Component, ...]
     _cranks: tuple[Crank, ...]
+    _arc_cranks: tuple[ArcCrank, ...]
     _linear_actuators: tuple[LinearActuator, ...]
     _solve_order: tuple[Component, ...]
 
@@ -60,11 +68,14 @@ class Linkage:
             order: Manual solve order. If None, computed automatically.
             name: Human-readable identifier.
         """
-        from ..actuators import Crank, LinearActuator
+        from ..actuators import ArcCrank, Crank, LinearActuator
 
         self.name = name if name is not None else str(id(self))
         self.components = tuple(components)
         self._cranks = tuple(d for d in self.components if isinstance(d, Crank))
+        self._arc_cranks = tuple(
+            d for d in self.components if isinstance(d, ArcCrank)
+        )
         self._linear_actuators = tuple(
             d for d in self.components if isinstance(d, LinearActuator)
         )
@@ -90,7 +101,7 @@ class Linkage:
         Raises:
             UnderconstrainedError: If order cannot be determined.
         """
-        from ..actuators import Crank, LinearActuator
+        from ..actuators import ArcCrank, Crank, LinearActuator
         from ..components import Ground
 
         # Start with ground points (always solvable)
@@ -110,7 +121,7 @@ class Linkage:
                 # Check if this component can be solved
                 can_solve = False
 
-                if isinstance(d, (Crank, LinearActuator)):
+                if isinstance(d, (Crank, ArcCrank, LinearActuator)):
                     # Actuators can solve if their anchor is solved
                     can_solve = d.anchor in solved_set
                 elif isinstance(d, ConnectedComponent):
@@ -182,7 +193,7 @@ class Linkage:
         Yields:
             Tuple of (x, y) positions for each component.
         """
-        from ..actuators import Crank, LinearActuator
+        from ..actuators import ArcCrank, Crank, LinearActuator
 
         if not hasattr(self, "_solve_order"):
             self._find_solve_order()
@@ -192,7 +203,7 @@ class Linkage:
 
         for _ in range(iterations):
             for component in self._solve_order:
-                if isinstance(component, (Crank, LinearActuator)):
+                if isinstance(component, (Crank, ArcCrank, LinearActuator)):
                     component.reload(dt)
                 else:
                     component.reload()
@@ -201,8 +212,10 @@ class Linkage:
     def get_rotation_period(self) -> int:
         """Return number of steps for one full cycle.
 
-        Computes the LCM of all actuator periods (cranks and linear actuators).
+        Computes the LCM of all actuator periods (cranks, arc cranks, and
+        linear actuators).
         For cranks, period is 2*pi / angular_velocity.
+        For arc cranks, period is 2 * (arc_end - arc_start) / angular_velocity.
         For linear actuators, period is 2 * stroke / velocity.
 
         Returns:
@@ -214,6 +227,14 @@ class Linkage:
         for crank in self._cranks:
             if crank.angular_velocity != 0:
                 freq = round(tau / abs(crank.angular_velocity))
+                periods = periods * freq // gcd(periods, freq)
+
+        # Consider arc crank periods
+        for arc_crank in self._arc_cranks:
+            if arc_crank.angular_velocity != 0:
+                # Full cycle is 2 * arc_range / angular_velocity (one round trip)
+                arc_range = arc_crank.arc_end - arc_crank.arc_start
+                freq = round(2 * arc_range / abs(arc_crank.angular_velocity))
                 periods = periods * freq // gcd(periods, freq)
 
         # Consider linear actuator periods
