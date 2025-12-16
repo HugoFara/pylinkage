@@ -241,6 +241,75 @@ def intersection(
     return None
 
 
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def line_line_intersection(
+    p1_x: float,
+    p1_y: float,
+    p2_x: float,
+    p2_y: float,
+    p3_x: float,
+    p3_y: float,
+    p4_x: float,
+    p4_y: float,
+) -> tuple[int, float, float]:
+    """
+    Intersection of two lines defined by point pairs.
+
+    Line 1 passes through (p1_x, p1_y) and (p2_x, p2_y).
+    Line 2 passes through (p3_x, p3_y) and (p4_x, p4_y).
+
+    Uses the parametric line intersection formula.
+
+    :param p1_x: X coordinate of first point on line 1.
+    :param p1_y: Y coordinate of first point on line 1.
+    :param p2_x: X coordinate of second point on line 1.
+    :param p2_y: Y coordinate of second point on line 1.
+    :param p3_x: X coordinate of first point on line 2.
+    :param p3_y: Y coordinate of first point on line 2.
+    :param p4_x: X coordinate of second point on line 2.
+    :param p4_y: Y coordinate of second point on line 2.
+
+    :returns: Tuple of (n_intersections, x, y) where:
+        - n=0: No intersection (parallel lines)
+        - n=1: One intersection at (x, y)
+        - n=3: Coincident lines (same line)
+    """
+    # Direction vectors
+    d1_x = p2_x - p1_x
+    d1_y = p2_y - p1_y
+    d2_x = p4_x - p3_x
+    d2_y = p4_y - p3_y
+
+    # Cross product of direction vectors (determinant)
+    cross = d1_x * d2_y - d1_y * d2_x
+
+    # Vector from p1 to p3
+    diff_x = p3_x - p1_x
+    diff_y = p3_y - p1_y
+
+    # Tolerance for parallel check
+    eps = 1e-12
+
+    if abs(cross) < eps:
+        # Lines are parallel - check if coincident
+        # Cross product of diff with d1 should be zero for coincident lines
+        cross_diff = diff_x * d1_y - diff_y * d1_x
+        if abs(cross_diff) < eps:
+            # Coincident lines - return midpoint of p1 and p3 as representative
+            return (INTERSECTION_SAME, (p1_x + p3_x) / 2.0, (p1_y + p3_y) / 2.0)
+        # Parallel but not coincident
+        return (INTERSECTION_NONE, 0.0, 0.0)
+
+    # Compute parameter t for line 1
+    t = (diff_x * d2_y - diff_y * d2_x) / cross
+
+    # Intersection point
+    x = p1_x + t * d1_x
+    y = p1_y + t * d1_y
+
+    return (INTERSECTION_ONE, x, y)
+
+
 def bounding_box(locus: list[Coord]) -> tuple[float, float, float, float]:
     """
     Compute the bounding box of a locus.

@@ -15,6 +15,7 @@ from ..geometry.secants import (
     INTERSECTION_ONE,
     circle_intersect,
     circle_line_from_points_intersection,
+    line_line_intersection,
 )
 
 
@@ -227,3 +228,47 @@ def solve_linear(
     return get_nearest_point(  # type: ignore[no-any-return]
         current_x, current_y, result[1], result[2], result[3], result[4]
     )
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def solve_line_line(
+    line1_p1_x: float,
+    line1_p1_y: float,
+    line1_p2_x: float,
+    line1_p2_y: float,
+    line2_p1_x: float,
+    line2_p1_y: float,
+    line2_p2_x: float,
+    line2_p2_y: float,
+) -> tuple[float, float]:
+    """Solve line-line joint using line-line intersection.
+
+    The joint is positioned at the intersection of two lines:
+    - Line 1: passing through line1_p1 and line1_p2
+    - Line 2: passing through line2_p1 and line2_p2
+
+    This is deterministic when lines are not parallel (single intersection).
+
+    Args:
+        line1_p1_x: X position of first point on line 1.
+        line1_p1_y: Y position of first point on line 1.
+        line1_p2_x: X position of second point on line 1.
+        line1_p2_y: Y position of second point on line 1.
+        line2_p1_x: X position of first point on line 2.
+        line2_p1_y: Y position of first point on line 2.
+        line2_p2_x: X position of second point on line 2.
+        line2_p2_y: Y position of second point on line 2.
+
+    Returns:
+        New (x, y) position, or (NaN, NaN) if unbuildable (parallel lines).
+    """
+    result = line_line_intersection(
+        line1_p1_x, line1_p1_y, line1_p2_x, line1_p2_y,
+        line2_p1_x, line2_p1_y, line2_p2_x, line2_p2_y,
+    )
+
+    if result[0] == INTERSECTION_NONE:
+        return (math.nan, math.nan)
+
+    # Single intersection point (or coincident lines - return the representative point)
+    return (result[1], result[2])

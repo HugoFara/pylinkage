@@ -18,13 +18,13 @@ from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions
 from ..exceptions import UnbuildableError
-from .groups import solve_rrp_dyad, solve_rrr_dyad
+from .groups import solve_pp_dyad, solve_rrp_dyad, solve_rrr_dyad
 
 if TYPE_CHECKING:
     from .._types import Coord, NodeId
     from ..assur.decomposition import DecompositionResult
     from ..assur.graph import LinkageGraph
-    from ..assur.groups import AssurGroup, DyadRRP, DyadRRR
+    from ..assur.groups import AssurGroup, DyadPP, DyadPRR, DyadRPR, DyadRRP, DyadRRR
 
 
 def solve_group(
@@ -65,12 +65,17 @@ def solve_group(
         ...     positions.update(new_pos)
     """
     # Import here to avoid circular imports at module load time
-    from ..assur.groups import DyadRRP, DyadRRR
+    from ..assur.groups import DyadPP, DyadPRR, DyadRPR, DyadRRP, DyadRRR
 
     if isinstance(group, DyadRRR):
         return _solve_dyad_rrr(group, positions, dimensions, hint_positions)
     elif isinstance(group, DyadRRP):
         return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
+    elif isinstance(group, (DyadRPR, DyadPRR)):
+        # RPR and PRR are geometrically equivalent to RRP (circle-line)
+        return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
+    elif isinstance(group, DyadPP):
+        return _solve_dyad_pp(group, positions, dimensions, hint_positions)
     else:
         raise NotImplementedError(
             f"Solver not implemented for group type: {group.joint_signature}"
@@ -190,6 +195,53 @@ def _solve_dyad_rrp(
         raise UnbuildableError(
             internal_id,
             message=f"No circle-line intersection for RRP dyad at {internal_id}: {e}",
+        ) from e
+
+    return {internal_id: pos}
+
+
+def _solve_dyad_pp(
+    group: DyadPP,
+    positions: dict[NodeId, Coord],
+    dimensions: Dimensions,
+    hint_positions: dict[NodeId, Coord] | None,
+) -> dict[NodeId, Coord]:
+    """Solve a PP dyad group (line-line intersection)."""
+    if len(group.internal_nodes) != 1:
+        raise ValueError("DyadPP must have exactly 1 internal node")
+
+    # Validate line nodes are set
+    if (
+        group.line1_node1 is None
+        or group.line1_node2 is None
+        or group.line2_node1 is None
+        or group.line2_node2 is None
+    ):
+        raise ValueError("DyadPP line nodes must be set")
+
+    internal_id = group.internal_nodes[0]
+
+    # Validate required positions exist
+    for node_id in [
+        group.line1_node1,
+        group.line1_node2,
+        group.line2_node1,
+        group.line2_node2,
+    ]:
+        if node_id not in positions:
+            raise ValueError(f"Line node {node_id} position not found")
+
+    try:
+        pos = solve_pp_dyad(
+            line1_pos1=positions[group.line1_node1],
+            line1_pos2=positions[group.line1_node2],
+            line2_pos1=positions[group.line2_node1],
+            line2_pos2=positions[group.line2_node2],
+        )
+    except ValueError as e:
+        raise UnbuildableError(
+            internal_id,
+            message=f"No line-line intersection for PP dyad at {internal_id}: {e}",
         ) from e
 
     return {internal_id: pos}

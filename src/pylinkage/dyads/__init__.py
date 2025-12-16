@@ -5,8 +5,12 @@ This module provides true Assur group dyads (0 DOF structural units):
 Classes:
     RRRDyad: Circle-circle intersection (two links meeting at one joint)
     RRPDyad: Circle-line intersection (slider mechanism)
+    PPDyad: Line-line intersection (double slider)
     FixedDyad: Deterministic polar projection
     BinaryDyad: Base class for binary Assur groups
+
+Functions:
+    create_dyad: Factory function to create dyads from isomer signatures
 
 For other kinematic elements, use the appropriate modules:
     - pylinkage.components: Ground, base classes (Component, ConnectedComponent)
@@ -68,7 +72,12 @@ from ..components import _AnchorProxy as _AnchorProxy
 # Linkage container
 from ..simulation import Linkage as Linkage
 from ._base import BinaryDyad as BinaryDyad
+from .factory import create_dyad as create_dyad
+from .factory import get_isomer_geometry as get_isomer_geometry
+from .factory import get_required_anchors as get_required_anchors
+from .factory import get_required_constraints as get_required_constraints
 from .fixed import FixedDyad as FixedDyad
+from .pp import PPDyad as PPDyad
 from .rrp import RRPDyad as RRPDyad
 from .rrr import RRRDyad as RRRDyad
 
@@ -76,8 +85,14 @@ __all__ = [
     # True Assur groups (primary exports)
     "RRRDyad",
     "RRPDyad",
+    "PPDyad",
     "FixedDyad",
     "BinaryDyad",
+    # Factory function for creating dyads from isomer signatures
+    "create_dyad",
+    "get_isomer_geometry",
+    "get_required_anchors",
+    "get_required_constraints",
     # Re-exports for backwards compatibility
     "Ground",
     "Crank",

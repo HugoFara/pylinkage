@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 from typing import TYPE_CHECKING
 
-from .joints import solve_linear, solve_revolute
+from .joints import solve_line_line, solve_linear, solve_revolute
 
 if TYPE_CHECKING:
     from .._types import Coord
@@ -135,6 +135,61 @@ def solve_rrp_dyad(
             f"Unbuildable RRP dyad: circle-line don't intersect. "
             f"anchor={anchor_pos}, line=({line_pos1}, {line_pos2}), "
             f"distance={distance}"
+        )
+
+    return (new_x, new_y)
+
+
+def solve_pp_dyad(
+    line1_pos1: Coord,
+    line1_pos2: Coord,
+    line2_pos1: Coord,
+    line2_pos2: Coord,
+) -> Coord:
+    """Solve a PP dyad position using line-line intersection.
+
+    A PP dyad consists of one internal node constrained to lie at the
+    intersection of two lines. Each line is defined by two points.
+
+    This is used for isomers like T_R_T, T_RT_, _TRT_.
+
+    Args:
+        line1_pos1: Position (x, y) of the first point on line 1.
+        line1_pos2: Position (x, y) of the second point on line 1.
+        line2_pos1: Position (x, y) of the first point on line 2.
+        line2_pos2: Position (x, y) of the second point on line 2.
+
+    Returns:
+        Computed (x, y) position for the internal node.
+
+    Raises:
+        ValueError: If the lines are parallel (no intersection).
+
+    Example:
+        >>> pos = solve_pp_dyad(
+        ...     line1_pos1=(0.0, 0.0),
+        ...     line1_pos2=(4.0, 0.0),
+        ...     line2_pos1=(2.0, -1.0),
+        ...     line2_pos2=(2.0, 3.0),
+        ... )
+        >>> # pos is (2.0, 0.0) - intersection of x-axis and line x=2
+    """
+    new_x, new_y = solve_line_line(
+        line1_pos1[0],
+        line1_pos1[1],
+        line1_pos2[0],
+        line1_pos2[1],
+        line2_pos1[0],
+        line2_pos1[1],
+        line2_pos2[0],
+        line2_pos2[1],
+    )
+
+    if math.isnan(new_x):
+        raise ValueError(
+            f"Unbuildable PP dyad: lines are parallel. "
+            f"line1=({line1_pos1}, {line1_pos2}), "
+            f"line2=({line2_pos1}, {line2_pos2})"
         )
 
     return (new_x, new_y)

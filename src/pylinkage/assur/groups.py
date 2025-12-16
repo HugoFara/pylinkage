@@ -233,9 +233,22 @@ class DyadRRP(AssurGroup):
 class DyadRPR(AssurGroup):
     """RPR Dyad: Revolute-Prismatic-Revolute configuration (topology only).
 
-    This is a stub implementation for extensibility.
-    Solving is not yet implemented in the solver module.
+    The internal node has a prismatic (sliding) constraint, positioned at the
+    intersection of a circle (from revolute anchor) and a line (defined by
+    the prismatic axis).
+
+    Geometrically equivalent to RRP but with the prismatic at the internal node.
+
+    Structure::
+
+        anchor0 ----distance---- internal (prismatic) ----line---- anchor1
+                                      |
+                                 slides on line
     """
+
+    # Line-defining nodes for the prismatic axis
+    line_node1: NodeId | None = None
+    line_node2: NodeId | None = None
 
     @property
     def group_class(self) -> int:
@@ -252,16 +265,51 @@ class DyadRPR(AssurGroup):
         anchor_node_ids: list[NodeId],
         graph: LinkageGraph,
     ) -> bool:
-        return False  # Not implemented yet
+        """Check if nodes form an RPR dyad.
+
+        Requires:
+        - Exactly 1 internal node (prismatic type)
+        - At least 1 revolute anchor connection
+        - Line constraint from other anchors
+        """
+        if len(internal_node_ids) != 1:
+            return False
+
+        internal_id = internal_node_ids[0]
+        internal_node = graph.nodes.get(internal_id)
+        if internal_node is None:
+            return False
+
+        # Internal node should be prismatic type
+        if internal_node.joint_type != JointType.PRISMATIC:
+            return False
+
+        # Check for at least one revolute anchor connection
+        has_revolute_anchor = False
+        for anchor_id in anchor_node_ids:
+            anchor = graph.nodes.get(anchor_id)
+            if anchor and anchor.joint_type == JointType.REVOLUTE:
+                edge = graph.get_edge_between(internal_id, anchor_id)
+                if edge is not None:
+                    has_revolute_anchor = True
+                    break
+
+        return has_revolute_anchor
 
 
 @dataclass
 class DyadPRR(AssurGroup):
     """PRR Dyad: Prismatic-Revolute-Revolute configuration (topology only).
 
-    This is a stub implementation for extensibility.
-    Solving is not yet implemented in the solver module.
+    Similar to RRP but with different anchor types. The internal node is
+    revolute, with one anchor providing a prismatic constraint.
+
+    Geometrically equivalent to RRP - circle-line intersection.
     """
+
+    # Line-defining nodes for the prismatic axis
+    line_node1: NodeId | None = None
+    line_node2: NodeId | None = None
 
     @property
     def group_class(self) -> int:
@@ -278,7 +326,114 @@ class DyadPRR(AssurGroup):
         anchor_node_ids: list[NodeId],
         graph: LinkageGraph,
     ) -> bool:
-        return False  # Not implemented yet
+        """Check if nodes form a PRR dyad.
+
+        Requires:
+        - Exactly 1 internal node (revolute type)
+        - At least one prismatic anchor
+        - At least one revolute anchor
+        """
+        if len(internal_node_ids) != 1:
+            return False
+
+        internal_id = internal_node_ids[0]
+        internal_node = graph.nodes.get(internal_id)
+        if internal_node is None:
+            return False
+
+        # Internal node should be revolute type
+        if internal_node.joint_type != JointType.REVOLUTE:
+            return False
+
+        # Check for at least one prismatic anchor
+        has_prismatic = False
+        has_revolute = False
+        for anchor_id in anchor_node_ids:
+            anchor = graph.nodes.get(anchor_id)
+            if anchor:
+                edge = graph.get_edge_between(internal_id, anchor_id)
+                if edge is not None:
+                    if anchor.joint_type == JointType.PRISMATIC:
+                        has_prismatic = True
+                    elif anchor.joint_type == JointType.REVOLUTE:
+                        has_revolute = True
+
+        return has_prismatic and has_revolute
+
+
+@dataclass
+class DyadPP(AssurGroup):
+    """PP Dyad: Two prismatic joints - line-line intersection (topology only).
+
+    The internal node is positioned at the intersection of two lines.
+    This covers isomers like T_R_T, T_RT_, _TRT_.
+
+    Structure::
+
+        line1_node1 ......... internal ......... line1_node2
+                                 |
+                                 |
+        line2_node1 .............|.............. line2_node2
+
+    The internal node is at the intersection of:
+    - Line 1: passing through line1_node1 and line1_node2
+    - Line 2: passing through line2_node1 and line2_node2
+
+    Attributes:
+        line1_node1: First node of line 1.
+        line1_node2: Second node of line 1.
+        line2_node1: First node of line 2.
+        line2_node2: Second node of line 2.
+    """
+
+    line1_node1: NodeId | None = None
+    line1_node2: NodeId | None = None
+    line2_node1: NodeId | None = None
+    line2_node2: NodeId | None = None
+
+    @property
+    def group_class(self) -> int:
+        return 1
+
+    @property
+    def joint_signature(self) -> str:
+        return "PP"
+
+    @classmethod
+    def can_form(
+        cls,
+        internal_node_ids: list[NodeId],
+        anchor_node_ids: list[NodeId],
+        graph: LinkageGraph,
+    ) -> bool:
+        """Check if nodes form a PP dyad (line-line intersection).
+
+        Requires:
+        - Exactly 1 internal node
+        - At least 4 anchor nodes (2 per line)
+        - Suitable edge structure for two line constraints
+        """
+        if len(internal_node_ids) != 1:
+            return False
+
+        # Need 4 anchors to define two lines
+        if len(anchor_node_ids) < 4:
+            return False
+
+        internal_id = internal_node_ids[0]
+        internal_node = graph.nodes.get(internal_id)
+        if internal_node is None:
+            return False
+
+        # Count prismatic-type connections
+        prismatic_count = 0
+        for anchor_id in anchor_node_ids:
+            anchor = graph.nodes.get(anchor_id)
+            if anchor and anchor.joint_type == JointType.PRISMATIC:
+                prismatic_count += 1
+
+        # Need at least 2 prismatic connections for line-line
+        return prismatic_count >= 2
 
 
 # Registry of dyad types for identification
@@ -287,6 +442,10 @@ DYAD_TYPES: dict[str, type[AssurGroup]] = {
     "RRP": DyadRRP,
     "RPR": DyadRPR,
     "PRR": DyadPRR,
+    "PP": DyadPP,
+    # Aliases for isomer notation
+    "PRP": DyadPP,
+    "PPR": DyadPP,
 }
 
 

@@ -59,7 +59,18 @@ class AssurGroupClass(IntEnum):
 _CHAR_TO_JOINT: dict[str, JointType] = {
     "R": JointType.REVOLUTE,
     "P": JointType.PRISMATIC,  # Preferred
-    "T": JointType.PRISMATIC,  # Translation (alias)
+    "T": JointType.PRISMATIC,  # Translation/slider (alias)
+}
+
+# Extended notation for isomer signatures
+# T = slider (translating element)
+# _ = guide (rail/slot)
+# Together T and _ form a prismatic pair
+_ISOMER_CHAR_TO_ROLE: dict[str, str] = {
+    "R": "revolute",
+    "T": "slider",    # Translating element of prismatic pair
+    "_": "guide",     # Guide of prismatic pair
+    "P": "prismatic", # Generic prismatic (for backwards compatibility)
 }
 
 # JointType to character mapping (P preferred for canonical form)
@@ -352,6 +363,112 @@ def _generate_dyad_hypergraph(
     )
 
     return graph
+
+
+def parse_isomer_signature(signature: str) -> tuple[str, tuple[str, ...]]:
+    """Parse an extended isomer signature with T/_ notation.
+
+    The extended notation distinguishes between:
+    - R = Revolute joint
+    - T = Slider (translating element of prismatic pair)
+    - _ = Guide (rail/slot of prismatic pair)
+
+    This allows representing all 12 dyadic isomers explicitly.
+
+    Args:
+        signature: Isomer signature (e.g., "RRR", "RT_R", "T_R_T").
+
+    Returns:
+        Tuple of (normalized_signature, joint_roles) where joint_roles
+        is a tuple of role strings ("revolute", "slider", "guide").
+
+    Raises:
+        ValueError: If signature contains invalid characters.
+
+    Example:
+        >>> sig, roles = parse_isomer_signature("RT_R")
+        >>> sig
+        'RT_R'
+        >>> roles
+        ('revolute', 'slider', 'guide', 'revolute')
+
+        >>> sig, roles = parse_isomer_signature("T_R_T")
+        >>> roles
+        ('slider', 'guide', 'revolute', 'guide', 'slider')
+    """
+    # Normalize to uppercase, keep underscores
+    normalized = signature.upper()
+
+    roles: list[str] = []
+    for i, char in enumerate(normalized):
+        if char == " ":
+            continue  # Skip spaces
+        if char not in _ISOMER_CHAR_TO_ROLE:
+            valid = ", ".join(_ISOMER_CHAR_TO_ROLE.keys())
+            msg = (
+                f"Invalid character '{char}' at position {i} in isomer "
+                f"signature '{signature}'. Valid characters: {valid}"
+            )
+            raise ValueError(msg)
+        roles.append(_ISOMER_CHAR_TO_ROLE[char])
+
+    return (normalized, tuple(roles))
+
+
+def isomer_to_canonical(signature: str) -> str:
+    """Convert an isomer signature to canonical form.
+
+    Maps extended T/_ notation to standard R/P notation by treating
+    T and _ as parts of a single prismatic joint.
+
+    Args:
+        signature: Isomer signature (e.g., "RT_R", "T_R_T").
+
+    Returns:
+        Canonical signature (e.g., "RPR", "PPR").
+
+    Example:
+        >>> isomer_to_canonical("RT_R")
+        'RPR'
+        >>> isomer_to_canonical("T_R_T")
+        'PRP'
+        >>> isomer_to_canonical("RRR")
+        'RRR'
+    """
+    # Remove guides and convert sliders to P
+    normalized = signature.upper()
+
+    # Count joint types (each T_ or _T pair = one P)
+    result: list[str] = []
+    i = 0
+    while i < len(normalized):
+        char = normalized[i]
+        if char == "R":
+            result.append("R")
+            i += 1
+        elif char == "T":
+            result.append("P")
+            # Skip following guide if present
+            if i + 1 < len(normalized) and normalized[i + 1] == "_":
+                i += 2
+            else:
+                i += 1
+        elif char == "_":
+            # Guide without preceding slider - skip if followed by T
+            if i + 1 < len(normalized) and normalized[i + 1] == "T":
+                result.append("P")
+                i += 2
+            else:
+                i += 1
+        elif char == "P":
+            result.append("P")
+            i += 1
+        elif char == " ":
+            i += 1  # Skip spaces
+        else:
+            i += 1  # Skip unknown
+
+    return "".join(result)
 
 
 def signature_to_group_class(signature: AssurSignature | str) -> type[AssurGroup] | None:
