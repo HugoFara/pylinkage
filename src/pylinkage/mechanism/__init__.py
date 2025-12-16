@@ -31,6 +31,7 @@ Classes:
     DriverLink: Motor-driven input link
 
     Mechanism: The main orchestrator class
+    MechanismBuilder: Links-first builder for creating mechanisms
 
 Conversion:
     mechanism_from_linkage: Convert legacy Linkage to Mechanism
@@ -68,6 +69,9 @@ from .link import (
 # Mechanism class
 from .mechanism import Mechanism
 
+# Builder
+from .builder import MechanismBuilder
+
 # Conversion utilities
 from .conversion import (
     convert_legacy_dict,
@@ -104,6 +108,8 @@ __all__ = [
     "AnyLink",
     # Mechanism
     "Mechanism",
+    # Builder
+    "MechanismBuilder",
     # Conversion
     "mechanism_from_linkage",
     "mechanism_to_linkage",

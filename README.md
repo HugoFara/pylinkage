@@ -34,18 +34,61 @@ uv sync  # or pip install -e ".[dev]"
 
 ### Define and Visualize a Four-Bar Linkage
 
+Using the component-based API (recommended):
+
 ```python
-import pylinkage as pl
+from pylinkage.components import Ground
+from pylinkage.actuators import Crank
+from pylinkage.dyads import RRRDyad
+from pylinkage.simulation import Linkage
+from pylinkage.visualizer import show_linkage
 
-# Create a four-bar linkage
-crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
+# Define ground pivots
+O1 = Ground(0, 0, name="O1")
+O2 = Ground(3, 0, name="O2")
 
-my_linkage = pl.Linkage(joints=(crank, pin))
-pl.show_linkage(my_linkage)
+# Create crank (motor-driven input)
+crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.31, name="crank")
+
+# Create rocker via RRR dyad (circle-circle intersection)
+rocker = RRRDyad(
+    anchor1=crank.output,
+    anchor2=O2,
+    distance1=3.0,
+    distance2=1.0,
+    name="rocker"
+)
+
+my_linkage = Linkage([O1, O2, crank, rocker], name="Four-Bar")
+show_linkage(my_linkage)
 ```
 
 ![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif)
+
+### Alternative: Links-First Builder
+
+For a more mechanical engineering-oriented approach, use `MechanismBuilder` to define links with their lengths first, then connect them:
+
+```python
+from pylinkage.mechanism import MechanismBuilder
+
+# Define links by their lengths, then connect with joints
+mechanism = (
+    MechanismBuilder("four-bar")
+    .add_ground_link("ground", ports={"O1": (0, 0), "O2": (4, 0)})
+    .add_driver_link("crank", length=1.0, motor_port="O1", omega=0.1)
+    .add_link("coupler", length=3.5)
+    .add_link("rocker", length=3.0)
+    .connect("crank.tip", "coupler.0")
+    .connect("coupler.1", "rocker.0")
+    .connect("rocker.1", "ground.O2")
+    .build()
+)
+
+# Joint positions are computed automatically from link lengths
+for positions in mechanism.step():
+    print(positions)
+```
 
 ### Synthesize a Linkage from Requirements
 
@@ -94,8 +137,11 @@ trajectories = compute_trajectory_numeric(linkage, params, np.linspace(0, 2*np.p
 
 | Module | Purpose |
 |--------|---------|
-| `pylinkage.joints` | Joint types: `Crank`, `Revolute`, `Linear`, `Fixed`, `Static` |
-| `pylinkage.linkage` | `Linkage` class for simulation via `step()` / `step_fast()` |
+| `pylinkage.components` | Base components: `Ground`, `Component` |
+| `pylinkage.actuators` | Motor drivers: `Crank`, `LinearActuator` |
+| `pylinkage.dyads` | Assur groups: `RRRDyad`, `RRPDyad`, `FixedDyad` |
+| `pylinkage.simulation` | `Linkage` class for simulation via `step()` / `step_fast()` |
+| `pylinkage.mechanism` | Low-level Links+Joints model and `MechanismBuilder` |
 | `pylinkage.optimization` | PSO and grid search optimization |
 | `pylinkage.synthesis` | Classical synthesis: function/path/motion generation |
 | `pylinkage.symbolic` | SymPy-based symbolic computation and gradient optimization |
