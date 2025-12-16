@@ -1,10 +1,11 @@
 /**
  * Editor state store using Zustand.
- * Manages UI state like current mode, animation, and selection.
+ * Manages UI state like current mode, animation, selection, and draw state.
+ * Updated for link-first approach.
  */
 
 import { create } from 'zustand';
-import type { EditorMode } from '../types/linkage';
+import type { DrawState, EditorMode, LinkPropertiesDialog } from '../types/mechanism';
 
 interface EditorState {
   // Current editor mode
@@ -17,13 +18,29 @@ interface EditorState {
   setAnimating: (isAnimating: boolean) => void;
   setAnimationFrame: (frame: number) => void;
 
-  // Selection state
-  selectedJointName: string | null;
-  selectJoint: (name: string | null) => void;
+  // Selection state (link-centric)
+  selectedLinkId: string | null;
+  selectLink: (id: string | null) => void;
+
+  // Secondary selection (for moving joints)
+  selectedJointId: string | null;
+  selectJoint: (id: string | null) => void;
 
   // Hover state
-  hoveredJointName: string | null;
-  setHoveredJoint: (name: string | null) => void;
+  hoveredLinkId: string | null;
+  hoveredJointId: string | null;
+  setHoveredLink: (id: string | null) => void;
+  setHoveredJoint: (id: string | null) => void;
+
+  // Drawing state (for draw-link mode)
+  drawState: DrawState;
+  setDrawState: (state: Partial<DrawState>) => void;
+  resetDrawState: () => void;
+
+  // Link properties dialog
+  linkDialog: LinkPropertiesDialog;
+  openLinkDialog: (tempLink: LinkPropertiesDialog['tempLink']) => void;
+  closeLinkDialog: () => void;
 
   // View settings
   showLoci: boolean;
@@ -32,16 +49,31 @@ interface EditorState {
   toggleLoci: () => void;
   toggleDimensions: () => void;
   toggleGrid: () => void;
-
-  // Drawing state (for draw-link mode)
-  linkStartJoint: string | null;
-  setLinkStartJoint: (name: string | null) => void;
 }
+
+const initialDrawState: DrawState = {
+  isDrawing: false,
+  startPoint: null,
+  endPoint: null,
+  snappedToJoint: null,
+  snappedEndJoint: null,
+};
+
+const initialLinkDialog: LinkPropertiesDialog = {
+  isOpen: false,
+  tempLink: null,
+};
 
 export const useEditorStore = create<EditorState>((set) => ({
   // Mode
   mode: 'select',
-  setMode: (mode) => set({ mode, linkStartJoint: null }),
+  setMode: (mode) =>
+    set({
+      mode,
+      drawState: initialDrawState,
+      selectedLinkId: null,
+      selectedJointId: null,
+    }),
 
   // Animation
   isAnimating: false,
@@ -49,13 +81,39 @@ export const useEditorStore = create<EditorState>((set) => ({
   setAnimating: (isAnimating) => set({ isAnimating }),
   setAnimationFrame: (animationFrame) => set({ animationFrame }),
 
-  // Selection
-  selectedJointName: null,
-  selectJoint: (name) => set({ selectedJointName: name }),
+  // Selection (link-centric)
+  selectedLinkId: null,
+  selectLink: (id) => set({ selectedLinkId: id }),
+
+  // Secondary selection
+  selectedJointId: null,
+  selectJoint: (id) => set({ selectedJointId: id }),
 
   // Hover
-  hoveredJointName: null,
-  setHoveredJoint: (name) => set({ hoveredJointName: name }),
+  hoveredLinkId: null,
+  hoveredJointId: null,
+  setHoveredLink: (id) => set({ hoveredLinkId: id }),
+  setHoveredJoint: (id) => set({ hoveredJointId: id }),
+
+  // Drawing state
+  drawState: initialDrawState,
+  setDrawState: (state) =>
+    set((s) => ({
+      drawState: { ...s.drawState, ...state },
+    })),
+  resetDrawState: () => set({ drawState: initialDrawState }),
+
+  // Link dialog
+  linkDialog: initialLinkDialog,
+  openLinkDialog: (tempLink) =>
+    set({
+      linkDialog: { isOpen: true, tempLink },
+    }),
+  closeLinkDialog: () =>
+    set({
+      linkDialog: initialLinkDialog,
+      drawState: initialDrawState,
+    }),
 
   // View
   showLoci: true,
@@ -64,8 +122,4 @@ export const useEditorStore = create<EditorState>((set) => ({
   toggleLoci: () => set((s) => ({ showLoci: !s.showLoci })),
   toggleDimensions: () => set((s) => ({ showDimensions: !s.showDimensions })),
   toggleGrid: () => set((s) => ({ showGrid: !s.showGrid })),
-
-  // Drawing
-  linkStartJoint: null,
-  setLinkStartJoint: (name) => set({ linkStartJoint: name }),
 }));

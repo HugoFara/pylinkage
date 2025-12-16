@@ -1,9 +1,11 @@
 /**
  * Main application shell with sidebar and canvas layout.
+ * Updated for link-first approach.
  */
 
 import { Sidebar } from './Sidebar';
 import { LinkageCanvas } from '../canvas/LinkageCanvas';
+import { LinkPropertiesDialog } from '../dialogs/LinkPropertiesDialog';
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
@@ -37,6 +39,8 @@ export function AppShell() {
       <main style={styles.main}>
         <LinkageCanvas />
       </main>
+      {/* Dialog for configuring link properties after drawing */}
+      <LinkPropertiesDialog />
     </div>
   );
 }

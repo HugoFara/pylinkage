@@ -2,37 +2,40 @@
 
 from fastapi import APIRouter, HTTPException
 
-from ..models.schemas import (
+from ..models.mechanism_schemas import (
     Position,
     SimulationFrame,
     SimulationRequest,
     SimulationResponse,
     TrajectoryResponse,
 )
-from ..services import linkage_service
+from ..services import mechanism_service
 from ..storage.memory import storage
 
-router = APIRouter(prefix="/linkages", tags=["simulation"])
+router = APIRouter(prefix="/mechanisms", tags=["simulation"])
 
 
-@router.post("/{linkage_id}/simulate", response_model=SimulationResponse)
-def simulate_linkage(linkage_id: str, request: SimulationRequest) -> SimulationResponse:
-    """Run simulation on a linkage."""
-    stored = storage.get(linkage_id)
+@router.post("/{mechanism_id}/simulate", response_model=SimulationResponse)
+def simulate_mechanism(
+    mechanism_id: str, request: SimulationRequest
+) -> SimulationResponse:
+    """Run simulation on a mechanism."""
+    stored = storage.get(mechanism_id)
     if stored is None:
-        raise HTTPException(status_code=404, detail="Linkage not found")
+        raise HTTPException(status_code=404, detail="Mechanism not found")
 
-    # Build the linkage
-    linkage_dict = {
+    # Build the mechanism
+    mechanism_dict = {
         "name": stored.get("name"),
         "joints": stored.get("joints", []),
-        "solve_order": stored.get("solve_order"),
+        "links": stored.get("links", []),
+        "ground": stored.get("ground"),
     }
-    linkage, is_buildable, error = linkage_service.validate_and_build(linkage_dict)
+    mechanism, is_buildable, error = mechanism_service.validate_and_build(mechanism_dict)
 
-    if not is_buildable or linkage is None:
+    if not is_buildable or mechanism is None:
         return SimulationResponse(
-            linkage_id=linkage_id,
+            mechanism_id=mechanism_id,
             iterations=0,
             frames=[],
             joint_names=[],
@@ -42,12 +45,12 @@ def simulate_linkage(linkage_id: str, request: SimulationRequest) -> SimulationR
 
     # Run simulation
     try:
-        frames_data = linkage_service.run_simulation(
-            linkage,
+        frames_data = mechanism_service.run_simulation(
+            mechanism,
             iterations=request.iterations,
             dt=request.dt,
         )
-        joint_names = linkage_service.get_joint_names(linkage)
+        joint_names = mechanism_service.get_joint_names(mechanism)
 
         frames = [
             SimulationFrame(
@@ -58,7 +61,7 @@ def simulate_linkage(linkage_id: str, request: SimulationRequest) -> SimulationR
         ]
 
         return SimulationResponse(
-            linkage_id=linkage_id,
+            mechanism_id=mechanism_id,
             iterations=len(frames),
             frames=frames,
             joint_names=joint_names,
@@ -66,7 +69,7 @@ def simulate_linkage(linkage_id: str, request: SimulationRequest) -> SimulationR
         )
     except Exception as e:
         return SimulationResponse(
-            linkage_id=linkage_id,
+            mechanism_id=mechanism_id,
             iterations=0,
             frames=[],
             joint_names=[],
@@ -75,62 +78,64 @@ def simulate_linkage(linkage_id: str, request: SimulationRequest) -> SimulationR
         )
 
 
-@router.post("/{linkage_id}/trajectory", response_model=TrajectoryResponse)
-def get_trajectory(linkage_id: str, request: SimulationRequest) -> TrajectoryResponse:
+@router.post("/{mechanism_id}/trajectory", response_model=TrajectoryResponse)
+def get_trajectory(mechanism_id: str, request: SimulationRequest) -> TrajectoryResponse:
     """Get trajectory as compact array format (more efficient for large simulations)."""
-    stored = storage.get(linkage_id)
+    stored = storage.get(mechanism_id)
     if stored is None:
-        raise HTTPException(status_code=404, detail="Linkage not found")
+        raise HTTPException(status_code=404, detail="Mechanism not found")
 
-    # Build the linkage
-    linkage_dict = {
+    # Build the mechanism
+    mechanism_dict = {
         "name": stored.get("name"),
         "joints": stored.get("joints", []),
-        "solve_order": stored.get("solve_order"),
+        "links": stored.get("links", []),
+        "ground": stored.get("ground"),
     }
-    linkage, is_buildable, error = linkage_service.validate_and_build(linkage_dict)
+    mechanism, is_buildable, error = mechanism_service.validate_and_build(mechanism_dict)
 
-    if not is_buildable or linkage is None:
+    if not is_buildable or mechanism is None:
         raise HTTPException(status_code=400, detail=error)
 
     # Run simulation
-    frames_data = linkage_service.run_simulation(
-        linkage,
+    frames_data = mechanism_service.run_simulation(
+        mechanism,
         iterations=request.iterations,
         dt=request.dt,
     )
-    joint_names = linkage_service.get_joint_names(linkage)
+    joint_names = mechanism_service.get_joint_names(mechanism)
 
     # Convert to compact array format
     positions = [[[pos[0], pos[1]] for pos in frame] for frame in frames_data]
 
     return TrajectoryResponse(
-        linkage_id=linkage_id,
+        mechanism_id=mechanism_id,
         iterations=len(positions),
         positions=positions,
         joint_names=joint_names,
     )
 
 
-@router.get("/{linkage_id}/rotation-period")
-def get_rotation_period(linkage_id: str) -> dict[str, int | str | None]:
-    """Get the rotation period for a linkage."""
-    stored = storage.get(linkage_id)
+@router.get("/{mechanism_id}/rotation-period")
+def get_rotation_period(mechanism_id: str) -> dict[str, int | str | None]:
+    """Get the rotation period for a mechanism."""
+    stored = storage.get(mechanism_id)
     if stored is None:
-        raise HTTPException(status_code=404, detail="Linkage not found")
+        raise HTTPException(status_code=404, detail="Mechanism not found")
 
-    # Build the linkage
-    linkage_dict = {
+    # Build the mechanism
+    mechanism_dict = {
         "name": stored.get("name"),
         "joints": stored.get("joints", []),
-        "solve_order": stored.get("solve_order"),
+        "links": stored.get("links", []),
+        "ground": stored.get("ground"),
     }
-    linkage, is_buildable, error = linkage_service.validate_and_build(linkage_dict)
+    mechanism, is_buildable, error = mechanism_service.validate_and_build(mechanism_dict)
 
-    if not is_buildable or linkage is None:
+    if not is_buildable or mechanism is None:
         return {"rotation_period": None, "error": error}
 
     return {
-        "rotation_period": linkage_service.get_rotation_period(linkage),
+        "rotation_period": mechanism_service.get_rotation_period(mechanism),
         "error": None,
     }

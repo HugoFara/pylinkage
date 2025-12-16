@@ -1,11 +1,12 @@
 /**
- * Dropdown to load prebuilt example linkages.
+ * Dropdown to load prebuilt example mechanisms.
+ * Updated for link-first approach.
  */
 
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { examplesApi, simulationApi } from '../../api/client';
-import { useLinkageStore, resetJointCounter } from '../../stores/linkageStore';
+import { useMechanismStore, resetCounters } from '../../stores/mechanismStore';
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
@@ -50,8 +51,8 @@ const styles: Record<string, React.CSSProperties> = {
 
 export function ExampleLoader() {
   const [selectedExample, setSelectedExample] = useState<string>('');
-  const setLinkage = useLinkageStore((s) => s.setLinkage);
-  const setLoci = useLinkageStore((s) => s.setLoci);
+  const setMechanism = useMechanismStore((s) => s.setMechanism);
+  const setLoci = useMechanismStore((s) => s.setLoci);
 
   // Fetch available examples
   const {
@@ -66,13 +67,13 @@ export function ExampleLoader() {
   // Load example mutation
   const loadMutation = useMutation({
     mutationFn: examplesApi.load,
-    onSuccess: async (linkage) => {
-      resetJointCounter();
-      setLinkage(linkage);
+    onSuccess: async (mechanism) => {
+      resetCounters();
+      setMechanism(mechanism);
 
       // Also fetch simulation data
       try {
-        const simResult = await simulationApi.simulate(linkage.id);
+        const simResult = await simulationApi.simulate(mechanism.id);
         if (simResult.is_complete) {
           setLoci(simResult.frames);
         }
@@ -101,19 +102,19 @@ export function ExampleLoader() {
         <option value="">Select an example...</option>
         {examples?.map((ex) => (
           <option key={ex.name} value={ex.name}>
-            {ex.name} ({ex.joint_count} joints)
+            {ex.name} ({ex.link_count} links)
           </option>
         ))}
       </select>
 
-      {selectedInfo && (
-        <p style={styles.info}>{selectedInfo.description}</p>
-      )}
+      {selectedInfo && <p style={styles.info}>{selectedInfo.description}</p>}
 
       <button
         style={{
           ...styles.button,
-          ...((!selectedExample || loadMutation.isPending) ? styles.buttonDisabled : {}),
+          ...(!selectedExample || loadMutation.isPending
+            ? styles.buttonDisabled
+            : {}),
         }}
         onClick={handleLoad}
         disabled={!selectedExample || loadMutation.isPending}
@@ -121,9 +122,7 @@ export function ExampleLoader() {
         {loadMutation.isPending ? 'Loading...' : 'Load Example'}
       </button>
 
-      {examplesError && (
-        <p style={styles.error}>Failed to load examples</p>
-      )}
+      {examplesError && <p style={styles.error}>Failed to load examples</p>}
       {loadMutation.error && (
         <p style={styles.error}>
           Failed to load: {(loadMutation.error as Error).message}

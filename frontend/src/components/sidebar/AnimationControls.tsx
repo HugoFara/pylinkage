@@ -5,10 +5,10 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useEditorStore } from '../../stores/editorStore';
-import { useLinkageStore } from '../../stores/linkageStore';
+import { useMechanismStore } from '../../stores/mechanismStore';
 import { simulationApi } from '../../api/client';
 import { useSimulationStream } from '../../hooks/useSimulationStream';
-import type { SimulationFrame } from '../../types/linkage';
+import type { SimulationFrame } from '../../types/mechanism';
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
@@ -99,9 +99,9 @@ export function AnimationControls() {
   const toggleLoci = useEditorStore((s) => s.toggleLoci);
   const toggleGrid = useEditorStore((s) => s.toggleGrid);
 
-  const linkage = useLinkageStore((s) => s.linkage);
-  const loci = useLinkageStore((s) => s.loci);
-  const setLoci = useLinkageStore((s) => s.setLoci);
+  const mechanism = useMechanismStore((s) => s.mechanism);
+  const loci = useMechanismStore((s) => s.loci);
+  const setLoci = useMechanismStore((s) => s.setLoci);
 
   const animationRef = useRef<number>();
   const [useStreaming, setUseStreaming] = useState(false);
@@ -120,8 +120,8 @@ export function AnimationControls() {
   // REST API simulation mutation
   const simulateMutation = useMutation({
     mutationFn: async () => {
-      if (!linkage) throw new Error('No linkage loaded');
-      return simulationApi.simulate(linkage.id);
+      if (!mechanism) throw new Error('No mechanism loaded');
+      return simulationApi.simulate(mechanism.id);
     },
     onSuccess: (result) => {
       if (result.is_complete) {
@@ -133,11 +133,11 @@ export function AnimationControls() {
 
   // Handle simulation (REST or WebSocket)
   const handleSimulate = useCallback(() => {
-    if (!linkage) return;
+    if (!mechanism) return;
 
     if (useStreaming) {
       // Use WebSocket streaming
-      stream.connect(linkage.id, true); // Fast mode
+      stream.connect(mechanism.id, true); // Fast mode
       // Wait for connection, then start
       setTimeout(() => {
         stream.startStreaming();
@@ -146,7 +146,7 @@ export function AnimationControls() {
       // Use REST API
       simulateMutation.mutate();
     }
-  }, [linkage, useStreaming, stream, simulateMutation]);
+  }, [mechanism, useStreaming, stream, simulateMutation]);
 
   // Animation loop
   useEffect(() => {
@@ -190,7 +190,7 @@ export function AnimationControls() {
   }, []);
 
   const totalFrames = loci?.length ?? 0;
-  const canAnimate = linkage && loci && loci.length > 0;
+  const canAnimate = mechanism && loci && loci.length > 0;
   const isLoading = simulateMutation.isPending || stream.isStreaming;
   const streamProgress = stream.totalFrames > 0
     ? (stream.progress / stream.totalFrames) * 100
@@ -204,10 +204,10 @@ export function AnimationControls() {
           style={{
             ...styles.button,
             ...(useStreaming ? styles.streamButton : styles.simulateButton),
-            ...((!linkage || isLoading) ? styles.buttonDisabled : {}),
+            ...((!mechanism || isLoading) ? styles.buttonDisabled : {}),
           }}
           onClick={handleSimulate}
-          disabled={!linkage || isLoading}
+          disabled={!mechanism || isLoading}
         >
           {isLoading
             ? useStreaming

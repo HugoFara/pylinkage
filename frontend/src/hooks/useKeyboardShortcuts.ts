@@ -1,48 +1,47 @@
 /**
  * Keyboard shortcuts hook for the linkage editor.
+ * Updated for link-first approach.
  *
  * Shortcuts:
  * - Escape: Switch to select mode
  * - Space: Toggle animation playback
- * - Delete/Backspace: Delete selected joint
+ * - Delete/Backspace: Delete selected link
  * - Ctrl+Z: Undo
  * - Ctrl+Shift+Z / Ctrl+Y: Redo
  * - 1: Select mode
- * - 2: Add joint mode
- * - 3: Draw link mode
- * - 4: Move joint mode
- * - 5: Delete mode
+ * - 2: Draw link mode
+ * - 3: Move joint mode
+ * - 4: Delete mode
+ * - 5: Set driver mode
  * - 6: Set ground mode
- * - 7: Set crank mode
  */
 
 import { useEffect, useCallback } from 'react';
 import { useEditorStore } from '../stores/editorStore';
-import { useLinkageStore } from '../stores/linkageStore';
-import type { EditorMode } from '../types/linkage';
+import { useMechanismStore } from '../stores/mechanismStore';
+import type { EditorMode } from '../types/mechanism';
 
 const MODE_SHORTCUTS: Record<string, EditorMode> = {
   '1': 'select',
-  '2': 'add-joint',
-  '3': 'draw-link',
-  '4': 'move-joint',
-  '5': 'delete',
+  '2': 'draw-link',
+  '3': 'move-joint',
+  '4': 'delete',
+  '5': 'set-driver',
   '6': 'set-ground',
-  '7': 'set-crank',
 };
 
 export function useKeyboardShortcuts() {
   const setMode = useEditorStore((s) => s.setMode);
   const isAnimating = useEditorStore((s) => s.isAnimating);
   const setAnimating = useEditorStore((s) => s.setAnimating);
-  const selectedJointName = useEditorStore((s) => s.selectedJointName);
-  const selectJoint = useEditorStore((s) => s.selectJoint);
+  const selectedLinkId = useEditorStore((s) => s.selectedLinkId);
+  const selectLink = useEditorStore((s) => s.selectLink);
 
-  const loci = useLinkageStore((s) => s.loci);
-  const deleteJoint = useLinkageStore((s) => s.deleteJoint);
+  const loci = useMechanismStore((s) => s.loci);
+  const deleteLink = useMechanismStore((s) => s.deleteLink);
 
   // Access temporal store for undo/redo via the store's temporal property
-  const temporalStore = useLinkageStore.temporal;
+  const temporalStore = useMechanismStore.temporal;
   const undo = temporalStore.getState().undo;
   const redo = temporalStore.getState().redo;
 
@@ -76,11 +75,11 @@ export function useKeyboardShortcuts() {
         return;
       }
 
-      // Delete/Backspace: Delete selected joint
-      if ((key === 'Delete' || key === 'Backspace') && selectedJointName) {
+      // Delete/Backspace: Delete selected link
+      if ((key === 'Delete' || key === 'Backspace') && selectedLinkId) {
         event.preventDefault();
-        deleteJoint(selectedJointName);
-        selectJoint(null);
+        deleteLink(selectedLinkId);
+        selectLink(null);
         return;
       }
 
@@ -110,9 +109,9 @@ export function useKeyboardShortcuts() {
       isAnimating,
       setAnimating,
       loci,
-      selectedJointName,
-      deleteJoint,
-      selectJoint,
+      selectedLinkId,
+      deleteLink,
+      selectLink,
       undo,
       redo,
     ]

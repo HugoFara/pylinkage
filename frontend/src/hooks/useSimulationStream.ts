@@ -6,7 +6,7 @@
  */
 
 import { useCallback, useRef, useState, useEffect } from 'react';
-import type { SimulationFrame, Position } from '../types/linkage';
+import type { SimulationFrame, Position } from '../types/mechanism';
 
 type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'error';
 

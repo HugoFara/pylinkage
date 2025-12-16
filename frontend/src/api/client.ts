@@ -1,15 +1,16 @@
 /**
  * API client for pylinkage backend.
+ * Updated for mechanism module (link-first approach).
  */
 
 import type {
   ExampleInfo,
-  LinkageDict,
-  LinkageListItem,
-  LinkageResponse,
+  MechanismDict,
+  MechanismListItem,
+  MechanismResponse,
   SimulationResponse,
   TrajectoryResponse,
-} from '../types/linkage';
+} from '../types/mechanism';
 
 const API_BASE = '/api';
 
@@ -30,30 +31,30 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   return response.json();
 }
 
-// Linkage CRUD
-export const linkageApi = {
-  list: () => fetchJson<LinkageListItem[]>(`${API_BASE}/linkages`),
+// Mechanism CRUD
+export const mechanismApi = {
+  list: () => fetchJson<MechanismListItem[]>(`${API_BASE}/mechanisms`),
 
-  get: (id: string) => fetchJson<LinkageResponse>(`${API_BASE}/linkages/${id}`),
+  get: (id: string) => fetchJson<MechanismResponse>(`${API_BASE}/mechanisms/${id}`),
 
-  create: (data: LinkageDict) =>
-    fetchJson<LinkageResponse>(`${API_BASE}/linkages/`, {
+  create: (data: MechanismDict) =>
+    fetchJson<MechanismResponse>(`${API_BASE}/mechanisms/`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
-  update: (id: string, data: Partial<LinkageDict>) =>
-    fetchJson<LinkageResponse>(`${API_BASE}/linkages/${id}`, {
+  update: (id: string, data: Partial<MechanismDict>) =>
+    fetchJson<MechanismResponse>(`${API_BASE}/mechanisms/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
 
   delete: async (id: string) => {
-    const response = await fetch(`${API_BASE}/linkages/${id}`, {
+    const response = await fetch(`${API_BASE}/mechanisms/${id}`, {
       method: 'DELETE',
     });
     if (!response.ok) {
-      throw new Error(`Failed to delete linkage: ${response.status}`);
+      throw new Error(`Failed to delete mechanism: ${response.status}`);
     }
   },
 };
@@ -61,20 +62,20 @@ export const linkageApi = {
 // Simulation
 export const simulationApi = {
   simulate: (id: string, iterations?: number, dt = 1.0) =>
-    fetchJson<SimulationResponse>(`${API_BASE}/linkages/${id}/simulate`, {
+    fetchJson<SimulationResponse>(`${API_BASE}/mechanisms/${id}/simulate`, {
       method: 'POST',
       body: JSON.stringify({ iterations, dt }),
     }),
 
   trajectory: (id: string, iterations?: number, dt = 1.0) =>
-    fetchJson<TrajectoryResponse>(`${API_BASE}/linkages/${id}/trajectory`, {
+    fetchJson<TrajectoryResponse>(`${API_BASE}/mechanisms/${id}/trajectory`, {
       method: 'POST',
       body: JSON.stringify({ iterations, dt }),
     }),
 
   rotationPeriod: (id: string) =>
     fetchJson<{ rotation_period: number | null; error: string | null }>(
-      `${API_BASE}/linkages/${id}/rotation-period`
+      `${API_BASE}/mechanisms/${id}/rotation-period`
     ),
 };
 
@@ -82,10 +83,10 @@ export const simulationApi = {
 export const examplesApi = {
   list: () => fetchJson<ExampleInfo[]>(`${API_BASE}/examples`),
 
-  get: (name: string) => fetchJson<LinkageDict>(`${API_BASE}/examples/${name}`),
+  get: (name: string) => fetchJson<MechanismDict>(`${API_BASE}/examples/${name}`),
 
   load: (name: string) =>
-    fetchJson<LinkageResponse>(`${API_BASE}/examples/${name}/load`, {
+    fetchJson<MechanismResponse>(`${API_BASE}/examples/${name}/load`, {
       method: 'POST',
     }),
 };

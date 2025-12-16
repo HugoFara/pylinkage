@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .config import settings
-from .routers import examples, linkages, simulation, websocket
+from .routers import examples, mechanisms, simulation, websocket
 
 
 @asynccontextmanager
@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Pylinkage API",
     description="REST API for building and simulating planar linkages",
-    version="1.0.0",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -36,7 +36,7 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(linkages.router, prefix="/api")
+app.include_router(mechanisms.router, prefix="/api")
 app.include_router(simulation.router, prefix="/api")
 app.include_router(examples.router, prefix="/api")
 app.include_router(websocket.router, prefix="/api")
@@ -53,12 +53,12 @@ def api_info() -> dict[str, str | list[str]]:
     """API information."""
     return {
         "name": "Pylinkage API",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "endpoints": [
-            "/api/linkages",
-            "/api/linkages/{id}",
-            "/api/linkages/{id}/simulate",
-            "/api/linkages/{id}/trajectory",
+            "/api/mechanisms",
+            "/api/mechanisms/{id}",
+            "/api/mechanisms/{id}/simulate",
+            "/api/mechanisms/{id}/trajectory",
             "/api/examples",
             "/api/examples/{name}",
             "/api/ws/simulation/{id}",

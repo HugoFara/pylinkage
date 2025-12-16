@@ -1,9 +1,10 @@
 /**
  * Toolbar for selecting editor modes.
+ * Updated for link-first approach.
  */
 
 import { useEditorStore } from '../../stores/editorStore';
-import type { EditorMode } from '../../types/linkage';
+import type { EditorMode } from '../../types/mechanism';
 
 interface ToolButton {
   mode: EditorMode;
@@ -13,13 +14,42 @@ interface ToolButton {
 }
 
 const tools: ToolButton[] = [
-  { mode: 'select', label: '1: Select', icon: '👆', description: 'Click to select joints (1)' },
-  { mode: 'add-joint', label: '2: Add Joint', icon: '➕', description: 'Click canvas to add joint (2)' },
-  { mode: 'draw-link', label: '3: Draw Link', icon: '🔗', description: 'Click two joints to create link (3)' },
-  { mode: 'move-joint', label: '4: Move', icon: '✋', description: 'Drag joints to move (4)' },
-  { mode: 'delete', label: '5: Delete', icon: '🗑️', description: 'Click to delete (5)' },
-  { mode: 'set-ground', label: '6: Ground', icon: '📍', description: 'Click joint to make ground (6)' },
-  { mode: 'set-crank', label: '7: Crank', icon: '⚙️', description: 'Click joint to make crank (7)' },
+  {
+    mode: 'select',
+    label: '1: Select',
+    icon: '👆',
+    description: 'Click to select links/joints (1)',
+  },
+  {
+    mode: 'draw-link',
+    label: '2: Draw Link',
+    icon: '🔗',
+    description: 'Click-drag to draw link (2)',
+  },
+  {
+    mode: 'move-joint',
+    label: '3: Move',
+    icon: '✋',
+    description: 'Drag joints to move (3)',
+  },
+  {
+    mode: 'delete',
+    label: '4: Delete',
+    icon: '🗑️',
+    description: 'Click to delete (4)',
+  },
+  {
+    mode: 'set-driver',
+    label: '5: Driver',
+    icon: '⚙️',
+    description: 'Click link to make driver (5)',
+  },
+  {
+    mode: 'set-ground',
+    label: '6: Ground',
+    icon: '📍',
+    description: 'Click joint to make ground (6)',
+  },
 ];
 
 const styles: Record<string, React.CSSProperties> = {

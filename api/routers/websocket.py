@@ -6,39 +6,44 @@ from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
-import pylinkage as pl
+from pylinkage.mechanism import Mechanism
+from pylinkage.mechanism.serialization import mechanism_from_dict
 from pylinkage.exceptions import UnbuildableError
 
-from ..services import linkage_service
+from ..services import mechanism_service
 from ..storage.memory import storage
 
 router = APIRouter(tags=["websocket"])
 
 
-def build_linkage_from_stored(stored: dict[str, Any]) -> tuple[pl.Linkage | None, str]:
-    """Build a linkage from stored data.
+def build_mechanism_from_stored(
+    stored: dict[str, Any],
+) -> tuple[Mechanism | None, str]:
+    """Build a mechanism from stored data.
 
     Returns:
-        Tuple of (linkage, error_message). If successful, error is empty.
+        Tuple of (mechanism, error_message). If successful, error is empty.
     """
     try:
-        linkage_dict = {
+        mechanism_dict = {
             "name": stored.get("name"),
             "joints": stored.get("joints", []),
-            "solve_order": stored.get("solve_order"),
+            "links": stored.get("links", []),
+            "ground": stored.get("ground"),
         }
-        linkage = pl.Linkage.from_dict(linkage_dict)
+        mechanism = mechanism_from_dict(mechanism_dict)
         # Validate buildability
-        list(linkage.step(iterations=1))
-        return linkage, ""
+        for _ in mechanism.step(dt=1.0):
+            break
+        return mechanism, ""
     except UnbuildableError as e:
         return None, f"Unbuildable: {e}"
     except Exception as e:
         return None, f"Error: {e}"
 
 
-@router.websocket("/ws/simulation/{linkage_id}")
-async def simulation_websocket(websocket: WebSocket, linkage_id: str) -> None:
+@router.websocket("/ws/simulation/{mechanism_id}")
+async def simulation_websocket(websocket: WebSocket, mechanism_id: str) -> None:
     """Stream simulation frames in real-time via WebSocket.
 
     The client should send a JSON message to start streaming:
@@ -69,33 +74,27 @@ async def simulation_websocket(websocket: WebSocket, linkage_id: str) -> None:
     """
     await websocket.accept()
 
-    # Get linkage from storage
-    stored = storage.get(linkage_id)
+    # Get mechanism from storage
+    stored = storage.get(mechanism_id)
     if stored is None:
-        await websocket.send_json({
-            "type": "error",
-            "message": "Linkage not found"
-        })
+        await websocket.send_json({"type": "error", "message": "Mechanism not found"})
         await websocket.close()
         return
 
-    # Build the linkage
-    linkage, error = build_linkage_from_stored(stored)
-    if linkage is None:
-        await websocket.send_json({
-            "type": "error",
-            "message": error
-        })
+    # Build the mechanism
+    mechanism, error = build_mechanism_from_stored(stored)
+    if mechanism is None:
+        await websocket.send_json({"type": "error", "message": error})
         await websocket.close()
         return
 
-    joint_names = linkage_service.get_joint_names(linkage)
+    joint_names = mechanism_service.get_joint_names(mechanism)
 
     # Send initial info
     await websocket.send_json({
         "type": "ready",
         "joint_names": joint_names,
-        "rotation_period": linkage.get_rotation_period()
+        "rotation_period": mechanism.get_rotation_period(),
     })
 
     try:
@@ -104,28 +103,36 @@ async def simulation_websocket(websocket: WebSocket, linkage_id: str) -> None:
             data = await websocket.receive_json()
 
             if data.get("action") == "start":
-                iterations = data.get("iterations") or linkage.get_rotation_period()
+                iterations = data.get("iterations") or mechanism.get_rotation_period()
                 fps = data.get("fps", 30)
                 frame_interval = 1.0 / fps
 
+                # Reset mechanism to initial state
+                mechanism.reset()
+
                 # Stream frames
                 step = 0
-                for positions in linkage.step(iterations=iterations, dt=1.0):
-                    frame = [[pos[0], pos[1]] for pos in positions]
+                for positions in mechanism.step(dt=1.0):
+                    frame = [
+                        [
+                            pos[0] if pos[0] is not None else 0.0,
+                            pos[1] if pos[1] is not None else 0.0,
+                        ]
+                        for pos in positions
+                    ]
                     await websocket.send_json({
                         "type": "frame",
                         "step": step,
-                        "positions": frame
+                        "positions": frame,
                     })
                     step += 1
+                    if step >= iterations:
+                        break
                     # Small delay to control frame rate for live viewing
                     await asyncio.sleep(frame_interval)
 
                 # Signal completion
-                await websocket.send_json({
-                    "type": "complete",
-                    "total_frames": step
-                })
+                await websocket.send_json({"type": "complete", "total_frames": step})
 
             elif data.get("action") == "stop":
                 # Just acknowledge and wait for next command
@@ -138,14 +145,11 @@ async def simulation_websocket(websocket: WebSocket, linkage_id: str) -> None:
         pass
     except Exception as e:
         with contextlib.suppress(Exception):
-            await websocket.send_json({
-                "type": "error",
-                "message": str(e)
-            })
+            await websocket.send_json({"type": "error", "message": str(e)})
 
 
-@router.websocket("/ws/simulation-fast/{linkage_id}")
-async def simulation_fast_websocket(websocket: WebSocket, linkage_id: str) -> None:
+@router.websocket("/ws/simulation-fast/{mechanism_id}")
+async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> None:
     """Stream all simulation frames as fast as possible (no FPS limiting).
 
     This is useful for preloading all frames before starting playback.
@@ -171,31 +175,25 @@ async def simulation_fast_websocket(websocket: WebSocket, linkage_id: str) -> No
     """
     await websocket.accept()
 
-    stored = storage.get(linkage_id)
+    stored = storage.get(mechanism_id)
     if stored is None:
-        await websocket.send_json({
-            "type": "error",
-            "message": "Linkage not found"
-        })
+        await websocket.send_json({"type": "error", "message": "Mechanism not found"})
         await websocket.close()
         return
 
-    linkage, error = build_linkage_from_stored(stored)
-    if linkage is None:
-        await websocket.send_json({
-            "type": "error",
-            "message": error
-        })
+    mechanism, error = build_mechanism_from_stored(stored)
+    if mechanism is None:
+        await websocket.send_json({"type": "error", "message": error})
         await websocket.close()
         return
 
-    joint_names = linkage_service.get_joint_names(linkage)
-    rotation_period = linkage.get_rotation_period()
+    joint_names = mechanism_service.get_joint_names(mechanism)
+    rotation_period = mechanism.get_rotation_period()
 
     await websocket.send_json({
         "type": "ready",
         "joint_names": joint_names,
-        "rotation_period": rotation_period
+        "rotation_period": rotation_period,
     })
 
     try:
@@ -205,31 +203,43 @@ async def simulation_fast_websocket(websocket: WebSocket, linkage_id: str) -> No
             if data.get("action") == "start":
                 iterations = data.get("iterations") or rotation_period
 
+                # Reset mechanism to initial state
+                mechanism.reset()
+
                 # Collect all frames
                 frames: list[list[list[float]]] = []
                 progress_interval = max(1, iterations // 10)  # Report ~10 progress updates
 
-                for step, positions in enumerate(
-                    linkage.step(iterations=iterations, dt=1.0), start=1
-                ):
-                    frame = [[pos[0], pos[1]] for pos in positions]
+                step = 0
+                for positions in mechanism.step(dt=1.0):
+                    frame = [
+                        [
+                            pos[0] if pos[0] is not None else 0.0,
+                            pos[1] if pos[1] is not None else 0.0,
+                        ]
+                        for pos in positions
+                    ]
                     frames.append(frame)
+                    step += 1
 
                     # Send progress updates periodically
                     if step % progress_interval == 0:
                         await websocket.send_json({
                             "type": "progress",
                             "current": step,
-                            "total": iterations
+                            "total": iterations,
                         })
                         # Yield to event loop occasionally
                         await asyncio.sleep(0)
+
+                    if step >= iterations:
+                        break
 
                 # Send all frames
                 await websocket.send_json({
                     "type": "frames",
                     "frames": frames,
-                    "total_frames": len(frames)
+                    "total_frames": len(frames),
                 })
 
             elif data.get("action") == "close":
@@ -239,7 +249,4 @@ async def simulation_fast_websocket(websocket: WebSocket, linkage_id: str) -> No
         pass
     except Exception as e:
         with contextlib.suppress(Exception):
-            await websocket.send_json({
-                "type": "error",
-                "message": str(e)
-            })
+            await websocket.send_json({"type": "error", "message": str(e)})

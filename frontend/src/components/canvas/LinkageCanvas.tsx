@@ -1,42 +1,59 @@
 /**
- * Main Konva canvas for linkage visualization and interaction.
+ * Main Konva canvas for mechanism visualization and interaction.
+ * Updated for link-first approach with thick solid links.
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Stage, Layer, Line, Circle, Text, Group } from 'react-konva';
 import type Konva from 'konva';
 import { useEditorStore } from '../../stores/editorStore';
-import { useLinkageStore, generateJointName } from '../../stores/linkageStore';
-import { JOINT_COLORS, type JointDict, type Position } from '../../types/linkage';
+import {
+  useMechanismStore,
+  calculateDistance,
+} from '../../stores/mechanismStore';
+import {
+  LINK_COLORS,
+  JOINT_COLORS,
+  LINK_STYLES,
+  JOINT_STYLES,
+  MIN_LINK_LENGTH,
+  type JointDict,
+  type LinkDict,
+  type Position,
+} from '../../types/mechanism';
 
 // Canvas configuration
-const JOINT_RADIUS = 8;
-const LINK_WIDTH = 4;
 const GRID_SIZE = 50;
 
 export function LinkageCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [mousePos, setMousePos] = useState<Position | null>(null);
 
   // Store state
   const mode = useEditorStore((s) => s.mode);
-  const selectedJointName = useEditorStore((s) => s.selectedJointName);
+  const selectedLinkId = useEditorStore((s) => s.selectedLinkId);
+  const selectLink = useEditorStore((s) => s.selectLink);
+  const selectedJointId = useEditorStore((s) => s.selectedJointId);
   const selectJoint = useEditorStore((s) => s.selectJoint);
-  const hoveredJointName = useEditorStore((s) => s.hoveredJointName);
+  const hoveredLinkId = useEditorStore((s) => s.hoveredLinkId);
+  const hoveredJointId = useEditorStore((s) => s.hoveredJointId);
+  const setHoveredLink = useEditorStore((s) => s.setHoveredLink);
   const setHoveredJoint = useEditorStore((s) => s.setHoveredJoint);
   const showGrid = useEditorStore((s) => s.showGrid);
   const showLoci = useEditorStore((s) => s.showLoci);
   const animationFrame = useEditorStore((s) => s.animationFrame);
-  const linkStartJoint = useEditorStore((s) => s.linkStartJoint);
-  const setLinkStartJoint = useEditorStore((s) => s.setLinkStartJoint);
+  const drawState = useEditorStore((s) => s.drawState);
+  const setDrawState = useEditorStore((s) => s.setDrawState);
+  const resetDrawState = useEditorStore((s) => s.resetDrawState);
+  const openLinkDialog = useEditorStore((s) => s.openLinkDialog);
 
-  const linkage = useLinkageStore((s) => s.linkage);
-  const loci = useLinkageStore((s) => s.loci);
-  const addJoint = useLinkageStore((s) => s.addJoint);
-  const updateJoint = useLinkageStore((s) => s.updateJoint);
-  const deleteJoint = useLinkageStore((s) => s.deleteJoint);
-  const getJoint = useLinkageStore((s) => s.getJoint);
+  const mechanism = useMechanismStore((s) => s.mechanism);
+  const loci = useMechanismStore((s) => s.loci);
+  const deleteLink = useMechanismStore((s) => s.deleteLink);
+  const updateJointPosition = useMechanismStore((s) => s.updateJointPosition);
+  const deleteJoint = useMechanismStore((s) => s.deleteJoint);
+  const findJointAtPosition = useMechanismStore((s) => s.findJointAtPosition);
+  const updateLink = useMechanismStore((s) => s.updateLink);
 
   // Handle window resize
   useEffect(() => {
@@ -54,13 +71,13 @@ export function LinkageCanvas() {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Get joint positions (from loci if animating, else from joint data)
+  // Get joint position at current animation frame
   const getJointPosition = useCallback(
     (joint: JointDict, index: number): Position => {
       if (loci && loci.length > 0 && animationFrame < loci.length) {
         return loci[animationFrame].positions[index];
       }
-      return { x: joint.x ?? 0, y: joint.y ?? 0 };
+      return { x: joint.position[0] ?? 0, y: joint.position[1] ?? 0 };
     },
     [loci, animationFrame]
   );
@@ -83,31 +100,10 @@ export function LinkageCanvas() {
     [dimensions]
   );
 
-  // Calculate distance between two points
-  const calcDistance = (p1: Position, p2: Position): number => {
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    return Math.sqrt(dx * dx + dy * dy);
-  };
+  // Handle mouse down for draw-link mode
+  const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (mode !== 'draw-link') return;
 
-  // Calculate angle from p1 to p2
-  const calcAngle = (p1: Position, p2: Position): number => {
-    return Math.atan2(p2.y - p1.y, p2.x - p1.x);
-  };
-
-  // Handle mouse move on stage
-  const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    const stage = e.target.getStage();
-    if (!stage) return;
-
-    const pos = stage.getPointerPosition();
-    if (!pos) return;
-
-    setMousePos(screenToCanvas(pos.x, pos.y));
-  };
-
-  // Handle stage click
-  const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = e.target.getStage();
     if (!stage) return;
 
@@ -116,148 +112,131 @@ export function LinkageCanvas() {
 
     const canvasPos = screenToCanvas(pos.x, pos.y);
 
-    // Check if clicked on empty space
-    if (e.target === stage) {
-      if (mode === 'add-joint') {
-        // Add new Static joint
-        const name = generateJointName('Static');
-        addJoint({
-          type: 'Static',
-          name,
-          x: canvasPos.x,
-          y: canvasPos.y,
-        });
-        selectJoint(name);
-      } else if (mode === 'select') {
-        selectJoint(null);
-      } else if (mode === 'draw-link') {
-        // Cancel link drawing if clicked on empty space
-        setLinkStartJoint(null);
+    // Check for snap to existing joint
+    const snappedJoint = findJointAtPosition(canvasPos.x, canvasPos.y);
+
+    setDrawState({
+      isDrawing: true,
+      startPoint: snappedJoint
+        ? {
+            x: snappedJoint.position[0] ?? canvasPos.x,
+            y: snappedJoint.position[1] ?? canvasPos.y,
+          }
+        : canvasPos,
+      endPoint: canvasPos,
+      snappedToJoint: snappedJoint?.id ?? null,
+      snappedEndJoint: null,
+    });
+  };
+
+  // Handle mouse move
+  const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const pos = stage.getPointerPosition();
+    if (!pos) return;
+
+    const canvasPos = screenToCanvas(pos.x, pos.y);
+
+    if (mode === 'draw-link' && drawState.isDrawing) {
+      // Check for snap to existing joint at end point
+      const snappedJoint = findJointAtPosition(canvasPos.x, canvasPos.y);
+
+      setDrawState({
+        endPoint: snappedJoint
+          ? {
+              x: snappedJoint.position[0] ?? canvasPos.x,
+              y: snappedJoint.position[1] ?? canvasPos.y,
+            }
+          : canvasPos,
+        snappedEndJoint: snappedJoint?.id ?? null,
+      });
+    }
+  };
+
+  // Handle mouse up for draw-link mode
+  const handleMouseUp = (_e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (mode !== 'draw-link' || !drawState.isDrawing) return;
+
+    const { startPoint, endPoint, snappedToJoint, snappedEndJoint } = drawState;
+
+    if (!startPoint || !endPoint) {
+      resetDrawState();
+      return;
+    }
+
+    // Check minimum length
+    const length = calculateDistance(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+    if (length < MIN_LINK_LENGTH) {
+      resetDrawState();
+      return;
+    }
+
+    // Open dialog to configure link properties
+    openLinkDialog({
+      startPoint,
+      endPoint,
+      startJointId: snappedToJoint,
+      endJointId: snappedEndJoint,
+    });
+  };
+
+  // Handle stage click
+  const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    // Only handle clicks on the stage itself (empty space)
+    if (e.target !== e.target.getStage()) return;
+
+    if (mode === 'select') {
+      selectLink(null);
+      selectJoint(null);
+    }
+  };
+
+  // Handle link click
+  const handleLinkClick = (link: LinkDict) => {
+    if (mode === 'delete') {
+      deleteLink(link.id);
+      if (selectedLinkId === link.id) {
+        selectLink(null);
       }
+    } else if (mode === 'set-driver' && link.type !== 'ground') {
+      // Convert link to driver
+      const groundJoints = mechanism?.joints.filter((j) => j.type === 'ground') ?? [];
+      const motorJoint = groundJoints.find((gj) => link.joints.includes(gj.id));
+
+      if (motorJoint) {
+        updateLink(link.id, {
+          type: 'driver',
+          motor_joint: motorJoint.id,
+          angular_velocity: 0.1,
+          initial_angle: 0,
+        });
+      }
+    } else {
+      selectLink(link.id);
     }
   };
 
   // Handle joint click
   const handleJointClick = (joint: JointDict) => {
     if (mode === 'delete') {
-      deleteJoint(joint.name);
-      if (selectedJointName === joint.name) {
+      deleteJoint(joint.id);
+      if (selectedJointId === joint.id) {
         selectJoint(null);
       }
-    } else if (mode === 'set-ground') {
-      // Convert to Static, preserve position
-      updateJoint(joint.name, {
-        type: 'Static',
-        joint0: null,
-        joint1: null,
-        distance: undefined,
-        angle: undefined,
-        distance0: undefined,
-        distance1: undefined,
-      });
-    } else if (mode === 'set-crank') {
-      // Find a ground joint to reference
-      const groundJoint = linkage?.joints.find(
-        (j) => j.type === 'Static' && j.name !== joint.name
-      );
-      if (groundJoint) {
-        const jointPos = { x: joint.x ?? 0, y: joint.y ?? 0 };
-        const groundPos = { x: groundJoint.x ?? 0, y: groundJoint.y ?? 0 };
-        const distance = calcDistance(groundPos, jointPos);
-        const angle = calcAngle(groundPos, jointPos);
-
-        updateJoint(joint.name, {
-          type: 'Crank',
-          joint0: { ref: groundJoint.name },
-          joint1: null,
-          distance,
-          angle,
-          distance0: undefined,
-          distance1: undefined,
-        });
-      }
-    } else if (mode === 'draw-link') {
-      if (!linkStartJoint) {
-        // First joint selected
-        setLinkStartJoint(joint.name);
-      } else if (linkStartJoint !== joint.name) {
-        // Second joint selected - create Revolute joint
-        const startJoint = getJoint(linkStartJoint);
-        if (startJoint) {
-          const startPos = { x: startJoint.x ?? 0, y: startJoint.y ?? 0 };
-          const endPos = { x: joint.x ?? 0, y: joint.y ?? 0 };
-
-          // Create a new Revolute joint at midpoint
-          const midX = (startPos.x + endPos.x) / 2;
-          const midY = (startPos.y + endPos.y) / 2;
-          const distance0 = calcDistance(startPos, { x: midX, y: midY });
-          const distance1 = calcDistance(endPos, { x: midX, y: midY });
-
-          const name = generateJointName('Revolute');
-          addJoint({
-            type: 'Revolute',
-            name,
-            x: midX,
-            y: midY,
-            joint0: { ref: linkStartJoint },
-            joint1: { ref: joint.name },
-            distance0,
-            distance1,
-          });
-          selectJoint(name);
-        }
-        setLinkStartJoint(null);
-      }
+    } else if (mode === 'set-ground' && joint.type !== 'ground') {
+      // Convert joint to ground
+      updateJointPosition(joint.id, joint.position[0] ?? 0, joint.position[1] ?? 0);
+      // Note: Would need to update joint type, which requires mechanism store change
     } else {
-      selectJoint(joint.name);
+      selectJoint(joint.id);
     }
   };
 
-  // Handle joint drag for direct manipulation
+  // Handle joint drag for move-joint mode
   const handleJointDrag = (joint: JointDict, newPos: Position) => {
-    if (joint.type === 'Static') {
-      // Static joints just update position
-      updateJoint(joint.name, { x: newPos.x, y: newPos.y });
-    } else if (joint.type === 'Crank' || joint.type === 'Fixed') {
-      // For Crank/Fixed, update distance and angle based on parent
-      if (joint.joint0 && 'ref' in joint.joint0) {
-        const parentJoint = getJoint(joint.joint0.ref);
-        if (parentJoint) {
-          const parentPos = { x: parentJoint.x ?? 0, y: parentJoint.y ?? 0 };
-          const distance = calcDistance(parentPos, newPos);
-          const angle = calcAngle(parentPos, newPos);
-          updateJoint(joint.name, {
-            x: newPos.x,
-            y: newPos.y,
-            distance,
-            angle,
-          });
-        }
-      }
-    } else if (joint.type === 'Revolute') {
-      // For Revolute, update both distances
-      if (
-        joint.joint0 &&
-        'ref' in joint.joint0 &&
-        joint.joint1 &&
-        'ref' in joint.joint1
-      ) {
-        const parent0 = getJoint(joint.joint0.ref);
-        const parent1 = getJoint(joint.joint1.ref);
-        if (parent0 && parent1) {
-          const pos0 = { x: parent0.x ?? 0, y: parent0.y ?? 0 };
-          const pos1 = { x: parent1.x ?? 0, y: parent1.y ?? 0 };
-          const distance0 = calcDistance(pos0, newPos);
-          const distance1 = calcDistance(pos1, newPos);
-          updateJoint(joint.name, {
-            x: newPos.x,
-            y: newPos.y,
-            distance0,
-            distance1,
-          });
-        }
-      }
-    }
+    updateJointPosition(joint.id, newPos.x, newPos.y);
   };
 
   // Render grid
@@ -314,9 +293,9 @@ export function LinkageCanvas() {
 
   // Render loci (trajectory paths)
   const renderLoci = () => {
-    if (!showLoci || !loci || loci.length < 2 || !linkage) return null;
+    if (!showLoci || !loci || loci.length < 2 || !mechanism) return null;
 
-    return linkage.joints.map((joint, jointIndex) => {
+    return mechanism.joints.map((joint, jointIndex) => {
       const points: number[] = [];
       for (let frame = 0; frame < loci.length; frame++) {
         const pos = loci[frame].positions[jointIndex];
@@ -326,7 +305,7 @@ export function LinkageCanvas() {
 
       return (
         <Line
-          key={`loci-${joint.name}`}
+          key={`loci-${joint.id}`}
           points={points}
           stroke={JOINT_COLORS[joint.type]}
           strokeWidth={1}
@@ -338,115 +317,159 @@ export function LinkageCanvas() {
     });
   };
 
-  // Render link preview line for draw-link mode
-  const renderLinkPreview = () => {
-    if (mode !== 'draw-link' || !linkStartJoint || !mousePos || !linkage)
-      return null;
+  // Render draw preview line
+  const renderDrawPreview = () => {
+    if (mode !== 'draw-link' || !drawState.isDrawing) return null;
 
-    const startJoint = linkage.joints.find((j) => j.name === linkStartJoint);
-    if (!startJoint) return null;
+    const { startPoint, endPoint, snappedToJoint, snappedEndJoint } = drawState;
+    if (!startPoint || !endPoint) return null;
 
-    const startPos = canvasToScreen(startJoint.x ?? 0, startJoint.y ?? 0);
-    const endPos = canvasToScreen(mousePos.x, mousePos.y);
+    const startScreen = canvasToScreen(startPoint.x, startPoint.y);
+    const endScreen = canvasToScreen(endPoint.x, endPoint.y);
 
     return (
-      <Line
-        points={[startPos.x, startPos.y, endPos.x, endPos.y]}
-        stroke="#58a6ff"
-        strokeWidth={2}
-        dash={[8, 4]}
-        opacity={0.7}
-      />
+      <Group>
+        {/* Preview line */}
+        <Line
+          points={[startScreen.x, startScreen.y, endScreen.x, endScreen.y]}
+          stroke="#58a6ff"
+          strokeWidth={LINK_STYLES.strokeWidth.link}
+          opacity={0.7}
+          dash={[8, 4]}
+        />
+        {/* Start snap indicator */}
+        {snappedToJoint && (
+          <Circle
+            x={startScreen.x}
+            y={startScreen.y}
+            radius={JOINT_STYLES.hoverRadius}
+            stroke="#58a6ff"
+            strokeWidth={2}
+            fill="transparent"
+          />
+        )}
+        {/* End snap indicator */}
+        {snappedEndJoint && (
+          <Circle
+            x={endScreen.x}
+            y={endScreen.y}
+            radius={JOINT_STYLES.hoverRadius}
+            stroke="#58a6ff"
+            strokeWidth={2}
+            fill="transparent"
+          />
+        )}
+      </Group>
     );
   };
 
-  // Render links (connections between joints)
+  // Render links as thick solid lines
   const renderLinks = () => {
-    if (!linkage) return null;
+    if (!mechanism) return null;
 
-    const links: JSX.Element[] = [];
+    return mechanism.links.map((link) => {
+      // Get positions of joints in this link
+      const jointPositions: Position[] = link.joints
+        .map((jointId) => {
+          const jointIndex = mechanism.joints.findIndex((j) => j.id === jointId);
+          if (jointIndex === -1) return null;
+          return getJointPosition(mechanism.joints[jointIndex], jointIndex);
+        })
+        .filter((p): p is Position => p !== null);
 
-    linkage.joints.forEach((joint, index) => {
-      // Get parent references
-      const parents: string[] = [];
-      if (joint.joint0 && 'ref' in joint.joint0) parents.push(joint.joint0.ref);
-      if (joint.joint1 && 'ref' in joint.joint1) parents.push(joint.joint1.ref);
+      if (jointPositions.length < 2) return null;
 
-      const jointPos = getJointPosition(joint, index);
-      const screenPos = canvasToScreen(jointPos.x, jointPos.y);
+      const isSelected = selectedLinkId === link.id;
+      const isHovered = hoveredLinkId === link.id;
+      const color = LINK_COLORS[link.type];
+      const baseWidth = LINK_STYLES.strokeWidth[link.type];
+      const strokeWidth = isSelected
+        ? LINK_STYLES.selectedStrokeWidth
+        : isHovered
+          ? LINK_STYLES.hoverStrokeWidth
+          : baseWidth;
 
-      parents.forEach((parentName) => {
-        const parentIndex = linkage.joints.findIndex(
-          (j) => j.name === parentName
-        );
-        if (parentIndex === -1) return;
+      // For binary links, draw a single line
+      if (link.joints.length === 2) {
+        const start = canvasToScreen(jointPositions[0].x, jointPositions[0].y);
+        const end = canvasToScreen(jointPositions[1].x, jointPositions[1].y);
 
-        const parentJoint = linkage.joints[parentIndex];
-        const parentPos = getJointPosition(parentJoint, parentIndex);
-        const parentScreenPos = canvasToScreen(parentPos.x, parentPos.y);
-
-        links.push(
+        return (
           <Line
-            key={`link-${joint.name}-${parentName}`}
-            points={[
-              parentScreenPos.x,
-              parentScreenPos.y,
-              screenPos.x,
-              screenPos.y,
-            ]}
-            stroke="#8b949e"
-            strokeWidth={LINK_WIDTH}
+            key={link.id}
+            points={[start.x, start.y, end.x, end.y]}
+            stroke={color}
+            strokeWidth={strokeWidth}
             lineCap="round"
+            onClick={() => handleLinkClick(link)}
+            onTap={() => handleLinkClick(link)}
+            onMouseEnter={() => setHoveredLink(link.id)}
+            onMouseLeave={() => setHoveredLink(null)}
+            style={{ cursor: mode === 'delete' ? 'not-allowed' : 'pointer' }}
           />
         );
-      });
-    });
+      }
 
-    return <Group>{links}</Group>;
+      // For ternary+ links, draw lines between all pairs
+      const lines: JSX.Element[] = [];
+      for (let i = 0; i < jointPositions.length; i++) {
+        for (let j = i + 1; j < jointPositions.length; j++) {
+          const start = canvasToScreen(jointPositions[i].x, jointPositions[i].y);
+          const end = canvasToScreen(jointPositions[j].x, jointPositions[j].y);
+
+          lines.push(
+            <Line
+              key={`${link.id}-${i}-${j}`}
+              points={[start.x, start.y, end.x, end.y]}
+              stroke={color}
+              strokeWidth={strokeWidth}
+              lineCap="round"
+              onClick={() => handleLinkClick(link)}
+              onTap={() => handleLinkClick(link)}
+              onMouseEnter={() => setHoveredLink(link.id)}
+              onMouseLeave={() => setHoveredLink(null)}
+            />
+          );
+        }
+      }
+
+      return <Group key={link.id}>{lines}</Group>;
+    });
   };
 
-  // Render joints
+  // Render joints as small circles at endpoints
   const renderJoints = () => {
-    if (!linkage) return null;
+    if (!mechanism) return null;
 
-    return linkage.joints.map((joint, index) => {
+    return mechanism.joints.map((joint, index) => {
       const pos = getJointPosition(joint, index);
       const screenPos = canvasToScreen(pos.x, pos.y);
 
-      const isSelected = selectedJointName === joint.name;
-      const isHovered = hoveredJointName === joint.name;
-      const isLinkStart = linkStartJoint === joint.name;
+      const isSelected = selectedJointId === joint.id;
+      const isHovered = hoveredJointId === joint.id;
       const color = JOINT_COLORS[joint.type];
+      const radius = isSelected
+        ? JOINT_STYLES.selectedRadius
+        : isHovered
+          ? JOINT_STYLES.hoverRadius
+          : JOINT_STYLES.radius;
 
-      // Determine if joint is draggable based on mode and type
-      const isDraggable =
-        mode === 'move-joint' &&
-        (joint.type === 'Static' ||
-          joint.type === 'Crank' ||
-          joint.type === 'Fixed' ||
-          joint.type === 'Revolute');
+      // Determine if joint is draggable based on mode
+      const isDraggable = mode === 'move-joint';
 
       return (
-        <Group key={joint.name}>
+        <Group key={joint.id}>
           {/* Joint circle */}
           <Circle
             x={screenPos.x}
             y={screenPos.y}
-            radius={JOINT_RADIUS}
+            radius={radius}
             fill={color}
-            stroke={
-              isLinkStart
-                ? '#58a6ff'
-                : isSelected
-                  ? '#ffffff'
-                  : isHovered
-                    ? '#c9d1d9'
-                    : '#0d1117'
-            }
-            strokeWidth={isSelected || isLinkStart ? 3 : 2}
+            stroke={isSelected ? '#ffffff' : isHovered ? '#c9d1d9' : '#0d1117'}
+            strokeWidth={JOINT_STYLES.strokeWidth}
             onClick={() => handleJointClick(joint)}
             onTap={() => handleJointClick(joint)}
-            onMouseEnter={() => setHoveredJoint(joint.name)}
+            onMouseEnter={() => setHoveredJoint(joint.id)}
             onMouseLeave={() => setHoveredJoint(null)}
             draggable={isDraggable}
             onDragEnd={(e) => {
@@ -457,9 +480,9 @@ export function LinkageCanvas() {
           />
           {/* Joint label */}
           <Text
-            x={screenPos.x + JOINT_RADIUS + 4}
+            x={screenPos.x + radius + 4}
             y={screenPos.y - 6}
-            text={joint.name}
+            text={joint.name || joint.id}
             fontSize={12}
             fill="#8b949e"
           />
@@ -478,13 +501,15 @@ export function LinkageCanvas() {
         height={dimensions.height}
         onClick={handleStageClick}
         onTap={handleStageClick}
+        onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
       >
         <Layer>
           {renderGrid()}
           {renderLoci()}
           {renderLinks()}
-          {renderLinkPreview()}
+          {renderDrawPreview()}
           {renderJoints()}
         </Layer>
       </Stage>

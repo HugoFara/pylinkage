@@ -1,10 +1,11 @@
 /**
- * Sidebar with controls for linkage editing.
+ * Sidebar with controls for mechanism editing.
+ * Updated for link-first approach.
  */
 
-import { useLinkageStore } from '../../stores/linkageStore';
+import { useMechanismStore } from '../../stores/mechanismStore';
 import { ExampleLoader } from '../sidebar/ExampleLoader';
-import { JointList } from '../sidebar/JointList';
+import { LinkList } from '../sidebar/LinkList';
 import { CanvasToolbar } from '../canvas/CanvasToolbar';
 import { AnimationControls } from '../sidebar/AnimationControls';
 
@@ -60,18 +61,19 @@ const styles: Record<string, React.CSSProperties> = {
 };
 
 export function Sidebar() {
-  const linkage = useLinkageStore((s) => s.linkage);
+  const mechanism = useMechanismStore((s) => s.mechanism);
 
-  const jointCount = linkage?.joints.length ?? 0;
-  const groundCount = linkage?.joints.filter((j) => j.type === 'Static').length ?? 0;
-  const crankCount = linkage?.joints.filter((j) => j.type === 'Crank').length ?? 0;
+  const linkCount = mechanism?.links.length ?? 0;
+  const jointCount = mechanism?.joints.length ?? 0;
+  const driverCount =
+    mechanism?.links.filter((l) => l.type === 'driver').length ?? 0;
 
   return (
     <div style={styles.container}>
       {/* Header */}
       <div>
         <h1 style={styles.title}>Pylinkage Editor</h1>
-        <p style={styles.subtitle}>Interactive linkage design tool</p>
+        <p style={styles.subtitle}>Link-first mechanism design</p>
       </div>
 
       {/* Example Loader */}
@@ -97,30 +99,35 @@ export function Sidebar() {
         <div style={styles.sectionTitle}>Statistics</div>
         <div style={styles.stats}>
           <div style={styles.stat}>
+            <div style={styles.statValue}>{linkCount}</div>
+            <div style={styles.statLabel}>Links</div>
+          </div>
+          <div style={styles.stat}>
             <div style={styles.statValue}>{jointCount}</div>
             <div style={styles.statLabel}>Joints</div>
           </div>
           <div style={styles.stat}>
-            <div style={styles.statValue}>{groundCount}</div>
-            <div style={styles.statLabel}>Ground</div>
+            <div style={styles.statValue}>{driverCount}</div>
+            <div style={styles.statLabel}>Drivers</div>
           </div>
           <div style={styles.stat}>
-            <div style={styles.statValue}>{crankCount}</div>
-            <div style={styles.statLabel}>Cranks</div>
-          </div>
-          <div style={styles.stat}>
-            <div style={{ ...styles.statValue, color: linkage?.is_buildable ? '#3fb950' : '#f85149' }}>
-              {linkage?.is_buildable ? 'OK' : 'ERR'}
+            <div
+              style={{
+                ...styles.statValue,
+                color: mechanism?.is_buildable ? '#3fb950' : '#f85149',
+              }}
+            >
+              {mechanism?.is_buildable ? 'OK' : 'ERR'}
             </div>
             <div style={styles.statLabel}>Status</div>
           </div>
         </div>
       </div>
 
-      {/* Joint List */}
+      {/* Link List */}
       <div>
-        <div style={styles.sectionTitle}>Joints</div>
-        <JointList />
+        <div style={styles.sectionTitle}>Links</div>
+        <LinkList />
       </div>
     </div>
   );

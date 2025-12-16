@@ -1,174 +1,125 @@
-"""Prebuilt example endpoints."""
+"""Prebuilt example endpoints using mechanism module."""
+
+import math
 
 from fastapi import APIRouter, HTTPException
 
-import pylinkage as pl
-from pylinkage.joints import Crank, Revolute, Static
+from pylinkage.mechanism import MechanismBuilder
+from pylinkage.mechanism.serialization import mechanism_to_dict
 
-from ..models.schemas import ExampleInfo, LinkageResponse
-from ..services import linkage_service
+from ..models.mechanism_schemas import ExampleInfo, MechanismResponse
+from ..services import mechanism_service
 from ..storage.memory import storage
 
 router = APIRouter(prefix="/examples", tags=["examples"])
 
 
-def create_four_bar() -> pl.Linkage:
-    """Create a classic four-bar linkage."""
-    import math
-
-    # Ground pivots
-    ground_a = Static(x=0, y=0, name="GroundA")
-    ground_d = Static(x=100, y=0, name="GroundD")
-
-    # Crank (input link) - use non-zero initial angle
-    crank_b = Crank(
-        x=30,
-        y=40,
-        joint0=ground_a,
-        distance=50,
-        angle=math.atan2(40, 30),  # Initial angle based on position
-        name="CrankB",
+def create_four_bar_mechanism() -> dict:
+    """Create a classic four-bar linkage using MechanismBuilder."""
+    mechanism = (
+        MechanismBuilder("Four-Bar Linkage")
+        .add_ground_link("ground", ports={"O1": (0, 0), "O2": (100, 0)})
+        .add_driver_link(
+            "crank",
+            length=50,
+            motor_port="O1",
+            omega=0.1,
+            initial_angle=math.atan2(40, 30),
+        )
+        .add_link("coupler", length=60)
+        .add_link("rocker", length=70)
+        .connect("crank.tip", "coupler.0")
+        .connect("coupler.1", "rocker.0")
+        .connect("rocker.1", "ground.O2")
+        .build()
     )
+    return mechanism_to_dict(mechanism)
 
-    # Coupler-Rocker connection (output)
-    rocker_c = Revolute(
-        x=80,
-        y=60,
-        joint0=crank_b,
-        joint1=ground_d,
-        distance0=60,
-        distance1=70,
-        name="RockerC",
+
+def create_chebyshev_mechanism() -> dict:
+    """Create Chebyshev straight-line mechanism."""
+    mechanism = (
+        MechanismBuilder("Chebyshev Linkage")
+        .add_ground_link("ground", ports={"O1": (0, 0), "O2": (100, 0)})
+        .add_driver_link(
+            "crank",
+            length=50,
+            motor_port="O1",
+            omega=0.1,
+            initial_angle=2.094,  # 120 degrees
+        )
+        .add_link("coupler", length=100)
+        .add_link("rocker", length=100)
+        .connect("crank.tip", "coupler.0")
+        .connect("coupler.1", "rocker.0")
+        .connect("rocker.1", "ground.O2")
+        .build()
     )
-
-    return pl.Linkage(
-        joints=[ground_a, ground_d, crank_b, rocker_c],
-        name="Four-Bar Linkage",
-    )
+    return mechanism_to_dict(mechanism)
 
 
-def create_chebyshev() -> pl.Linkage:
-    """Create a Chebyshev straight-line mechanism."""
-    # Ground frame
-    ground_a = Static(x=0, y=0, name="GroundA")
-    ground_b = Static(x=100, y=0, name="GroundB")
-
-    # Crank
-    crank = Crank(
-        x=-25,
-        y=43.3,
-        joint0=ground_a,
-        distance=50,
-        angle=2.094,  # 120 degrees
-        name="Crank",
-    )
-
-    # Coupler point
-    coupler = Revolute(
-        x=50,
-        y=86.6,
-        joint0=crank,
-        joint1=ground_b,
-        distance0=100,
-        distance1=100,
-        name="Coupler",
-    )
-
-    return pl.Linkage(
-        joints=[ground_a, ground_b, crank, coupler],
-        name="Chebyshev Linkage",
-    )
-
-
-def create_crank_slider() -> pl.Linkage:
+def create_crank_slider_mechanism() -> dict:
     """Create a crank-slider mechanism."""
-    import math
-
-    # Ground
-    ground = Static(x=0, y=0, name="Ground")
-
-    # Crank - use non-zero initial angle
-    crank = Crank(
-        x=30,
-        y=40,
-        joint0=ground,
-        distance=50,
-        angle=math.atan2(40, 30),  # Initial angle based on position
-        name="Crank",
+    mechanism = (
+        MechanismBuilder("Crank-Slider Mechanism")
+        .add_ground_link("ground", ports={"O": (0, 0)})
+        .add_driver_link(
+            "crank",
+            length=50,
+            motor_port="O",
+            omega=0.1,
+            initial_angle=math.atan2(40, 30),
+        )
+        .add_link("connecting_rod", length=100)
+        .add_slide_axis("rail", through=(0, 0), direction=(1, 0))
+        .connect("crank.tip", "connecting_rod.0")
+        .connect_prismatic("connecting_rod.1", "rail")
+        .build()
     )
-
-    # Connecting rod end (slider)
-    # Using Revolute with ground as second parent for simplicity
-    slider = Revolute(
-        x=130,
-        y=0,
-        joint0=crank,
-        joint1=ground,
-        distance0=100,
-        distance1=130,
-        name="Slider",
-    )
-
-    return pl.Linkage(
-        joints=[ground, crank, slider],
-        name="Crank-Slider Mechanism",
-    )
+    return mechanism_to_dict(mechanism)
 
 
-def create_pantograph() -> pl.Linkage:
+def create_pantograph_mechanism() -> dict:
     """Create a pantograph linkage."""
-    import math
-
-    # Fixed pivot
-    pivot = Static(x=0, y=0, name="Pivot")
-
-    # Crank arm - use small non-zero angle to avoid division by zero
-    crank = Crank(
-        x=50,
-        y=0,
-        joint0=pivot,
-        distance=50,
-        angle=0.01,  # Small initial angle
-        name="Crank",
+    mechanism = (
+        MechanismBuilder("Pantograph")
+        .add_ground_link("ground", ports={"O": (0, 0)})
+        .add_driver_link(
+            "crank",
+            length=50,
+            motor_port="O",
+            omega=0.1,
+            initial_angle=0.01,  # Small initial angle
+        )
+        .add_link("arm", length=50)
+        .connect("crank.tip", "arm.0")
+        .connect("arm.1", "ground.O")
+        .build()
     )
-
-    # Parallelogram points
-    point_b = Revolute(
-        x=100,
-        y=0,
-        joint0=crank,
-        joint1=pivot,
-        distance0=50,
-        distance1=100,
-        name="PointB",
-    )
-
-    return pl.Linkage(
-        joints=[pivot, crank, point_b],
-        name="Pantograph",
-    )
+    return mechanism_to_dict(mechanism)
 
 
 # Registry of available examples
 EXAMPLES: dict[str, tuple[callable, str]] = {
-    "four-bar": (create_four_bar, "Classic four-bar linkage mechanism"),
-    "chebyshev": (create_chebyshev, "Chebyshev straight-line mechanism"),
-    "crank-slider": (create_crank_slider, "Crank-slider mechanism"),
-    "pantograph": (create_pantograph, "Pantograph scaling mechanism"),
+    "four-bar": (create_four_bar_mechanism, "Classic four-bar linkage mechanism"),
+    "chebyshev": (create_chebyshev_mechanism, "Chebyshev straight-line mechanism"),
+    "crank-slider": (create_crank_slider_mechanism, "Crank-slider mechanism"),
+    "pantograph": (create_pantograph_mechanism, "Pantograph scaling mechanism"),
 }
 
 
 @router.get("", response_model=list[ExampleInfo])
 def list_examples() -> list[ExampleInfo]:
-    """List all available example linkages."""
+    """List all available example mechanisms."""
     result = []
     for name, (factory, description) in EXAMPLES.items():
-        linkage = factory()
+        mech_dict = factory()
         result.append(
             ExampleInfo(
                 name=name,
                 description=description,
-                joint_count=len(linkage.joints),
+                joint_count=len(mech_dict.get("joints", [])),
+                link_count=len(mech_dict.get("links", [])),
             )
         )
     return result
@@ -176,7 +127,7 @@ def list_examples() -> list[ExampleInfo]:
 
 @router.get("/{example_name}")
 def get_example(example_name: str) -> dict:
-    """Get an example linkage as JSON (pylinkage format)."""
+    """Get an example mechanism as JSON (mechanism format)."""
     if example_name not in EXAMPLES:
         raise HTTPException(
             status_code=404,
@@ -184,12 +135,11 @@ def get_example(example_name: str) -> dict:
         )
 
     factory, _ = EXAMPLES[example_name]
-    linkage = factory()
-    return linkage.to_dict()
+    return factory()
 
 
-@router.post("/{example_name}/load", response_model=LinkageResponse)
-def load_example(example_name: str) -> LinkageResponse:
+@router.post("/{example_name}/load", response_model=MechanismResponse)
+def load_example(example_name: str) -> MechanismResponse:
     """Load an example into storage and return its ID."""
     if example_name not in EXAMPLES:
         raise HTTPException(
@@ -198,18 +148,17 @@ def load_example(example_name: str) -> LinkageResponse:
         )
 
     factory, _ = EXAMPLES[example_name]
-    linkage = factory()
-    linkage_dict = linkage.to_dict()
+    mechanism_dict = factory()
 
     # Validate and store
-    built_linkage, is_buildable, error = linkage_service.validate_and_build(linkage_dict)
-    linkage_id = storage.create(linkage_dict)
-    stored = storage.get(linkage_id)
+    mechanism, is_buildable, error = mechanism_service.validate_and_build(mechanism_dict)
+    mechanism_id = storage.create(mechanism_dict)
+    stored = storage.get(mechanism_id)
 
     if stored is None:
         raise HTTPException(status_code=500, detail="Failed to load example")
 
-    response_data = linkage_service.linkage_to_response_dict(
-        linkage_id, stored, built_linkage, is_buildable, error
+    response_data = mechanism_service.mechanism_to_response_dict(
+        mechanism_id, stored, mechanism, is_buildable, error
     )
-    return LinkageResponse(**response_data)
+    return MechanismResponse(**response_data)
