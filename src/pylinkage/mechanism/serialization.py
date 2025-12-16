@@ -40,6 +40,7 @@ def joint_to_dict(joint: Joint) -> dict[str, Any]:
     # Type-specific attributes
     if isinstance(joint, PrismaticJoint):
         data["axis"] = list(joint.axis)
+        data["line_point"] = list(joint.line_point)
         data["slide_distance"] = joint.slide_distance
     elif isinstance(joint, TrackerJoint):
         data["ref_joint1_id"] = joint.ref_joint1_id
@@ -88,12 +89,15 @@ def joint_from_dict(data: dict[str, Any]) -> Joint:
     if joint_type == "prismatic":
         axis_data = data.get("axis", [1.0, 0.0])
         axis = (float(axis_data[0]), float(axis_data[1]))
+        line_point_data = data.get("line_point", [0.0, 0.0])
+        line_point = (float(line_point_data[0]), float(line_point_data[1]))
         slide_distance = data.get("slide_distance", 0.0)
         return PrismaticJoint(
             id=joint_id,
             position=pos,
             name=name,
             axis=axis,
+            line_point=line_point,
             slide_distance=slide_distance,
         )
     if joint_type == "tracker":

@@ -963,13 +963,17 @@ class MechanismBuilder:
             elif is_prismatic:
                 # Find the axis for this prismatic joint
                 axis_dir: tuple[float, float] = (1.0, 0.0)
+                line_point: tuple[float, float] = (0.0, 0.0)
                 for pconn in self._prismatic_connections:
                     if pconn.port in group:
                         axis = self._slide_axes.get(pconn.axis_id)
                         if axis:
                             axis_dir = axis.get_normalized_direction()
+                            line_point = axis.point
                         break
-                joint = PrismaticJoint(joint_id, position=pos, axis=axis_dir)
+                joint = PrismaticJoint(
+                    joint_id, position=pos, axis=axis_dir, line_point=line_point
+                )
             else:
                 joint = RevoluteJoint(joint_id, position=pos)
 

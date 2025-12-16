@@ -174,15 +174,17 @@ class Mechanism:
         if not links_with_joint:
             return False
 
-        # For a revolute joint, we need two anchor points
-        # (joints on links that are already solved)
+        # Count anchor points (joints on links that are already solved)
         anchor_count = 0
         for link in links_with_joint:
             for other in link.joints:
                 if other != joint and other.id in solved:
                     anchor_count += 1
 
-        # Need at least 2 anchors for RRR dyad
+        # Prismatic joints need only 1 anchor (circle-line intersection)
+        # Revolute joints need 2 anchors (circle-circle intersection)
+        if isinstance(joint, PrismaticJoint):
+            return anchor_count >= 1
         return anchor_count >= 2
 
     def get_joint(self, joint_id: str) -> Joint | None:
@@ -256,8 +258,12 @@ class Mechanism:
                     if dist is not None:
                         anchors.append((other, dist))
 
-        if len(anchors) < 2:
-            return  # Can't solve without 2 anchors
+        # Prismatic joints need 1 anchor, revolute joints need 2
+        if isinstance(joint, PrismaticJoint):
+            if len(anchors) < 1:
+                return  # Can't solve prismatic without 1 anchor
+        elif len(anchors) < 2:
+            return  # Can't solve revolute without 2 anchors
 
         # For revolute joints: circle-circle intersection
         if isinstance(joint, RevoluteJoint):
@@ -303,10 +309,11 @@ class Mechanism:
 
             assert ax is not None and ay is not None
 
-            # Construct line points from axis
-            # The line passes through the current position in axis direction
-            l1x, l1y = curr_x, curr_y
-            l2x, l2y = curr_x + dx * 10, curr_y + dy * 10
+            # Construct line points from the fixed slide axis
+            # The line passes through line_point in axis direction
+            lpx, lpy = joint.line_point
+            l1x, l1y = lpx, lpy
+            l2x, l2y = lpx + dx * 10, lpy + dy * 10
 
             new_x, new_y = solve_linear(
                 curr_x, curr_y,

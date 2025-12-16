@@ -146,6 +146,9 @@ class PrismaticJoint(Joint):
     Attributes:
         axis: Direction of allowed translation as (dx, dy).
               Should be normalized for consistency.
+        line_point: A fixed point (x, y) on the slide line.
+                    The joint is constrained to move along the line
+                    passing through this point in the axis direction.
         slide_distance: Current displacement along the axis from origin.
 
     Example:
@@ -155,6 +158,7 @@ class PrismaticJoint(Joint):
     """
 
     axis: Coord = (1.0, 0.0)  # Default: horizontal sliding
+    line_point: Coord = (0.0, 0.0)  # Fixed point on the slide line
     slide_distance: float = 0.0
 
     @property
