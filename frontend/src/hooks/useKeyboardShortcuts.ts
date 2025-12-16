@@ -1,6 +1,6 @@
 /**
  * Keyboard shortcuts hook for the linkage editor.
- * Updated for link-first approach.
+ * Updated for link-first approach with collapsible toolbar.
  *
  * Shortcuts:
  * - Escape: Switch to select mode
@@ -8,12 +8,10 @@
  * - Delete/Backspace: Delete selected link
  * - Ctrl+Z: Undo
  * - Ctrl+Shift+Z / Ctrl+Y: Redo
- * - 1: Select mode
- * - 2: Draw link mode
+ * - 1: Draw link mode (default)
+ * - 2: Select mode
  * - 3: Move joint mode
  * - 4: Delete mode
- * - 5: Set driver mode
- * - 6: Set ground mode
  */
 
 import { useEffect, useCallback } from 'react';
@@ -22,12 +20,10 @@ import { useMechanismStore } from '../stores/mechanismStore';
 import type { EditorMode } from '../types/mechanism';
 
 const MODE_SHORTCUTS: Record<string, EditorMode> = {
-  '1': 'select',
-  '2': 'draw-link',
+  '1': 'draw-link',
+  '2': 'select',
   '3': 'move-joint',
   '4': 'delete',
-  '5': 'set-driver',
-  '6': 'set-ground',
 };
 
 export function useKeyboardShortcuts() {

@@ -106,8 +106,16 @@ export type EditorMode =
   | 'draw-link'
   | 'move-joint'
   | 'delete'
-  | 'set-driver'
-  | 'set-ground';
+  | 'set-ground'
+  // Driver placement modes
+  | 'place-crank'
+  | 'place-arccrank'
+  | 'place-linear'
+  // Joint placement modes
+  | 'place-ground-joint'
+  | 'place-revolute-joint'
+  | 'place-prismatic-joint'
+  | 'place-tracker-joint';
 
 // Draw state for link drawing interaction
 export interface DrawState {

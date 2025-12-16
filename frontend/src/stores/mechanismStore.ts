@@ -263,7 +263,13 @@ export function generateLinkId(type: LinkType): string {
 
 export function generateJointId(type: JointType): string {
   jointCounter++;
-  const prefix = type === 'ground' ? 'O' : type === 'prismatic' ? 'P' : 'J';
+  const prefixMap: Record<JointType, string> = {
+    ground: 'O',
+    prismatic: 'P',
+    revolute: 'J',
+    tracker: 'T',
+  };
+  const prefix = prefixMap[type] ?? 'J';
   return `${prefix}${jointCounter}`;
 }
 

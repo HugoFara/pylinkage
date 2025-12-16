@@ -5,7 +5,7 @@
  */
 
 import { create } from 'zustand';
-import type { DrawState, EditorMode, LinkPropertiesDialog } from '../types/mechanism';
+import type { DrawState, EditorMode } from '../types/mechanism';
 
 interface EditorState {
   // Current editor mode
@@ -37,11 +37,6 @@ interface EditorState {
   setDrawState: (state: Partial<DrawState>) => void;
   resetDrawState: () => void;
 
-  // Link properties dialog
-  linkDialog: LinkPropertiesDialog;
-  openLinkDialog: (tempLink: LinkPropertiesDialog['tempLink']) => void;
-  closeLinkDialog: () => void;
-
   // View settings
   showLoci: boolean;
   showDimensions: boolean;
@@ -59,14 +54,9 @@ const initialDrawState: DrawState = {
   snappedEndJoint: null,
 };
 
-const initialLinkDialog: LinkPropertiesDialog = {
-  isOpen: false,
-  tempLink: null,
-};
-
 export const useEditorStore = create<EditorState>((set) => ({
-  // Mode
-  mode: 'select',
+  // Mode - default to draw-link for immediate drawing
+  mode: 'draw-link',
   setMode: (mode) =>
     set({
       mode,
@@ -102,18 +92,6 @@ export const useEditorStore = create<EditorState>((set) => ({
       drawState: { ...s.drawState, ...state },
     })),
   resetDrawState: () => set({ drawState: initialDrawState }),
-
-  // Link dialog
-  linkDialog: initialLinkDialog,
-  openLinkDialog: (tempLink) =>
-    set({
-      linkDialog: { isOpen: true, tempLink },
-    }),
-  closeLinkDialog: () =>
-    set({
-      linkDialog: initialLinkDialog,
-      drawState: initialDrawState,
-    }),
 
   // View
   showLoci: true,

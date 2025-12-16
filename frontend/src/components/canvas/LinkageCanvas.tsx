@@ -10,6 +10,8 @@ import { useEditorStore } from '../../stores/editorStore';
 import {
   useMechanismStore,
   calculateDistance,
+  generateJointId,
+  generateLinkId,
 } from '../../stores/mechanismStore';
 import {
   LINK_COLORS,
@@ -45,16 +47,15 @@ export function LinkageCanvas() {
   const drawState = useEditorStore((s) => s.drawState);
   const setDrawState = useEditorStore((s) => s.setDrawState);
   const resetDrawState = useEditorStore((s) => s.resetDrawState);
-  const openLinkDialog = useEditorStore((s) => s.openLinkDialog);
 
   const mechanism = useMechanismStore((s) => s.mechanism);
+  const addLink = useMechanismStore((s) => s.addLink);
   const loci = useMechanismStore((s) => s.loci);
   const lociJointNames = useMechanismStore((s) => s.lociJointNames);
   const deleteLink = useMechanismStore((s) => s.deleteLink);
   const updateJointPosition = useMechanismStore((s) => s.updateJointPosition);
   const deleteJoint = useMechanismStore((s) => s.deleteJoint);
   const findJointAtPosition = useMechanismStore((s) => s.findJointAtPosition);
-  const updateLink = useMechanismStore((s) => s.updateLink);
 
   // Handle window resize
   useEffect(() => {
@@ -160,7 +161,7 @@ export function LinkageCanvas() {
     }
   };
 
-  // Handle mouse up for draw-link mode
+  // Handle mouse up for draw-link mode - creates link directly without modal
   const handleMouseUp = (_e: Konva.KonvaEventObject<MouseEvent>) => {
     if (mode !== 'draw-link' || !drawState.isDrawing) return;
 
@@ -178,13 +179,42 @@ export function LinkageCanvas() {
       return;
     }
 
-    // Open dialog to configure link properties
-    openLinkDialog({
-      startPoint,
-      endPoint,
-      startJointId: snappedToJoint,
-      endJointId: snappedEndJoint,
-    });
+    // Create joints and link directly without modal
+    const newJoints: JointDict[] = [];
+    let startJoint = snappedToJoint;
+    let endJoint = snappedEndJoint;
+
+    // If no existing joint at start, create a tracker joint (default for link extremities)
+    if (!startJoint) {
+      const newJoint: JointDict = {
+        id: generateJointId('tracker'),
+        type: 'tracker',
+        position: [startPoint.x, startPoint.y],
+      };
+      newJoints.push(newJoint);
+      startJoint = newJoint.id;
+    }
+
+    // If no existing joint at end, create a tracker joint (default for link extremities)
+    if (!endJoint) {
+      const newJoint: JointDict = {
+        id: generateJointId('tracker'),
+        type: 'tracker',
+        position: [endPoint.x, endPoint.y],
+      };
+      newJoints.push(newJoint);
+      endJoint = newJoint.id;
+    }
+
+    // Create the link
+    const newLink: LinkDict = {
+      id: generateLinkId('link'),
+      type: 'link',
+      joints: [startJoint, endJoint],
+    };
+
+    addLink(newLink, newJoints);
+    resetDrawState();
   };
 
   // Handle stage click
@@ -204,19 +234,6 @@ export function LinkageCanvas() {
       deleteLink(link.id);
       if (selectedLinkId === link.id) {
         selectLink(null);
-      }
-    } else if (mode === 'set-driver' && link.type !== 'ground') {
-      // Convert link to driver
-      const groundJoints = mechanism?.joints.filter((j) => j.type === 'ground') ?? [];
-      const motorJoint = groundJoints.find((gj) => link.joints.includes(gj.id));
-
-      if (motorJoint) {
-        updateLink(link.id, {
-          type: 'driver',
-          motor_joint: motorJoint.id,
-          angular_velocity: 0.1,
-          initial_angle: 0,
-        });
       }
     } else {
       selectLink(link.id);
