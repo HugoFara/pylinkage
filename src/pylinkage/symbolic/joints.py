@@ -95,7 +95,8 @@ class SymJoint(abc.ABC):
         x_expr, y_expr = self.position_expr()
         all_symbols = x_expr.free_symbols | y_expr.free_symbols
         # Exclude theta (the input angle)
-        return all_symbols - {default_theta}
+        result: Set[sp.Symbol] = set(all_symbols) - {default_theta}
+        return result
 
 
 class SymStatic(SymJoint):

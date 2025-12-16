@@ -10,8 +10,9 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
+    from collections.abc import Iterable, Sequence
 
+    from matplotlib.artist import Artist
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
     from matplotlib.quiver import Quiver
@@ -417,7 +418,7 @@ def animate_kinematics(
 
     ax2.legend(loc='upper right')
 
-    def update(frame_idx: int) -> list:
+    def update(frame_idx: int) -> "Iterable[Artist]":
         """Update function for animation."""
         pos = positions[frame_idx]
         vel = velocities[frame_idx]

@@ -840,6 +840,8 @@ def plot_linkage_svg_with_velocity(
             else:
                 # Implicit Static joint
                 coord = joint.joint0.coord()
+                if coord[0] is None or coord[1] is None:
+                    continue
                 px, py = w2c(coord[0], coord[1])
 
             joint_ids = (id(joint), id(joint.joint0))
@@ -854,11 +856,15 @@ def plot_linkage_svg_with_velocity(
         has_joint1 = hasattr(joint, "joint1") and joint.joint1 is not None
         is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
         if has_joint1 and is_revolute_type:
-            if joint.joint1 in joint_list:
-                pi = joint_list.index(joint.joint1)
+            joint1 = joint.joint1  # Already checked not None above
+            assert joint1 is not None  # Help type checker
+            if joint1 in joint_list:
+                pi = joint_list.index(joint1)
                 px, py = w2c(positions[pi, 0], positions[pi, 1])
             else:
-                coord = joint.joint1.coord()
+                coord = joint1.coord()
+                if coord[0] is None or coord[1] is None:
+                    continue
                 px, py = w2c(coord[0], coord[1])
 
             joint_ids = (id(joint), id(joint.joint1))

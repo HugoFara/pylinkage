@@ -34,6 +34,7 @@ from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph
 
 if TYPE_CHECKING:
     from .._types import Coord, MaybeCoord
+    from ..dimensions import Dimensions
     from ..mechanism import Mechanism
     from .graph import LinkageGraph
     from .groups import AssurGroup
@@ -66,6 +67,7 @@ class AssurMechanism:
     mechanism: Mechanism
     _decomposition: DecompositionResult | None = field(default=None, repr=False)
     _graph: LinkageGraph | None = field(default=None, repr=False)
+    _dimensions: Dimensions | None = field(default=None, repr=False)
 
     @classmethod
     def from_mechanism(cls, mechanism: Mechanism) -> AssurMechanism:
@@ -80,20 +82,22 @@ class AssurMechanism:
         return cls(mechanism=mechanism)
 
     @classmethod
-    def from_graph(cls, graph: LinkageGraph) -> AssurMechanism:
+    def from_graph(cls, graph: LinkageGraph, dimensions: Dimensions) -> AssurMechanism:
         """Create AssurMechanism from a LinkageGraph.
 
         Converts the graph to a Mechanism and wraps it.
 
         Args:
             graph: The LinkageGraph to convert and wrap.
+            dimensions: The dimensions (positions, distances, angles) for the graph.
 
         Returns:
             AssurMechanism instance with the converted mechanism.
         """
-        mechanism = graph_to_mechanism(graph)
+        mechanism = graph_to_mechanism(graph, dimensions)
         instance = cls(mechanism=mechanism)
         instance._graph = graph
+        instance._dimensions = dimensions
         return instance
 
     @property
@@ -104,7 +108,7 @@ class AssurMechanism:
         converts the mechanism to a graph.
         """
         if self._graph is None:
-            self._graph = mechanism_to_graph(self.mechanism)
+            self._graph, self._dimensions = mechanism_to_graph(self.mechanism)
         return self._graph
 
     @property

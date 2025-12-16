@@ -142,12 +142,12 @@ def _solve_dyad_rrr(
 
 
 def _solve_dyad_rrp(
-    group: DyadRRP,
+    group: DyadRRP | DyadRPR | DyadPRR,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
 ) -> dict[NodeId, Coord]:
-    """Solve an RRP dyad group."""
+    """Solve an RRP dyad group (also handles RPR and PRR variants)."""
     if len(group.internal_nodes) != 1:
         raise ValueError("DyadRRP must have exactly 1 internal node")
     if len(group.anchor_nodes) < 1:

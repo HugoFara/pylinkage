@@ -12,7 +12,7 @@ Created on 2025.
 
 
 from collections.abc import Callable, Sequence
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import numpy as np
 from scipy.optimize import differential_evolution, minimize
@@ -97,7 +97,10 @@ def differential_evolution_optimization(
     """
     raw_constraints = tuple(linkage.get_num_constraints())
     # Filter to get only float values for bounds generation
-    constraints = tuple(c for c in raw_constraints if c is not None)
+    constraints = cast(
+        tuple[float, ...],
+        tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float))),
+    )
     dimensions = len(constraints)
 
     if dimensions <= 0:
@@ -109,7 +112,8 @@ def differential_evolution_optimization(
 
     # Generate bounds if not provided
     if bounds is None:
-        bounds = generate_bounds(constraints)  # type: ignore[arg-type]
+        generated = generate_bounds(constraints)
+        bounds = (list(generated[0]), list(generated[1]))
 
     # Validate bounds
     if len(bounds) != 2:
@@ -229,7 +233,10 @@ def minimize_linkage(
     """
     raw_constraints = tuple(linkage.get_num_constraints())
     # Filter to get only float values
-    constraints = tuple(c for c in raw_constraints if c is not None)
+    constraints = cast(
+        tuple[float, ...],
+        tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float))),
+    )
     dimensions = len(constraints)
 
     if dimensions <= 0:
@@ -237,7 +244,7 @@ def minimize_linkage(
 
     # Use current constraints as initial guess if not provided
     if x0 is None:
-        x0 = list(constraints)  # type: ignore[arg-type]
+        x0 = list(constraints)
 
     if len(x0) != dimensions:
         raise OptimizationError(
@@ -251,7 +258,8 @@ def minimize_linkage(
     scipy_bounds = None
     if method in bounded_methods:
         if bounds is None:
-            bounds = generate_bounds(constraints)  # type: ignore[arg-type]
+            generated = generate_bounds(constraints)
+            bounds = (list(generated[0]), list(generated[1]))
         # Convert to scipy format
         scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
 

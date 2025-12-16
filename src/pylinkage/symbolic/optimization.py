@@ -257,11 +257,11 @@ class SymbolicOptimizer:
         # Initial point as array
         x0 = np.array([initial_params[n] for n in self.param_names])
 
-        def objective(x: NDArray) -> float:
+        def objective(x: NDArray[np.float64]) -> float:
             pv = dict(zip(self.param_names, x, strict=True))
             return self.evaluate(pv, theta_samples)
 
-        def gradient(x: NDArray) -> NDArray:
+        def gradient(x: NDArray[np.float64]) -> NDArray[np.float64]:
             pv = dict(zip(self.param_names, x, strict=True))
             return self.gradient(pv, theta_samples)
 

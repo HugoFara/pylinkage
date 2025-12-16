@@ -117,6 +117,12 @@ class PPDyad(ConnectedDyad):
         ):
             return
 
+        # Type assertions since we just checked for None above
+        assert l1_p1[0] is not None and l1_p2[0] is not None
+        assert l2_p1[0] is not None and l2_p2[0] is not None
+        assert l1_p1[1] is not None and l1_p2[1] is not None
+        assert l2_p1[1] is not None and l2_p2[1] is not None
+
         # Use centroid of line-defining points as initial guess
         self.x = (l1_p1[0] + l1_p2[0] + l2_p1[0] + l2_p2[0]) / 4.0
         self.y = (l1_p1[1] + l1_p2[1] + l2_p1[1] + l2_p2[1]) / 4.0

@@ -176,7 +176,7 @@ def compute_trajectory_numeric(
 def create_trajectory_functions(
     linkage: SymbolicLinkage,
     output_joints: list[str] | None = None,
-) -> dict[str, tuple]:
+) -> dict[str, tuple[object, object, list[sp.Symbol]]]:
     """
     Create lambdified functions for trajectory evaluation.
 
@@ -199,7 +199,7 @@ def create_trajectory_functions(
     param_symbols = sorted(linkage.parameters.values(), key=str)
     all_symbols = [linkage.theta] + param_symbols
 
-    results: dict[str, tuple] = {}
+    results: dict[str, tuple[object, object, list[sp.Symbol]]] = {}
 
     for name, (x_expr, y_expr) in trajectories.items():
         x_func = sp.lambdify(all_symbols, x_expr, modules=["numpy"])

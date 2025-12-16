@@ -48,15 +48,15 @@ class RRPDyad(ConnectedDyad):
     __slots__ = ("revolute_anchor", "line_anchor1", "line_anchor2", "distance")
 
     revolute_anchor: Dyad | _AnchorProxy
-    line_anchor1: Dyad
-    line_anchor2: Dyad
+    line_anchor1: Dyad | _AnchorProxy
+    line_anchor2: Dyad | _AnchorProxy
     distance: float
 
     def __init__(
         self,
         revolute_anchor: Dyad | _AnchorProxy,
-        line_anchor1: Dyad,
-        line_anchor2: Dyad,
+        line_anchor1: Dyad | _AnchorProxy,
+        line_anchor2: Dyad | _AnchorProxy,
         distance: float,
         x: float | None = None,
         y: float | None = None,
@@ -91,7 +91,17 @@ class RRPDyad(ConnectedDyad):
             if isinstance(self.revolute_anchor, _AnchorProxy)
             else self.revolute_anchor
         )
-        return (ra, self.line_anchor1, self.line_anchor2)
+        la1 = (
+            self.line_anchor1._parent
+            if isinstance(self.line_anchor1, _AnchorProxy)
+            else self.line_anchor1
+        )
+        la2 = (
+            self.line_anchor2._parent
+            if isinstance(self.line_anchor2, _AnchorProxy)
+            else self.line_anchor2
+        )
+        return (ra, la1, la2)
 
     def _get_anchor_position(
         self, anchor: Dyad | _AnchorProxy
