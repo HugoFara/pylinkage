@@ -102,13 +102,14 @@ export function AnimationControls() {
   const mechanism = useMechanismStore((s) => s.mechanism);
   const loci = useMechanismStore((s) => s.loci);
   const setLoci = useMechanismStore((s) => s.setLoci);
+  const updateBuildableStatus = useMechanismStore((s) => s.updateBuildableStatus);
 
   const animationRef = useRef<number>();
   const [useStreaming, setUseStreaming] = useState(false);
 
   // Callback for when streaming completes
-  const handleStreamComplete = useCallback((frames: SimulationFrame[]) => {
-    setLoci(frames);
+  const handleStreamComplete = useCallback((frames: SimulationFrame[], jointNames: string[]) => {
+    setLoci(frames, jointNames);
     setAnimationFrame(0);
   }, [setLoci, setAnimationFrame]);
 
@@ -121,11 +122,25 @@ export function AnimationControls() {
   const simulateMutation = useMutation({
     mutationFn: async () => {
       if (!mechanism) throw new Error('No mechanism loaded');
+
+      // Use direct simulation for local mechanisms (not saved to backend)
+      if (mechanism.id.startsWith('local-')) {
+        return simulationApi.simulateDirect({
+          name: mechanism.name,
+          joints: mechanism.joints,
+          links: mechanism.links,
+          ground: mechanism.ground,
+        });
+      }
+
       return simulationApi.simulate(mechanism.id);
     },
     onSuccess: (result) => {
+      // Update buildable status based on simulation result
+      updateBuildableStatus(result.is_complete, result.error);
+
       if (result.is_complete) {
-        setLoci(result.frames);
+        setLoci(result.frames, result.joint_names);
         setAnimationFrame(0);
       }
     },
@@ -298,6 +313,11 @@ export function AnimationControls() {
       </div>
 
       {/* Error display */}
+      {mechanism?.error && (
+        <p style={{ color: '#f85149', fontSize: '12px', margin: 0 }}>
+          {mechanism.error}
+        </p>
+      )}
       {simulateMutation.error && (
         <p style={{ color: '#f85149', fontSize: '12px', margin: 0 }}>
           Error: {(simulateMutation.error as Error).message}

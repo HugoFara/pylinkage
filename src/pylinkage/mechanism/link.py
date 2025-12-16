@@ -56,6 +56,11 @@ class Link:
     joints: list[Joint] = field(default_factory=list)
     name: str | None = None
 
+    # Cached distances between joints (computed at initialization)
+    _cached_distances: dict[tuple[str, str], float] = field(
+        default_factory=dict, repr=False
+    )
+
     def __post_init__(self) -> None:
         """Set default name to id if not provided."""
         if self.name is None:
@@ -114,8 +119,31 @@ class Link:
 
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
+    def cache_distances(self) -> None:
+        """Cache distances between all pairs of joints.
+
+        Call this after all joints have their initial positions set
+        to store the fixed link constraints. These cached distances
+        are used during simulation to maintain link rigidity.
+        """
+        self._cached_distances.clear()
+        for i, j1 in enumerate(self.joints):
+            for j2 in self.joints[i + 1 :]:
+                if j1.is_defined() and j2.is_defined():
+                    x1, y1 = j1.position
+                    x2, y2 = j2.position
+                    assert x1 is not None and y1 is not None
+                    assert x2 is not None and y2 is not None
+                    dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+                    # Store both orderings for easy lookup
+                    self._cached_distances[(j1.id, j2.id)] = dist
+                    self._cached_distances[(j2.id, j1.id)] = dist
+
     def get_distance(self, joint1: Joint, joint2: Joint) -> float | None:
         """Get the distance constraint between two joints on this link.
+
+        Returns the cached distance if available (for use during simulation),
+        otherwise computes from current positions (for initialization).
 
         Args:
             joint1: First joint (must be in this link).
@@ -132,6 +160,12 @@ class Link:
         if joint2 not in self.joints:
             raise ValueError(f"Joint {joint2.id} is not part of link {self.id}")
 
+        # Use cached distance if available (during simulation)
+        key = (joint1.id, joint2.id)
+        if key in self._cached_distances:
+            return self._cached_distances[key]
+
+        # Fall back to computing from current positions (initialization)
         if not joint1.is_defined() or not joint2.is_defined():
             return None
 

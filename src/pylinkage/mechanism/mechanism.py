@@ -71,6 +71,7 @@ class Mechanism:
         self._build_indices()
         self._compute_solve_order()
         self._connect_joints_to_links()
+        self._cache_link_distances()
 
     def _build_indices(self) -> None:
         """Build lookup maps for joints and links."""
@@ -96,6 +97,16 @@ class Mechanism:
             for joint in link.joints:
                 if link not in joint._links:
                     joint._links.append(link)
+
+    def _cache_link_distances(self) -> None:
+        """Cache distances between joints on each link.
+
+        This stores the initial link lengths as fixed constraints
+        for use during simulation. Must be called after joints have
+        their initial positions set.
+        """
+        for link in self.links:
+            link.cache_distances()
 
     def _compute_solve_order(self) -> None:
         """Compute the order in which joints should be solved.

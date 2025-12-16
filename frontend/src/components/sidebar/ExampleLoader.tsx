@@ -75,7 +75,7 @@ export function ExampleLoader() {
       try {
         const simResult = await simulationApi.simulate(mechanism.id);
         if (simResult.is_complete) {
-          setLoci(simResult.frames);
+          setLoci(simResult.frames, simResult.joint_names);
         }
       } catch (e) {
         console.error('Failed to simulate:', e);

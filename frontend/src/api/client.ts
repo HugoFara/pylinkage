@@ -67,6 +67,13 @@ export const simulationApi = {
       body: JSON.stringify({ iterations, dt }),
     }),
 
+  // Direct simulation without storing mechanism first
+  simulateDirect: (mechanism: MechanismDict, iterations?: number, dt = 1.0) =>
+    fetchJson<SimulationResponse>(`${API_BASE}/mechanisms/simulate`, {
+      method: 'POST',
+      body: JSON.stringify({ mechanism, iterations, dt }),
+    }),
+
   trajectory: (id: string, iterations?: number, dt = 1.0) =>
     fetchJson<TrajectoryResponse>(`${API_BASE}/mechanisms/${id}/trajectory`, {
       method: 'POST',

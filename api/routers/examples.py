@@ -15,19 +15,24 @@ router = APIRouter(prefix="/examples", tags=["examples"])
 
 
 def create_four_bar_mechanism() -> dict:
-    """Create a classic four-bar linkage using MechanismBuilder."""
+    """Create a classic four-bar linkage using MechanismBuilder.
+
+    Dimensions satisfy Grashof condition: s + l <= p + q
+    where s=25 (crank), l=100 (ground), p=60 (rocker), q=70 (coupler)
+    25 + 100 = 125 <= 60 + 70 = 130 ✓
+    """
     mechanism = (
         MechanismBuilder("Four-Bar Linkage")
         .add_ground_link("ground", ports={"O1": (0, 0), "O2": (100, 0)})
         .add_driver_link(
             "crank",
-            length=50,
+            length=25,
             motor_port="O1",
             omega=0.1,
-            initial_angle=math.atan2(40, 30),
+            initial_angle=math.pi / 4,  # 45 degrees
         )
-        .add_link("coupler", length=60)
-        .add_link("rocker", length=70)
+        .add_link("coupler", length=70)
+        .add_link("rocker", length=60)
         .connect("crank.tip", "coupler.0")
         .connect("coupler.1", "rocker.0")
         .connect("rocker.1", "ground.O2")

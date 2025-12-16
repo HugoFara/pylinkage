@@ -747,7 +747,7 @@ class MechanismBuilder:
                 f"Distance between centers: {dist:.3f}, sum of radii: {r1 + r2:.3f}"
             )
 
-        branch = self._configuration.get(port_id, 0)
+        branch = self._get_branch_for_joint(port_id)
         if n == 1 or branch == 0:
             return (px1, py1)
         else:
@@ -772,11 +772,29 @@ class MechanismBuilder:
                 f"Cannot assemble joint '{port_id}': circle doesn't intersect line."
             )
 
-        branch = self._configuration.get(port_id, 0)
+        branch = self._get_branch_for_joint(port_id)
         if n == 1 or branch == 0:
             return (px1, py1)
         else:
             return (px2, py2)
+
+    def _get_branch_for_joint(self, port_id: str) -> int:
+        """Get branch configuration for a joint.
+
+        Checks the port itself and all connected ports for branch settings.
+        """
+        # Check the port directly
+        if port_id in self._configuration:
+            return self._configuration[port_id]
+
+        # Check connected ports (they share the same joint)
+        for conn in self._connections:
+            if conn.port1 == port_id and conn.port2 in self._configuration:
+                return self._configuration[conn.port2]
+            if conn.port2 == port_id and conn.port1 in self._configuration:
+                return self._configuration[conn.port1]
+
+        return 0  # Default branch
 
     def _create_mechanism(
         self,

@@ -49,6 +49,7 @@ export function LinkageCanvas() {
 
   const mechanism = useMechanismStore((s) => s.mechanism);
   const loci = useMechanismStore((s) => s.loci);
+  const lociJointNames = useMechanismStore((s) => s.lociJointNames);
   const deleteLink = useMechanismStore((s) => s.deleteLink);
   const updateJointPosition = useMechanismStore((s) => s.updateJointPosition);
   const deleteJoint = useMechanismStore((s) => s.deleteJoint);
@@ -73,13 +74,17 @@ export function LinkageCanvas() {
 
   // Get joint position at current animation frame
   const getJointPosition = useCallback(
-    (joint: JointDict, index: number): Position => {
-      if (loci && loci.length > 0 && animationFrame < loci.length) {
-        return loci[animationFrame].positions[index];
+    (joint: JointDict): Position => {
+      if (loci && loci.length > 0 && animationFrame < loci.length && lociJointNames) {
+        // Find the index of this joint in the simulation's joint order
+        const lociIndex = lociJointNames.indexOf(joint.id);
+        if (lociIndex !== -1) {
+          return loci[animationFrame].positions[lociIndex];
+        }
       }
       return { x: joint.position[0] ?? 0, y: joint.position[1] ?? 0 };
     },
-    [loci, animationFrame]
+    [loci, lociJointNames, animationFrame]
   );
 
   // Convert screen to canvas coordinates
@@ -293,15 +298,22 @@ export function LinkageCanvas() {
 
   // Render loci (trajectory paths)
   const renderLoci = () => {
-    if (!showLoci || !loci || loci.length < 2 || !mechanism) return null;
+    if (!showLoci || !loci || loci.length < 2 || !mechanism || !lociJointNames) return null;
 
-    return mechanism.joints.map((joint, jointIndex) => {
+    return mechanism.joints.map((joint) => {
+      // Find the index of this joint in the simulation's joint order
+      const lociIndex = lociJointNames.indexOf(joint.id);
+      if (lociIndex === -1) return null;
+
       const points: number[] = [];
       for (let frame = 0; frame < loci.length; frame++) {
-        const pos = loci[frame].positions[jointIndex];
+        const pos = loci[frame].positions[lociIndex];
+        if (!pos) continue;
         const screenPos = canvasToScreen(pos.x, pos.y);
         points.push(screenPos.x, screenPos.y);
       }
+
+      if (points.length < 4) return null; // Need at least 2 points
 
       return (
         <Line
@@ -371,9 +383,9 @@ export function LinkageCanvas() {
       // Get positions of joints in this link
       const jointPositions: Position[] = link.joints
         .map((jointId) => {
-          const jointIndex = mechanism.joints.findIndex((j) => j.id === jointId);
-          if (jointIndex === -1) return null;
-          return getJointPosition(mechanism.joints[jointIndex], jointIndex);
+          const joint = mechanism.joints.find((j) => j.id === jointId);
+          if (!joint) return null;
+          return getJointPosition(joint);
         })
         .filter((p): p is Position => p !== null);
 
@@ -441,8 +453,8 @@ export function LinkageCanvas() {
   const renderJoints = () => {
     if (!mechanism) return null;
 
-    return mechanism.joints.map((joint, index) => {
-      const pos = getJointPosition(joint, index);
+    return mechanism.joints.map((joint) => {
+      const pos = getJointPosition(joint);
       const screenPos = canvasToScreen(pos.x, pos.y);
 
       const isSelected = selectedJointId === joint.id;

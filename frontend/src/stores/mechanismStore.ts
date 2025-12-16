@@ -20,10 +20,12 @@ interface MechanismState {
   // Current mechanism data
   mechanism: MechanismResponse | null;
   setMechanism: (mechanism: MechanismResponse | null) => void;
+  updateBuildableStatus: (is_buildable: boolean, error?: string | null) => void;
 
   // Simulation results cache
   loci: SimulationFrame[] | null;
-  setLoci: (loci: SimulationFrame[] | null) => void;
+  lociJointNames: string[] | null; // Joint names order for loci positions
+  setLoci: (loci: SimulationFrame[] | null, jointNames?: string[] | null) => void;
 
   // Link operations (primary)
   addLink: (link: LinkDict, newJoints?: JointDict[]) => void;
@@ -56,23 +58,37 @@ export const useMechanismStore = create<MechanismState>()(
     (set, get) => ({
       mechanism: null,
       setMechanism: (mechanism) => set({ mechanism, loci: null }),
-
-      loci: null,
-      setLoci: (loci) => set({ loci }),
-
-      addLink: (link, newJoints) => {
+      updateBuildableStatus: (is_buildable, error = null) => {
         const { mechanism } = get();
         if (!mechanism) return;
-
-        const updatedJoints = newJoints
-          ? [...mechanism.joints, ...newJoints]
-          : mechanism.joints;
-
         set({
           mechanism: {
             ...mechanism,
+            is_buildable,
+            error,
+          },
+        });
+      },
+
+      loci: null,
+      lociJointNames: null,
+      setLoci: (loci, jointNames = null) => set({ loci, lociJointNames: jointNames }),
+
+      addLink: (link, newJoints) => {
+        const { mechanism } = get();
+
+        // Create empty mechanism if none exists
+        const baseMechanism = mechanism ?? createEmptyMechanism();
+
+        const updatedJoints = newJoints
+          ? [...baseMechanism.joints, ...newJoints]
+          : baseMechanism.joints;
+
+        set({
+          mechanism: {
+            ...baseMechanism,
             joints: updatedJoints,
-            links: [...mechanism.links, link],
+            links: [...baseMechanism.links, link],
           },
           loci: null, // Invalidate cache
         });
@@ -259,7 +275,7 @@ export function resetCounters(): void {
 // Helper to create an empty mechanism
 export function createEmptyMechanism(): MechanismResponse {
   return {
-    id: '',
+    id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     name: 'New Mechanism',
     joints: [],
     links: [],

@@ -21,13 +21,14 @@ interface StreamState {
 
 interface UseSimulationStreamOptions {
   onFrame?: (frame: SimulationFrame) => void;
-  onComplete?: (frames: SimulationFrame[]) => void;
+  onComplete?: (frames: SimulationFrame[], jointNames: string[]) => void;
   onError?: (error: string) => void;
 }
 
 export function useSimulationStream(options: UseSimulationStreamOptions = {}) {
   const wsRef = useRef<WebSocket | null>(null);
   const framesRef = useRef<SimulationFrame[]>([]);
+  const jointNamesRef = useRef<string[]>([]);
 
   // Store callbacks in refs to avoid recreating connect on every render
   const onFrameRef = useRef(options.onFrame);
@@ -85,6 +86,7 @@ export function useSimulationStream(options: UseSimulationStreamOptions = {}) {
 
           switch (data.type) {
             case 'ready':
+              jointNamesRef.current = data.joint_names || [];
               setState((s) => ({
                 ...s,
                 jointNames: data.joint_names,
@@ -119,12 +121,16 @@ export function useSimulationStream(options: UseSimulationStreamOptions = {}) {
                 })
               );
               framesRef.current = frames;
+              // Fast endpoint may include joint_names in the frames message
+              if (data.joint_names) {
+                jointNamesRef.current = data.joint_names;
+              }
               setState((s) => ({
                 ...s,
                 progress: data.total_frames,
                 totalFrames: data.total_frames,
               }));
-              onCompleteRef.current?.(frames);
+              onCompleteRef.current?.(frames, jointNamesRef.current);
               break;
             }
 
@@ -142,7 +148,7 @@ export function useSimulationStream(options: UseSimulationStreamOptions = {}) {
                 progress: data.total_frames,
                 totalFrames: data.total_frames,
               }));
-              onCompleteRef.current?.(framesRef.current);
+              onCompleteRef.current?.(framesRef.current, jointNamesRef.current);
               break;
 
             case 'error':
