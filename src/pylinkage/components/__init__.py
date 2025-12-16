@@ -6,6 +6,7 @@ Classes:
     Component: Abstract base class for all kinematic elements
     ConnectedComponent: Base for elements with parent connections
     Ground: Fixed point on the frame (ground link)
+    PointTracker: Sensor for tracking positions on links
     _AnchorProxy: Proxy for output position access (internal)
 
 The Component class (and its alias Dyad) serves as the base for all
@@ -23,11 +24,13 @@ from ._base import ConnectedDyad as ConnectedDyad
 from ._base import Dyad as Dyad
 from ._base import _AnchorProxy as _AnchorProxy
 from .ground import Ground as Ground
+from .point_tracker import PointTracker as PointTracker
 
 __all__ = [
     "Component",
     "ConnectedComponent",
     "Ground",
+    "PointTracker",
     "_AnchorProxy",
     # Backwards compatibility
     "Dyad",

@@ -9,11 +9,13 @@ import math
 import pytest
 
 from pylinkage.dyads import (
+    ArcCrank,
     Crank,
     FixedDyad,
     Ground,
     LinearActuator,
     Linkage,
+    PointTracker,
     RRPDyad,
     RRRDyad,
 )
@@ -573,3 +575,298 @@ class TestIntegration:
 
         # Actuator output should have moved
         assert positions[-1][2] != positions[0][2]
+
+
+class TestArcCrank:
+    """Tests for ArcCrank (oscillating rotary input)."""
+
+    def test_arc_crank_creation(self):
+        """Test creating an arc crank."""
+        O = Ground(0.0, 0.0, name="O")
+        arc_crank = ArcCrank(
+            anchor=O,
+            radius=2.0,
+            angular_velocity=0.1,
+            arc_start=0.0,
+            arc_end=math.pi / 2,
+        )
+
+        assert arc_crank.anchor == O
+        assert arc_crank.radius == 2.0
+        assert arc_crank.angular_velocity == 0.1
+        assert arc_crank.arc_start == 0.0
+        assert arc_crank.arc_end == math.pi / 2
+        # Initial position at arc_start (angle 0) should be (2, 0)
+        assert arc_crank.x == pytest.approx(2.0)
+        assert arc_crank.y == pytest.approx(0.0)
+
+    def test_arc_crank_with_initial_angle(self):
+        """Test creating an arc crank with custom initial angle."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=O,
+            radius=1.0,
+            arc_start=0.0,
+            arc_end=math.pi,
+            initial_angle=math.pi / 2,
+        )
+
+        # Initial position at 90 degrees should be (0, 1)
+        assert arc_crank.x == pytest.approx(0.0)
+        assert arc_crank.y == pytest.approx(1.0)
+        assert arc_crank.angle == pytest.approx(math.pi / 2)
+
+    def test_arc_crank_output(self):
+        """Test arc crank output proxy."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(anchor=O, radius=1.0, arc_start=0, arc_end=math.pi)
+
+        assert arc_crank.output.position == arc_crank.position
+        assert arc_crank.output.x == arc_crank.x
+        assert arc_crank.output.y == arc_crank.y
+
+    def test_arc_crank_constraints(self):
+        """Test arc crank constraints (radius, arc_start, arc_end)."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=O, radius=2.0, arc_start=0.0, arc_end=math.pi / 2
+        )
+
+        assert arc_crank.get_constraints() == (2.0, 0.0, math.pi / 2)
+
+        arc_crank.set_constraints(3.0, math.pi / 4, math.pi)
+        assert arc_crank.radius == 3.0
+        assert arc_crank.arc_start == math.pi / 4
+        assert arc_crank.arc_end == math.pi
+
+    def test_arc_crank_reload(self):
+        """Test that arc crank rotates on reload."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=O,
+            radius=1.0,
+            angular_velocity=math.pi / 4,  # 45 degrees per step
+            arc_start=0.0,
+            arc_end=math.pi,
+        )
+
+        # Initial position
+        assert arc_crank.x == pytest.approx(1.0)
+        assert arc_crank.y == pytest.approx(0.0)
+        assert arc_crank.angle == pytest.approx(0.0)
+
+        # After one step (45 degrees)
+        arc_crank.reload(dt=1.0)
+        assert arc_crank.x == pytest.approx(math.cos(math.pi / 4))
+        assert arc_crank.y == pytest.approx(math.sin(math.pi / 4))
+        assert arc_crank.angle == pytest.approx(math.pi / 4)
+
+    def test_arc_crank_bounce_at_end(self):
+        """Test that arc crank bounces at arc_end."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=O,
+            radius=1.0,
+            angular_velocity=0.6,  # More than half of arc range
+            arc_start=0.0,
+            arc_end=1.0,  # 1 radian arc
+        )
+
+        # Start at arc_start
+        assert arc_crank.angle == pytest.approx(0.0)
+
+        # After one step, should hit arc_end and bounce back
+        arc_crank.reload(dt=1.0)
+        assert arc_crank.angle == pytest.approx(0.6)
+
+        # After second step, should overshoot arc_end and bounce
+        arc_crank.reload(dt=1.0)
+        # 0.6 + 0.6 = 1.2, overshoots by 0.2, so bounces to 1.0 - 0.2 = 0.8
+        assert arc_crank.angle == pytest.approx(0.8)
+
+    def test_arc_crank_bounce_at_start(self):
+        """Test that arc crank bounces at arc_start."""
+        O = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=O,
+            radius=1.0,
+            angular_velocity=0.6,
+            arc_start=0.0,
+            arc_end=1.0,
+            initial_angle=0.2,  # Start near arc_start
+        )
+
+        # Manually set direction to negative (moving toward arc_start)
+        arc_crank._direction = -1.0
+
+        # After one step, should hit arc_start and bounce
+        arc_crank.reload(dt=1.0)
+        # 0.2 - 0.6 = -0.4, undershoots by 0.4, so bounces to 0.0 + 0.4 = 0.4
+        assert arc_crank.angle == pytest.approx(0.4)
+
+    def test_arc_crank_invalid_arc_bounds(self):
+        """Test that invalid arc bounds raise ValueError."""
+        O = Ground(0.0, 0.0)
+
+        with pytest.raises(ValueError, match="arc_end must be greater than arc_start"):
+            ArcCrank(
+                anchor=O,
+                radius=1.0,
+                arc_start=math.pi,  # arc_start > arc_end
+                arc_end=0.0,
+            )
+
+    def test_arc_crank_invalid_initial_angle(self):
+        """Test that initial_angle out of range raises ValueError."""
+        O = Ground(0.0, 0.0)
+
+        with pytest.raises(ValueError, match="initial_angle must be between"):
+            ArcCrank(
+                anchor=O,
+                radius=1.0,
+                arc_start=0.0,
+                arc_end=math.pi / 2,
+                initial_angle=math.pi,  # Outside arc range
+            )
+
+    def test_arc_crank_in_linkage(self):
+        """Test arc crank in a linkage simulation."""
+        O1 = Ground(0.0, 0.0, name="O1")
+        O2 = Ground(2.0, 0.0, name="O2")
+        arc_crank = ArcCrank(
+            anchor=O1,
+            radius=0.5,
+            angular_velocity=0.1,
+            arc_start=0.0,
+            arc_end=math.pi / 2,
+        )
+        rocker = RRRDyad(
+            anchor1=arc_crank.output,
+            anchor2=O2,
+            distance1=1.5,
+            distance2=1.0,
+            name="rocker",
+        )
+
+        linkage = Linkage([O1, O2, arc_crank, rocker], name="ArcCrank-Four-Bar")
+
+        # Check that arc crank is properly tracked
+        assert len(linkage._arc_cranks) == 1
+
+        # Period should be based on arc range
+        period = linkage.get_rotation_period()
+        expected_period = round(2 * (math.pi / 2) / 0.1)  # 2 * arc_range / velocity
+        assert period == expected_period
+
+        # Should simulate without error
+        positions = list(linkage.step(iterations=10))
+        assert len(positions) == 10
+
+
+class TestPointTracker:
+    """Tests for PointTracker (sensor component)."""
+
+    def test_point_tracker_creation(self):
+        """Test creating a point tracker."""
+        A = Ground(0.0, 0.0, name="A")
+        B = Ground(1.0, 0.0, name="B")
+
+        tracker = PointTracker(
+            anchor1=A,
+            anchor2=B,
+            distance=1.0,
+            angle=math.pi / 2,
+            name="tracker",
+        )
+
+        # Should be perpendicular to AB at distance 1 from A
+        assert tracker.x == pytest.approx(0.0)
+        assert tracker.y == pytest.approx(1.0)
+
+    def test_point_tracker_no_constraints(self):
+        """Test that point tracker has no optimizable constraints."""
+        A = Ground(0.0, 0.0)
+        B = Ground(1.0, 0.0)
+
+        tracker = PointTracker(anchor1=A, anchor2=B, distance=1.0, angle=0.0)
+
+        # Should return empty tuple - no constraints for optimization
+        assert tracker.get_constraints() == ()
+
+        # set_constraints should be a no-op
+        tracker.set_constraints(2.0, math.pi / 4)
+        # Distance and angle should remain unchanged
+        assert tracker.distance == 1.0
+        assert tracker.angle == 0.0
+
+    def test_point_tracker_with_crank_output(self):
+        """Test point tracker connected to crank output."""
+        O1 = Ground(0.0, 0.0, name="O1")
+        O2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1)
+
+        tracker = PointTracker(
+            anchor1=crank.output,
+            anchor2=O2,
+            distance=0.5,
+            angle=math.pi / 4,
+            name="tracker",
+        )
+
+        # Position should be computed from crank output
+        assert tracker.x is not None
+        assert tracker.y is not None
+
+    def test_point_tracker_in_linkage(self):
+        """Test point tracker in a linkage simulation."""
+        O1 = Ground(0.0, 0.0, name="O1")
+        O2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=O1, radius=0.5, angular_velocity=0.1)
+        coupler = RRRDyad(
+            anchor1=crank.output,
+            anchor2=O2,
+            distance1=1.5,
+            distance2=1.0,
+            name="coupler",
+        )
+        tracker = PointTracker(
+            anchor1=crank.output,
+            anchor2=coupler,
+            distance=0.5,
+            angle=math.pi / 4,
+            name="tracker",
+        )
+
+        linkage = Linkage([O1, O2, crank, coupler, tracker], name="Tracked-Four-Bar")
+
+        # Tracker should not contribute to constraints
+        constraints = linkage.get_num_constraints()
+        # Should only have crank radius and coupler distances
+        assert len(constraints) == 3  # crank.radius, coupler.distance1, coupler.distance2
+
+        # Should simulate without error
+        positions = list(linkage.step(iterations=5))
+        assert len(positions) == 5
+
+        # Tracker position should change as crank rotates
+        assert positions[-1][4] != positions[0][4]
+
+    def test_point_tracker_vs_fixed_dyad(self):
+        """Test that PointTracker and FixedDyad compute same positions but have different constraints."""
+        A = Ground(0.0, 0.0)
+        B = Ground(1.0, 0.0)
+
+        # Same parameters for both
+        distance = 1.5
+        angle = math.pi / 3
+
+        tracker = PointTracker(anchor1=A, anchor2=B, distance=distance, angle=angle)
+        fixed = FixedDyad(anchor1=A, anchor2=B, distance=distance, angle=angle)
+
+        # Should compute the same position
+        assert tracker.x == pytest.approx(fixed.x)
+        assert tracker.y == pytest.approx(fixed.y)
+
+        # But tracker has no constraints, fixed has constraints
+        assert tracker.get_constraints() == ()
+        assert fixed.get_constraints() == (distance, angle)

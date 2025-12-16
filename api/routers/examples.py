@@ -42,19 +42,27 @@ def create_four_bar_mechanism() -> dict:
 
 
 def create_chebyshev_mechanism() -> dict:
-    """Create Chebyshev straight-line mechanism."""
+    """Create Chebyshev straight-line mechanism.
+
+    Classical Chebyshev linkage proportions (unit length a):
+    - Link 1 (ground): 4a = 100
+    - Links 2 & 4 (crank/rocker): 5a = 125
+    - Link 3 (coupler): 2a = 50
+
+    The coupler midpoint traces an approximate straight line.
+    """
     mechanism = (
         MechanismBuilder("Chebyshev Linkage")
         .add_ground_link("ground", ports={"O1": (0, 0), "O2": (100, 0)})
         .add_driver_link(
             "crank",
-            length=50,
+            length=125,
             motor_port="O1",
             omega=0.1,
             initial_angle=2.094,  # 120 degrees
         )
-        .add_link("coupler", length=100)
-        .add_link("rocker", length=100)
+        .add_link("coupler", length=50)
+        .add_link("rocker", length=125)
         .connect("crank.tip", "coupler.0")
         .connect("coupler.1", "rocker.0")
         .connect("rocker.1", "ground.O2")

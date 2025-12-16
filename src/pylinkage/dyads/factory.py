@@ -89,7 +89,7 @@ def create_dyad(
     x: float | None = None,
     y: float | None = None,
     name: str | None = None,
-) -> BinaryDyad | PPDyad:
+) -> RRRDyad | RRPDyad | PPDyad:
     """Create a dyad from an isomer signature.
 
     This factory function provides a unified interface for creating any of

@@ -55,6 +55,7 @@ Backwards Compatibility:
 
 # Primary exports - true Assur groups
 # Actuators
+from ..actuators import ArcCrank as ArcCrank
 from ..actuators import Crank as Crank
 from ..actuators import LinearActuator as LinearActuator
 
@@ -65,8 +66,9 @@ from ..components import ConnectedComponent as ConnectedComponent
 from ..components import ConnectedDyad as ConnectedDyad  # Alias for ConnectedComponent
 from ..components import Dyad as Dyad  # Alias for Component
 
-# Ground from components
+# Ground and sensors from components
 from ..components import Ground as Ground
+from ..components import PointTracker as PointTracker
 from ..components import _AnchorProxy as _AnchorProxy
 
 # Linkage container
@@ -95,7 +97,9 @@ __all__ = [
     "get_required_constraints",
     # Re-exports for backwards compatibility
     "Ground",
+    "PointTracker",
     "Crank",
+    "ArcCrank",
     "LinearActuator",
     "Linkage",
     # Base classes

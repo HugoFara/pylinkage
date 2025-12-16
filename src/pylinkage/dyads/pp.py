@@ -126,6 +126,11 @@ class PPDyad(ConnectedDyad):
             self.reload(0)
         except pl_exceptions.UnbuildableError:
             # Reset to centroid if unbuildable at init
+            # Type assertions are valid since we already checked for None above
+            assert l1_p1[0] is not None and l1_p2[0] is not None
+            assert l2_p1[0] is not None and l2_p2[0] is not None
+            assert l1_p1[1] is not None and l1_p2[1] is not None
+            assert l2_p1[1] is not None and l2_p2[1] is not None
             self.x = (l1_p1[0] + l1_p2[0] + l2_p1[0] + l2_p2[0]) / 4.0
             self.y = (l1_p1[1] + l1_p2[1] + l2_p1[1] + l2_p2[1]) / 4.0
 
