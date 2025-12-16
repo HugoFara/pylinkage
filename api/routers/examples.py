@@ -50,22 +50,34 @@ def create_chebyshev_mechanism() -> dict:
     - Link 3 (coupler): 2a = 50
 
     The coupler midpoint traces an approximate straight line.
+
+    This mechanism uses an arc crank (oscillating driver) since the
+    Chebyshev linkage doesn't complete full rotations. The valid angle
+    range is approximately 36.87° to 101.5° (0.644 to 1.772 radians).
     """
+    # Valid angle range for Chebyshev: arccos(0.8) to arccos(-0.2)
+    arc_start = math.acos(0.8)  # ~0.644 rad (~37°)
+    arc_end = math.acos(-0.2)  # ~1.772 rad (~101°)
+
     mechanism = (
         MechanismBuilder("Chebyshev Linkage")
         .add_ground_link("ground", ports={"O1": (0, 0), "O2": (100, 0)})
-        .add_driver_link(
+        .add_arc_driver_link(
             "crank",
             length=125,
             motor_port="O1",
-            omega=0.1,
-            initial_angle=2.094,  # 120 degrees
+            omega=0.05,
+            arc_start=arc_start,
+            arc_end=arc_end,
+            initial_angle=(arc_start + arc_end) / 2,  # Start at midpoint
         )
         .add_link("coupler", length=50)
         .add_link("rocker", length=125)
         .connect("crank.tip", "coupler.0")
         .connect("coupler.1", "rocker.0")
         .connect("rocker.1", "ground.O2")
+        # Track the midpoint of the coupler - this draws the straight line
+        .add_point_tracker("coupler_midpoint", "coupler.0", "coupler.1")
         .build()
     )
     return mechanism_to_dict(mechanism)

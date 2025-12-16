@@ -36,14 +36,16 @@ class JointType(IntEnum):
         REVOLUTE: Pin joint allowing rotation (R). 1 DOF rotation.
         PRISMATIC: Slider joint allowing translation (P). 1 DOF translation.
         GROUND: Fixed revolute joint on frame. Special case for mechanism module.
+        TRACKER: Observer joint (T). 0 DOF, just tracks a position.
     """
 
     REVOLUTE = 1
     PRISMATIC = 2
     GROUND = 3  # Fixed revolute on frame
+    TRACKER = 4  # Observer joint (e.g., coupler point)
 
     def __str__(self) -> str:
-        """Return single-letter representation (R, P, G)."""
+        """Return single-letter representation (R, P, G, T)."""
         return self.name[0]
 
 

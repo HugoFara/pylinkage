@@ -24,6 +24,7 @@ __all__ = [
     "RevoluteJoint",
     "PrismaticJoint",
     "GroundJoint",
+    "TrackerJoint",
     "AnyJoint",
 ]
 
@@ -199,5 +200,66 @@ class GroundJoint(RevoluteJoint):
         return JointType.GROUND
 
 
+@dataclass(eq=False)
+class TrackerJoint(Joint):
+    """Observer joint that tracks a position relative to two reference joints.
+
+    A tracker joint is a sensor/observer that computes its position as a
+    point at a fixed distance and angle from a reference joint, with the
+    angle measured relative to the line connecting the two reference joints.
+
+    This is useful for:
+    - Tracking coupler points on a link (e.g., Chebyshev straight-line mechanism)
+    - Observing positions without affecting the kinematic chain
+    - Adding tracer points for visualization
+
+    Attributes:
+        ref_joint1_id: ID of the first reference joint (origin for polar coords).
+        ref_joint2_id: ID of the second reference joint (defines reference direction).
+        distance: Distance from ref_joint1 to this tracker.
+        angle: Angle offset from ref_joint1->ref_joint2 direction (radians).
+
+    Example:
+        >>> # Track the midpoint of a link between joints A and B
+        >>> tracker = TrackerJoint("midpoint", ref_joint1_id="A", ref_joint2_id="B",
+        ...                        distance=0.5, angle=0.0)
+    """
+
+    ref_joint1_id: str = ""
+    ref_joint2_id: str = ""
+    distance: float = 0.0  # Distance from ref_joint1
+    angle: float = 0.0  # Angle relative to ref_joint1->ref_joint2 direction
+
+    @property
+    def joint_type(self) -> JointType:
+        """Return TRACKER type."""
+        return JointType.TRACKER
+
+    def update_position(
+        self, ref1_pos: tuple[float, float], ref2_pos: tuple[float, float]
+    ) -> None:
+        """Compute position from reference joint positions.
+
+        Args:
+            ref1_pos: Position of first reference joint (x, y).
+            ref2_pos: Position of second reference joint (x, y).
+        """
+        import math
+
+        x1, y1 = ref1_pos
+        x2, y2 = ref2_pos
+
+        # Compute angle from ref1 to ref2
+        base_angle = math.atan2(y2 - y1, x2 - x1)
+
+        # Add the offset angle
+        total_angle = base_angle + self.angle
+
+        # Compute position
+        new_x = x1 + self.distance * math.cos(total_angle)
+        new_y = y1 + self.distance * math.sin(total_angle)
+        self.set_coord(new_x, new_y)
+
+
 # Type alias for any joint
-AnyJoint = RevoluteJoint | PrismaticJoint | GroundJoint
+AnyJoint = RevoluteJoint | PrismaticJoint | GroundJoint | TrackerJoint

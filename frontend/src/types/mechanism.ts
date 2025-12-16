@@ -4,7 +4,7 @@
  */
 
 // Joint types
-export type JointType = 'ground' | 'revolute' | 'prismatic';
+export type JointType = 'ground' | 'revolute' | 'prismatic' | 'tracker';
 
 export interface JointDict {
   id: string;
@@ -14,10 +14,15 @@ export interface JointDict {
   // Prismatic-specific
   axis?: [number, number];
   slide_distance?: number;
+  // Tracker-specific
+  ref_joint1_id?: string;
+  ref_joint2_id?: string;
+  distance?: number;
+  angle?: number;
 }
 
 // Link types
-export type LinkType = 'ground' | 'driver' | 'link';
+export type LinkType = 'ground' | 'driver' | 'arc_driver' | 'link';
 
 export interface LinkDict {
   id: string;
@@ -28,6 +33,9 @@ export interface LinkDict {
   angular_velocity?: number;
   initial_angle?: number;
   motor_joint?: string; // Reference to ground joint ID
+  // Arc-driver-specific
+  arc_start?: number;
+  arc_end?: number;
 }
 
 // Mechanism container (link-first format)
@@ -125,6 +133,7 @@ export interface LinkPropertiesDialog {
 export const LINK_COLORS: Record<LinkType, string> = {
   ground: '#f85149', // Red for ground link
   driver: '#d29922', // Orange for driver link
+  arc_driver: '#d29922', // Orange for arc driver link (same as driver)
   link: '#58a6ff', // Blue for regular links
 };
 
@@ -133,6 +142,7 @@ export const JOINT_COLORS: Record<JointType, string> = {
   ground: '#f85149', // Red for ground
   revolute: '#58a6ff', // Blue for revolute
   prismatic: '#3fb950', // Green for prismatic
+  tracker: '#a371f7', // Purple for tracker (tracer points)
 };
 
 // Link style constants
@@ -140,6 +150,7 @@ export const LINK_STYLES = {
   strokeWidth: {
     ground: 8,
     driver: 6,
+    arc_driver: 6,
     link: 6,
   },
   hoverStrokeWidth: 8,

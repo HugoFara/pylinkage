@@ -22,8 +22,8 @@ from typing import TYPE_CHECKING
 
 from ..exceptions import UnbuildableError
 from ..solver.joints import solve_linear, solve_revolute
-from .joint import GroundJoint, Joint, JointType, PrismaticJoint, RevoluteJoint
-from .link import DriverLink, GroundLink, Link
+from .joint import GroundJoint, Joint, JointType, PrismaticJoint, RevoluteJoint, TrackerJoint
+from .link import ArcDriverLink, DriverLink, GroundLink, Link
 
 if TYPE_CHECKING:
     from .._types import Coord, MaybeCoord
@@ -62,7 +62,7 @@ class Mechanism:
 
     # Internal state
     _solve_order: list[Joint] = field(default_factory=list, repr=False)
-    _driver_links: list[DriverLink] = field(default_factory=list, repr=False)
+    _driver_links: list[DriverLink | ArcDriverLink] = field(default_factory=list, repr=False)
     _joint_map: dict[str, Joint] = field(default_factory=dict, repr=False)
     _link_map: dict[str, Link] = field(default_factory=dict, repr=False)
 
@@ -78,7 +78,8 @@ class Mechanism:
         self._joint_map = {j.id: j for j in self.joints}
         self._link_map = {link.id: link for link in self.links}
         self._driver_links = [
-            link for link in self.links if isinstance(link, DriverLink)
+            link for link in self.links
+            if isinstance(link, (DriverLink, ArcDriverLink))
         ]
 
         # Auto-detect ground link if not specified
@@ -214,6 +215,7 @@ class Mechanism:
 
         1. Advance all driver links
         2. Solve all dependent joints in order
+        3. Update tracker joints
         """
         # Step drivers
         for driver in self._driver_links:
@@ -227,6 +229,17 @@ class Mechanism:
                 continue  # Driver outputs already updated
 
             self._solve_joint(joint)
+
+        # Update tracker joints (they depend on solved joints)
+        for joint in self.joints:
+            if isinstance(joint, TrackerJoint):
+                ref1 = self._joint_map.get(joint.ref_joint1_id)
+                ref2 = self._joint_map.get(joint.ref_joint2_id)
+                if ref1 is not None and ref2 is not None:
+                    pos1 = ref1.position
+                    pos2 = ref2.position
+                    if pos1[0] is not None and pos1[1] is not None and pos2[0] is not None and pos2[1] is not None:
+                        joint.update_position((pos1[0], pos1[1]), (pos2[0], pos2[1]))
 
     def _solve_joint(self, joint: Joint) -> None:
         """Solve the position of a single joint.
@@ -308,8 +321,10 @@ class Mechanism:
             joint.set_coord(new_x, new_y)
 
     def get_rotation_period(self) -> int:
-        """Get the number of steps for one full rotation.
+        """Get the number of steps for one full cycle.
 
+        For continuous rotation drivers: steps for 2*pi rotation.
+        For arc drivers: steps for a full back-and-forth oscillation.
         Based on the slowest driver link's angular velocity.
         """
         if not self._driver_links:
@@ -324,7 +339,15 @@ class Mechanism:
         if min_omega == 0:
             return 100
 
-        # Steps for 2*pi rotation
+        # Check if we have arc drivers - they need different period calculation
+        for driver in self._driver_links:
+            if isinstance(driver, ArcDriverLink):
+                # For arc driver: one full oscillation (there and back)
+                arc_sweep = abs(driver.arc_end - driver.arc_start)
+                # Full oscillation = 2 * arc_sweep (forward + backward)
+                return int(2 * arc_sweep / min_omega)
+
+        # Steps for 2*pi rotation (standard crank)
         return int(2 * math.pi / min_omega)
 
     def get_constraints(self) -> list[float]:
@@ -338,7 +361,7 @@ class Mechanism:
             if isinstance(link, GroundLink):
                 continue  # Ground link has fixed constraints
 
-            if isinstance(link, DriverLink):
+            if isinstance(link, (DriverLink, ArcDriverLink)):
                 # Driver: just the radius
                 radius = link.radius
                 if radius is not None:
@@ -369,7 +392,7 @@ class Mechanism:
             if idx >= len(values):
                 break
 
-            if isinstance(link, DriverLink):
+            if isinstance(link, (DriverLink, ArcDriverLink)):
                 # Update driver radius by moving output joint
                 new_radius = values[idx]
                 idx += 1

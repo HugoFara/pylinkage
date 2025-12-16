@@ -33,8 +33,8 @@ from ..geometry.secants import (
     circle_intersect,
     circle_line_from_points_intersection,
 )
-from .joint import GroundJoint, PrismaticJoint, RevoluteJoint
-from .link import DriverLink, GroundLink, Link
+from .joint import GroundJoint, PrismaticJoint, RevoluteJoint, TrackerJoint
+from .link import ArcDriverLink, DriverLink, GroundLink, Link
 from .mechanism import Mechanism
 
 
@@ -69,9 +69,12 @@ class PendingLink:
         length: For binary links, the distance between ports.
         port_geometry: For ternary+ links, local coordinates of each port.
         is_driver: True if this link is motor-driven.
+        is_arc_driver: True if this is an arc (oscillating) driver.
         motor_port: For driver links, the ground port where motor attaches.
         angular_velocity: For driver links, rotation rate in rad/step.
         initial_angle: For driver links, starting angle in radians.
+        arc_start: For arc drivers, minimum angle limit.
+        arc_end: For arc drivers, maximum angle limit.
     """
 
     id: str
@@ -79,9 +82,12 @@ class PendingLink:
     length: float | None = None
     port_geometry: dict[str, tuple[float, float]] | None = None
     is_driver: bool = False
+    is_arc_driver: bool = False
     motor_port: str | None = None
     angular_velocity: float = 0.0
     initial_angle: float = 0.0
+    arc_start: float = 0.0
+    arc_end: float = math.pi
 
     def get_port_distance(self, port1_id: str, port2_id: str) -> float | None:
         """Get distance between two ports on this link.
@@ -162,6 +168,27 @@ class PrismaticConnection:
 
 
 @dataclass
+class PendingTracker:
+    """A point tracker awaiting assembly.
+
+    Stores tracker definition before reference joint positions are computed.
+
+    Attributes:
+        id: Unique identifier for the tracker.
+        ref_port1: Full port identifier for first reference joint.
+        ref_port2: Full port identifier for second reference joint.
+        distance: Distance from ref_port1 to tracker.
+        angle: Angle offset from ref_port1->ref_port2 direction (radians).
+    """
+
+    id: str
+    ref_port1: str  # e.g., "coupler.0"
+    ref_port2: str  # e.g., "coupler.1"
+    distance: float
+    angle: float = 0.0
+
+
+@dataclass
 class MechanismBuilder:
     """Builder for creating Mechanism objects using a links-first approach.
 
@@ -195,6 +222,7 @@ class MechanismBuilder:
     )
     _slide_axes: dict[str, SlideAxis] = field(default_factory=dict, repr=False)
     _configuration: dict[str, int] = field(default_factory=dict, repr=False)
+    _pending_trackers: list[PendingTracker] = field(default_factory=list, repr=False)
 
     def add_ground_link(
         self,
@@ -256,6 +284,57 @@ class MechanismBuilder:
             motor_port=motor_port,
             angular_velocity=omega,
             initial_angle=initial_angle,
+        )
+        self._pending_links[id] = link
+        return self
+
+    def add_arc_driver_link(
+        self,
+        id: str,
+        length: float,
+        motor_port: str,
+        omega: float = 0.1,
+        arc_start: float = 0.0,
+        arc_end: float = math.pi,
+        initial_angle: float | None = None,
+    ) -> Self:
+        """Add an oscillating motor-driven link (arc crank).
+
+        An arc driver link oscillates around a ground port between angle
+        limits (arc_start and arc_end), reversing direction at boundaries.
+        Unlike add_driver_link which creates a continuously rotating crank,
+        this creates a bounded-rotation driver.
+
+        Args:
+            id: Unique identifier for the link.
+            length: Distance from motor to output (crank radius).
+            motor_port: Name of the ground port where motor attaches.
+            omega: Angular velocity magnitude in radians per step.
+            arc_start: Minimum angle limit in radians.
+            arc_end: Maximum angle limit in radians.
+            initial_angle: Starting angle (defaults to arc_start).
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> builder.add_arc_driver_link("crank", length=1.0, motor_port="O1",
+            ...                             arc_start=0.5, arc_end=2.5)
+        """
+        if initial_angle is None:
+            initial_angle = arc_start
+
+        link = PendingLink(
+            id=id,
+            ports={"motor": Port("motor"), "tip": Port("tip")},
+            length=length,
+            is_driver=True,
+            is_arc_driver=True,
+            motor_port=motor_port,
+            angular_velocity=omega,
+            initial_angle=initial_angle,
+            arc_start=arc_start,
+            arc_end=arc_end,
         )
         self._pending_links[id] = link
         return self
@@ -383,6 +462,55 @@ class MechanismBuilder:
             >>> builder.add_slide_axis("rail", through=(0, 0), direction=(1, 0))
         """
         self._slide_axes[id] = SlideAxis(id, through, direction)
+        return self
+
+    def add_point_tracker(
+        self,
+        id: str,
+        ref_port1: str,
+        ref_port2: str,
+        distance: float | None = None,
+        angle: float = 0.0,
+    ) -> Self:
+        """Add a point tracker (observer) on a link.
+
+        A point tracker observes a position at a fixed distance and angle
+        from ref_port1, with the angle measured relative to the line from
+        ref_port1 to ref_port2. This is useful for tracking coupler points.
+
+        For tracking the midpoint of a link, set distance to half the link
+        length and angle to 0.
+
+        Args:
+            id: Unique identifier for the tracker.
+            ref_port1: Reference port for origin (e.g., "coupler.0").
+            ref_port2: Reference port for direction (e.g., "coupler.1").
+            distance: Distance from ref_port1. If None, uses half the link length.
+            angle: Angle offset from ref_port1->ref_port2 direction (radians).
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> # Track the midpoint of the coupler link
+            >>> builder.add_point_tracker("coupler_mid", "coupler.0", "coupler.1")
+        """
+        # If distance is None, compute it later from the link length
+        if distance is None:
+            # Extract link id from port (format: "link_id.port_id")
+            link_id = ref_port1.split(".")[0]
+            if link_id in self._pending_links:
+                link = self._pending_links[link_id]
+                if link.length is not None:
+                    distance = link.length / 2
+                else:
+                    distance = 0.0
+            else:
+                distance = 0.0
+
+        self._pending_trackers.append(
+            PendingTracker(id, ref_port1, ref_port2, distance, angle)
+        )
         return self
 
     def connect(self, port1: str, port2: str) -> Self:
@@ -873,19 +1001,64 @@ class MechanismBuilder:
                 motor_port_id = f"{self._ground_link_id}.{link_def.motor_port}"
                 motor_joint = joint_map.get(motor_port_id)
                 if motor_joint and isinstance(motor_joint, GroundJoint):
-                    link = DriverLink(
-                        link_def.id,
-                        joints=link_joints,
-                        motor_joint=motor_joint,
-                        angular_velocity=link_def.angular_velocity,
-                        initial_angle=link_def.initial_angle,
-                    )
+                    if link_def.is_arc_driver:
+                        # Create arc driver (oscillating crank)
+                        link = ArcDriverLink(
+                            link_def.id,
+                            joints=link_joints,
+                            motor_joint=motor_joint,
+                            angular_velocity=link_def.angular_velocity,
+                            arc_start=link_def.arc_start,
+                            arc_end=link_def.arc_end,
+                            initial_angle=link_def.initial_angle,
+                        )
+                    else:
+                        # Create standard driver (continuous rotation)
+                        link = DriverLink(
+                            link_def.id,
+                            joints=link_joints,
+                            motor_joint=motor_joint,
+                            angular_velocity=link_def.angular_velocity,
+                            initial_angle=link_def.initial_angle,
+                        )
                 else:
                     link = Link(link_def.id, joints=link_joints)
             else:
                 link = Link(link_def.id, joints=link_joints)
 
             links.append(link)
+
+        # Create tracker joints
+        for tracker_def in self._pending_trackers:
+            # Find reference joints
+            ref1_joint = joint_map.get(tracker_def.ref_port1)
+            ref2_joint = joint_map.get(tracker_def.ref_port2)
+
+            if ref1_joint is None or ref2_joint is None:
+                continue  # Skip if reference joints not found
+
+            ref1_pos = positions.get(tracker_def.ref_port1, (0.0, 0.0))
+            ref2_pos = positions.get(tracker_def.ref_port2, (0.0, 0.0))
+
+            # Compute tracker position
+            import math
+
+            x1, y1 = ref1_pos
+            x2, y2 = ref2_pos
+            base_angle = math.atan2(y2 - y1, x2 - x1)
+            total_angle = base_angle + tracker_def.angle
+            tracker_x = x1 + tracker_def.distance * math.cos(total_angle)
+            tracker_y = y1 + tracker_def.distance * math.sin(total_angle)
+
+            tracker_joint = TrackerJoint(
+                tracker_def.id,
+                position=(tracker_x, tracker_y),
+                ref_joint1_id=ref1_joint.id,
+                ref_joint2_id=ref2_joint.id,
+                distance=tracker_def.distance,
+                angle=tracker_def.angle,
+            )
+            joints.append(tracker_joint)
 
         return Mechanism(self.name, joints=joints, links=links)
 

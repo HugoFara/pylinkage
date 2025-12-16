@@ -316,5 +316,118 @@ class DriverLink(Link):
         self.current_angle = self.initial_angle
 
 
+@dataclass(eq=False)
+class ArcDriverLink(Link):
+    """An input link that oscillates within an arc (bounded rotation).
+
+    Unlike DriverLink which rotates continuously, ArcDriverLink oscillates
+    between angle limits (arc_start and arc_end), reversing direction when
+    reaching boundaries. This models mechanisms like rockers that don't
+    complete full rotations.
+
+    Attributes:
+        motor_joint: The ground joint where the motor is attached.
+        angular_velocity: Rotation rate magnitude in radians per step.
+        arc_start: Minimum angle limit in radians.
+        arc_end: Maximum angle limit in radians.
+        initial_angle: Starting angle in radians (must be between limits).
+        current_angle: Current angle during simulation.
+        _direction: Current rotation direction (+1 or -1).
+
+    Example:
+        >>> from pylinkage.mechanism.joint import GroundJoint, RevoluteJoint
+        >>> O = GroundJoint("O", position=(0.0, 0.0))
+        >>> A = RevoluteJoint("A", position=(1.0, 0.0))
+        >>> arc_crank = ArcDriverLink("crank", joints=[O, A], motor_joint=O,
+        ...                           angular_velocity=0.1,
+        ...                           arc_start=0.5, arc_end=2.5)
+    """
+
+    motor_joint: GroundJoint | None = None
+    angular_velocity: float = 0.1  # radians per step (magnitude)
+    arc_start: float = 0.0  # minimum angle
+    arc_end: float = math.pi  # maximum angle
+    initial_angle: float | None = None  # defaults to arc_start
+    current_angle: float = field(default=0.0, repr=False)
+    _direction: float = field(default=1.0, repr=False)  # +1 or -1
+
+    def __post_init__(self) -> None:
+        """Initialize current angle from initial angle."""
+        super().__post_init__()
+        if self.initial_angle is None:
+            self.initial_angle = self.arc_start
+        self.current_angle = self.initial_angle
+
+    @property
+    def link_type(self) -> LinkType:
+        """Return DRIVER type."""
+        return LinkType.DRIVER
+
+    @property
+    def radius(self) -> float | None:
+        """Return the crank radius (distance from motor to output joint)."""
+        if len(self.joints) != 2 or self.motor_joint is None:
+            return None
+
+        output_joint = self.other_joint(self.motor_joint)
+        if output_joint is None:
+            return None
+
+        return self.get_distance(self.motor_joint, output_joint)
+
+    @property
+    def output_joint(self) -> Joint | None:
+        """Return the non-motor joint (output of the crank)."""
+        if self.motor_joint is None:
+            return None
+        return self.other_joint(self.motor_joint)
+
+    def step(self, dt: float = 1.0) -> None:
+        """Advance the arc crank by one time step.
+
+        Updates current_angle and repositions the output joint.
+        Reverses direction when hitting angle limits.
+
+        Args:
+            dt: Time step multiplier (default 1.0 = full step).
+        """
+        # Advance angle in current direction
+        self.current_angle += self._direction * self.angular_velocity * dt
+
+        # Bounce off limits
+        if self.current_angle >= self.arc_end:
+            self.current_angle = 2 * self.arc_end - self.current_angle
+            self._direction = -1.0
+        elif self.current_angle <= self.arc_start:
+            self.current_angle = 2 * self.arc_start - self.current_angle
+            self._direction = 1.0
+
+        # Clamp to valid range (safety)
+        self.current_angle = max(self.arc_start, min(self.arc_end, self.current_angle))
+
+        # Update output joint position
+        output = self.output_joint
+        if output is None or self.motor_joint is None:
+            return
+
+        radius = self.radius
+        if radius is None:
+            return
+
+        mx, my = self.motor_joint.position
+        if mx is None or my is None:
+            return
+
+        # Compute new position from angle
+        new_x = mx + radius * math.cos(self.current_angle)
+        new_y = my + radius * math.sin(self.current_angle)
+        output.set_coord(new_x, new_y)
+
+    def reset(self) -> None:
+        """Reset the arc crank to its initial angle."""
+        self.current_angle = self.initial_angle if self.initial_angle is not None else self.arc_start
+        self._direction = 1.0
+
+
 # Type alias for any link
-AnyLink = Link | GroundLink | DriverLink
+AnyLink = Link | GroundLink | DriverLink | ArcDriverLink

@@ -14,8 +14,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .joint import GroundJoint, Joint, PrismaticJoint, RevoluteJoint
-from .link import DriverLink, GroundLink, Link
+from .joint import GroundJoint, Joint, PrismaticJoint, RevoluteJoint, TrackerJoint
+from .link import ArcDriverLink, DriverLink, GroundLink, Link
 from .mechanism import Mechanism
 
 
@@ -41,6 +41,11 @@ def joint_to_dict(joint: Joint) -> dict[str, Any]:
     if isinstance(joint, PrismaticJoint):
         data["axis"] = list(joint.axis)
         data["slide_distance"] = joint.slide_distance
+    elif isinstance(joint, TrackerJoint):
+        data["ref_joint1_id"] = joint.ref_joint1_id
+        data["ref_joint2_id"] = joint.ref_joint2_id
+        data["distance"] = joint.distance
+        data["angle"] = joint.angle
 
     return data
 
@@ -51,6 +56,8 @@ def _joint_type_name(joint: Joint) -> str:
         return "ground"
     if isinstance(joint, PrismaticJoint):
         return "prismatic"
+    if isinstance(joint, TrackerJoint):
+        return "tracker"
     if isinstance(joint, RevoluteJoint):
         return "revolute"
     return "revolute"  # Default
@@ -89,6 +96,16 @@ def joint_from_dict(data: dict[str, Any]) -> Joint:
             axis=axis,
             slide_distance=slide_distance,
         )
+    if joint_type == "tracker":
+        return TrackerJoint(
+            id=joint_id,
+            position=pos,
+            name=name,
+            ref_joint1_id=data.get("ref_joint1_id", ""),
+            ref_joint2_id=data.get("ref_joint2_id", ""),
+            distance=data.get("distance", 0.0),
+            angle=data.get("angle", 0.0),
+        )
     # Default: revolute
     return RevoluteJoint(
         id=joint_id,
@@ -116,7 +133,15 @@ def link_to_dict(link: Link) -> dict[str, Any]:
         data["name"] = link.name
 
     # Type-specific attributes
-    if isinstance(link, DriverLink):
+    if isinstance(link, ArcDriverLink):
+        # ArcDriverLink must come before DriverLink (it's a subclass check order issue)
+        data["angular_velocity"] = link.angular_velocity
+        data["arc_start"] = link.arc_start
+        data["arc_end"] = link.arc_end
+        data["initial_angle"] = link.initial_angle
+        if link.motor_joint:
+            data["motor_joint"] = link.motor_joint.id
+    elif isinstance(link, DriverLink):
         data["angular_velocity"] = link.angular_velocity
         data["initial_angle"] = link.initial_angle
         if link.motor_joint:
@@ -129,6 +154,8 @@ def _link_type_name(link: Link) -> str:
     """Get the type name for a link."""
     if isinstance(link, GroundLink):
         return "ground"
+    if isinstance(link, ArcDriverLink):
+        return "arc_driver"
     if isinstance(link, DriverLink):
         return "driver"
     return "link"
@@ -158,6 +185,24 @@ def link_from_dict(
             id=link_id,
             joints=joints,
             name=name,
+        )
+    if link_type == "arc_driver":
+        motor_joint_id = data.get("motor_joint")
+        motor_joint = None
+        if motor_joint_id and motor_joint_id in joint_map:
+            mj = joint_map[motor_joint_id]
+            if isinstance(mj, GroundJoint):
+                motor_joint = mj
+
+        return ArcDriverLink(
+            id=link_id,
+            joints=joints,
+            name=name,
+            motor_joint=motor_joint,
+            angular_velocity=data.get("angular_velocity", 0.1),
+            arc_start=data.get("arc_start", 0.0),
+            arc_end=data.get("arc_end", 3.14159),
+            initial_angle=data.get("initial_angle"),
         )
     if link_type == "driver":
         motor_joint_id = data.get("motor_joint")
