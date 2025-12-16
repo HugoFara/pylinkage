@@ -1,1 +1,0 @@
-"""Prebuilt linkage examples."""
