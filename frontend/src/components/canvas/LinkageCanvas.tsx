@@ -53,9 +53,12 @@ export function LinkageCanvas() {
   const loci = useMechanismStore((s) => s.loci);
   const lociJointNames = useMechanismStore((s) => s.lociJointNames);
   const deleteLink = useMechanismStore((s) => s.deleteLink);
+  const updateLink = useMechanismStore((s) => s.updateLink);
+  const updateJoint = useMechanismStore((s) => s.updateJoint);
   const updateJointPosition = useMechanismStore((s) => s.updateJointPosition);
   const deleteJoint = useMechanismStore((s) => s.deleteJoint);
   const findJointAtPosition = useMechanismStore((s) => s.findJointAtPosition);
+  const getLinksForJoint = useMechanismStore((s) => s.getLinksForJoint);
 
   // Handle window resize
   useEffect(() => {
@@ -247,10 +250,33 @@ export function LinkageCanvas() {
       if (selectedJointId === joint.id) {
         selectJoint(null);
       }
-    } else if (mode === 'set-ground' && joint.type !== 'ground') {
-      // Convert joint to ground
-      updateJointPosition(joint.id, joint.position[0] ?? 0, joint.position[1] ?? 0);
-      // Note: Would need to update joint type, which requires mechanism store change
+    } else if (mode === 'place-crank' || mode === 'place-arccrank') {
+      // Make connected link a driver with this joint as the motor (grounded pivot)
+      // Find links connected to this joint
+      const connectedLinks = getLinksForJoint(joint.id);
+
+      if (connectedLinks.length > 0) {
+        // Convert the first connected link to a driver
+        const linkToConvert = connectedLinks[0];
+        const driverType = mode === 'place-crank' ? 'driver' : 'arc_driver';
+
+        updateLink(linkToConvert.id, {
+          type: driverType,
+          motor_joint: joint.id,
+          angular_velocity: 0.1,
+          initial_angle: 0,
+          ...(mode === 'place-arccrank' ? { arc_start: 0, arc_end: Math.PI } : {}),
+        });
+      }
+    } else if (mode === 'place-revolute-joint') {
+      // Convert any joint to revolute
+      updateJoint(joint.id, { type: 'revolute' });
+    } else if (mode === 'place-prismatic-joint') {
+      // Convert any joint to prismatic
+      updateJoint(joint.id, { type: 'prismatic' });
+    } else if (mode === 'place-tracker-joint') {
+      // Convert any joint to tracker
+      updateJoint(joint.id, { type: 'tracker' });
     } else {
       selectJoint(joint.id);
     }

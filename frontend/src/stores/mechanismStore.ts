@@ -34,6 +34,7 @@ interface MechanismState {
 
   // Joint operations (secondary)
   addJoint: (joint: JointDict) => void;
+  updateJoint: (id: string, updates: Partial<JointDict>) => void;
   updateJointPosition: (id: string, x: number, y: number) => void;
   deleteJoint: (id: string) => void;
 
@@ -154,6 +155,21 @@ export const useMechanismStore = create<MechanismState>()(
         });
       },
 
+      updateJoint: (id, updates) => {
+        const { mechanism } = get();
+        if (!mechanism) return;
+
+        set({
+          mechanism: {
+            ...mechanism,
+            joints: mechanism.joints.map((j) =>
+              j.id === id ? { ...j, ...updates } : j
+            ),
+          },
+          loci: null,
+        });
+      },
+
       updateJointPosition: (id, x, y) => {
         const { mechanism } = get();
         if (!mechanism) return;
@@ -264,7 +280,6 @@ export function generateLinkId(type: LinkType): string {
 export function generateJointId(type: JointType): string {
   jointCounter++;
   const prefixMap: Record<JointType, string> = {
-    ground: 'O',
     prismatic: 'P',
     revolute: 'J',
     tracker: 'T',

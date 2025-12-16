@@ -31,7 +31,7 @@ const primaryTools: ToolButton[] = [
   },
 ];
 
-// Joint tools - collapsible
+// Joint tools - collapsible (ground is a link type, not joint)
 const jointTools: ToolGroup = {
   id: 'joints',
   label: 'Joint',
@@ -41,11 +41,6 @@ const jointTools: ToolGroup = {
       mode: 'place-tracker-joint',
       label: 'Tracker',
       icon: '🟣',
-    },
-    {
-      mode: 'place-ground-joint',
-      label: 'Ground',
-      icon: '📍',
     },
     {
       mode: 'place-revolute-joint',

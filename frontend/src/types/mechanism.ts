@@ -3,8 +3,8 @@
  * These match the JSON format from src/pylinkage/mechanism/serialization.py
  */
 
-// Joint types
-export type JointType = 'ground' | 'revolute' | 'prismatic' | 'tracker';
+// Joint types (ground is a link type, not a joint type)
+export type JointType = 'revolute' | 'prismatic' | 'tracker';
 
 export interface JointDict {
   id: string;
@@ -106,13 +106,11 @@ export type EditorMode =
   | 'draw-link'
   | 'move-joint'
   | 'delete'
-  | 'set-ground'
   // Driver placement modes
   | 'place-crank'
   | 'place-arccrank'
   | 'place-linear'
-  // Joint placement modes
-  | 'place-ground-joint'
+  // Joint placement modes (ground is a link type, not joint)
   | 'place-revolute-joint'
   | 'place-prismatic-joint'
   | 'place-tracker-joint';
@@ -147,7 +145,6 @@ export const LINK_COLORS: Record<LinkType, string> = {
 
 // Color scheme for joint types
 export const JOINT_COLORS: Record<JointType, string> = {
-  ground: '#f85149', // Red for ground
   revolute: '#58a6ff', // Blue for revolute
   prismatic: '#3fb950', // Green for prismatic
   tracker: '#a371f7', // Purple for tracker (tracer points)
