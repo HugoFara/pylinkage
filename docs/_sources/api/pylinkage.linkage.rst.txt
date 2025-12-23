@@ -20,6 +20,22 @@ pylinkage.linkage.linkage module
    :undoc-members:
    :show-inheritance:
 
+pylinkage.linkage.sensitivity module
+------------------------------------
+
+.. automodule:: pylinkage.linkage.sensitivity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pylinkage.linkage.transmission module
+-------------------------------------
+
+.. automodule:: pylinkage.linkage.transmission
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

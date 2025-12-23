@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensitivity &amp; Tolerance Analysis &mdash; pylinkage 0.6.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Linkage Synthesis" href="synthesis.html" />
+    <link rel="prev" title="Kinematics-Based Optimization" href="kinematics_optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-features">Core Features</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Sensitivity &amp; Tolerance Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basic-setup">Basic Setup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sensitivity-analysis">Sensitivity Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tolerance-analysis">Tolerance Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-in-optimization">Use in Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#practical-guidelines">Practical Guidelines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-complete-workflow">Example Complete Workflow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Sensitivity &amp; Tolerance Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/sensitivity_analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sensitivity-tolerance-analysis">
+<h1>Sensitivity &amp; Tolerance Analysis<a class="headerlink" href="#sensitivity-tolerance-analysis" title="Link to this heading"></a></h1>
+<p>This tutorial covers how to analyze how manufacturing variations affect
+linkage behavior. Understanding sensitivity helps identify critical dimensions
+and assess whether a design is robust to manufacturing tolerances.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Pylinkage provides two complementary analysis tools:</p>
+<ul class="simple">
+<li><p><strong>Sensitivity Analysis</strong>: Measures how much each constraint dimension affects
+the output path. Identifies which dimensions are most critical.</p></li>
+<li><p><strong>Tolerance Analysis</strong>: Monte Carlo simulation that shows the statistical
+variation in output path given manufacturing tolerances.</p></li>
+</ul>
+<p>These tools help answer questions like:</p>
+<ul class="simple">
+<li><p>Which link length is most critical to the output path accuracy?</p></li>
+<li><p>How much output variation should I expect with ±0.1mm tolerances?</p></li>
+<li><p>Is my design robust enough for the manufacturing process?</p></li>
+</ul>
+</section>
+<section id="basic-setup">
+<h2>Basic Setup<a class="headerlink" href="#basic-setup" title="Link to this heading"></a></h2>
+<p>First, create a linkage to analyze:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+<span class="c1"># Create a four-bar linkage</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">distance</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span>
+<span class="p">)</span>
+<span class="n">coupler</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
+    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="n">distance0</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span>
+<span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">coupler</span><span class="p">),</span>
+    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">coupler</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sensitivity-analysis">
+<h2>Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p>Sensitivity analysis measures how each constraint dimension affects the output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run sensitivity analysis with 1% perturbation</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+
+<span class="c1"># View the most sensitive constraint</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most sensitive: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">most_sensitive</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># View all constraints ranked by sensitivity</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sensitivity</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sensitivity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Most sensitive: coupler_dist1
+  coupler_dist1: 0.0312
+  coupler_dist2: 0.0287
+  crank_radius: 0.0156
+</pre></div>
+</div>
+</section>
+<section id="understanding-constraint-names">
+<h3>Understanding Constraint Names<a class="headerlink" href="#understanding-constraint-names" title="Link to this heading"></a></h3>
+<p>Constraint names are auto-generated based on joint type and name:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">crank_radius</span></code>: Distance from crank pivot to crank end</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coupler_dist1</span></code>: Distance from first anchor to coupler joint</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coupler_dist2</span></code>: Distance from second anchor to coupler joint</p></li>
+</ul>
+<p>The naming follows the pattern <code class="docutils literal notranslate"><span class="pre">{joint_name}_{constraint_type}</span></code>.</p>
+</section>
+<section id="analyzing-specific-output-joints">
+<h3>Analyzing Specific Output Joints<a class="headerlink" href="#analyzing-specific-output-joints" title="Link to this heading"></a></h3>
+<p>By default, the last joint is analyzed. You can specify a different output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze sensitivity for the crank output</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">output_joint</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Or by joint object</span>
+<span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">output_joint</span><span class="o">=</span><span class="n">crank</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="including-transmission-angle">
+<h3>Including Transmission Angle<a class="headerlink" href="#including-transmission-angle" title="Link to this heading"></a></h3>
+<p>For four-bar linkages, you can also track transmission angle sensitivity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span>
+    <span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+    <span class="n">include_transmission</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Baseline transmission: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">baseline_transmission</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+
+<span class="c1"># Transmission angles for each perturbation</span>
+<span class="k">if</span> <span class="n">analysis</span><span class="o">.</span><span class="n">perturbed_transmission</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">trans</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">constraint_names</span><span class="p">,</span> <span class="n">analysis</span><span class="o">.</span><span class="n">perturbed_transmission</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">trans</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exporting-to-dataframe">
+<h3>Exporting to DataFrame<a class="headerlink" href="#exporting-to-dataframe" title="Link to this heading"></a></h3>
+<p>For detailed analysis, export to a pandas DataFrame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Requires: pip install pylinkage[analysis]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>   constraint  sensitivity  perturbed_metric  perturbed_transmission
+0  crank_radius     0.0156           0.00156                   89.5
+1  coupler_dist1    0.0312           0.00312                   90.2
+2  coupler_dist2    0.0287           0.00287                   89.8
+</pre></div>
+</div>
+</section>
+</section>
+<section id="tolerance-analysis">
+<h2>Tolerance Analysis<a class="headerlink" href="#tolerance-analysis" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Tolerance analysis uses Monte Carlo simulation to assess manufacturing variability:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define tolerances for each constraint</span>
+<span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>     <span class="c1"># +/- 0.1 mm</span>
+    <span class="s2">&quot;coupler_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>    <span class="c1"># +/- 0.2 mm</span>
+    <span class="s2">&quot;coupler_dist2&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>    <span class="c1"># +/- 0.2 mm</span>
+<span class="p">}</span>
+
+<span class="c1"># Run Monte Carlo analysis</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span>
+    <span class="n">tolerances</span><span class="o">=</span><span class="n">tolerances</span><span class="p">,</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>  <span class="c1"># For reproducibility</span>
+<span class="p">)</span>
+
+<span class="c1"># View statistics</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean deviation: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">mean_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation:  </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std deviation:  </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">std_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-the-results">
+<h3>Understanding the Results<a class="headerlink" href="#understanding-the-results" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ToleranceAnalysis</span></code> result contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nominal_path</span></code>: Output path at nominal dimensions (n_steps, 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_cloud</span></code>: All Monte Carlo samples (n_samples, n_steps, 2)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mean_deviation</span></code>: Average distance from nominal path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_deviation</span></code>: Worst-case deviation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std_deviation</span></code>: Standard deviation of deviations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">position_std</span></code>: Per-position standard deviation (n_steps,)</p></li>
+</ul>
+</section>
+<section id="visualizing-the-tolerance-cloud">
+<h3>Visualizing the Tolerance Cloud<a class="headerlink" href="#visualizing-the-tolerance-cloud" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">plot_cloud()</span></code> to visualize the output variation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Create scatter plot of output paths</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">(</span>
+    <span class="n">show_nominal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Show nominal path as red line</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span>           <span class="c1"># Transparency for sample points</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Output Path Tolerance Cloud&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;tolerance_cloud.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This creates a scatter plot showing:</p>
+<ul class="simple">
+<li><p>Blue dots: Individual sample output paths</p></li>
+<li><p>Red line: Nominal (ideal) output path</p></li>
+<li><p>The spread indicates manufacturing variation</p></li>
+</ul>
+</section>
+<section id="selective-tolerance-analysis">
+<h3>Selective Tolerance Analysis<a class="headerlink" href="#selective-tolerance-analysis" title="Link to this heading"></a></h3>
+<p>You can analyze tolerance for specific constraints:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Only analyze crank radius tolerance</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span>
+    <span class="n">tolerances</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Crank-only max deviation: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="use-in-optimization">
+<h2>Use in Optimization<a class="headerlink" href="#use-in-optimization" title="Link to this heading"></a></h2>
+<section id="sensitivity-as-fitness-penalty">
+<h3>Sensitivity as Fitness Penalty<a class="headerlink" href="#sensitivity-as-fitness-penalty" title="Link to this heading"></a></h3>
+<p>Design linkages that are insensitive to manufacturing variation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">robust_linkage</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize for path shape while minimizing sensitivity.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Path shape objective (e.g., bounding box)</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">path_error</span> <span class="o">=</span> <span class="n">compute_path_error</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
+
+    <span class="c1"># Sensitivity penalty</span>
+    <span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="n">max_sensitivity</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">sensitivities</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="c1"># Combined objective: good path + low sensitivity</span>
+    <span class="k">return</span> <span class="n">path_error</span> <span class="o">+</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">max_sensitivity</span>
+</pre></div>
+</div>
+</section>
+<section id="tolerance-based-constraints">
+<h3>Tolerance-Based Constraints<a class="headerlink" href="#tolerance-based-constraints" title="Link to this heading"></a></h3>
+<p>Reject designs that exceed tolerance requirements:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnbuildableError</span>
+
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tolerance_constrained</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize path, rejecting designs with excessive variation.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Check tolerance</span>
+    <span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;coupler_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;coupler_dist2&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">max_deviation</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>  <span class="c1"># Reject if max deviation &gt; 0.5mm</span>
+        <span class="k">raise</span> <span class="n">UnbuildableError</span><span class="p">(</span><span class="s2">&quot;Excessive tolerance variation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Path objective</span>
+    <span class="k">return</span> <span class="n">compute_path_score</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="practical-guidelines">
+<h2>Practical Guidelines<a class="headerlink" href="#practical-guidelines" title="Link to this heading"></a></h2>
+<section id="perturbation-size">
+<h3>Perturbation Size<a class="headerlink" href="#perturbation-size" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">delta</span></code> parameter controls the relative perturbation size:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">delta=0.01</span></code>: 1% perturbation (recommended default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delta=0.001</span></code>: 0.1% for fine sensitivity analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delta=0.1</span></code>: 10% for coarse/fast analysis</p></li>
+</ul>
+<p>Smaller perturbations give more accurate local sensitivity but may be
+affected by numerical noise.</p>
+</section>
+<section id="sample-count">
+<h3>Sample Count<a class="headerlink" href="#sample-count" title="Link to this heading"></a></h3>
+<p>For tolerance analysis, the number of samples affects accuracy:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n_samples=100</span></code>: Quick estimate (useful in optimization loops)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_samples=1000</span></code>: Good accuracy for design validation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_samples=10000</span></code>: High accuracy for final verification</p></li>
+</ul>
+</section>
+<section id="typical-workflow">
+<h3>Typical Workflow<a class="headerlink" href="#typical-workflow" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Design</strong>: Create linkage meeting path requirements</p></li>
+<li><p><strong>Sensitivity</strong>: Run <code class="docutils literal notranslate"><span class="pre">sensitivity_analysis()</span></code> to identify critical dimensions</p></li>
+<li><p><strong>Focus</strong>: Tighten tolerances on most sensitive constraints</p></li>
+<li><p><strong>Validate</strong>: Run <code class="docutils literal notranslate"><span class="pre">tolerance_analysis()</span></code> to verify acceptable variation</p></li>
+<li><p><strong>Iterate</strong>: If variation is too high, modify design and repeat</p></li>
+</ol>
+</section>
+</section>
+<section id="example-complete-workflow">
+<h2>Example Complete Workflow<a class="headerlink" href="#example-complete-workflow" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Create linkage</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">)</span>
+<span class="n">coupler</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                      <span class="n">distance0</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">coupler</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">coupler</span><span class="p">))</span>
+
+<span class="c1"># Step 1: Sensitivity analysis</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== Sensitivity Analysis ===&quot;</span><span class="p">)</span>
+<span class="n">sens</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most sensitive: </span><span class="si">{</span><span class="n">sens</span><span class="o">.</span><span class="n">most_sensitive</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">sens</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">val</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Tolerance analysis with realistic tolerances</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">=== Tolerance Analysis ===&quot;</span><span class="p">)</span>
+<span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>     <span class="c1"># Tight tolerance (sensitive)</span>
+    <span class="s2">&quot;coupler_dist1&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>     <span class="c1"># Normal tolerance</span>
+    <span class="s2">&quot;coupler_dist2&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>     <span class="c1"># Normal tolerance</span>
+<span class="p">}</span>
+<span class="n">tol</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean deviation: </span><span class="si">{</span><span class="n">tol</span><span class="o">.</span><span class="n">mean_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation:  </span><span class="si">{</span><span class="n">tol</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std deviation:  </span><span class="si">{</span><span class="n">tol</span><span class="o">.</span><span class="n">std_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Step 3: Visualize</span>
+<span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Plot tolerance cloud</span>
+<span class="n">tol</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Tolerance Cloud&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot per-position std</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tol</span><span class="o">.</span><span class="n">position_std</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Simulation Step&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Position Std Dev&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Per-Position Variation&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;tolerance_analysis.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.SensitivityAnalysis" title="pylinkage.linkage.SensitivityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.linkage.SensitivityAnalysis</span></code></a> - Sensitivity analysis results</p></li>
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.ToleranceAnalysis" title="pylinkage.linkage.ToleranceAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.linkage.ToleranceAnalysis</span></code></a> - Tolerance analysis results</p></li>
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.analyze_sensitivity" title="pylinkage.linkage.analyze_sensitivity"><code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.linkage.analyze_sensitivity()</span></code></a> - Sensitivity analysis function</p></li>
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.analyze_tolerance" title="pylinkage.linkage.analyze_tolerance"><code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.linkage.analyze_tolerance()</span></code></a> - Tolerance analysis function</p></li>
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.Linkage.sensitivity_analysis" title="pylinkage.linkage.Linkage.sensitivity_analysis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pylinkage.linkage.Linkage.sensitivity_analysis()</span></code></a> - Convenience method</p></li>
+<li><p><a class="reference internal" href="../api/pylinkage.linkage.html#pylinkage.linkage.Linkage.tolerance_analysis" title="pylinkage.linkage.Linkage.tolerance_analysis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pylinkage.linkage.Linkage.tolerance_analysis()</span></code></a> - Convenience method</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> for optimization techniques</p></li>
+<li><p>See <a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a> for velocity/acceleration analysis</p></li>
+<li><p>Explore <a class="reference internal" href="../api/pylinkage.linkage.html#module-pylinkage.linkage" title="pylinkage.linkage"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.linkage</span></code></a> for the complete linkage API</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="kinematics_optimization.html" class="btn btn-neutral float-left" title="Kinematics-Based Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="synthesis.html" class="btn btn-neutral float-right" title="Linkage Synthesis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

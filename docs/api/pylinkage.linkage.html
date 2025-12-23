@@ -175,7 +175,7 @@ float(‘inf’) and 0.</p></li>
 Coordinates are given relative to its own base.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.analyze_stroke">
-<span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_stroke" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.transmission.StrokeAnalysis" title="pylinkage.linkage.transmission.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_stroke" title="Link to this definition"></a></dt>
 <dd><p>Analyze stroke/slide position over a full motion cycle.</p>
 <p>For a linkage with a Prismatic joint, this tracks the slide
 position throughout the motion cycle.</p>
@@ -198,7 +198,7 @@ position throughout the motion cycle.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.analyze_transmission">
-<span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="pylinkage.linkage.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_transmission" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis" title="pylinkage.linkage.transmission.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_transmission" title="Link to this definition"></a></dt>
 <dd><p>Analyze transmission angle over a full motion cycle.</p>
 <p>For a standard four-bar, joints are auto-detected.</p>
 <dl>
@@ -367,6 +367,30 @@ based on joint types (Static, Crank, Revolute, Fixed).</p>
 Coordinates do not need to be precise, they will allow us the best
 fitting position between all possible positions satisfying
 constraints. (Default value = None).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.sensitivity_analysis">
+<span class="sig-name descname"><span class="pre">sensitivity_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis" title="pylinkage.linkage.sensitivity.SensitivityAnalysis"><span class="pre">SensitivityAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.sensitivity_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze sensitivity of output path to each constraint dimension.</p>
+<p>For each constraint, this function perturbs the value by delta
+and measures how much the output path changes.</p>
+<dl>
+<dt>Args:</dt><dd><p>output_joint: Joint to measure, index, or None (auto-detect last).
+delta: Relative perturbation magnitude (e.g., 0.01 for 1%).
+include_transmission: Whether to also measure transmission angle.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>SensitivityAnalysis with sensitivity coefficients and rankings.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most sensitive: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">most_sensitive</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sens</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sens</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -603,6 +627,31 @@ position along the prismatic axis.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.tolerance_analysis">
+<span class="sig-name descname"><span class="pre">tolerance_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis" title="pylinkage.linkage.sensitivity.ToleranceAnalysis"><span class="pre">ToleranceAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.tolerance_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze manufacturing tolerance effects via Monte Carlo simulation.</p>
+<p>Each sample randomly perturbs constraints within tolerance bounds
+and simulates the linkage to measure output variation.</p>
+<dl>
+<dt>Args:</dt><dd><p>tolerances: Constraint name -&gt; tolerance value (e.g., {“crank_radius”: 0.1}).
+output_joint: Joint to measure, index, or None (auto-detect last).
+iterations: Number of simulation steps. Defaults to one full rotation.
+n_samples: Number of Monte Carlo samples.
+seed: Random seed for reproducibility.</p>
+</dd>
+<dt>Returns:</dt><dd><p>ToleranceAnalysis with statistics and output cloud for visualization.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;Revolute_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.transmission_angle">
 <span class="sig-name descname"><span class="pre">transmission_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.transmission_angle" title="Link to this definition"></a></dt>
 <dd><p>Get the transmission angle at the current linkage position.</p>
@@ -651,6 +700,502 @@ with automatic setup and teardown.</p>
 <dd><p>The linkage being simulated.</p>
 </dd></dl>
 
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.linkage.sensitivity">
+<span id="pylinkage-linkage-sensitivity-module"></span><h2>pylinkage.linkage.sensitivity module<a class="headerlink" href="#module-pylinkage.linkage.sensitivity" title="Link to this heading"></a></h2>
+<p>Sensitivity and tolerance analysis for linkage mechanisms.</p>
+<p>This module provides analysis tools for:</p>
+<ol class="arabic simple">
+<li><p>Sensitivity analysis:
+- Measures how each constraint dimension affects the output path
+- Identifies critical dimensions that most affect mechanism behavior</p></li>
+<li><p>Tolerance analysis:
+- Monte Carlo simulation of manufacturing tolerances
+- Statistical analysis of output variation due to dimensional tolerances</p></li>
+</ol>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.sensitivity.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensitivities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_path_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbed_path_metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbed_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of sensitivity analysis for a linkage.</p>
+<p>Sensitivity measures how much the output path changes when each
+constraint dimension is perturbed by a small amount.</p>
+<dl>
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>sensitivities: Mapping from constraint name to sensitivity coefficient.</dt><dd><p>Higher values indicate the output is more sensitive to that constraint.</p>
+</dd>
+</dl>
+<p>baseline_path_metric: Mean path deviation at nominal constraints (should be 0).
+baseline_transmission: Mean transmission angle at nominal (degrees), or None.
+perturbed_path_metrics: Array of path deviation metrics, one per constraint.
+perturbed_transmission: Array of transmission angles per constraint, or None.
+constraint_names: Tuple of constraint names in order.
+perturbation_delta: Relative perturbation magnitude used (e.g., 0.01 for 1%).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.baseline_path_metric">
+<span class="sig-name descname"><span class="pre">baseline_path_metric</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.baseline_path_metric" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.baseline_transmission">
+<span class="sig-name descname"><span class="pre">baseline_transmission</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.baseline_transmission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.constraint_names">
+<span class="sig-name descname"><span class="pre">constraint_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.constraint_names" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.most_sensitive">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">most_sensitive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.most_sensitive" title="Link to this definition"></a></dt>
+<dd><p>Return name of the most sensitive constraint.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbation_delta">
+<span class="sig-name descname"><span class="pre">perturbation_delta</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbation_delta" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbed_path_metrics">
+<span class="sig-name descname"><span class="pre">perturbed_path_metrics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbed_path_metrics" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbed_transmission">
+<span class="sig-name descname"><span class="pre">perturbed_transmission</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.perturbed_transmission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.sensitivities">
+<span class="sig-name descname"><span class="pre">sensitivities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.sensitivities" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.sensitivity_ranking">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensitivity_ranking</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.sensitivity_ranking" title="Link to this definition"></a></dt>
+<dd><p>Return constraints ranked by sensitivity (highest first).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.SensitivityAnalysis.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis.to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Export results as pandas DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>DataFrame with columns: constraint, sensitivity, perturbed_metric</p>
+</dd>
+<dt>Raises:</dt><dd><p>ImportError: If pandas is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.sensitivity.</span></span><span class="sig-name descname"><span class="pre">ToleranceAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nominal_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_cloud</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of Monte Carlo tolerance analysis.</p>
+<p>Tolerance analysis simulates how manufacturing variations in link
+dimensions affect the output path. Each sample represents a possible
+manufactured linkage within tolerance bounds.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>nominal_path: Output path at nominal dimensions, shape (n_steps, 2).
+output_cloud: Monte Carlo results, shape (n_samples, n_steps, 2).
+tolerances: Dictionary mapping constraint names to their tolerances.
+mean_deviation: Mean path deviation from nominal across all samples.
+max_deviation: Maximum path deviation from nominal (worst case).
+std_deviation: Standard deviation of path deviations.
+position_std: Per-position standard deviation, shape (n_steps,).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.max_deviation">
+<span class="sig-name descname"><span class="pre">max_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.max_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.mean_deviation">
+<span class="sig-name descname"><span class="pre">mean_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.mean_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.nominal_path">
+<span class="sig-name descname"><span class="pre">nominal_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.nominal_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.output_cloud">
+<span class="sig-name descname"><span class="pre">output_cloud</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.output_cloud" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.plot_cloud">
+<span class="sig-name descname"><span class="pre">plot_cloud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_nominal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Axes</span></span></span><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.plot_cloud" title="Link to this definition"></a></dt>
+<dd><p>Plot the tolerance cloud as a scatter plot.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ax: Matplotlib axes to plot on. Creates new figure if None.
+show_nominal: Whether to show the nominal path as a solid line.
+alpha: Transparency for sample points (0-1).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Matplotlib axes with the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.position_std">
+<span class="sig-name descname"><span class="pre">position_std</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.position_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.std_deviation">
+<span class="sig-name descname"><span class="pre">std_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.std_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Export statistics as pandas DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>DataFrame with tolerance statistics.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ImportError: If pandas is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.ToleranceAnalysis.tolerances">
+<span class="sig-name descname"><span class="pre">tolerances</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis.tolerances" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.analyze_sensitivity">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.sensitivity.</span></span><span class="sig-name descname"><span class="pre">analyze_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.sensitivity.SensitivityAnalysis" title="pylinkage.linkage.sensitivity.SensitivityAnalysis"><span class="pre">SensitivityAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.sensitivity.analyze_sensitivity" title="Link to this definition"></a></dt>
+<dd><p>Analyze sensitivity of output path to each constraint dimension.</p>
+<p>For each constraint, this function:
+1. Perturbs the constraint by delta (relative)
+2. Simulates the linkage
+3. Measures the path deviation from nominal
+4. Computes sensitivity coefficient</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+output_joint: Joint to measure, index, or None (auto-detect last joint).
+delta: Relative perturbation magnitude (e.g., 0.01 for 1%).
+include_transmission: Whether to also measure transmission angle sensitivity.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>SensitivityAnalysis with sensitivity coefficients and statistics.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">most_sensitive</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sens</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sens</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.sensitivity.analyze_tolerance">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.sensitivity.</span></span><span class="sig-name descname"><span class="pre">analyze_tolerance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.sensitivity.ToleranceAnalysis" title="pylinkage.linkage.sensitivity.ToleranceAnalysis"><span class="pre">ToleranceAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.sensitivity.analyze_tolerance" title="Link to this definition"></a></dt>
+<dd><p>Analyze manufacturing tolerance effects via Monte Carlo simulation.</p>
+<p>For each sample:
+1. Randomly perturb constraints within tolerance bounds
+2. Simulate the linkage
+3. Record the output path</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+tolerances: Dictionary mapping constraint names to tolerance values.</p>
+<blockquote>
+<div><p>Each constraint is perturbed by +/- tolerance uniformly.</p>
+</div></blockquote>
+<p>output_joint: Joint to measure, index, or None (auto-detect last joint).
+iterations: Number of simulation steps. Defaults to one full rotation.
+n_samples: Number of Monte Carlo samples to run.
+seed: Random seed for reproducibility.</p>
+</dd>
+<dt>Returns:</dt><dd><p>ToleranceAnalysis with statistics and the sample cloud.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;Crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>    <span class="c1"># +/- 0.1 mm</span>
+<span class="gp">... </span>    <span class="s2">&quot;Revolute_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>  <span class="c1"># +/- 0.2 mm</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.linkage.transmission">
+<span id="pylinkage-linkage-transmission-module"></span><h2>pylinkage.linkage.transmission module<a class="headerlink" href="#module-pylinkage.linkage.transmission" title="Link to this heading"></a></h2>
+<p>Kinematic analysis for linkage mechanisms.</p>
+<p>This module provides analysis tools for:</p>
+<ol class="arabic simple">
+<li><p>Transmission angle analysis (for Revolute/RRR joints):
+- The angle between coupler and output links at their connecting joint
+- Ideal range: 40° to 140°, optimal at 90°</p></li>
+<li><p>Stroke analysis (for Prismatic/RRP joints):
+- The slide position along the prismatic axis
+- Tracks min/max/range of travel over a motion cycle</p></li>
+</ol>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">StrokeAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stroke_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_position_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_position_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of stroke analysis for a prismatic joint over a motion cycle.</p>
+<p>The stroke is the position of the slider along its axis, measured as
+the signed distance from the first line point (joint1) projected onto
+the slide axis.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>min_position: Minimum slide position along the axis.
+max_position: Maximum slide position along the axis.
+mean_position: Mean slide position.
+stroke_range: Total travel distance (max - min).
+positions: Array of slide positions at each step.
+min_position_step: Step index where minimum position occurs.
+max_position_step: Step index where maximum position occurs.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.amplitude">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">amplitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.amplitude" title="Link to this definition"></a></dt>
+<dd><p>Return half the stroke range (useful for oscillating mechanisms).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.center_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.center_position" title="Link to this definition"></a></dt>
+<dd><p>Return the center of the stroke range.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.max_position">
+<span class="sig-name descname"><span class="pre">max_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.max_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.max_position_step">
+<span class="sig-name descname"><span class="pre">max_position_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.max_position_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.mean_position">
+<span class="sig-name descname"><span class="pre">mean_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.mean_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.min_position">
+<span class="sig-name descname"><span class="pre">min_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.min_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.min_position_step">
+<span class="sig-name descname"><span class="pre">min_position_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.min_position_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.positions">
+<span class="sig-name descname"><span class="pre">positions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.positions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.StrokeAnalysis.stroke_range">
+<span class="sig-name descname"><span class="pre">stroke_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.StrokeAnalysis.stroke_range" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">TransmissionAngleAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_acceptable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of transmission angle analysis over a motion cycle.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>min_angle: Minimum transmission angle in degrees.
+max_angle: Maximum transmission angle in degrees.
+mean_angle: Mean transmission angle in degrees.
+angles: Array of transmission angles at each step (degrees).
+is_acceptable: True if angle always in acceptable range.
+min_deviation: Minimum deviation from 90 degrees.
+max_deviation: Maximum deviation from 90 degrees.
+min_angle_step: Step index where minimum angle occurs.
+max_angle_step: Step index where maximum angle occurs.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.acceptable_range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acceptable_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.acceptable_range" title="Link to this definition"></a></dt>
+<dd><p>Return the standard acceptable range [40, 140] degrees.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.angles">
+<span class="sig-name descname"><span class="pre">angles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.angles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.is_acceptable">
+<span class="sig-name descname"><span class="pre">is_acceptable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.is_acceptable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_angle">
+<span class="sig-name descname"><span class="pre">max_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_angle_step">
+<span class="sig-name descname"><span class="pre">max_angle_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_angle_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_deviation">
+<span class="sig-name descname"><span class="pre">max_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.max_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.mean_angle">
+<span class="sig-name descname"><span class="pre">mean_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.mean_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_angle">
+<span class="sig-name descname"><span class="pre">min_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_angle_step">
+<span class="sig-name descname"><span class="pre">min_angle_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_angle_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_deviation">
+<span class="sig-name descname"><span class="pre">min_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.min_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.TransmissionAngleAnalysis.worst_angle">
+<span class="sig-name descname"><span class="pre">worst_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis.worst_angle" title="Link to this definition"></a></dt>
+<dd><p>Return the angle with maximum deviation from 90 degrees.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.analyze_stroke">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prismatic_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.transmission.StrokeAnalysis" title="pylinkage.linkage.transmission.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.analyze_stroke" title="Link to this definition"></a></dt>
+<dd><p>Analyze stroke/slide position over a full motion cycle.</p>
+<p>For a linkage with a Prismatic joint, this tracks the slide position
+along the prismatic axis throughout the motion cycle.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The Linkage to analyze.
+prismatic_joint: The Prismatic joint to analyze. Auto-detected if None.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>StrokeAnalysis with statistics over the motion cycle.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joint cannot be detected or no valid positions found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.analyze_transmission">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.transmission.TransmissionAngleAnalysis" title="pylinkage.linkage.transmission.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.analyze_transmission" title="Link to this definition"></a></dt>
+<dd><p>Analyze transmission angle over a full motion cycle.</p>
+<p>For a standard four-bar linkage, joints are auto-detected:
+- coupler_joint: The Crank joint (B)
+- output_joint: The Revolute joint (C)
+- rocker_pivot: The Static joint at Revolute.joint1 (D)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The Linkage to analyze.
+iterations: Number of simulation steps. Defaults to one full rotation.
+acceptable_range: (min, max) acceptable angles in degrees.</p>
+</dd>
+<dt>Returns:</dt><dd><p>TransmissionAngleAnalysis with statistics over the motion cycle.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be detected or no valid positions found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.compute_slide_position">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">compute_slide_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slider_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_point1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_point2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.compute_slide_position" title="Link to this definition"></a></dt>
+<dd><p>Compute the slide position along a prismatic axis.</p>
+<p>The position is the signed distance from line_point1 to the projection
+of slider_pos onto the line, measured in the direction of line_point2.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>slider_pos: Current position of the slider joint.
+line_point1: First point defining the slide axis (origin).
+line_point2: Second point defining the slide axis (direction).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Signed distance along the axis from line_point1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.compute_transmission_angle">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">compute_transmission_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupler_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rocker_pivot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.compute_transmission_angle" title="Link to this definition"></a></dt>
+<dd><p>Compute transmission angle in degrees.</p>
+<p>The transmission angle is the angle between:
+- Coupler link: from coupler_joint (B) to output_joint (C)
+- Rocker link: from rocker_pivot (D) to output_joint (C)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>coupler_joint: Position of the coupler input joint (B).
+output_joint: Position where angle is measured (C).
+rocker_pivot: Position of the rocker ground pivot (D).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees (0-180).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.stroke_at_position">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">stroke_at_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prismatic_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.stroke_at_position" title="Link to this definition"></a></dt>
+<dd><p>Compute the slide position of a prismatic joint at current position.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+prismatic_joint: The Prismatic joint to analyze. Auto-detected if None.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Slide position along the prismatic axis.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joint cannot be determined or positions are invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.transmission.transmission_angle_at_position">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.transmission.</span></span><span class="sig-name descname"><span class="pre">transmission_angle_at_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coupler_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rocker_pivot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.transmission.transmission_angle_at_position" title="Link to this definition"></a></dt>
+<dd><p>Compute transmission angle at the current linkage position.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+coupler_joint: Joint at coupler input (B). Auto-detected if None.
+output_joint: Joint where angle is measured (C). Auto-detected if None.
+rocker_pivot: Ground pivot of rocker (D). Auto-detected if None.</p>
+</dd>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be determined or positions are invalid.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -858,6 +1403,30 @@ based on joint types (Static, Crank, Revolute, Fixed).</p>
 Coordinates do not need to be precise, they will allow us the best
 fitting position between all possible positions satisfying
 constraints. (Default value = None).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.sensitivity_analysis">
+<span class="sig-name descname"><span class="pre">sensitivity_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.SensitivityAnalysis" title="pylinkage.linkage.SensitivityAnalysis"><span class="pre">SensitivityAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.sensitivity_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze sensitivity of output path to each constraint dimension.</p>
+<p>For each constraint, this function perturbs the value by delta
+and measures how much the output path changes.</p>
+<dl>
+<dt>Args:</dt><dd><p>output_joint: Joint to measure, index, or None (auto-detect last).
+delta: Relative perturbation magnitude (e.g., 0.01 for 1%).
+include_transmission: Whether to also measure transmission angle.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>SensitivityAnalysis with sensitivity coefficients and rankings.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Most sensitive: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">most_sensitive</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sens</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sens</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>
@@ -1094,6 +1663,31 @@ position along the prismatic axis.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.tolerance_analysis">
+<span class="sig-name descname"><span class="pre">tolerance_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.ToleranceAnalysis" title="pylinkage.linkage.ToleranceAnalysis"><span class="pre">ToleranceAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.tolerance_analysis" title="Link to this definition"></a></dt>
+<dd><p>Analyze manufacturing tolerance effects via Monte Carlo simulation.</p>
+<p>Each sample randomly perturbs constraints within tolerance bounds
+and simulates the linkage to measure output variation.</p>
+<dl>
+<dt>Args:</dt><dd><p>tolerances: Constraint name -&gt; tolerance value (e.g., {“crank_radius”: 0.1}).
+output_joint: Joint to measure, index, or None (auto-detect last).
+iterations: Number of simulation steps. Defaults to one full rotation.
+n_samples: Number of Monte Carlo samples.
+seed: Random seed for reproducibility.</p>
+</dd>
+<dt>Returns:</dt><dd><p>ToleranceAnalysis with statistics and output cloud for visualization.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;Revolute_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.Linkage.transmission_angle">
 <span class="sig-name descname"><span class="pre">transmission_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.transmission_angle" title="Link to this definition"></a></dt>
 <dd><p>Get the transmission angle at the current linkage position.</p>
@@ -1108,6 +1702,87 @@ and rocker links at their common joint.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current transmission angle: </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">SensitivityAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensitivities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_path_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbed_path_metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbed_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perturbation_delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of sensitivity analysis for a linkage.</p>
+<p>Sensitivity measures how much the output path changes when each
+constraint dimension is perturbed by a small amount.</p>
+<dl>
+<dt>Attributes:</dt><dd><dl class="simple">
+<dt>sensitivities: Mapping from constraint name to sensitivity coefficient.</dt><dd><p>Higher values indicate the output is more sensitive to that constraint.</p>
+</dd>
+</dl>
+<p>baseline_path_metric: Mean path deviation at nominal constraints (should be 0).
+baseline_transmission: Mean transmission angle at nominal (degrees), or None.
+perturbed_path_metrics: Array of path deviation metrics, one per constraint.
+perturbed_transmission: Array of transmission angles per constraint, or None.
+constraint_names: Tuple of constraint names in order.
+perturbation_delta: Relative perturbation magnitude used (e.g., 0.01 for 1%).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.baseline_path_metric">
+<span class="sig-name descname"><span class="pre">baseline_path_metric</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.baseline_path_metric" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.baseline_transmission">
+<span class="sig-name descname"><span class="pre">baseline_transmission</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.baseline_transmission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.constraint_names">
+<span class="sig-name descname"><span class="pre">constraint_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.constraint_names" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.most_sensitive">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">most_sensitive</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.most_sensitive" title="Link to this definition"></a></dt>
+<dd><p>Return name of the most sensitive constraint.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.perturbation_delta">
+<span class="sig-name descname"><span class="pre">perturbation_delta</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.perturbation_delta" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.perturbed_path_metrics">
+<span class="sig-name descname"><span class="pre">perturbed_path_metrics</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.perturbed_path_metrics" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.perturbed_transmission">
+<span class="sig-name descname"><span class="pre">perturbed_transmission</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.perturbed_transmission" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.sensitivities">
+<span class="sig-name descname"><span class="pre">sensitivities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.sensitivities" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.sensitivity_ranking">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensitivity_ranking</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.sensitivity_ranking" title="Link to this definition"></a></dt>
+<dd><p>Return constraints ranked by sensitivity (highest first).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.SensitivityAnalysis.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#pylinkage.linkage.SensitivityAnalysis.to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Export results as pandas DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>DataFrame with columns: constraint, sensitivity, perturbed_metric</p>
+</dd>
+<dt>Raises:</dt><dd><p>ImportError: If pandas is not installed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1212,6 +1887,87 @@ max_position_step: Step index where maximum position occurs.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">ToleranceAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nominal_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_cloud</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">std_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_std</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of Monte Carlo tolerance analysis.</p>
+<p>Tolerance analysis simulates how manufacturing variations in link
+dimensions affect the output path. Each sample represents a possible
+manufactured linkage within tolerance bounds.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>nominal_path: Output path at nominal dimensions, shape (n_steps, 2).
+output_cloud: Monte Carlo results, shape (n_samples, n_steps, 2).
+tolerances: Dictionary mapping constraint names to their tolerances.
+mean_deviation: Mean path deviation from nominal across all samples.
+max_deviation: Maximum path deviation from nominal (worst case).
+std_deviation: Standard deviation of path deviations.
+position_std: Per-position standard deviation, shape (n_steps,).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.max_deviation">
+<span class="sig-name descname"><span class="pre">max_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.max_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.mean_deviation">
+<span class="sig-name descname"><span class="pre">mean_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.mean_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.nominal_path">
+<span class="sig-name descname"><span class="pre">nominal_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.nominal_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.output_cloud">
+<span class="sig-name descname"><span class="pre">output_cloud</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.output_cloud" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.plot_cloud">
+<span class="sig-name descname"><span class="pre">plot_cloud</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_nominal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Axes</span></span></span><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.plot_cloud" title="Link to this definition"></a></dt>
+<dd><p>Plot the tolerance cloud as a scatter plot.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ax: Matplotlib axes to plot on. Creates new figure if None.
+show_nominal: Whether to show the nominal path as a solid line.
+alpha: Transparency for sample points (0-1).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Matplotlib axes with the plot.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.position_std">
+<span class="sig-name descname"><span class="pre">position_std</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.position_std" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.std_deviation">
+<span class="sig-name descname"><span class="pre">std_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.std_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span></span></span><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.to_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Export statistics as pandas DataFrame.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>DataFrame with tolerance statistics.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ImportError: If pandas is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.ToleranceAnalysis.tolerances">
+<span class="sig-name descname"><span class="pre">tolerances</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.ToleranceAnalysis.tolerances" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">TransmissionAngleAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_acceptable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -1288,6 +2044,34 @@ max_angle_step: Step index where maximum angle occurs.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analyze_sensitivity">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">analyze_sensitivity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_transmission</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.SensitivityAnalysis" title="pylinkage.linkage.SensitivityAnalysis"><span class="pre">SensitivityAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.analyze_sensitivity" title="Link to this definition"></a></dt>
+<dd><p>Analyze sensitivity of output path to each constraint dimension.</p>
+<p>For each constraint, this function:
+1. Perturbs the constraint by delta (relative)
+2. Simulates the linkage
+3. Measures the path deviation from nominal
+4. Computes sensitivity coefficient</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+output_joint: Joint to measure, index, or None (auto-detect last joint).
+delta: Relative perturbation magnitude (e.g., 0.01 for 1%).
+include_transmission: Whether to also measure transmission angle sensitivity.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>SensitivityAnalysis with sensitivity coefficients and statistics.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">sensitivity_analysis</span><span class="p">(</span><span class="n">delta</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">analysis</span><span class="o">.</span><span class="n">most_sensitive</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sens</span> <span class="ow">in</span> <span class="n">analysis</span><span class="o">.</span><span class="n">sensitivity_ranking</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">sens</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.linkage.analyze_stroke">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prismatic_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.analyze_stroke" title="Link to this definition"></a></dt>
 <dd><p>Analyze stroke/slide position over a full motion cycle.</p>
@@ -1301,6 +2085,40 @@ iterations: Number of simulation steps. Defaults to one full rotation.</p>
 <dt>Returns:</dt><dd><p>StrokeAnalysis with statistics over the motion cycle.</p>
 </dd>
 <dt>Raises:</dt><dd><p>ValueError: If joint cannot be detected or no valid positions found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analyze_tolerance">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">analyze_tolerance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.ToleranceAnalysis" title="pylinkage.linkage.ToleranceAnalysis"><span class="pre">ToleranceAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.analyze_tolerance" title="Link to this definition"></a></dt>
+<dd><p>Analyze manufacturing tolerance effects via Monte Carlo simulation.</p>
+<p>For each sample:
+1. Randomly perturb constraints within tolerance bounds
+2. Simulate the linkage
+3. Record the output path</p>
+<dl>
+<dt>Args:</dt><dd><p>linkage: The linkage to analyze.
+tolerances: Dictionary mapping constraint names to tolerance values.</p>
+<blockquote>
+<div><p>Each constraint is perturbed by +/- tolerance uniformly.</p>
+</div></blockquote>
+<p>output_joint: Joint to measure, index, or None (auto-detect last joint).
+iterations: Number of simulation steps. Defaults to one full rotation.
+n_samples: Number of Monte Carlo samples to run.
+seed: Random seed for reproducibility.</p>
+</dd>
+<dt>Returns:</dt><dd><p>ToleranceAnalysis with statistics and the sample cloud.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tolerances</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;Crank_radius&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>    <span class="c1"># +/- 0.1 mm</span>
+<span class="gp">... </span>    <span class="s2">&quot;Revolute_dist1&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>  <span class="c1"># +/- 0.2 mm</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">tolerance_analysis</span><span class="p">(</span><span class="n">tolerances</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max deviation: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_deviation</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span><span class="o">.</span><span class="n">plot_cloud</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd>
 </dl>
 </dd></dl>

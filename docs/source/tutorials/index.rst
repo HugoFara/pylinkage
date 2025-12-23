@@ -24,6 +24,7 @@ Learn to use pylinkage's main capabilities.
    visualization
    advanced_optimization
    kinematics_optimization
+   sensitivity_analysis
 
 Advanced Topics
 ---------------
@@ -55,6 +56,8 @@ Quick Reference
      - PSO optimization, fitness functions, bounds, multi-objective
    * - :doc:`kinematics_optimization`
      - Velocity analysis, acceleration, kinematic-based optimization
+   * - :doc:`sensitivity_analysis`
+     - Sensitivity coefficients, Monte Carlo tolerance analysis, robustness
    * - :doc:`synthesis`
      - Function/path/motion generation, Burmester theory, Grashof analysis
    * - :doc:`symbolic`
