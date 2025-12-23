@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Cam-follower mechanisms:**
+  - New `pylinkage.cam` module with motion laws and profile definitions.
+  - Motion laws: `HarmonicMotionLaw`, `CycloidalMotionLaw`, `ModifiedTrapezoidalMotionLaw`,
+    `PolynomialMotionLaw` (with `polynomial_345()` and `polynomial_4567()` factory functions).
+  - Profile types: `FunctionProfile` (motion law-based) and `PointArrayProfile` (spline interpolation).
+  - `TranslatingCamFollower` dyad for linear follower motion driven by cam rotation.
+  - `OscillatingCamFollower` dyad for rocker arm motion driven by cam rotation.
+  - Both knife-edge (roller_radius=0) and roller followers supported.
+  - Numba-compiled profile evaluation for high-performance simulation.
 - SymPy for analytical optimization.
 - Native computation of velocity and acceleration with visualizations.
 - Linkage synthesis with Burgmester's theory, function, path and motion generation.

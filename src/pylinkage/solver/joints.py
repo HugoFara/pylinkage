@@ -328,3 +328,54 @@ def solve_line_line(
 
     # Single intersection point (or coincident lines - return the representative point)
     return (result[1], result[2])
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def solve_translating_cam_follower(
+    guide_x: float,
+    guide_y: float,
+    guide_angle: float,
+    displacement: float,
+) -> tuple[float, float]:
+    """Solve translating cam follower position.
+
+    The follower moves along a line from the guide point at the
+    specified angle, with displacement determining position along the line.
+
+    Args:
+        guide_x: X position of guide reference point.
+        guide_y: Y position of guide reference point.
+        guide_angle: Direction of follower motion (radians from +x).
+        displacement: Distance from guide along the guide axis.
+
+    Returns:
+        New (x, y) position of the follower.
+    """
+    new_x = guide_x + displacement * math.cos(guide_angle)
+    new_y = guide_y + displacement * math.sin(guide_angle)
+    return (new_x, new_y)
+
+
+@njit(cache=True)  # type: ignore[untyped-decorator]
+def solve_oscillating_cam_follower(
+    pivot_x: float,
+    pivot_y: float,
+    arm_length: float,
+    arm_angle: float,
+) -> tuple[float, float]:
+    """Solve oscillating cam follower position.
+
+    The follower is at the end of an arm rotating about a pivot point.
+
+    Args:
+        pivot_x: X position of pivot point.
+        pivot_y: Y position of pivot point.
+        arm_length: Length of the follower arm.
+        arm_angle: Current angle of the arm (radians from +x).
+
+    Returns:
+        New (x, y) position of the follower output.
+    """
+    new_x = pivot_x + arm_length * math.cos(arm_angle)
+    new_y = pivot_y + arm_length * math.sin(arm_angle)
+    return (new_x, new_y)

@@ -8,6 +8,8 @@ Classes:
     PPDyad: Line-line intersection (double slider)
     FixedDyad: Deterministic polar projection
     BinaryDyad: Base class for binary Assur groups
+    TranslatingCamFollower: Translating follower driven by cam profile
+    OscillatingCamFollower: Oscillating (rocker) follower driven by cam profile
 
 Functions:
     create_dyad: Factory function to create dyads from isomer signatures
@@ -15,6 +17,7 @@ Functions:
 For other kinematic elements, use the appropriate modules:
     - pylinkage.components: Ground, base classes (Component, ConnectedComponent)
     - pylinkage.actuators: Crank, LinearActuator
+    - pylinkage.cam: CamProfile, FunctionProfile, motion laws
     - pylinkage.simulation: Linkage
 
 Example:
@@ -79,9 +82,11 @@ from .factory import get_isomer_geometry as get_isomer_geometry
 from .factory import get_required_anchors as get_required_anchors
 from .factory import get_required_constraints as get_required_constraints
 from .fixed import FixedDyad as FixedDyad
+from .oscillating_cam import OscillatingCamFollower as OscillatingCamFollower
 from .pp import PPDyad as PPDyad
 from .rrp import RRPDyad as RRPDyad
 from .rrr import RRRDyad as RRRDyad
+from .translating_cam import TranslatingCamFollower as TranslatingCamFollower
 
 __all__ = [
     # True Assur groups (primary exports)
@@ -90,6 +95,9 @@ __all__ = [
     "PPDyad",
     "FixedDyad",
     "BinaryDyad",
+    # Cam-follower mechanisms
+    "TranslatingCamFollower",
+    "OscillatingCamFollower",
     # Factory function for creating dyads from isomer signatures
     "create_dyad",
     "get_isomer_geometry",

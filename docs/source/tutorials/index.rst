@@ -22,6 +22,7 @@ Learn to use pylinkage's main capabilities.
    :maxdepth: 1
 
    visualization
+   cam_follower
    advanced_optimization
    kinematics_optimization
    sensitivity_analysis
@@ -52,6 +53,8 @@ Quick Reference
      - Create joints, build linkages, run simulations, basic visualization
    * - :doc:`visualization`
      - Matplotlib animations, Plotly interactive plots, SVG export
+   * - :doc:`cam_follower`
+     - Cam profiles, motion laws, translating/oscillating followers
    * - :doc:`advanced_optimization`
      - PSO optimization, fitness functions, bounds, multi-objective
    * - :doc:`kinematics_optimization`
