@@ -23,6 +23,7 @@ from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from ..solver import SolverData
+    from .transmission import TransmissionAngleAnalysis
 
 
 class Linkage:
@@ -607,6 +608,56 @@ class Linkage:
         :returns: A Simulation context manager.
         """
         return Simulation(self, iterations=iterations, dt=dt)
+
+    def transmission_angle(self) -> float:
+        """Get the transmission angle at the current linkage position.
+
+        For a four-bar linkage, this is the angle between the coupler
+        and rocker links at their common joint.
+
+        Returns:
+            Transmission angle in degrees (0-180).
+
+        Raises:
+            ValueError: If joints cannot be auto-detected.
+
+        Example:
+            >>> angle = linkage.transmission_angle()
+            >>> print(f"Current transmission angle: {angle:.1f}°")
+        """
+        from .transmission import transmission_angle_at_position
+
+        return transmission_angle_at_position(self)
+
+    def analyze_transmission(
+        self,
+        iterations: int | None = None,
+        acceptable_range: tuple[float, float] = (40.0, 140.0),
+    ) -> "TransmissionAngleAnalysis":
+        """Analyze transmission angle over a full motion cycle.
+
+        For a standard four-bar, joints are auto-detected.
+
+        Args:
+            iterations: Number of simulation steps. Defaults to one full rotation.
+            acceptable_range: (min, max) acceptable angles in degrees.
+
+        Returns:
+            TransmissionAngleAnalysis with min/max/mean/is_acceptable.
+
+        Raises:
+            ValueError: If joints cannot be detected or no valid positions found.
+
+        Example:
+            >>> analysis = linkage.analyze_transmission()
+            >>> print(f"Min: {analysis.min_angle:.1f}°")
+            >>> print(f"Max: {analysis.max_angle:.1f}°")
+            >>> print(f"Acceptable: {analysis.is_acceptable}")
+        """
+        from .transmission import TransmissionAngleAnalysis
+        from .transmission import analyze_transmission as _analyze
+
+        return _analyze(self, iterations, acceptable_range)
 
 
 class Simulation:
