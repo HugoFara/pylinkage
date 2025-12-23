@@ -24,6 +24,7 @@ Learn to use pylinkage's main capabilities.
    visualization
    cam_follower
    advanced_optimization
+   multi_objective
    kinematics_optimization
    sensitivity_analysis
 
@@ -56,7 +57,9 @@ Quick Reference
    * - :doc:`cam_follower`
      - Cam profiles, motion laws, translating/oscillating followers
    * - :doc:`advanced_optimization`
-     - PSO optimization, fitness functions, bounds, multi-objective
+     - PSO optimization, fitness functions, bounds, grid search
+   * - :doc:`multi_objective`
+     - NSGA-II/III Pareto optimization, trade-off analysis, hypervolume
    * - :doc:`kinematics_optimization`
      - Velocity analysis, acceleration, kinematic-based optimization
    * - :doc:`sensitivity_analysis`

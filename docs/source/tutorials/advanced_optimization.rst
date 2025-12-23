@@ -221,15 +221,16 @@ For simpler problems or exhaustive search:
 Multi-Objective Optimization
 ----------------------------
 
-Combine multiple objectives in your fitness function:
+For true multi-objective optimization with Pareto fronts, see :doc:`multi_objective`.
+
+For simple cases where objectives can be combined with weights:
 
 .. code-block:: python
 
    @pl.kinematic_minimization
-   def multi_objective_fitness(loci, **kwargs):
-       """Optimize for both path shape and mechanism size."""
+   def weighted_objectives(loci, **kwargs):
+       """Combine objectives with weights (simple approach)."""
        output_path = [step[-1] for step in loci]
-       crank_path = [step[0] for step in loci]
 
        # Objective 1: Match target bounding box
        bbox = pl.bounding_box(output_path)
@@ -241,8 +242,11 @@ Combine multiple objectives in your fitness function:
        mech_bbox = pl.bounding_box(all_points)
        mechanism_size = (mech_bbox[1] - mech_bbox[3]) * (mech_bbox[2] - mech_bbox[0])
 
-       # Weighted combination
+       # Weighted combination (requires choosing weights upfront)
        return shape_error + 0.1 * mechanism_size
+
+For exploring trade-offs without committing to weights, use
+``multi_objective_optimization()`` which returns the full Pareto front.
 
 Constraint Preservation
 -----------------------

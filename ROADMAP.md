@@ -304,39 +304,61 @@ pip install pylinkage[analysis]
 
 ---
 
-## Not Yet Implemented
-
 ### Multi-Objective Optimization
 
-**Status:** Not implemented (single objective only)
-**Impact:** Low-Medium - Advanced optimization
+**Status:** Implemented
+**Location:** `src/pylinkage/optimization/multi_objective.py`
 
-Pareto-optimal solutions for competing objectives:
+Pareto-optimal solutions for competing objectives using NSGA-II or NSGA-III:
 
-- Minimize path error AND maximize transmission angle
-- Trade-off visualization
-- NSGA-II or similar algorithm
+- Optimize multiple objectives simultaneously
+- `ParetoFront` container with visualization and analysis
+- Hypervolume indicator computation
+- Best compromise solution selection
 
 ```python
-from pylinkage.optimization import multi_objective_optimization
-
-objectives = [
-    path_error_function,      # Minimize
-    transmission_angle_min,   # Maximize
-]
-
-pareto_front = multi_objective_optimization(
-    linkage,
-    objectives,
-    bounds=bounds,
-    algorithm='nsga2'
+from pylinkage.optimization import (
+    multi_objective_optimization,
+    kinematic_minimization,
 )
 
-pareto_front.plot()  # Pareto frontier visualization
-pareto_front.solutions  # List of non-dominated solutions
+@kinematic_minimization
+def path_error(loci, **kwargs):
+    return compute_path_error(loci)
+
+@kinematic_minimization
+def transmission_penalty(loci, linkage, **kwargs):
+    analysis = linkage.analyze_transmission()
+    return abs(90 - analysis.mean_angle)
+
+pareto = multi_objective_optimization(
+    objectives=[path_error, transmission_penalty],
+    linkage=my_linkage,
+    objective_names=["Path Error", "Transmission Penalty"],
+    algorithm="nsga2",  # or "nsga3" for many objectives
+    n_generations=100,
+)
+
+# Visualize trade-offs
+pareto.plot()
+
+# Get best compromise solution
+best = pareto.best_compromise()
+my_linkage.set_num_constraints(best.dimensions)
+
+# Hypervolume indicator
+hv = pareto.hypervolume(reference_point=[10.0, 10.0])
+```
+
+**Installation:** Multi-objective optimization requires pymoo:
+
+```bash
+pip install pylinkage[moo]
 ```
 
 ---
+
+## Not Yet Implemented
 
 ### URDF/SDF Export
 
@@ -375,9 +397,9 @@ Currently only Dyads (Class I, 2 links) are implemented. Higher-order groups rai
 | ~~1~~ | ~~High-level Velocity API~~ | ✅ Done | — | — |
 | ~~1~~ | ~~DXF/STEP Export~~ | ✅ Done | — | — |
 | ~~2~~ | ~~Sensitivity Analysis~~ | ✅ Done | — | — |
+| ~~3~~ | ~~Multi-Objective Opt~~ | ✅ Done | — | — |
 | 1 | Triad/Tetrad Support | Not started | High | Extend solver/assur modules |
 | 2 | URDF/SDF Export | Not started | Medium | XML serialization |
-| 3 | Multi-Objective Opt | Not started | Medium | NSGA-II integration |
 
 ---
 

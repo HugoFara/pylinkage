@@ -9,7 +9,10 @@ __all__ = [
     "kinematic_minimization",
     "minimize_linkage",
     "minimize_linkage_async",
+    "multi_objective_optimization",
     "OptimizationProgress",
+    "ParetoFront",
+    "ParetoSolution",
     "particle_swarm_optimization",
     "particle_swarm_optimization_async",
     "trials_and_errors_optimization",
@@ -52,4 +55,13 @@ from .utils import (
 )
 from .utils import (
     kinematic_minimization as kinematic_minimization,
+)
+from .collections.pareto import (
+    ParetoFront as ParetoFront,
+)
+from .collections.pareto import (
+    ParetoSolution as ParetoSolution,
+)
+from .multi_objective import (
+    multi_objective_optimization as multi_objective_optimization,
 )

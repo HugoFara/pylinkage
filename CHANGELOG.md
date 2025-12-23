@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Multi-objective optimization:**
+  - New `multi_objective_optimization()` function using NSGA-II/NSGA-III algorithms via pymoo.
+  - `ParetoFront` class for storing and analyzing non-dominated solutions.
+  - `ParetoSolution` dataclass for individual Pareto-optimal solutions.
+  - Pareto front visualization with `pareto.plot()`.
+  - Hypervolume indicator computation with `pareto.hypervolume()`.
+  - Best compromise solution selection with `pareto.best_compromise()`.
+  - Crowding distance-based filtering with `pareto.filter()`.
+  - New optional dependency group: `pip install pylinkage[moo]`.
 - **Cam-follower mechanisms:**
   - New `pylinkage.cam` module with motion laws and profile definitions.
   - Motion laws: `HarmonicMotionLaw`, `CycloidalMotionLaw`, `ModifiedTrapezoidalMotionLaw`,
