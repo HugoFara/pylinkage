@@ -23,6 +23,7 @@ from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from ..solver import SolverData
+    from .sensitivity import SensitivityAnalysis, ToleranceAnalysis
     from .transmission import StrokeAnalysis, TransmissionAngleAnalysis
 
 
@@ -715,6 +716,70 @@ class Linkage:
         from .transmission import analyze_stroke as _analyze
 
         return _analyze(self, iterations=iterations)
+
+    def sensitivity_analysis(
+        self,
+        output_joint: object | int | None = None,
+        delta: float = 0.01,
+        include_transmission: bool = True,
+        iterations: int | None = None,
+    ) -> "SensitivityAnalysis":
+        """Analyze sensitivity of output path to each constraint dimension.
+
+        For each constraint, this function perturbs the value by delta
+        and measures how much the output path changes.
+
+        Args:
+            output_joint: Joint to measure, index, or None (auto-detect last).
+            delta: Relative perturbation magnitude (e.g., 0.01 for 1%).
+            include_transmission: Whether to also measure transmission angle.
+            iterations: Number of simulation steps. Defaults to one full rotation.
+
+        Returns:
+            SensitivityAnalysis with sensitivity coefficients and rankings.
+
+        Example:
+            >>> analysis = linkage.sensitivity_analysis(delta=0.01)
+            >>> print(f"Most sensitive: {analysis.most_sensitive}")
+            >>> for name, sens in analysis.sensitivity_ranking:
+            ...     print(f"{name}: {sens:.4f}")
+        """
+        from .sensitivity import analyze_sensitivity as _analyze
+
+        return _analyze(self, output_joint, delta, include_transmission, iterations)
+
+    def tolerance_analysis(
+        self,
+        tolerances: dict[str, float],
+        output_joint: object | int | None = None,
+        iterations: int | None = None,
+        n_samples: int = 1000,
+        seed: int | None = None,
+    ) -> "ToleranceAnalysis":
+        """Analyze manufacturing tolerance effects via Monte Carlo simulation.
+
+        Each sample randomly perturbs constraints within tolerance bounds
+        and simulates the linkage to measure output variation.
+
+        Args:
+            tolerances: Constraint name -> tolerance value (e.g., {"crank_radius": 0.1}).
+            output_joint: Joint to measure, index, or None (auto-detect last).
+            iterations: Number of simulation steps. Defaults to one full rotation.
+            n_samples: Number of Monte Carlo samples.
+            seed: Random seed for reproducibility.
+
+        Returns:
+            ToleranceAnalysis with statistics and output cloud for visualization.
+
+        Example:
+            >>> tolerances = {"Crank_radius": 0.1, "Revolute_dist1": 0.2}
+            >>> analysis = linkage.tolerance_analysis(tolerances, n_samples=500)
+            >>> print(f"Max deviation: {analysis.max_deviation:.4f}")
+            >>> analysis.plot_cloud()
+        """
+        from .sensitivity import analyze_tolerance as _analyze
+
+        return _analyze(self, tolerances, output_joint, iterations, n_samples, seed)
 
 
 class Simulation:

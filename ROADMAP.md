@@ -263,35 +263,53 @@ def fitness(loci, linkage):
 
 ---
 
-## Not Yet Implemented
-
 ### Sensitivity & Tolerance Analysis
 
-**Status:** Not implemented
-**Impact:** Medium - Manufacturing considerations
+**Status:** Implemented
+**Location:** `src/pylinkage/linkage/sensitivity.py`
 
 Analyze how dimensional variations affect output:
 
-- Sensitivity of output path to each dimension
-- Monte Carlo tolerance analysis
-- Identify critical dimensions
+- Sensitivity analysis: measures impact of each constraint on output path
+- Monte Carlo tolerance analysis for manufacturing variation
+- Human-readable constraint names (e.g., `crank_radius`, `coupler_dist1`)
+- Optional transmission angle sensitivity tracking
 
 ```python
-# Proposed API
-sens = linkage.sensitivity_analysis(output_joint)
-sens.to_dataframe()
-# Returns: which dimensions most affect output position
+from pylinkage.linkage import (
+    analyze_sensitivity,
+    analyze_tolerance,
+    SensitivityAnalysis,
+    ToleranceAnalysis,
+)
 
+# Sensitivity analysis
+analysis = linkage.sensitivity_analysis(delta=0.01)  # 1% perturbation
+print(analysis.most_sensitive)         # Most sensitive constraint
+print(analysis.sensitivity_ranking)    # Ranked by impact
+
+# Export to pandas DataFrame (requires: pip install pylinkage[analysis])
+df = analysis.to_dataframe()
+
+# Tolerance analysis (Monte Carlo)
 tolerances = {
-    'crank_radius': 0.1,  # +/- 0.1 mm
-    'link_length': 0.2,
+    'crank_radius': 0.1,      # +/- 0.1 mm
+    'coupler_dist1': 0.2,     # +/- 0.2 mm
 }
-result = linkage.tolerance_analysis(tolerances, samples=1000)
-result.output_variation  # Expected variation in output path
-result.plot_cloud()      # Scatter plot of output positions
+result = linkage.tolerance_analysis(tolerances, n_samples=1000)
+result.mean_deviation     # Mean path deviation from nominal
+result.max_deviation      # Worst-case deviation
+result.plot_cloud()       # Scatter plot of output positions
+```
+
+**Installation:** DataFrame export requires optional pandas:
+```bash
+pip install pylinkage[analysis]
 ```
 
 ---
+
+## Not Yet Implemented
 
 ### Multi-Objective Optimization
 
@@ -361,10 +379,10 @@ Currently only Dyads (Class I, 2 links) are implemented. Higher-order groups rai
 |----------|---------|--------|--------|-------------|
 | ~~1~~ | ~~High-level Velocity API~~ | ✅ Done | — | — |
 | ~~1~~ | ~~DXF/STEP Export~~ | ✅ Done | — | — |
+| ~~2~~ | ~~Sensitivity Analysis~~ | ✅ Done | — | — |
 | 1 | Triad/Tetrad Support | Not started | High | Extend solver/assur modules |
-| 2 | Sensitivity Analysis | Not started | Medium | Monte Carlo wrapper |
-| 3 | URDF/SDF Export | Not started | Medium | XML serialization |
-| 4 | Multi-Objective Opt | Not started | Medium | NSGA-II integration |
+| 2 | URDF/SDF Export | Not started | Medium | XML serialization |
+| 3 | Multi-Objective Opt | Not started | Medium | NSGA-II integration |
 
 ---
 

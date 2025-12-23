@@ -15,6 +15,11 @@ __all__ = [
     "StrokeAnalysis",
     "analyze_stroke",
     "compute_slide_position",
+    # Sensitivity and tolerance analysis
+    "SensitivityAnalysis",
+    "ToleranceAnalysis",
+    "analyze_sensitivity",
+    "analyze_tolerance",
 ]
 
 from .analysis import (
@@ -42,4 +47,16 @@ from .transmission import (
 )
 from .transmission import (
     compute_transmission_angle as compute_transmission_angle,
+)
+from .sensitivity import (
+    SensitivityAnalysis as SensitivityAnalysis,
+)
+from .sensitivity import (
+    ToleranceAnalysis as ToleranceAnalysis,
+)
+from .sensitivity import (
+    analyze_sensitivity as analyze_sensitivity,
+)
+from .sensitivity import (
+    analyze_tolerance as analyze_tolerance,
 )
