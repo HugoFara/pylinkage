@@ -174,6 +174,52 @@ float(‘inf’) and 0.</p></li>
 <p>It is defined as a kinematic linkage.
 Coordinates are given relative to its own base.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.analyze_stroke">
+<span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_stroke" title="Link to this definition"></a></dt>
+<dd><p>Analyze stroke/slide position over a full motion cycle.</p>
+<p>For a linkage with a Prismatic joint, this tracks the slide
+position throughout the motion cycle.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>StrokeAnalysis with min/max/range/mean statistics.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found or no valid positions.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_stroke</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stroke range: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">stroke_range</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.analyze_transmission">
+<span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="pylinkage.linkage.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.analyze_transmission" title="Link to this definition"></a></dt>
+<dd><p>Analyze transmission angle over a full motion cycle.</p>
+<p>For a standard four-bar, joints are auto-detected.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.
+acceptable_range: (min, max) acceptable angles in degrees.</p>
+</dd>
+<dt>Returns:</dt><dd><p>TransmissionAngleAnalysis with min/max/mean/is_acceptable.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be detected or no valid positions found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_transmission</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Acceptable: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">is_acceptable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.compile" title="Link to this definition"></a></dt>
 <dd><p>Prepare numba-optimized solver for fast simulation.</p>
@@ -480,10 +526,11 @@ np.isnan(trajectory).any() or use solver.has_nan_positions().</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics">
-<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
-<dd><p>Run simulation with velocity computation using numba-optimized solver.</p>
-<p>This extends step_fast() to also compute velocities at each step.
-Requires that omega is set on crank joints to specify angular velocities.</p>
+<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
+<dd><p>Run simulation with velocity and acceleration using numba-optimized solver.</p>
+<p>This extends step_fast() to also compute velocities and accelerations
+at each step. Requires that omega (and optionally alpha) is set on crank
+joints to specify angular velocities and accelerations.</p>
 <dl>
 <dt>Args:</dt><dd><dl class="simple">
 <dt>iterations: Number of iterations to run. If None, uses</dt><dd><p>get_rotation_period(). (Default: None)</p>
@@ -492,12 +539,32 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 </dl>
 </dd>
-<dt>Returns:</dt><dd><p>Tuple of (positions, velocities) arrays, each with shape
-(iterations, n_joints, 2).</p>
+<dt>Returns:</dt><dd><p>Tuple of (positions, velocities, accelerations) arrays, each with
+shape (iterations, n_joints, 2).</p>
 </dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vel</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># acceleration of joint 2 at step 100</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.stroke_position">
+<span class="sig-name descname"><span class="pre">stroke_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.stroke_position" title="Link to this definition"></a></dt>
+<dd><p>Get the slide position of a prismatic joint at current position.</p>
+<p>For a linkage with a Prismatic joint, this returns the slide
+position along the prismatic axis.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Slide position along the axis.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">stroke_position</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current slide position: </span><span class="si">{</span><span class="n">pos</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -529,6 +596,25 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 <dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loaded</span> <span class="o">=</span> <span class="n">Linkage</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.linkage.Linkage.transmission_angle">
+<span class="sig-name descname"><span class="pre">transmission_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.linkage.Linkage.transmission_angle" title="Link to this definition"></a></dt>
+<dd><p>Get the transmission angle at the current linkage position.</p>
+<p>For a four-bar linkage, this is the angle between the coupler
+and rocker links at their common joint.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees (0-180).</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be auto-detected.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">transmission_angle</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current transmission angle: </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -578,6 +664,52 @@ with automatic setup and teardown.</p>
 <p>A linkage is a set of Joint objects.</p>
 <p>It is defined as a kinematic linkage.
 Coordinates are given relative to its own base.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.analyze_stroke">
+<span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.analyze_stroke" title="Link to this definition"></a></dt>
+<dd><p>Analyze stroke/slide position over a full motion cycle.</p>
+<p>For a linkage with a Prismatic joint, this tracks the slide
+position throughout the motion cycle.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>StrokeAnalysis with min/max/range/mean statistics.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found or no valid positions.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_stroke</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stroke range: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">stroke_range</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.analyze_transmission">
+<span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="pylinkage.linkage.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.analyze_transmission" title="Link to this definition"></a></dt>
+<dd><p>Analyze transmission angle over a full motion cycle.</p>
+<p>For a standard four-bar, joints are auto-detected.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.
+acceptable_range: (min, max) acceptable angles in degrees.</p>
+</dd>
+<dt>Returns:</dt><dd><p>TransmissionAngleAnalysis with min/max/mean/is_acceptable.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be detected or no valid positions found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_transmission</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Acceptable: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">is_acceptable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.Linkage.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.compile" title="Link to this definition"></a></dt>
@@ -885,10 +1017,11 @@ np.isnan(trajectory).any() or use solver.has_nan_positions().</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.linkage.Linkage.step_fast_with_kinematics">
-<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
-<dd><p>Run simulation with velocity computation using numba-optimized solver.</p>
-<p>This extends step_fast() to also compute velocities at each step.
-Requires that omega is set on crank joints to specify angular velocities.</p>
+<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
+<dd><p>Run simulation with velocity and acceleration using numba-optimized solver.</p>
+<p>This extends step_fast() to also compute velocities and accelerations
+at each step. Requires that omega (and optionally alpha) is set on crank
+joints to specify angular velocities and accelerations.</p>
 <dl>
 <dt>Args:</dt><dd><dl class="simple">
 <dt>iterations: Number of iterations to run. If None, uses</dt><dd><p>get_rotation_period(). (Default: None)</p>
@@ -897,12 +1030,32 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 </dl>
 </dd>
-<dt>Returns:</dt><dd><p>Tuple of (positions, velocities) arrays, each with shape
-(iterations, n_joints, 2).</p>
+<dt>Returns:</dt><dd><p>Tuple of (positions, velocities, accelerations) arrays, each with
+shape (iterations, n_joints, 2).</p>
 </dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vel</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># acceleration of joint 2 at step 100</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.stroke_position">
+<span class="sig-name descname"><span class="pre">stroke_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.stroke_position" title="Link to this definition"></a></dt>
+<dd><p>Get the slide position of a prismatic joint at current position.</p>
+<p>For a linkage with a Prismatic joint, this returns the slide
+position along the prismatic axis.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Slide position along the axis.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">stroke_position</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current slide position: </span><span class="si">{</span><span class="n">pos</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -934,6 +1087,25 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 <dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">loaded</span> <span class="o">=</span> <span class="n">Linkage</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.Linkage.transmission_angle">
+<span class="sig-name descname"><span class="pre">transmission_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.Linkage.transmission_angle" title="Link to this definition"></a></dt>
+<dd><p>Get the transmission angle at the current linkage position.</p>
+<p>For a four-bar linkage, this is the angle between the coupler
+and rocker links at their common joint.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees (0-180).</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be auto-detected.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">transmission_angle</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current transmission angle: </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -972,6 +1144,187 @@ with automatic setup and teardown.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">StrokeAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stroke_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_position_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_position_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of stroke analysis for a prismatic joint over a motion cycle.</p>
+<p>The stroke is the position of the slider along its axis, measured as
+the signed distance from the first line point (joint1) projected onto
+the slide axis.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>min_position: Minimum slide position along the axis.
+max_position: Maximum slide position along the axis.
+mean_position: Mean slide position.
+stroke_range: Total travel distance (max - min).
+positions: Array of slide positions at each step.
+min_position_step: Step index where minimum position occurs.
+max_position_step: Step index where maximum position occurs.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.amplitude">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">amplitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.amplitude" title="Link to this definition"></a></dt>
+<dd><p>Return half the stroke range (useful for oscillating mechanisms).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.center_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.center_position" title="Link to this definition"></a></dt>
+<dd><p>Return the center of the stroke range.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.max_position">
+<span class="sig-name descname"><span class="pre">max_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.max_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.max_position_step">
+<span class="sig-name descname"><span class="pre">max_position_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.max_position_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.mean_position">
+<span class="sig-name descname"><span class="pre">mean_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.mean_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.min_position">
+<span class="sig-name descname"><span class="pre">min_position</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.min_position" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.min_position_step">
+<span class="sig-name descname"><span class="pre">min_position_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.min_position_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.positions">
+<span class="sig-name descname"><span class="pre">positions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.positions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.StrokeAnalysis.stroke_range">
+<span class="sig-name descname"><span class="pre">stroke_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.StrokeAnalysis.stroke_range" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">TransmissionAngleAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_acceptable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_deviation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_angle_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Results of transmission angle analysis over a motion cycle.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>min_angle: Minimum transmission angle in degrees.
+max_angle: Maximum transmission angle in degrees.
+mean_angle: Mean transmission angle in degrees.
+angles: Array of transmission angles at each step (degrees).
+is_acceptable: True if angle always in acceptable range.
+min_deviation: Minimum deviation from 90 degrees.
+max_deviation: Maximum deviation from 90 degrees.
+min_angle_step: Step index where minimum angle occurs.
+max_angle_step: Step index where maximum angle occurs.</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.acceptable_range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">acceptable_range</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.acceptable_range" title="Link to this definition"></a></dt>
+<dd><p>Return the standard acceptable range [40, 140] degrees.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.angles">
+<span class="sig-name descname"><span class="pre">angles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.angles" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.is_acceptable">
+<span class="sig-name descname"><span class="pre">is_acceptable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.is_acceptable" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.max_angle">
+<span class="sig-name descname"><span class="pre">max_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.max_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.max_angle_step">
+<span class="sig-name descname"><span class="pre">max_angle_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.max_angle_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.max_deviation">
+<span class="sig-name descname"><span class="pre">max_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.max_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.mean_angle">
+<span class="sig-name descname"><span class="pre">mean_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.mean_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.min_angle">
+<span class="sig-name descname"><span class="pre">min_angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.min_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.min_angle_step">
+<span class="sig-name descname"><span class="pre">min_angle_step</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.min_angle_step" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.min_deviation">
+<span class="sig-name descname"><span class="pre">min_deviation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.min_deviation" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.linkage.TransmissionAngleAnalysis.worst_angle">
+<span class="sig-name descname"><span class="pre">worst_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.TransmissionAngleAnalysis.worst_angle" title="Link to this definition"></a></dt>
+<dd><p>Return the angle with maximum deviation from 90 degrees.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analyze_stroke">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prismatic_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.analyze_stroke" title="Link to this definition"></a></dt>
+<dd><p>Analyze stroke/slide position over a full motion cycle.</p>
+<p>For a linkage with a Prismatic joint, this tracks the slide position
+along the prismatic axis throughout the motion cycle.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The Linkage to analyze.
+prismatic_joint: The Prismatic joint to analyze. Auto-detected if None.
+iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>StrokeAnalysis with statistics over the motion cycle.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joint cannot be detected or no valid positions found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.analyze_transmission">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.linkage.Linkage" title="pylinkage.linkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.linkage.TransmissionAngleAnalysis" title="pylinkage.linkage.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.linkage.analyze_transmission" title="Link to this definition"></a></dt>
+<dd><p>Analyze transmission angle over a full motion cycle.</p>
+<p>For a standard four-bar linkage, joints are auto-detected:
+- coupler_joint: The Crank joint (B)
+- output_joint: The Revolute joint (C)
+- rocker_pivot: The Static joint at Revolute.joint1 (D)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>linkage: The Linkage to analyze.
+iterations: Number of simulation steps. Defaults to one full rotation.
+acceptable_range: (min, max) acceptable angles in degrees.</p>
+</dd>
+<dt>Returns:</dt><dd><p>TransmissionAngleAnalysis with statistics over the motion cycle.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be detected or no valid positions found.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.linkage.bounding_box">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">bounding_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.linkage.bounding_box" title="Link to this definition"></a></dt>
@@ -982,6 +1335,39 @@ with automatic setup and teardown.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Bounding box as (y_min, x_max, y_max, x_min).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.compute_slide_position">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">compute_slide_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slider_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_point1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_point2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.compute_slide_position" title="Link to this definition"></a></dt>
+<dd><p>Compute the slide position along a prismatic axis.</p>
+<p>The position is the signed distance from line_point1 to the projection
+of slider_pos onto the line, measured in the direction of line_point2.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>slider_pos: Current position of the slider joint.
+line_point1: First point defining the slide axis (origin).
+line_point2: Second point defining the slide axis (direction).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Signed distance along the axis from line_point1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.linkage.compute_transmission_angle">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.linkage.</span></span><span class="sig-name descname"><span class="pre">compute_transmission_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coupler_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rocker_pivot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.linkage.compute_transmission_angle" title="Link to this definition"></a></dt>
+<dd><p>Compute transmission angle in degrees.</p>
+<p>The transmission angle is the angle between:
+- Coupler link: from coupler_joint (B) to output_joint (C)
+- Rocker link: from rocker_pivot (D) to output_joint (C)</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>coupler_joint: Position of the coupler input joint (B).
+output_joint: Position where angle is measured (C).
+rocker_pivot: Position of the rocker ground pivot (D).</p>
+</dd>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees (0-180).</p>
 </dd>
 </dl>
 </dd></dl>

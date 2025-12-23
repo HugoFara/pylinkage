@@ -48,6 +48,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unreleased">[Unreleased]</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">[0.7.0] - 2025-12-13</a><ul>
@@ -190,6 +191,27 @@ and this project adheres to <a class="reference external" href="https://semver.o
 <li><p>Adds a new optimization: differential evolution.</p></li>
 </ul>
 </li>
+<li><p><strong>High-level velocity/acceleration API:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Component.velocity</span></code> and <code class="docutils literal notranslate"><span class="pre">Component.acceleration</span></code> properties on all components.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation.Linkage.set_input_velocity(actuator,</span> <span class="pre">omega,</span> <span class="pre">alpha)</span></code> to set crank angular velocity.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation.Linkage.step_with_derivatives()</span></code> generator yielding (positions, velocities, accelerations).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation.Linkage.get_velocities()</span></code> and <code class="docutils literal notranslate"><span class="pre">get_accelerations()</span></code> batch query methods.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">solver.step_single_acceleration()</span></code> numba-compiled acceleration solver.</p></li>
+<li><p>Exported acceleration solvers: <code class="docutils literal notranslate"><span class="pre">solve_crank_acceleration</span></code>, <code class="docutils literal notranslate"><span class="pre">solve_revolute_acceleration</span></code>,
+<code class="docutils literal notranslate"><span class="pre">solve_fixed_acceleration</span></code>, <code class="docutils literal notranslate"><span class="pre">solve_prismatic_acceleration</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Breaking:</strong> <code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code> now returns a 3-tuple
+<code class="docutils literal notranslate"><span class="pre">(positions,</span> <span class="pre">velocities,</span> <span class="pre">accelerations)</span></code> instead of 2-tuple.</p></li>
+<li><p><strong>Breaking:</strong> <code class="docutils literal notranslate"><span class="pre">LinearActuator.velocity</span></code> attribute renamed to <code class="docutils literal notranslate"><span class="pre">LinearActuator.speed</span></code>
+to avoid conflict with the new <code class="docutils literal notranslate"><span class="pre">Component.velocity</span></code> property.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulate_with_kinematics()</span></code> now computes accelerations in addition to velocities.</p></li>
 </ul>
 </section>
 </section>

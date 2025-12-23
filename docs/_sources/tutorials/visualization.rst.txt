@@ -1,11 +1,13 @@
 Visualization Backends
 ======================
 
-Pylinkage provides three visualization backends for different use cases:
+Pylinkage provides multiple visualization and export backends:
 
 - **Matplotlib**: Animations and static plots (default)
 - **Plotly**: Interactive HTML visualizations
 - **drawsvg**: Publication-quality SVG output
+- **DXF**: 2D CAD export for AutoCAD/CNC (requires ``pylinkage[cad]``)
+- **STEP**: 3D CAD interchange format (requires ``pylinkage[cad]``)
 
 This tutorial covers each backend with practical examples.
 
@@ -36,6 +38,12 @@ Quick Reference
    * - drawsvg
      - Publications, precise vector graphics
      - SVG, PNG, PDF
+   * - DXF
+     - 2D CAD, laser cutting, CNC
+     - DXF (AutoCAD compatible)
+   * - STEP
+     - 3D CAD, machining, 3D printing
+     - STEP/STP (ISO 10303)
 
 Matplotlib Backend
 ------------------
@@ -403,6 +411,204 @@ Generate SVGs optimized for LaTeX documents:
    #     \caption{Four-bar linkage mechanism}
    # \end{figure}
 
+CAD Export
+----------
+
+Export linkages to industry-standard CAD formats for fabrication and 3D modeling.
+
+.. note::
+
+   CAD export requires optional dependencies. Install with:
+
+   .. code-block:: bash
+
+      pip install pylinkage[cad]
+
+   This installs ``ezdxf`` (for DXF) and ``build123d`` (for STEP).
+
+DXF Export (2D CAD)
+^^^^^^^^^^^^^^^^^^^
+
+Export to DXF format for AutoCAD, CNC machines, and laser cutters:
+
+.. code-block:: python
+
+   import pylinkage as pl
+   from pylinkage.visualizer import save_linkage_dxf, plot_linkage_dxf
+
+   # Create linkage
+   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
+   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
+                        distance0=3, distance1=1, name="Output")
+   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+
+   # Save to DXF file
+   save_linkage_dxf(linkage, "linkage.dxf")
+
+   # Or get the ezdxf Drawing object for further customization
+   doc = plot_linkage_dxf(linkage)
+   doc.saveas("custom_linkage.dxf")
+
+**DXF Layers**: The exported DXF contains organized layers:
+
+- ``LINKS`` - Link bar geometry (white)
+- ``JOINTS`` - Joint symbols (red)
+- ``GROUND`` - Ground/fixed support symbols (gray)
+- ``CRANKS`` - Crank/motor symbols (green)
+
+Customizing DXF Output
+^^^^^^^^^^^^^^^^^^^^^^
+
+Control dimensions and export a specific frame:
+
+.. code-block:: python
+
+   from pylinkage.visualizer import save_linkage_dxf
+
+   # Run simulation to get all positions
+   loci = list(linkage.step())
+
+   # Export frame 25 with custom dimensions
+   save_linkage_dxf(
+       linkage,
+       "frame25.dxf",
+       loci=loci,
+       frame_index=25,          # Export this frame (0 = first)
+       link_width=0.5,          # Link bar width in world units
+       joint_radius=0.2,        # Joint symbol radius
+   )
+
+STEP Export (3D CAD)
+^^^^^^^^^^^^^^^^^^^^
+
+Export to STEP format for 3D CAD applications (FreeCAD, SolidWorks, Fusion 360):
+
+.. code-block:: python
+
+   import pylinkage as pl
+   from pylinkage.visualizer import save_linkage_step, build_linkage_3d
+
+   # Create linkage
+   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
+   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
+                        distance0=3, distance1=1, name="Output")
+   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+
+   # Save to STEP file (dimensions auto-scaled to fit linkage)
+   save_linkage_step(linkage, "linkage.step")
+
+   # Or get the build123d Compound for further manipulation
+   model = build_linkage_3d(linkage)
+   model.export_step("custom_linkage.step")
+
+**3D Geometry**: The STEP export creates:
+
+- Stadium-shaped link bars (rounded rectangles extruded in Z)
+- Holes at joint locations for pin connections
+- Cylindrical pins at each joint
+- Ground symbols for fixed supports
+
+Customizing STEP Dimensions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Use ``LinkProfile`` and ``JointProfile`` to control 3D geometry:
+
+.. code-block:: python
+
+   from pylinkage.visualizer import (
+       save_linkage_step,
+       LinkProfile,
+       JointProfile,
+   )
+
+   # Define custom link cross-section
+   link_profile = LinkProfile(
+       width=10.0,              # Link bar width (mm or your units)
+       thickness=3.0,           # Extrusion depth in Z
+       fillet_radius=0.5,       # Edge rounding (0 for sharp)
+   )
+
+   # Define custom joint pins
+   joint_profile = JointProfile(
+       radius=2.0,              # Pin radius
+       length=5.0,              # Pin length in Z
+   )
+
+   # Export with custom profiles
+   save_linkage_step(
+       linkage,
+       "machined_linkage.step",
+       link_profile=link_profile,
+       joint_profile=joint_profile,
+       frame_index=0,           # Which position to export
+       include_pins=True,       # Include joint pins
+   )
+
+Exporting Multiple Frames
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Export different positions of the mechanism:
+
+.. code-block:: python
+
+   from pylinkage.visualizer import save_linkage_step
+
+   # Pre-compute trajectory
+   loci = list(linkage.step())
+
+   # Export key positions
+   for i, frame_idx in enumerate([0, 25, 50, 75]):
+       save_linkage_step(
+           linkage,
+           f"linkage_position_{i}.step",
+           loci=loci,
+           frame_index=frame_idx,
+       )
+       print(f"Exported frame {frame_idx} to linkage_position_{i}.step")
+
+CAD Export Workflow
+^^^^^^^^^^^^^^^^^^^
+
+A typical workflow from simulation to fabrication:
+
+.. code-block:: python
+
+   import pylinkage as pl
+   from pylinkage.visualizer import (
+       show_linkage,
+       save_linkage_svg,
+       save_linkage_dxf,
+       save_linkage_step,
+       LinkProfile,
+   )
+
+   # 1. Design and simulate
+   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
+   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
+                        distance0=3, distance1=1, name="Output")
+   linkage = pl.Linkage(joints=(crank, output))
+   loci = list(linkage.step())
+
+   # 2. Quick visualization to verify
+   show_linkage(linkage, loci=loci)
+
+   # 3. Publication figure (SVG)
+   save_linkage_svg(linkage, "documentation/linkage.svg", show_loci=True)
+
+   # 4. 2D CAD for laser cutting (DXF)
+   save_linkage_dxf(linkage, "fabrication/linkage_2d.dxf", loci=loci)
+
+   # 5. 3D CAD for machining/printing (STEP)
+   profile = LinkProfile(width=10, thickness=3)
+   save_linkage_step(
+       linkage,
+       "fabrication/linkage_3d.step",
+       loci=loci,
+       link_profile=profile,
+   )
+
+   print("Export complete! Files ready for fabrication.")
+
 PSO Visualization
 -----------------
 
@@ -517,6 +723,20 @@ Choosing the Right Backend
 - You need precise vector graphics
 - You want to edit the output in Inkscape/Illustrator
 - You need consistent styling across figures
+
+**Use DXF when:**
+
+- You need to import into AutoCAD or similar 2D CAD software
+- You're preparing files for laser cutting or CNC machining
+- You need layered 2D technical drawings
+- You want to edit geometry in CAD software
+
+**Use STEP when:**
+
+- You need to import into 3D CAD software (FreeCAD, SolidWorks, Fusion 360)
+- You're preparing files for 3D printing or machining
+- You want to visualize the linkage as physical parts
+- You need to integrate with other 3D models
 
 Example: Complete Visualization Workflow
 ----------------------------------------

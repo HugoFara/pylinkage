@@ -157,6 +157,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-pylinkage">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.ComponentId"><code class="docutils literal notranslate"><span class="pre">ComponentId</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Crank"><code class="docutils literal notranslate"><span class="pre">Crank</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.alpha"><code class="docutils literal notranslate"><span class="pre">Crank.alpha</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.angle"><code class="docutils literal notranslate"><span class="pre">Crank.angle</span></code></a></li>
@@ -168,6 +169,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Crank.set_constraints"><code class="docutils literal notranslate"><span class="pre">Crank.set_constraints()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.EdgeId"><code class="docutils literal notranslate"><span class="pre">EdgeId</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Fixed"><code class="docutils literal notranslate"><span class="pre">Fixed</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Fixed.angle"><code class="docutils literal notranslate"><span class="pre">Fixed.angle</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Fixed.get_constraints"><code class="docutils literal notranslate"><span class="pre">Fixed.get_constraints()</span></code></a></li>
@@ -178,13 +180,23 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Fixed.set_constraints"><code class="docutils literal notranslate"><span class="pre">Fixed.set_constraints()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.HyperedgeId"><code class="docutils literal notranslate"><span class="pre">HyperedgeId</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.JointType"><code class="docutils literal notranslate"><span class="pre">JointType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.GROUND"><code class="docutils literal notranslate"><span class="pre">JointType.GROUND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.PRISMATIC"><code class="docutils literal notranslate"><span class="pre">JointType.PRISMATIC</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.REVOLUTE"><code class="docutils literal notranslate"><span class="pre">JointType.REVOLUTE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.TRACKER"><code class="docutils literal notranslate"><span class="pre">JointType.TRACKER</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.joint2"><code class="docutils literal notranslate"><span class="pre">Linear.joint2</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linear.revolute_radius"><code class="docutils literal notranslate"><span class="pre">Linear.revolute_radius</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.analyze_stroke"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_stroke()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.analyze_transmission"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_transmission()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
@@ -205,8 +217,17 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast_with_kinematics"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.stroke_position"><code class="docutils literal notranslate"><span class="pre">Linkage.stroke_position()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.transmission_angle"><code class="docutils literal notranslate"><span class="pre">Linkage.transmission_angle()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NodeId"><code class="docutils literal notranslate"><span class="pre">NodeId</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole"><code class="docutils literal notranslate"><span class="pre">NodeRole</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.DRIVEN"><code class="docutils literal notranslate"><span class="pre">NodeRole.DRIVEN</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.DRIVER"><code class="docutils literal notranslate"><span class="pre">NodeRole.DRIVER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.GROUND"><code class="docutils literal notranslate"><span class="pre">NodeRole.GROUND</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
@@ -216,6 +237,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Pivot.r1"><code class="docutils literal notranslate"><span class="pre">Pivot.r1</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.PortId"><code class="docutils literal notranslate"><span class="pre">PortId</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic"><code class="docutils literal notranslate"><span class="pre">Prismatic</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.get_constraints"><code class="docutils literal notranslate"><span class="pre">Prismatic.get_constraints()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Prismatic.joint2"><code class="docutils literal notranslate"><span class="pre">Prismatic.joint2</span></code></a></li>
@@ -240,14 +262,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Simulation.linkage"><code class="docutils literal notranslate"><span class="pre">Simulation.linkage</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Static.get_constraints"><code class="docutils literal notranslate"><span class="pre">Static.get_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Static.reload"><code class="docutils literal notranslate"><span class="pre">Static.reload()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Static.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor0()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Static.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor1()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Static.set_constraints"><code class="docutils literal notranslate"><span class="pre">Static.set_constraints()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.UnbuildableError"><code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.UnderconstrainedError"><code class="docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.bounding_box"><code class="docutils literal notranslate"><span class="pre">bounding_box()</span></code></a></li>

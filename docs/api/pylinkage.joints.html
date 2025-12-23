@@ -117,6 +117,10 @@
 <p>Crank joint definition.</p>
 <p>A crank is a driver joint that rotates around a fixed anchor point.
 This is a thin wrapper around the solver’s solve_crank function.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The <cite>Crank</cite> class is deprecated. Use <cite>pylinkage.mechanism.create_crank()</cite>
+instead for clearer terminology. Crank will be removed in version 1.0.0.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.crank.Crank">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.crank.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.crank.Crank" title="Link to this definition"></a></dt>
@@ -124,6 +128,12 @@ This is a thin wrapper around the solver’s solve_crank function.</p>
 <p>Define a crank (rotary driver) joint.</p>
 <p>The crank rotates around its anchor point (joint0) at a constant
 angular velocity. It is the primary driver for linkage mechanisms.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_crank()</span></code> instead.
+The Crank class conflates a joint with a driver link. The new API
+separates these concepts: <cite>create_crank()</cite> returns a <cite>DriverLink</cite>
+and a <cite>RevoluteJoint</cite> (the crank output).</p>
+</div>
 <dl class="simple">
 <dt>Attributes:</dt><dd><p>r: Distance from anchor to crank (radius).
 angle: Angular step per iteration (radians per dt=1 step).
@@ -207,6 +217,10 @@ alpha: Angular acceleration in rad/s² for kinematics computation.</p>
 with no ambiguity. It uses polar coordinates relative to the line
 between the two parents.</p>
 <p>This is a thin wrapper around the solver’s solve_fixed function.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The <cite>Fixed</cite> class is deprecated. Use <cite>pylinkage.mechanism.create_fixed_dyad()</cite>
+instead for clearer terminology. Fixed will be removed in version 1.0.0.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.fixed.Fixed">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.fixed.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.fixed.Fixed" title="Link to this definition"></a></dt>
@@ -218,6 +232,11 @@ between the two parents.</p>
 - r: Distance from joint0
 - angle: Angle offset from the joint0→joint1 direction</p>
 <p>Unlike Revolute (RRR dyad), this has a unique solution.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_fixed_dyad()</span></code> instead.
+This class represents a fixed angular constraint (deterministic dyad),
+not a “fixed joint”. The new API uses clearer terminology.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.joints.fixed.Fixed.angle">
 <span class="sig-name descname"><span class="pre">angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.fixed.Fixed.angle" title="Link to this definition"></a></dt>
@@ -319,12 +338,12 @@ between the two parents.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.joints.joint.Joint.joint0">
-<span class="sig-name descname"><span class="pre">joint0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Static" title="pylinkage.joints.joint.Static"><span class="pre">Static</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.joint.Joint.joint0" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">joint0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_StaticBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.joint.Joint.joint0" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.joints.joint.Joint.joint1">
-<span class="sig-name descname"><span class="pre">joint1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Static" title="pylinkage.joints.joint.Static"><span class="pre">Static</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.joint.Joint.joint1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">joint1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_StaticBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.joint.Joint.joint1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -384,64 +403,19 @@ or set omega on crank joints and call linkage.compute_velocities().</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.joint.Static">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.joint.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.joint.Static" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_StaticBase</span></code></p>
 <p>Special case of Joint that should not move.</p>
 <p>Mostly used for the frame.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.joint.Static.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.joint.Static.get_constraints" title="Link to this definition"></a></dt>
-<dd><p>Return an empty tuple.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.joint.Static.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.Static.reload" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt</strong> – Unused, but preserves the object structure.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.joint.Static.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.Static.set_anchor0" title="Link to this definition"></a></dt>
-<dd><p>First joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.joint.Static.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.Static.set_anchor1" title="Link to this definition"></a></dt>
-<dd><p>Second joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.joint.Static.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.Static.set_constraints" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>args</strong> – Unused.</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.mechanism.GroundJoint</span></code> instead.
+This class represents a ground joint (fixed point on the frame),
+not a generic “static” object. The new API uses clearer terminology.</p>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.joints.joint.joint_syntax_parser">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.joints.joint.</span></span><span class="sig-name descname"><span class="pre">joint_syntax_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.joints.joint.Static" title="pylinkage.joints.joint.Static"><span class="pre">Static</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.joint_syntax_parser" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.joints.joint.</span></span><span class="sig-name descname"><span class="pre">joint_syntax_parser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">_StaticBase</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.joint.joint_syntax_parser" title="Link to this definition"></a></dt>
 <dd><p>Syntactic parser that understand a joint definition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -451,7 +425,7 @@ or set omega on crank joints and call linkage.compute_velocities().</p>
 <dd class="field-even"><p>New static joint definition if possible, or None.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint">Joint</a> | <a class="reference internal" href="#pylinkage.joints.joint.Static" title="pylinkage.joints.joint.Static">Static</a> | None</p>
+<dd class="field-odd"><p><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint">Joint</a> | _StaticBase | None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -465,6 +439,10 @@ The circle is centered at a revolute anchor, and the line is defined by
 two other joints. This corresponds to an RRP (two revolute, one prismatic)
 dyad in Assur group theory.</p>
 <p>This is a thin wrapper around the solver’s solve_linear function.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The <cite>Prismatic</cite> class is deprecated. Use <cite>pylinkage.mechanism.create_rrp_dyad()</cite>
+instead for clearer terminology. Prismatic will be removed in version 1.0.0.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.prismatic.Linear">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.prismatic.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">object</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.prismatic.Linear" title="Link to this definition"></a></dt>
@@ -496,6 +474,13 @@ in a future version.</p>
 - Line: passing through joint1 and joint2</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrp_dyad()</span></code> instead.
+Despite its name, this class is NOT a single prismatic joint - it’s an
+RRP dyad (2 links including a slider). The new API uses clearer
+terminology: <cite>create_rrp_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>PrismaticJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.joints.prismatic.Prismatic.get_constraints">
 <span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.prismatic.Prismatic.get_constraints" title="Link to this definition"></a></dt>
@@ -547,6 +532,10 @@ is chosen (hysteresis for continuity during simulation).</p>
 each centered at a parent joint. This corresponds to an RRR (three
 revolute joints) dyad in Assur group theory.</p>
 <p>This is a thin wrapper around the solver’s solve_revolute function.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The <cite>Revolute</cite> class is deprecated. Use <cite>pylinkage.mechanism.create_rrr_dyad()</cite>
+instead for clearer terminology. Revolute will be removed in version 1.0.0.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.revolute.Pivot">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.revolute.</span></span><span class="sig-name descname"><span class="pre">Pivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.revolute.Pivot" title="Link to this definition"></a></dt>
@@ -578,6 +567,13 @@ It will be removed in PyLinkage 0.7.0.</p>
 - Circle 2: centered at joint1 with radius r1</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrr_dyad()</span></code> instead.
+Despite its name, this class is NOT a single revolute joint - it’s an
+RRR dyad (2 links + 3 revolute joints). The new API uses clearer
+terminology: <cite>create_rrr_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>RevoluteJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.joints.revolute.Revolute.circle">
 <span class="sig-name descname"><span class="pre">circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.revolute.Revolute.circle" title="Link to this definition"></a></dt>
@@ -668,12 +664,21 @@ is chosen (hysteresis for continuity during simulation).</p>
 <section id="module-pylinkage.joints.static">
 <span id="pylinkage-joints-static-module"></span><h2>pylinkage.joints.static module<a class="headerlink" href="#module-pylinkage.joints.static" title="Link to this heading"></a></h2>
 <p>Static joint definition file.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>The <cite>Static</cite> class is deprecated. Use <cite>pylinkage.mechanism.GroundJoint</cite>
+instead for clearer terminology. Static will be removed in version 1.0.0.</p>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.static.Static">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.static.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.static.Static" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
 <p>Special case of Joint that should not move.</p>
 <p>Mostly used for the frame.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.mechanism.GroundJoint</span></code> instead.
+This class represents a ground joint (fixed point on the frame),
+not a generic “static” object. The new API uses clearer terminology.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.joints.static.Static.get_constraints">
 <span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.static.Static.get_constraints" title="Link to this definition"></a></dt>
@@ -725,7 +730,30 @@ is chosen (hysteresis for continuity during simulation).</p>
 </section>
 <section id="module-pylinkage.joints">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.joints" title="Link to this heading"></a></h2>
-<p>Definition of joints.</p>
+<p>Legacy joint definitions (Assur groups).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.8.0: </span>This module uses misleading terminology. What are called “joints” here
+are actually Assur groups (combinations of joints and links).</p>
+<p>Migration guide:
+- <code class="docutils literal notranslate"><span class="pre">Static</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">dyads.Ground</span></code>
+- <code class="docutils literal notranslate"><span class="pre">Crank</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">dyads.Crank</span></code>
+- <code class="docutils literal notranslate"><span class="pre">Revolute</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">dyads.RRRDyad</span></code>
+- <code class="docutils literal notranslate"><span class="pre">Prismatic</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">dyads.RRPDyad</span></code>
+- <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> -&gt; <code class="docutils literal notranslate"><span class="pre">dyads.FixedDyad</span></code></p>
+<p>For Assur group decomposition, use <code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code> module directly.</p>
+<p>Example migration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Old (deprecated):</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.joints</span><span class="w"> </span><span class="kn">import</span> <span class="n">Static</span><span class="p">,</span> <span class="n">Crank</span><span class="p">,</span> <span class="n">Revolute</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Static</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="c1"># New (preferred):</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span><span class="p">,</span> <span class="n">Crank</span><span class="p">,</span> <span class="n">RRRDyad</span><span class="p">,</span> <span class="n">Linkage</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.Crank">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.Crank" title="Link to this definition"></a></dt>
@@ -733,6 +761,12 @@ is chosen (hysteresis for continuity during simulation).</p>
 <p>Define a crank (rotary driver) joint.</p>
 <p>The crank rotates around its anchor point (joint0) at a constant
 angular velocity. It is the primary driver for linkage mechanisms.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_crank()</span></code> instead.
+The Crank class conflates a joint with a driver link. The new API
+separates these concepts: <cite>create_crank()</cite> returns a <cite>DriverLink</cite>
+and a <cite>RevoluteJoint</cite> (the crank output).</p>
+</div>
 <dl class="simple">
 <dt>Attributes:</dt><dd><p>r: Distance from anchor to crank (radius).
 angle: Angular step per iteration (radians per dt=1 step).
@@ -819,6 +853,11 @@ alpha: Angular acceleration in rad/s² for kinematics computation.</p>
 - r: Distance from joint0
 - angle: Angle offset from the joint0→joint1 direction</p>
 <p>Unlike Revolute (RRR dyad), this has a unique solution.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_fixed_dyad()</span></code> instead.
+This class represents a fixed angular constraint (deterministic dyad),
+not a “fixed joint”. The new API uses clearer terminology.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.joints.Fixed.angle">
 <span class="sig-name descname"><span class="pre">angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.joints.Fixed.angle" title="Link to this definition"></a></dt>
@@ -920,6 +959,13 @@ in a future version.</p>
 - Line: passing through joint1 and joint2</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrp_dyad()</span></code> instead.
+Despite its name, this class is NOT a single prismatic joint - it’s an
+RRP dyad (2 links including a slider). The new API uses clearer
+terminology: <cite>create_rrp_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>PrismaticJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.joints.Prismatic.get_constraints">
 <span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.Prismatic.get_constraints" title="Link to this definition"></a></dt>
@@ -973,6 +1019,13 @@ is chosen (hysteresis for continuity during simulation).</p>
 - Circle 2: centered at joint1 with radius r1</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrr_dyad()</span></code> instead.
+Despite its name, this class is NOT a single revolute joint - it’s an
+RRR dyad (2 links + 3 revolute joints). The new API uses clearer
+terminology: <cite>create_rrr_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>RevoluteJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.joints.Revolute.circle">
 <span class="sig-name descname"><span class="pre">circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.Revolute.circle" title="Link to this definition"></a></dt>
@@ -1062,59 +1115,14 @@ is chosen (hysteresis for continuity during simulation).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.joints.Static">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.joints.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.joints.Static" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_StaticBase</span></code></p>
 <p>Special case of Joint that should not move.</p>
 <p>Mostly used for the frame.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.Static.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.joints.Static.get_constraints" title="Link to this definition"></a></dt>
-<dd><p>Return an empty tuple.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.Static.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.Static.reload" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt</strong> – Unused, but preserves the object structure.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.Static.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.Static.set_anchor0" title="Link to this definition"></a></dt>
-<dd><p>First joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.Static.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.Static.set_anchor1" title="Link to this definition"></a></dt>
-<dd><p>Second joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.joints.Static.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.joints.Static.set_constraints" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>args</strong> – Unused.</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.mechanism.GroundJoint</span></code> instead.
+This class represents a ground joint (fixed point on the frame),
+not a generic “static” object. The new API uses clearer terminology.</p>
+</div>
 </dd></dl>
 
 </section>

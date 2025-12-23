@@ -74,14 +74,21 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-pylinkage">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.ComponentId"><code class="docutils literal notranslate"><span class="pre">ComponentId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Crank"><code class="docutils literal notranslate"><span class="pre">Crank</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.EdgeId"><code class="docutils literal notranslate"><span class="pre">EdgeId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Fixed"><code class="docutils literal notranslate"><span class="pre">Fixed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.HyperedgeId"><code class="docutils literal notranslate"><span class="pre">HyperedgeId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.JointType"><code class="docutils literal notranslate"><span class="pre">JointType</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Linear"><code class="docutils literal notranslate"><span class="pre">Linear</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.NodeId"><code class="docutils literal notranslate"><span class="pre">NodeId</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.NodeRole"><code class="docutils literal notranslate"><span class="pre">NodeRole</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.OptimizationError"><code class="docutils literal notranslate"><span class="pre">OptimizationError</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Pivot"><code class="docutils literal notranslate"><span class="pre">Pivot</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pylinkage.PortId"><code class="docutils literal notranslate"><span class="pre">PortId</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Prismatic"><code class="docutils literal notranslate"><span class="pre">Prismatic</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Revolute"><code class="docutils literal notranslate"><span class="pre">Revolute</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pylinkage.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a></li>
@@ -189,6 +196,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.geometry.html#pylinkage.geometry.secants.circle_line_from_points_intersection"><code class="docutils literal notranslate"><span class="pre">circle_line_from_points_intersection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.geometry.html#pylinkage.geometry.secants.circle_line_intersection"><code class="docutils literal notranslate"><span class="pre">circle_line_intersection()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.geometry.html#pylinkage.geometry.secants.intersection"><code class="docutils literal notranslate"><span class="pre">intersection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.geometry.html#pylinkage.geometry.secants.line_line_intersection"><code class="docutils literal notranslate"><span class="pre">line_line_intersection()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.geometry.html#module-pylinkage.geometry">Module contents</a><ul>
@@ -249,14 +257,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint.y"><code class="docutils literal notranslate"><span class="pre">Joint.y</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static.get_constraints"><code class="docutils literal notranslate"><span class="pre">Static.get_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static.reload"><code class="docutils literal notranslate"><span class="pre">Static.reload()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor0()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor1()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static.set_constraints"><code class="docutils literal notranslate"><span class="pre">Static.set_constraints()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.joint_syntax_parser"><code class="docutils literal notranslate"><span class="pre">joint_syntax_parser()</span></code></a></li>
 </ul>
 </li>
@@ -352,14 +353,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Revolute.set_constraints"><code class="docutils literal notranslate"><span class="pre">Revolute.set_constraints()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static.get_constraints"><code class="docutils literal notranslate"><span class="pre">Static.get_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static.reload"><code class="docutils literal notranslate"><span class="pre">Static.reload()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static.set_anchor0"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor0()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static.set_anchor1"><code class="docutils literal notranslate"><span class="pre">Static.set_anchor1()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static.set_constraints"><code class="docutils literal notranslate"><span class="pre">Static.set_constraints()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.Static"><code class="docutils literal notranslate"><span class="pre">Static</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -374,6 +368,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage.linkage">pylinkage.linkage.linkage module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.analyze_stroke"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_stroke()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.analyze_transmission"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_transmission()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
@@ -394,8 +390,10 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.step_fast_with_kinematics"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.stroke_position"><code class="docutils literal notranslate"><span class="pre">Linkage.stroke_position()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage.transmission_angle"><code class="docutils literal notranslate"><span class="pre">Linkage.transmission_angle()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a><ul>
@@ -407,6 +405,8 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage">Module contents</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.analyze_stroke"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_stroke()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.analyze_transmission"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_transmission()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
@@ -427,8 +427,10 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.step_fast_with_kinematics"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.stroke_position"><code class="docutils literal notranslate"><span class="pre">Linkage.stroke_position()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Linkage.transmission_angle"><code class="docutils literal notranslate"><span class="pre">Linkage.transmission_angle()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a><ul>
@@ -436,7 +438,37 @@
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.Simulation.linkage"><code class="docutils literal notranslate"><span class="pre">Simulation.linkage</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.amplitude"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.amplitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.center_position"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.center_position</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.max_position"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.max_position</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.max_position_step"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.max_position_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.mean_position"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.mean_position</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.min_position"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.min_position</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.min_position_step"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.min_position_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.positions"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.positions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis.stroke_range"><code class="docutils literal notranslate"><span class="pre">StrokeAnalysis.stroke_range</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.acceptable_range"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.acceptable_range</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.angles"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.angles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.is_acceptable"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.is_acceptable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.max_angle"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.max_angle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.max_angle_step"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.max_angle_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.max_deviation"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.max_deviation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.mean_angle"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.mean_angle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.min_angle"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.min_angle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.min_angle_step"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.min_angle_step</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.min_deviation"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.min_deviation</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis.worst_angle"><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.worst_angle()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.analyze_stroke"><code class="docutils literal notranslate"><span class="pre">analyze_stroke()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.analyze_transmission"><code class="docutils literal notranslate"><span class="pre">analyze_transmission()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.bounding_box"><code class="docutils literal notranslate"><span class="pre">bounding_box()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.compute_slide_position"><code class="docutils literal notranslate"><span class="pre">compute_slide_position()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.compute_transmission_angle"><code class="docutils literal notranslate"><span class="pre">compute_transmission_angle()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.kinematic_default_test"><code class="docutils literal notranslate"><span class="pre">kinematic_default_test()</span></code></a></li>
 </ul>
 </li>
@@ -500,6 +532,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.JointProfile"><code class="docutils literal notranslate"><span class="pre">JointProfile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.JointProfile.length"><code class="docutils literal notranslate"><span class="pre">JointProfile.length</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.JointProfile.radius"><code class="docutils literal notranslate"><span class="pre">JointProfile.radius</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkProfile"><code class="docutils literal notranslate"><span class="pre">LinkProfile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkProfile.fillet_radius"><code class="docutils literal notranslate"><span class="pre">LinkProfile.fillet_radius</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkProfile.thickness"><code class="docutils literal notranslate"><span class="pre">LinkProfile.thickness</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkProfile.width"><code class="docutils literal notranslate"><span class="pre">LinkProfile.width</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkStyle"><code class="docutils literal notranslate"><span class="pre">LinkStyle</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkStyle.BAR"><code class="docutils literal notranslate"><span class="pre">LinkStyle.BAR</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.LinkStyle.BONE"><code class="docutils literal notranslate"><span class="pre">LinkStyle.BONE</span></code></a></li>
@@ -519,17 +562,21 @@
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.animate_kinematics"><code class="docutils literal notranslate"><span class="pre">animate_kinematics()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.animate_linkage_plotly"><code class="docutils literal notranslate"><span class="pre">animate_linkage_plotly()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.animate_parallel_coordinates"><code class="docutils literal notranslate"><span class="pre">animate_parallel_coordinates()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.build_linkage_3d"><code class="docutils literal notranslate"><span class="pre">build_linkage_3d()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.dashboard_layout"><code class="docutils literal notranslate"><span class="pre">dashboard_layout()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.parallel_coordinates_plot"><code class="docutils literal notranslate"><span class="pre">parallel_coordinates_plot()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_acceleration_vectors"><code class="docutils literal notranslate"><span class="pre">plot_acceleration_vectors()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_kinematic_linkage"><code class="docutils literal notranslate"><span class="pre">plot_kinematic_linkage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_kinematics_frame"><code class="docutils literal notranslate"><span class="pre">plot_kinematics_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_linkage_dxf"><code class="docutils literal notranslate"><span class="pre">plot_linkage_dxf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_linkage_plotly"><code class="docutils literal notranslate"><span class="pre">plot_linkage_plotly()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_linkage_plotly_with_velocity"><code class="docutils literal notranslate"><span class="pre">plot_linkage_plotly_with_velocity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_linkage_svg"><code class="docutils literal notranslate"><span class="pre">plot_linkage_svg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_linkage_svg_with_velocity"><code class="docutils literal notranslate"><span class="pre">plot_linkage_svg_with_velocity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_static_linkage"><code class="docutils literal notranslate"><span class="pre">plot_static_linkage()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.plot_velocity_vectors"><code class="docutils literal notranslate"><span class="pre">plot_velocity_vectors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.save_linkage_dxf"><code class="docutils literal notranslate"><span class="pre">save_linkage_dxf()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.save_linkage_step"><code class="docutils literal notranslate"><span class="pre">save_linkage_step()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.save_linkage_svg"><code class="docutils literal notranslate"><span class="pre">save_linkage_svg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.save_linkage_svg_with_velocity"><code class="docutils literal notranslate"><span class="pre">save_linkage_svg_with_velocity()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html#pylinkage.visualizer.show_kinematics"><code class="docutils literal notranslate"><span class="pre">show_kinematics()</span></code></a></li>
@@ -579,7 +626,7 @@
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="pylinkage.exceptions.UnderconstrainedError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnderconstrainedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.linkage.Linkage" title="pylinkage.linkage.linkage.Linkage"><span class="pre">Linkage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'The</span> <span class="pre">linkage</span> <span class="pre">is</span> <span class="pre">under-constrained!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.exceptions.UnderconstrainedError" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnderconstrainedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'The</span> <span class="pre">linkage</span> <span class="pre">is</span> <span class="pre">under-constrained!'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.exceptions.UnderconstrainedError" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>The linkage is under-constrained and multiple solutions may exist.</p>
 </dd></dl>
@@ -593,6 +640,12 @@ A copy of the documentation should have been distributed on your system in the
 docs/ folder.</p>
 <p>Created on Thu Jun 10 21:30:52 2021</p>
 <p>&#64;author: HugoFara</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.ComponentId">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">ComponentId</span></span><a class="headerlink" href="#pylinkage.ComponentId" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Crank">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">omega</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Crank" title="Link to this definition"></a></dt>
@@ -600,6 +653,12 @@ docs/ folder.</p>
 <p>Define a crank (rotary driver) joint.</p>
 <p>The crank rotates around its anchor point (joint0) at a constant
 angular velocity. It is the primary driver for linkage mechanisms.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_crank()</span></code> instead.
+The Crank class conflates a joint with a driver link. The new API
+separates these concepts: <cite>create_crank()</cite> returns a <cite>DriverLink</cite>
+and a <cite>RevoluteJoint</cite> (the crank output).</p>
+</div>
 <dl class="simple">
 <dt>Attributes:</dt><dd><p>r: Distance from anchor to crank (radius).
 angle: Angular step per iteration (radians per dt=1 step).
@@ -675,6 +734,12 @@ alpha: Angular acceleration in rad/s² for kinematics computation.</p>
 
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.EdgeId">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">EdgeId</span></span><a class="headerlink" href="#pylinkage.EdgeId" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Fixed">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Fixed" title="Link to this definition"></a></dt>
@@ -686,6 +751,11 @@ alpha: Angular acceleration in rad/s² for kinematics computation.</p>
 - r: Distance from joint0
 - angle: Angle offset from the joint0→joint1 direction</p>
 <p>Unlike Revolute (RRR dyad), this has a unique solution.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_fixed_dyad()</span></code> instead.
+This class represents a fixed angular constraint (deterministic dyad),
+not a “fixed joint”. The new API uses clearer terminology.</p>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.Fixed.angle">
 <span class="sig-name descname"><span class="pre">angle</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.Fixed.angle" title="Link to this definition"></a></dt>
@@ -757,9 +827,51 @@ alpha: Angular acceleration in rad/s² for kinematics computation.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.HyperedgeId">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">HyperedgeId</span></span><a class="headerlink" href="#pylinkage.HyperedgeId" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="pylinkage.HypostaticError">
 <span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">HypostaticError</span></span><a class="headerlink" href="#pylinkage.HypostaticError" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference internal" href="#pylinkage.exceptions.UnderconstrainedError" title="pylinkage.exceptions.UnderconstrainedError"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.JointType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">JointType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.JointType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></p>
+<p>Kinematic joint type.</p>
+<p>This enum classifies joints by their allowed degrees of freedom.
+Values are explicit integers for serialization stability.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>REVOLUTE: Pin joint allowing rotation (R). 1 DOF rotation.
+PRISMATIC: Slider joint allowing translation (P). 1 DOF translation.
+GROUND: Fixed revolute joint on frame. Special case for mechanism module.
+TRACKER: Observer joint (T). 0 DOF, just tracks a position.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.JointType.GROUND">
+<span class="sig-name descname"><span class="pre">GROUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#pylinkage.JointType.GROUND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.JointType.PRISMATIC">
+<span class="sig-name descname"><span class="pre">PRISMATIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#pylinkage.JointType.PRISMATIC" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.JointType.REVOLUTE">
+<span class="sig-name descname"><span class="pre">REVOLUTE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#pylinkage.JointType.REVOLUTE" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.JointType.TRACKER">
+<span class="sig-name descname"><span class="pre">TRACKER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#pylinkage.JointType.TRACKER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -790,6 +902,52 @@ in a future version.</p>
 <p>A linkage is a set of Joint objects.</p>
 <p>It is defined as a kinematic linkage.
 Coordinates are given relative to its own base.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.Linkage.analyze_stroke">
+<span class="sig-name descname"><span class="pre">analyze_stroke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.StrokeAnalysis" title="pylinkage.linkage.StrokeAnalysis"><span class="pre">StrokeAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.Linkage.analyze_stroke" title="Link to this definition"></a></dt>
+<dd><p>Analyze stroke/slide position over a full motion cycle.</p>
+<p>For a linkage with a Prismatic joint, this tracks the slide
+position throughout the motion cycle.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.</p>
+</dd>
+<dt>Returns:</dt><dd><p>StrokeAnalysis with min/max/range/mean statistics.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found or no valid positions.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_stroke</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stroke range: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">stroke_range</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_position</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.Linkage.analyze_transmission">
+<span class="sig-name descname"><span class="pre">analyze_transmission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptable_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(40.0,</span> <span class="pre">140.0)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.linkage.html#pylinkage.linkage.TransmissionAngleAnalysis" title="pylinkage.linkage.TransmissionAngleAnalysis"><span class="pre">TransmissionAngleAnalysis</span></a></span></span><a class="headerlink" href="#pylinkage.Linkage.analyze_transmission" title="Link to this definition"></a></dt>
+<dd><p>Analyze transmission angle over a full motion cycle.</p>
+<p>For a standard four-bar, joints are auto-detected.</p>
+<dl>
+<dt>Args:</dt><dd><p>iterations: Number of simulation steps. Defaults to one full rotation.
+acceptable_range: (min, max) acceptable angles in degrees.</p>
+</dd>
+<dt>Returns:</dt><dd><p>TransmissionAngleAnalysis with min/max/mean/is_acceptable.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be detected or no valid positions found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">analysis</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">analyze_transmission</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">min_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">max_angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Acceptable: </span><span class="si">{</span><span class="n">analysis</span><span class="o">.</span><span class="n">is_acceptable</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.Linkage.compile">
 <span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.Linkage.compile" title="Link to this definition"></a></dt>
@@ -1097,10 +1255,11 @@ np.isnan(trajectory).any() or use solver.has_nan_positions().</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.Linkage.step_fast_with_kinematics">
-<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
-<dd><p>Run simulation with velocity computation using numba-optimized solver.</p>
-<p>This extends step_fast() to also compute velocities at each step.
-Requires that omega is set on crank joints to specify angular velocities.</p>
+<span class="sig-name descname"><span class="pre">step_fast_with_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.Linkage.step_fast_with_kinematics" title="Link to this definition"></a></dt>
+<dd><p>Run simulation with velocity and acceleration using numba-optimized solver.</p>
+<p>This extends step_fast() to also compute velocities and accelerations
+at each step. Requires that omega (and optionally alpha) is set on crank
+joints to specify angular velocities and accelerations.</p>
 <dl>
 <dt>Args:</dt><dd><dl class="simple">
 <dt>iterations: Number of iterations to run. If None, uses</dt><dd><p>get_rotation_period(). (Default: None)</p>
@@ -1109,12 +1268,32 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 </dl>
 </dd>
-<dt>Returns:</dt><dd><p>Tuple of (positions, velocities) arrays, each with shape
-(iterations, n_joints, 2).</p>
+<dt>Returns:</dt><dd><p>Tuple of (positions, velocities, accelerations) arrays, each with
+shape (iterations, n_joints, 2).</p>
 </dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span><span class="p">,</span> <span class="n">velocities</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span><span class="p">,</span> <span class="n">vel</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step_fast_with_kinematics</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">vel</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># velocity of joint 2 at step 100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># acceleration of joint 2 at step 100</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.Linkage.stroke_position">
+<span class="sig-name descname"><span class="pre">stroke_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.Linkage.stroke_position" title="Link to this definition"></a></dt>
+<dd><p>Get the slide position of a prismatic joint at current position.</p>
+<p>For a linkage with a Prismatic joint, this returns the slide
+position along the prismatic axis.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Slide position along the axis.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If no Prismatic joint found.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pos</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">stroke_position</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current slide position: </span><span class="si">{</span><span class="n">pos</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd>
@@ -1151,6 +1330,60 @@ Requires that omega is set on crank joints to specify angular velocities.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.Linkage.transmission_angle">
+<span class="sig-name descname"><span class="pre">transmission_angle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.Linkage.transmission_angle" title="Link to this definition"></a></dt>
+<dd><p>Get the transmission angle at the current linkage position.</p>
+<p>For a four-bar linkage, this is the angle between the coupler
+and rocker links at their common joint.</p>
+<dl>
+<dt>Returns:</dt><dd><p>Transmission angle in degrees (0-180).</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If joints cannot be auto-detected.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">angle</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">transmission_angle</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current transmission angle: </span><span class="si">{</span><span class="n">angle</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.NodeId">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">NodeId</span></span><a class="headerlink" href="#pylinkage.NodeId" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.NodeRole">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">NodeRole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.NodeRole" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></p>
+<p>Role of a node/joint in the mechanism.</p>
+<p>Classifies joints by their kinematic role in the linkage structure.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>GROUND: Fixed frame point that does not move.
+DRIVER: Input/motor joint that provides motion (actuated).
+DRIVEN: Position computed from constraints (passive, part of Assur groups).</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.NodeRole.DRIVEN">
+<span class="sig-name descname"><span class="pre">DRIVEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#pylinkage.NodeRole.DRIVEN" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.NodeRole.DRIVER">
+<span class="sig-name descname"><span class="pre">DRIVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#pylinkage.NodeRole.DRIVER" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.NodeRole.GROUND">
+<span class="sig-name descname"><span class="pre">GROUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pylinkage.NodeRole.GROUND" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -1189,6 +1422,12 @@ It will be removed in PyLinkage 0.7.0.</p>
 
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.PortId">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">PortId</span></span><a class="headerlink" href="#pylinkage.PortId" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Prismatic">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Prismatic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">revolute_radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Prismatic" title="Link to this definition"></a></dt>
@@ -1199,6 +1438,13 @@ It will be removed in PyLinkage 0.7.0.</p>
 - Line: passing through joint1 and joint2</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrp_dyad()</span></code> instead.
+Despite its name, this class is NOT a single prismatic joint - it’s an
+RRP dyad (2 links including a slider). The new API uses clearer
+terminology: <cite>create_rrp_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>PrismaticJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.Prismatic.get_constraints">
 <span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.Prismatic.get_constraints" title="Link to this definition"></a></dt>
@@ -1252,6 +1498,13 @@ is chosen (hysteresis for continuity during simulation).</p>
 - Circle 2: centered at joint1 with radius r1</p>
 <p>When two solutions exist, the nearest to the current position
 is chosen (hysteresis for continuity during simulation).</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">pylinkage.mechanism.create_rrr_dyad()</span></code> instead.
+Despite its name, this class is NOT a single revolute joint - it’s an
+RRR dyad (2 links + 3 revolute joints). The new API uses clearer
+terminology: <cite>create_rrr_dyad()</cite> returns two <cite>Link</cite> objects and one
+<cite>RevoluteJoint</cite>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="pylinkage.Revolute.circle">
 <span class="sig-name descname"><span class="pre">circle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.Revolute.circle" title="Link to this definition"></a></dt>
@@ -1371,59 +1624,14 @@ with automatic setup and teardown.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pylinkage.Static">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.</span></span><span class="sig-name descname"><span class="pre">Static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.Static" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Joint</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_StaticBase</span></code></p>
 <p>Special case of Joint that should not move.</p>
 <p>Mostly used for the frame.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.Static.get_constraints">
-<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.Static.get_constraints" title="Link to this definition"></a></dt>
-<dd><p>Return an empty tuple.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.Static.reload">
-<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.Static.reload" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dt</strong> – Unused, but preserves the object structure.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.Static.set_anchor0">
-<span class="sig-name descname"><span class="pre">set_anchor0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.Static.set_anchor0" title="Link to this definition"></a></dt>
-<dd><p>First joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.Static.set_anchor1">
-<span class="sig-name descname"><span class="pre">set_anchor1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.joints.html#pylinkage.joints.joint.Joint" title="pylinkage.joints.joint.Joint"><span class="pre">Joint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.Static.set_anchor1" title="Link to this definition"></a></dt>
-<dd><p>Second joint anchor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>joint</strong> – Joint to set as anchor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pylinkage.Static.set_constraints">
-<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.Static.set_constraints" title="Link to this definition"></a></dt>
-<dd><p>Do nothing, for consistency only.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>args</strong> – Unused.</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 0.7.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.mechanism.GroundJoint</span></code> instead.
+This class represents a ground joint (fixed point on the frame),
+not a generic “static” object. The new API uses clearer terminology.</p>
+</div>
 </dd></dl>
 
 <dl class="py exception">

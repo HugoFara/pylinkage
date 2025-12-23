@@ -48,6 +48,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#define-and-visualize-a-four-bar-linkage">Define and Visualize a Four-Bar Linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alternative-links-first-builder">Alternative: Links-First Builder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#synthesize-a-linkage-from-requirements">Synthesize a Linkage from Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#optimize-with-pso">Optimize with PSO</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#symbolic-analysis">Symbolic Analysis</a></li>
@@ -134,17 +135,58 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <section id="define-and-visualize-a-four-bar-linkage">
 <h3>Define and Visualize a Four-Bar Linkage<a class="headerlink" href="#define-and-visualize-a-four-bar-linkage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<p>Using the component-based API (recommended):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
 
-<span class="c1"># Create a four-bar linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Define ground pivots</span>
+<span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="n">O2</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O2&quot;</span><span class="p">)</span>
 
-<span class="n">my_linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">))</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
+<span class="c1"># Create crank (motor-driven input)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create rocker via RRR dyad (circle-circle intersection)</span>
+<span class="n">rocker</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+    <span class="n">anchor2</span><span class="o">=</span><span class="n">O2</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rocker&quot;</span>
+<span class="p">)</span>
+
+<span class="n">my_linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">O1</span><span class="p">,</span> <span class="n">O2</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">rocker</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-Bar&quot;</span><span class="p">)</span>
+<span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif" /></p>
+</section>
+<section id="alternative-links-first-builder">
+<h3>Alternative: Links-First Builder<a class="headerlink" href="#alternative-links-first-builder" title="Link to this heading"></a></h3>
+<p>For a more mechanical engineering-oriented approach, use <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code> to define links with their lengths first, then connect them:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.mechanism</span><span class="w"> </span><span class="kn">import</span> <span class="n">MechanismBuilder</span>
+
+<span class="c1"># Define links by their lengths, then connect with joints</span>
+<span class="n">mechanism</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">MechanismBuilder</span><span class="p">(</span><span class="s2">&quot;four-bar&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_ground_link</span><span class="p">(</span><span class="s2">&quot;ground&quot;</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;O1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;O2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)})</span>
+    <span class="o">.</span><span class="n">add_driver_link</span><span class="p">(</span><span class="s2">&quot;crank&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">motor_port</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.5</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_link</span><span class="p">(</span><span class="s2">&quot;rocker&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;crank.tip&quot;</span><span class="p">,</span> <span class="s2">&quot;coupler.0&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;coupler.1&quot;</span><span class="p">,</span> <span class="s2">&quot;rocker.0&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">&quot;rocker.1&quot;</span><span class="p">,</span> <span class="s2">&quot;ground.O2&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Joint positions are computed automatically from link lengths</span>
+<span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">mechanism</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="synthesize-a-linkage-from-requirements">
 <h3>Synthesize a Linkage from Requirements<a class="headerlink" href="#synthesize-a-linkage-from-requirements" title="Link to this heading"></a></h3>
@@ -197,31 +239,40 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.joints</span></code></p></td>
-<td><p>Joint types: <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">Revolute</span></code>, <code class="docutils literal notranslate"><span class="pre">Linear</span></code>, <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">Static</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components</span></code></p></td>
+<td><p>Base components: <code class="docutils literal notranslate"><span class="pre">Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">Component</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.linkage</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.actuators</span></code></p></td>
+<td><p>Motor drivers: <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearActuator</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code></p></td>
+<td><p>Assur groups: <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.simulation</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">Linkage</span></code> class for simulation via <code class="docutils literal notranslate"><span class="pre">step()</span></code> / <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism</span></code></p></td>
+<td><p>Low-level Links+Joints model and <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code></p></td>
 <td><p>PSO and grid search optimization</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code></p></td>
 <td><p>Classical synthesis: function/path/motion generation</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.symbolic</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.symbolic</span></code></p></td>
 <td><p>SymPy-based symbolic computation and gradient optimization</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code></p></td>
 <td><p>Matplotlib, Plotly, and SVG visualization backends</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code></p></td>
 <td><p>Assur group decomposition and graph representation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code></p></td>
 <td><p>Hierarchical component-based linkage definition</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.solver</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.solver</span></code></p></td>
 <td><p>High-performance numba-compiled simulation backend</p></td>
 </tr>
 </tbody>

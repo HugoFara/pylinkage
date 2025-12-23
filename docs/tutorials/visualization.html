@@ -57,6 +57,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#matplotlib-backend">Matplotlib Backend</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#plotly-backend">Plotly Backend</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#drawsvg-backend">drawsvg Backend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cad-export">CAD Export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pso-visualization">PSO Visualization</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#visualization-with-kinematics">Visualization with Kinematics</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#choosing-the-right-backend">Choosing the Right Backend</a></li>
@@ -113,11 +114,13 @@
              
   <section id="visualization-backends">
 <h1>Visualization Backends<a class="headerlink" href="#visualization-backends" title="Link to this heading"></a></h1>
-<p>Pylinkage provides three visualization backends for different use cases:</p>
+<p>Pylinkage provides multiple visualization and export backends:</p>
 <ul class="simple">
 <li><p><strong>Matplotlib</strong>: Animations and static plots (default)</p></li>
 <li><p><strong>Plotly</strong>: Interactive HTML visualizations</p></li>
 <li><p><strong>drawsvg</strong>: Publication-quality SVG output</p></li>
+<li><p><strong>DXF</strong>: 2D CAD export for AutoCAD/CNC (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[cad]</span></code>)</p></li>
+<li><p><strong>STEP</strong>: 3D CAD interchange format (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[cad]</span></code>)</p></li>
 </ul>
 <p>This tutorial covers each backend with practical examples.</p>
 <figure class="align-center" id="id1">
@@ -154,6 +157,14 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <tr class="row-even"><td><p>drawsvg</p></td>
 <td><p>Publications, precise vector graphics</p></td>
 <td><p>SVG, PNG, PDF</p></td>
+</tr>
+<tr class="row-odd"><td><p>DXF</p></td>
+<td><p>2D CAD, laser cutting, CNC</p></td>
+<td><p>DXF (AutoCAD compatible)</p></td>
+</tr>
+<tr class="row-even"><td><p>STEP</p></td>
+<td><p>3D CAD, machining, 3D printing</p></td>
+<td><p>STEP/STP (ISO 10303)</p></td>
 </tr>
 </tbody>
 </table>
@@ -498,6 +509,189 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 </div>
 </section>
 </section>
+<section id="cad-export">
+<h2>CAD Export<a class="headerlink" href="#cad-export" title="Link to this heading"></a></h2>
+<p>Export linkages to industry-standard CAD formats for fabrication and 3D modeling.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>CAD export requires optional dependencies. Install with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="o">[</span>cad<span class="o">]</span>
+</pre></div>
+</div>
+<p>This installs <code class="docutils literal notranslate"><span class="pre">ezdxf</span></code> (for DXF) and <code class="docutils literal notranslate"><span class="pre">build123d</span></code> (for STEP).</p>
+</div>
+<section id="dxf-export-2d-cad">
+<h3>DXF Export (2D CAD)<a class="headerlink" href="#dxf-export-2d-cad" title="Link to this heading"></a></h3>
+<p>Export to DXF format for AutoCAD, CNC machines, and laser cutters:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_dxf</span><span class="p">,</span> <span class="n">plot_linkage_dxf</span>
+
+<span class="c1"># Create linkage</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save to DXF file</span>
+<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.dxf&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or get the ezdxf Drawing object for further customization</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">plot_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="n">doc</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s2">&quot;custom_linkage.dxf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>DXF Layers</strong>: The exported DXF contains organized layers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LINKS</span></code> - Link bar geometry (white)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">JOINTS</span></code> - Joint symbols (red)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GROUND</span></code> - Ground/fixed support symbols (gray)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CRANKS</span></code> - Crank/motor symbols (green)</p></li>
+</ul>
+</section>
+<section id="customizing-dxf-output">
+<h3>Customizing DXF Output<a class="headerlink" href="#customizing-dxf-output" title="Link to this heading"></a></h3>
+<p>Control dimensions and export a specific frame:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_dxf</span>
+
+<span class="c1"># Run simulation to get all positions</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+
+<span class="c1"># Export frame 25 with custom dimensions</span>
+<span class="n">save_linkage_dxf</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="s2">&quot;frame25.dxf&quot;</span><span class="p">,</span>
+    <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
+    <span class="n">frame_index</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>          <span class="c1"># Export this frame (0 = first)</span>
+    <span class="n">link_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>          <span class="c1"># Link bar width in world units</span>
+    <span class="n">joint_radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>        <span class="c1"># Joint symbol radius</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-export-3d-cad">
+<h3>STEP Export (3D CAD)<a class="headerlink" href="#step-export-3d-cad" title="Link to this heading"></a></h3>
+<p>Export to STEP format for 3D CAD applications (FreeCAD, SolidWorks, Fusion 360):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_step</span><span class="p">,</span> <span class="n">build_linkage_3d</span>
+
+<span class="c1"># Create linkage</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save to STEP file (dimensions auto-scaled to fit linkage)</span>
+<span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.step&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or get the build123d Compound for further manipulation</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">build_linkage_3d</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">export_step</span><span class="p">(</span><span class="s2">&quot;custom_linkage.step&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>3D Geometry</strong>: The STEP export creates:</p>
+<ul class="simple">
+<li><p>Stadium-shaped link bars (rounded rectangles extruded in Z)</p></li>
+<li><p>Holes at joint locations for pin connections</p></li>
+<li><p>Cylindrical pins at each joint</p></li>
+<li><p>Ground symbols for fixed supports</p></li>
+</ul>
+</section>
+<section id="customizing-step-dimensions">
+<h3>Customizing STEP Dimensions<a class="headerlink" href="#customizing-step-dimensions" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">LinkProfile</span></code> and <code class="docutils literal notranslate"><span class="pre">JointProfile</span></code> to control 3D geometry:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">save_linkage_step</span><span class="p">,</span>
+    <span class="n">LinkProfile</span><span class="p">,</span>
+    <span class="n">JointProfile</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Define custom link cross-section</span>
+<span class="n">link_profile</span> <span class="o">=</span> <span class="n">LinkProfile</span><span class="p">(</span>
+    <span class="n">width</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>              <span class="c1"># Link bar width (mm or your units)</span>
+    <span class="n">thickness</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>           <span class="c1"># Extrusion depth in Z</span>
+    <span class="n">fillet_radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>       <span class="c1"># Edge rounding (0 for sharp)</span>
+<span class="p">)</span>
+
+<span class="c1"># Define custom joint pins</span>
+<span class="n">joint_profile</span> <span class="o">=</span> <span class="n">JointProfile</span><span class="p">(</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>              <span class="c1"># Pin radius</span>
+    <span class="n">length</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>              <span class="c1"># Pin length in Z</span>
+<span class="p">)</span>
+
+<span class="c1"># Export with custom profiles</span>
+<span class="n">save_linkage_step</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="s2">&quot;machined_linkage.step&quot;</span><span class="p">,</span>
+    <span class="n">link_profile</span><span class="o">=</span><span class="n">link_profile</span><span class="p">,</span>
+    <span class="n">joint_profile</span><span class="o">=</span><span class="n">joint_profile</span><span class="p">,</span>
+    <span class="n">frame_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>           <span class="c1"># Which position to export</span>
+    <span class="n">include_pins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>       <span class="c1"># Include joint pins</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="exporting-multiple-frames">
+<h3>Exporting Multiple Frames<a class="headerlink" href="#exporting-multiple-frames" title="Link to this heading"></a></h3>
+<p>Export different positions of the mechanism:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_step</span>
+
+<span class="c1"># Pre-compute trajectory</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+
+<span class="c1"># Export key positions</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">]):</span>
+    <span class="n">save_linkage_step</span><span class="p">(</span>
+        <span class="n">linkage</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;linkage_position_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.step&quot;</span><span class="p">,</span>
+        <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
+        <span class="n">frame_index</span><span class="o">=</span><span class="n">frame_idx</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported frame </span><span class="si">{</span><span class="n">frame_idx</span><span class="si">}</span><span class="s2"> to linkage_position_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.step&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="cad-export-workflow">
+<h3>CAD Export Workflow<a class="headerlink" href="#cad-export-workflow" title="Link to this heading"></a></h3>
+<p>A typical workflow from simulation to fabrication:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">show_linkage</span><span class="p">,</span>
+    <span class="n">save_linkage_svg</span><span class="p">,</span>
+    <span class="n">save_linkage_dxf</span><span class="p">,</span>
+    <span class="n">save_linkage_step</span><span class="p">,</span>
+    <span class="n">LinkProfile</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 1. Design and simulate</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+
+<span class="c1"># 2. Quick visualization to verify</span>
+<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">)</span>
+
+<span class="c1"># 3. Publication figure (SVG)</span>
+<span class="n">save_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;documentation/linkage.svg&quot;</span><span class="p">,</span> <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 4. 2D CAD for laser cutting (DXF)</span>
+<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;fabrication/linkage_2d.dxf&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">)</span>
+
+<span class="c1"># 5. 3D CAD for machining/printing (STEP)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">LinkProfile</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">save_linkage_step</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="s2">&quot;fabrication/linkage_3d.step&quot;</span><span class="p">,</span>
+    <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
+    <span class="n">link_profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Export complete! Files ready for fabrication.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="pso-visualization">
 <h2>PSO Visualization<a class="headerlink" href="#pso-visualization" title="Link to this heading"></a></h2>
 <p>Visualize particle swarm optimization progress:</p>
@@ -607,6 +801,20 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
 <li><p>You need precise vector graphics</p></li>
 <li><p>You want to edit the output in Inkscape/Illustrator</p></li>
 <li><p>You need consistent styling across figures</p></li>
+</ul>
+<p><strong>Use DXF when:</strong></p>
+<ul class="simple">
+<li><p>You need to import into AutoCAD or similar 2D CAD software</p></li>
+<li><p>You’re preparing files for laser cutting or CNC machining</p></li>
+<li><p>You need layered 2D technical drawings</p></li>
+<li><p>You want to edit geometry in CAD software</p></li>
+</ul>
+<p><strong>Use STEP when:</strong></p>
+<ul class="simple">
+<li><p>You need to import into 3D CAD software (FreeCAD, SolidWorks, Fusion 360)</p></li>
+<li><p>You’re preparing files for 3D printing or machining</p></li>
+<li><p>You want to visualize the linkage as physical parts</p></li>
+<li><p>You need to integrate with other 3D models</p></li>
 </ul>
 </section>
 <section id="example-complete-visualization-workflow">
