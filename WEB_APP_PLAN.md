@@ -25,18 +25,17 @@ pylinkage/
 │   │   └── linkage_service.py
 │   └── storage/
 │       └── memory.py       # In-memory storage
-├── frontend/               # React application
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── layout/     # AppShell, Sidebar
-│   │   │   ├── canvas/     # LinkageCanvas, CanvasToolbar
-│   │   │   └── sidebar/    # JointList, ExampleLoader, AnimationControls
-│   │   ├── stores/         # Zustand stores
-│   │   ├── hooks/
-│   │   ├── api/            # API client
-│   │   └── types/          # TypeScript types
-│   └── package.json
-└── app/                    # Existing Streamlit (kept for reference)
+└── frontend/               # React application
+    ├── src/
+    │   ├── components/
+    │   │   ├── layout/     # AppShell, Sidebar
+    │   │   ├── canvas/     # LinkageCanvas, CanvasToolbar
+    │   │   └── sidebar/    # JointList, ExampleLoader, AnimationControls
+    │   ├── stores/         # Zustand stores
+    │   ├── hooks/
+    │   ├── api/            # API client
+    │   └── types/          # TypeScript types
+    └── package.json
 ```
 
 ---

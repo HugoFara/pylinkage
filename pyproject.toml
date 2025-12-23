@@ -56,9 +56,6 @@ docs = [
     "sphinx-rtd-theme>=2.0.0",
     "myst-parser>=3.0.1",
 ]
-app = [
-    "streamlit>=1.28.0",
-]
 api = [
     "fastapi>=0.109.0",
     "uvicorn[standard]>=0.27.0",

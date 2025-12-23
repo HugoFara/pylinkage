@@ -45,13 +45,6 @@ uv run task docs                     # Build documentation
 uv run task docs-clean               # Clean documentation artifacts
 ```
 
-### Running the Web App
-
-```bash
-uv sync --extra app                  # Install Streamlit dependency
-uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
-```
-
 ## Architecture
 
 ### Package Structure
@@ -152,11 +145,6 @@ uv run streamlit run app/main.py     # Launch the Pylinkage Editor web UI
 
 - **src/pylinkage/bridge/**: Conversion utilities between representations
   - Bridges between Linkage, Assur graph, Hypergraph, and Solver representations
-
-- **app/**: Streamlit-based web editor for interactive linkage design
-  - `main.py`: Entry point, run with `uv run streamlit run app/main.py`
-  - `components/`: UI components (sidebar, visualization panel)
-  - `state.py`: Session state management
 
 ### Key Patterns
 

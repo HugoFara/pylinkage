@@ -50,11 +50,6 @@ Multiple visualization backends available:
 - **drawsvg** - `drawsvg_viz.py` (publication-quality SVG via `save_linkage_svg()`)
 - **PSO dashboards** - `pso_plots.py`
 
-**Web Application** (Streamlit):
-- Location: `app/`
-- Run with: `uv run streamlit run app/main.py`
-- Features: Interactive joint manipulation, real-time simulation
-
 ```python
 from pylinkage.visualizer import plot_linkage_plotly, save_linkage_svg
 
