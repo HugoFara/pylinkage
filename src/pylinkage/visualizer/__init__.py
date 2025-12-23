@@ -5,6 +5,8 @@ Backends:
     - matplotlib (default): plot_static_linkage, plot_kinematic_linkage, show_linkage
     - plotly: plot_linkage_plotly, animate_linkage_plotly (interactive HTML)
     - drawsvg: plot_linkage_svg, save_linkage_svg (publication-quality SVG)
+    - dxf: plot_linkage_dxf, save_linkage_dxf (CAD/CNC export)
+    - step: build_linkage_3d, save_linkage_step (3D CAD interchange)
 """
 
 __all__ = [
@@ -33,6 +35,14 @@ __all__ = [
     "plot_linkage_svg_with_velocity",
     "save_linkage_svg",
     "save_linkage_svg_with_velocity",
+    # DXF export (CAD/CNC)
+    "plot_linkage_dxf",
+    "save_linkage_dxf",
+    # STEP export (3D CAD)
+    "build_linkage_3d",
+    "save_linkage_step",
+    "LinkProfile",
+    "JointProfile",
     # Symbol definitions
     "LINK_COLORS",
     "SYMBOL_SPECS",
@@ -62,6 +72,10 @@ from .drawsvg_viz import (
     save_linkage_svg_with_velocity as save_linkage_svg_with_velocity,
 )
 
+# DXF export (lazy import to avoid loading ezdxf when not needed)
+from .dxf_export import plot_linkage_dxf as plot_linkage_dxf
+from .dxf_export import save_linkage_dxf as save_linkage_dxf
+
 # Kinematics visualization
 from .kinematics import animate_kinematics as animate_kinematics
 from .kinematics import plot_acceleration_vectors as plot_acceleration_vectors
@@ -80,6 +94,12 @@ from .pso_plots import animate_parallel_coordinates as animate_parallel_coordina
 from .pso_plots import dashboard_layout as dashboard_layout
 from .pso_plots import parallel_coordinates_plot as parallel_coordinates_plot
 from .static import plot_static_linkage as plot_static_linkage
+
+# STEP export (lazy import to avoid loading build123d when not needed)
+from .step_export import JointProfile as JointProfile
+from .step_export import LinkProfile as LinkProfile
+from .step_export import build_linkage_3d as build_linkage_3d
+from .step_export import save_linkage_step as save_linkage_step
 
 # Symbol definitions
 from .symbols import LINK_COLORS as LINK_COLORS

@@ -64,6 +64,10 @@ api = [
     "uvicorn[standard]>=0.27.0",
     "pydantic-settings>=2.1.0",
 ]
+cad = [
+    "ezdxf>=1.0.0",
+    "build123d>=0.7.0",
+]
 
 [project.urls]
 Homepage = "https://hugofara.github.io/pylinkage/"

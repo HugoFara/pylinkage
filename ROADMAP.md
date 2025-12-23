@@ -95,60 +95,96 @@ mechanism = mechanism_from_json("linkage.json")
 
 ---
 
-## In Progress / Partially Implemented
-
 ### Velocity & Acceleration Analysis
 
-**Status:** Partially implemented (low-level only)
-**Impact:** High - Fundamental kinematics capability
-**Location:** `src/pylinkage/solver/velocity.py`, `src/pylinkage/solver/acceleration.py`
+**Status:** Implemented
+**Location:** `src/pylinkage/solver/velocity.py`, `src/pylinkage/solver/acceleration.py`, `src/pylinkage/visualizer/kinematics.py`
 
-Low-level numba-compiled solvers exist for per-joint velocity and acceleration computation. These are optimized for use in the fast simulation pipeline.
+Full velocity and acceleration analysis with both low-level numba solvers and high-level API:
 
-**What exists:**
+**Low-level (numba-compiled):**
 - `solve_crank_velocity()`, `solve_rrr_velocity()`, etc. in `velocity.py`
 - `solve_crank_acceleration()`, `solve_rrr_acceleration()`, etc. in `acceleration.py`
-- Analytic differentiation of position equations
+- `step_single_velocity()`, `step_single_acceleration()` in `simulation.py`
 
-**What's missing (high-level API):**
+**High-level API:**
 
 ```python
-# Proposed high-level API (not yet implemented)
-linkage.set_input_velocity(crank, omega=10.0)  # rad/s
+from pylinkage.simulation import Linkage
 
-# After stepping, query velocities
+# Set input angular velocity on crank
+linkage.set_input_velocity(crank, omega=10.0, alpha=0.0)  # rad/s, rad/s²
+
+# Query velocities/accelerations on components
 joint.velocity          # (vx, vy) linear velocity
-joint.angular_velocity  # omega for the link
+joint.acceleration      # (ax, ay) linear acceleration
 
 # Batch query
 linkage.get_velocities()      # All joint velocities
 linkage.get_accelerations()   # All joint accelerations
+
+# Generator-based stepping with derivatives
+for positions, velocities, accelerations in linkage.step_with_derivatives():
+    ...
+
+# Fast simulation returning all derivatives
+positions, velocities, accelerations = linkage.step_fast_with_kinematics()
 ```
 
-**Next steps:**
-1. Integrate velocity/acceleration into `Linkage.step()` or add `Linkage.step_with_derivatives()`
-2. Store results in `Simulation` dataclass
-3. Add velocity/acceleration properties to joint classes
+**Visualization:**
+
+```python
+from pylinkage.visualizer import show_kinematics, animate_kinematics
+
+# Static frame with velocity vectors
+fig = show_kinematics(linkage, frame_index=25, show_velocity=True)
+
+# Animated with velocity vectors
+fig = animate_kinematics(linkage, show_velocity=True, save_path="vel.gif")
+```
 
 ---
 
+## In Progress / Partially Implemented
+
 ### CAD Export
 
-**Status:** Partially implemented (SVG only)
+**Status:** Implemented (SVG, DXF, STEP)
 **Impact:** Medium-High - Bridges simulation to fabrication
+**Location:** `src/pylinkage/visualizer/`
 
-**What exists:**
-- SVG export via `drawsvg_viz.py` with ISO 3952 kinematic symbols
+Multi-format CAD export for fabrication workflows:
+
+- **SVG** - Publication-quality diagrams via `drawsvg_viz.py`
+- **DXF** - AutoCAD/CNC via `dxf_export.py` (uses `ezdxf`)
+- **STEP** - 3D CAD interchange via `step_export.py` (uses `build123d`)
 
 ```python
-from pylinkage.visualizer import save_linkage_svg
+from pylinkage.visualizer import (
+    save_linkage_svg,
+    save_linkage_dxf,
+    save_linkage_step,
+    LinkProfile,
+)
 
+# SVG (publication-quality)
 save_linkage_svg(linkage, "output.svg", scale=80, show_loci=True)
+
+# DXF (2D CAD/CNC)
+save_linkage_dxf(linkage, "output.dxf")
+
+# STEP (3D CAD)
+save_linkage_step(linkage, "output.step")
+
+# STEP with custom dimensions
+profile = LinkProfile(width=10, thickness=3, fillet_radius=0.5)
+save_linkage_step(linkage, "output.step", link_profile=profile)
 ```
 
-**What's missing:**
-- **DXF** - AutoCAD/CNC (would use `ezdxf`)
-- **STEP** - 3D CAD interchange (would use `cadquery`)
+**Installation:** DXF and STEP export require optional dependencies:
+```bash
+pip install pylinkage[cad]  # Installs ezdxf and build123d
+```
 
 ---
 
@@ -323,12 +359,12 @@ Currently only Dyads (Class I, 2 links) are implemented. Higher-order groups rai
 
 | Priority | Feature | Status | Effort | Next Action |
 |----------|---------|--------|--------|-------------|
-| 1 | High-level Velocity API | Low-level done | Medium | Integrate into Linkage class |
-| 2 | DXF Export | Not started | Low | Add `ezdxf` dependency |
-| 3 | Triad/Tetrad Support | Not started | High | Extend solver/assur modules |
-| 4 | Sensitivity Analysis | Not started | Medium | Monte Carlo wrapper |
-| 5 | URDF/SDF Export | Not started | Medium | XML serialization |
-| 6 | Multi-Objective Opt | Not started | Medium | NSGA-II integration |
+| ~~1~~ | ~~High-level Velocity API~~ | ✅ Done | — | — |
+| ~~1~~ | ~~DXF/STEP Export~~ | ✅ Done | — | — |
+| 1 | Triad/Tetrad Support | Not started | High | Extend solver/assur modules |
+| 2 | Sensitivity Analysis | Not started | Medium | Monte Carlo wrapper |
+| 3 | URDF/SDF Export | Not started | Medium | XML serialization |
+| 4 | Multi-Objective Opt | Not started | Medium | NSGA-II integration |
 
 ---
 
