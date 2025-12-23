@@ -1,4 +1,4 @@
-"""Tests for transmission angle analysis."""
+"""Tests for kinematic analysis (transmission angle and stroke)."""
 
 import math
 import warnings
@@ -8,8 +8,11 @@ import pytest
 
 import pylinkage as pl
 from pylinkage.linkage.transmission import (
+    StrokeAnalysis,
     TransmissionAngleAnalysis,
+    analyze_stroke,
     analyze_transmission,
+    compute_slide_position,
     compute_transmission_angle,
 )
 
@@ -309,3 +312,270 @@ class TestTransmissionAngleAnalysisDataclass:
         )
         with pytest.raises(AttributeError):
             analysis.min_angle = 60.0  # type: ignore[misc]
+
+
+# =============================================================================
+# Stroke Analysis Tests (for Prismatic joints)
+# =============================================================================
+
+
+class TestComputeSlidePosition:
+    """Test the core slide position computation function."""
+
+    def test_position_at_line_origin(self):
+        """Slider at line origin should have position 0."""
+        pos = compute_slide_position(
+            slider_pos=(0, 0),
+            line_point1=(0, 0),
+            line_point2=(1, 0),
+        )
+        assert abs(pos - 0.0) < 1e-10
+
+    def test_position_at_line_endpoint(self):
+        """Slider at second line point should have position = line length."""
+        pos = compute_slide_position(
+            slider_pos=(3, 0),
+            line_point1=(0, 0),
+            line_point2=(3, 0),
+        )
+        assert abs(pos - 3.0) < 1e-10
+
+    def test_position_midway(self):
+        """Slider at midpoint should have position = half line length."""
+        pos = compute_slide_position(
+            slider_pos=(1.5, 0),
+            line_point1=(0, 0),
+            line_point2=(3, 0),
+        )
+        assert abs(pos - 1.5) < 1e-10
+
+    def test_negative_position(self):
+        """Slider before line origin should have negative position."""
+        pos = compute_slide_position(
+            slider_pos=(-2, 0),
+            line_point1=(0, 0),
+            line_point2=(1, 0),
+        )
+        assert abs(pos - (-2.0)) < 1e-10
+
+    def test_diagonal_line(self):
+        """Test with a diagonal line (45 degrees)."""
+        # Line from (0,0) to (1,1), slider at (0.5, 0.5)
+        # Distance along line = sqrt(0.5^2 + 0.5^2) = sqrt(0.5) ≈ 0.707
+        pos = compute_slide_position(
+            slider_pos=(0.5, 0.5),
+            line_point1=(0, 0),
+            line_point2=(1, 1),
+        )
+        expected = math.sqrt(0.5)
+        assert abs(pos - expected) < 1e-10
+
+    def test_vertical_line(self):
+        """Test with a vertical line."""
+        pos = compute_slide_position(
+            slider_pos=(0, 5),
+            line_point1=(0, 0),
+            line_point2=(0, 1),
+        )
+        assert abs(pos - 5.0) < 1e-10
+
+    def test_slider_off_line_projected(self):
+        """Slider off the line should project onto it."""
+        # Slider at (2, 3) on horizontal line from (0,0) to (1,0)
+        # Should project to x=2
+        pos = compute_slide_position(
+            slider_pos=(2, 3),
+            line_point1=(0, 0),
+            line_point2=(1, 0),
+        )
+        assert abs(pos - 2.0) < 1e-10
+
+    def test_degenerate_zero_length_line(self):
+        """Handle zero-length line gracefully."""
+        pos = compute_slide_position(
+            slider_pos=(5, 5),
+            line_point1=(0, 0),
+            line_point2=(0, 0),  # Same as point1
+        )
+        assert pos == 0.0
+
+
+class TestSliderCrankStrokeAnalysis:
+    """Test stroke analysis on slider-crank linkages."""
+
+    @pytest.fixture
+    def slider_crank_linkage(self):
+        """Create a slider-crank mechanism."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            # Crank rotating around origin
+            crank = pl.Crank(
+                1, 0,
+                joint0=(0, 0),
+                angle=0.1,
+                distance=1.0,
+                name="crank",
+            )
+            # Slider moving along horizontal line
+            slider = pl.Prismatic(
+                3, 0,
+                joint0=crank,  # Connected to crank
+                joint1=(0, 0),  # Line point 1
+                joint2=(10, 0),  # Line point 2 (horizontal line)
+                revolute_radius=3.0,  # Connecting rod length
+                name="slider",
+            )
+            linkage = pl.Linkage(
+                joints=[crank, slider],
+                order=[crank, slider],
+                name="Slider-Crank",
+            )
+        return linkage
+
+    def test_analyze_returns_dataclass(self, slider_crank_linkage):
+        """Check that analyze_stroke returns proper dataclass."""
+        result = analyze_stroke(slider_crank_linkage, iterations=10)
+        assert isinstance(result, StrokeAnalysis)
+        assert isinstance(result.min_position, float)
+        assert isinstance(result.max_position, float)
+        assert isinstance(result.mean_position, float)
+        assert isinstance(result.stroke_range, float)
+        assert isinstance(result.positions, np.ndarray)
+
+    def test_stroke_range_positive(self, slider_crank_linkage):
+        """Stroke range should be positive."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        assert result.stroke_range >= 0
+
+    def test_min_max_consistency(self, slider_crank_linkage):
+        """min_position should be <= mean_position <= max_position."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        assert result.min_position <= result.max_position
+        assert result.min_position <= result.mean_position
+        assert result.mean_position <= result.max_position
+
+    def test_stroke_range_calculation(self, slider_crank_linkage):
+        """stroke_range should equal max - min."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        expected_range = result.max_position - result.min_position
+        assert abs(result.stroke_range - expected_range) < 1e-10
+
+    def test_step_indices(self, slider_crank_linkage):
+        """Step indices should point to actual min/max positions."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        assert result.positions[result.min_position_step] == result.min_position
+        assert result.positions[result.max_position_step] == result.max_position
+
+    def test_amplitude_property(self, slider_crank_linkage):
+        """amplitude should be half the stroke range."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        assert abs(result.amplitude - result.stroke_range / 2.0) < 1e-10
+
+    def test_center_position_property(self, slider_crank_linkage):
+        """center_position should be midpoint of min and max."""
+        result = analyze_stroke(slider_crank_linkage, iterations=50)
+        expected = (result.min_position + result.max_position) / 2.0
+        assert abs(result.center_position - expected) < 1e-10
+
+    def test_slider_crank_expected_stroke(self, slider_crank_linkage):
+        """For crank radius r=1 and rod length L=3, stroke should be 2*r=2."""
+        result = analyze_stroke(slider_crank_linkage, iterations=100)
+        # Theoretical stroke = 2 * crank_radius = 2 * 1 = 2
+        # But actual stroke depends on geometry - should be close to 2
+        assert 1.5 < result.stroke_range < 2.5
+
+
+class TestLinkageStrokeConvenienceMethods:
+    """Test the stroke convenience methods on Linkage class."""
+
+    @pytest.fixture
+    def slider_crank_linkage(self):
+        """Create a slider-crank mechanism."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            crank = pl.Crank(
+                1, 0,
+                joint0=(0, 0),
+                angle=0.1,
+                distance=1.0,
+            )
+            slider = pl.Prismatic(
+                3, 0,
+                joint0=crank,
+                joint1=(0, 0),
+                joint2=(10, 0),
+                revolute_radius=3.0,
+            )
+            linkage = pl.Linkage(
+                joints=[crank, slider],
+                order=[crank, slider],
+            )
+        return linkage
+
+    def test_stroke_position_method(self, slider_crank_linkage):
+        """Test linkage.stroke_position() returns float."""
+        pos = slider_crank_linkage.stroke_position()
+        assert isinstance(pos, float)
+
+    def test_analyze_stroke_method(self, slider_crank_linkage):
+        """Test linkage.analyze_stroke() returns analysis."""
+        result = slider_crank_linkage.analyze_stroke(iterations=10)
+        assert isinstance(result, StrokeAnalysis)
+
+
+class TestStrokeAutoDetection:
+    """Test automatic prismatic joint detection."""
+
+    def test_missing_prismatic_raises(self):
+        """Should raise if no Prismatic joint found."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0)
+            linkage = pl.Linkage(joints=[crank], order=[crank])
+
+        with pytest.raises(ValueError, match="no Prismatic"):
+            analyze_stroke(linkage)
+
+
+class TestStrokeAnalysisDataclass:
+    """Test the StrokeAnalysis dataclass."""
+
+    def test_amplitude_property(self):
+        """amplitude should be half the stroke range."""
+        analysis = StrokeAnalysis(
+            min_position=2.0,
+            max_position=6.0,
+            mean_position=4.0,
+            stroke_range=4.0,
+            positions=np.array([2.0, 4.0, 6.0]),
+            min_position_step=0,
+            max_position_step=2,
+        )
+        assert analysis.amplitude == 2.0
+
+    def test_center_position_property(self):
+        """center_position should be midpoint."""
+        analysis = StrokeAnalysis(
+            min_position=2.0,
+            max_position=6.0,
+            mean_position=4.0,
+            stroke_range=4.0,
+            positions=np.array([2.0, 4.0, 6.0]),
+            min_position_step=0,
+            max_position_step=2,
+        )
+        assert analysis.center_position == 4.0
+
+    def test_frozen_dataclass(self):
+        """Dataclass should be immutable."""
+        analysis = StrokeAnalysis(
+            min_position=2.0,
+            max_position=6.0,
+            mean_position=4.0,
+            stroke_range=4.0,
+            positions=np.array([2.0, 4.0, 6.0]),
+            min_position_step=0,
+            max_position_step=2,
+        )
+        with pytest.raises(AttributeError):
+            analysis.min_position = 1.0  # type: ignore[misc]

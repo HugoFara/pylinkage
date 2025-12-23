@@ -1,11 +1,15 @@
 """
-Transmission angle analysis for linkage mechanisms.
+Kinematic analysis for linkage mechanisms.
 
-The transmission angle is the angle between the coupler and output links
-at their connecting joint. For a four-bar linkage:
-- Ideal range: 40° to 140°
-- Optimal: 90° (maximum force transmission efficiency)
-- Dead points: 0° or 180° (toggle/lock position)
+This module provides analysis tools for:
+
+1. Transmission angle analysis (for Revolute/RRR joints):
+   - The angle between coupler and output links at their connecting joint
+   - Ideal range: 40° to 140°, optimal at 90°
+
+2. Stroke analysis (for Prismatic/RRP joints):
+   - The slide position along the prismatic axis
+   - Tracks min/max/range of travel over a motion cycle
 """
 
 from __future__ import annotations
@@ -290,4 +294,227 @@ def analyze_transmission(
         max_deviation=max_deviation,
         min_angle_step=int(np.argmin(angles_array)),
         max_angle_step=int(np.argmax(angles_array)),
+    )
+
+
+# =============================================================================
+# Stroke Analysis for Prismatic Joints
+# =============================================================================
+
+
+@dataclass(frozen=True)
+class StrokeAnalysis:
+    """Results of stroke analysis for a prismatic joint over a motion cycle.
+
+    The stroke is the position of the slider along its axis, measured as
+    the signed distance from the first line point (joint1) projected onto
+    the slide axis.
+
+    Attributes:
+        min_position: Minimum slide position along the axis.
+        max_position: Maximum slide position along the axis.
+        mean_position: Mean slide position.
+        stroke_range: Total travel distance (max - min).
+        positions: Array of slide positions at each step.
+        min_position_step: Step index where minimum position occurs.
+        max_position_step: Step index where maximum position occurs.
+    """
+
+    min_position: float
+    max_position: float
+    mean_position: float
+    stroke_range: float
+    positions: NDArray[np.float64]
+    min_position_step: int
+    max_position_step: int
+
+    @property
+    def amplitude(self) -> float:
+        """Return half the stroke range (useful for oscillating mechanisms)."""
+        return self.stroke_range / 2.0
+
+    @property
+    def center_position(self) -> float:
+        """Return the center of the stroke range."""
+        return (self.min_position + self.max_position) / 2.0
+
+
+def compute_slide_position(
+    slider_pos: Coord,
+    line_point1: Coord,
+    line_point2: Coord,
+) -> float:
+    """Compute the slide position along a prismatic axis.
+
+    The position is the signed distance from line_point1 to the projection
+    of slider_pos onto the line, measured in the direction of line_point2.
+
+    Args:
+        slider_pos: Current position of the slider joint.
+        line_point1: First point defining the slide axis (origin).
+        line_point2: Second point defining the slide axis (direction).
+
+    Returns:
+        Signed distance along the axis from line_point1.
+    """
+    # Direction vector of the line
+    dx = line_point2[0] - line_point1[0]
+    dy = line_point2[1] - line_point1[1]
+
+    # Length of line segment
+    line_length = math.sqrt(dx * dx + dy * dy)
+
+    if line_length < 1e-10:
+        return 0.0
+
+    # Unit direction vector
+    ux = dx / line_length
+    uy = dy / line_length
+
+    # Vector from line_point1 to slider
+    px = slider_pos[0] - line_point1[0]
+    py = slider_pos[1] - line_point1[1]
+
+    # Project onto line direction (dot product)
+    slide_distance = px * ux + py * uy
+
+    return slide_distance
+
+
+def _auto_detect_prismatic_joint(linkage: Linkage) -> object:
+    """Auto-detect a Prismatic joint in the linkage.
+
+    Args:
+        linkage: The linkage to analyze.
+
+    Returns:
+        The first Prismatic joint found.
+
+    Raises:
+        ValueError: If no Prismatic joint is found.
+    """
+    from ..joints import Prismatic
+
+    for joint in linkage.joints:
+        if isinstance(joint, Prismatic):
+            return joint
+
+    raise ValueError(
+        "Cannot auto-detect: no Prismatic joint found. "
+        "Please specify the joint explicitly."
+    )
+
+
+def stroke_at_position(
+    linkage: Linkage,
+    prismatic_joint: object | None = None,
+) -> float:
+    """Compute the slide position of a prismatic joint at current position.
+
+    Args:
+        linkage: The linkage to analyze.
+        prismatic_joint: The Prismatic joint to analyze. Auto-detected if None.
+
+    Returns:
+        Slide position along the prismatic axis.
+
+    Raises:
+        ValueError: If joint cannot be determined or positions are invalid.
+    """
+    if prismatic_joint is None:
+        prismatic_joint = _auto_detect_prismatic_joint(linkage)
+
+    # Get the slider position
+    slider_coord = _get_joint_coord(prismatic_joint)
+    if slider_coord is None:
+        raise ValueError("Could not determine slider position.")
+
+    # Get the line points (joint1 and joint2 of Prismatic)
+    joint1 = getattr(prismatic_joint, "joint1", None)
+    joint2 = getattr(prismatic_joint, "joint2", None)
+
+    if joint1 is None or joint2 is None:
+        raise ValueError("Prismatic joint does not have joint1 and joint2 defined.")
+
+    line_point1 = _get_joint_coord(joint1)
+    line_point2 = _get_joint_coord(joint2)
+
+    if line_point1 is None or line_point2 is None:
+        raise ValueError("Could not determine line point positions.")
+
+    return compute_slide_position(slider_coord, line_point1, line_point2)
+
+
+def analyze_stroke(
+    linkage: Linkage,
+    prismatic_joint: object | None = None,
+    iterations: int | None = None,
+) -> StrokeAnalysis:
+    """Analyze stroke/slide position over a full motion cycle.
+
+    For a linkage with a Prismatic joint, this tracks the slide position
+    along the prismatic axis throughout the motion cycle.
+
+    Args:
+        linkage: The Linkage to analyze.
+        prismatic_joint: The Prismatic joint to analyze. Auto-detected if None.
+        iterations: Number of simulation steps. Defaults to one full rotation.
+
+    Returns:
+        StrokeAnalysis with statistics over the motion cycle.
+
+    Raises:
+        ValueError: If joint cannot be detected or no valid positions found.
+    """
+    if prismatic_joint is None:
+        prismatic_joint = _auto_detect_prismatic_joint(linkage)
+
+    # Get the line points
+    joint1 = getattr(prismatic_joint, "joint1", None)
+    joint2 = getattr(prismatic_joint, "joint2", None)
+
+    if joint1 is None or joint2 is None:
+        raise ValueError("Prismatic joint does not have joint1 and joint2 defined.")
+
+    # Save initial state
+    initial_coords = linkage.get_coords()
+
+    if iterations is None:
+        iterations = linkage.get_rotation_period()
+
+    # Collect positions over the cycle
+    positions: list[float] = []
+
+    try:
+        for _ in linkage.step(iterations=iterations):
+            slider_coord = _get_joint_coord(prismatic_joint)
+            line_point1 = _get_joint_coord(joint1)
+            line_point2 = _get_joint_coord(joint2)
+
+            if slider_coord is None or line_point1 is None or line_point2 is None:
+                continue
+
+            pos = compute_slide_position(slider_coord, line_point1, line_point2)
+            positions.append(pos)
+    finally:
+        # Restore initial state
+        linkage.set_coords(initial_coords)
+
+    if not positions:
+        raise ValueError("No valid configurations found during simulation.")
+
+    positions_array = np.array(positions, dtype=np.float64)
+    min_pos = float(np.min(positions_array))
+    max_pos = float(np.max(positions_array))
+    mean_pos = float(np.mean(positions_array))
+    stroke_range = max_pos - min_pos
+
+    return StrokeAnalysis(
+        min_position=min_pos,
+        max_position=max_pos,
+        mean_position=mean_pos,
+        stroke_range=stroke_range,
+        positions=positions_array,
+        min_position_step=int(np.argmin(positions_array)),
+        max_position_step=int(np.argmax(positions_array)),
     )

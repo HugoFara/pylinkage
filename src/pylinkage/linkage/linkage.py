@@ -23,7 +23,7 @@ from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from ..solver import SolverData
-    from .transmission import TransmissionAngleAnalysis
+    from .transmission import StrokeAnalysis, TransmissionAngleAnalysis
 
 
 class Linkage:
@@ -658,6 +658,55 @@ class Linkage:
         from .transmission import analyze_transmission as _analyze
 
         return _analyze(self, iterations, acceptable_range)
+
+    def stroke_position(self) -> float:
+        """Get the slide position of a prismatic joint at current position.
+
+        For a linkage with a Prismatic joint, this returns the slide
+        position along the prismatic axis.
+
+        Returns:
+            Slide position along the axis.
+
+        Raises:
+            ValueError: If no Prismatic joint found.
+
+        Example:
+            >>> pos = linkage.stroke_position()
+            >>> print(f"Current slide position: {pos:.2f}")
+        """
+        from .transmission import stroke_at_position
+
+        return stroke_at_position(self)
+
+    def analyze_stroke(
+        self,
+        iterations: int | None = None,
+    ) -> "StrokeAnalysis":
+        """Analyze stroke/slide position over a full motion cycle.
+
+        For a linkage with a Prismatic joint, this tracks the slide
+        position throughout the motion cycle.
+
+        Args:
+            iterations: Number of simulation steps. Defaults to one full rotation.
+
+        Returns:
+            StrokeAnalysis with min/max/range/mean statistics.
+
+        Raises:
+            ValueError: If no Prismatic joint found or no valid positions.
+
+        Example:
+            >>> analysis = linkage.analyze_stroke()
+            >>> print(f"Stroke range: {analysis.stroke_range:.2f}")
+            >>> print(f"Min: {analysis.min_position:.2f}")
+            >>> print(f"Max: {analysis.max_position:.2f}")
+        """
+        from .transmission import StrokeAnalysis
+        from .transmission import analyze_stroke as _analyze
+
+        return _analyze(self, iterations=iterations)
 
 
 class Simulation:

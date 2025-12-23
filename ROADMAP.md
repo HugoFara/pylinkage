@@ -191,6 +191,42 @@ def fitness(loci, linkage):
 
 ---
 
+### Stroke Analysis (Prismatic Joints)
+
+**Status:** Implemented
+**Location:** `src/pylinkage/linkage/transmission.py`
+
+Analyze slider/piston travel for mechanisms with Prismatic joints:
+
+- Compute slide position along the prismatic axis
+- Track min/max/range of travel over a motion cycle
+- Auto-detection of Prismatic joints
+
+```python
+from pylinkage.linkage import analyze_stroke, StrokeAnalysis
+
+# Current slide position
+pos = linkage.stroke_position()
+
+# Full cycle analysis
+analysis = linkage.analyze_stroke()
+analysis.min_position    # Minimum slide position
+analysis.max_position    # Maximum slide position
+analysis.stroke_range    # Total travel (max - min)
+analysis.amplitude       # Half the stroke range
+analysis.center_position # Center of travel
+
+# Use in optimization for slider-crank mechanisms
+@kinematic_minimization
+def fitness(loci, linkage):
+    analysis = linkage.analyze_stroke()
+    if analysis.stroke_range < required_stroke:
+        raise UnbuildableError("Insufficient stroke")
+    return some_metric(loci)
+```
+
+---
+
 ## Not Yet Implemented
 
 ### Sensitivity & Tolerance Analysis
