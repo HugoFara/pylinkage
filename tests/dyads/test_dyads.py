@@ -111,13 +111,13 @@ class TestLinearActuator:
         """Test creating a linear actuator."""
         O = Ground(0.0, 0.0, name="O")
         actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=2.0, velocity=0.1, name="actuator"
+            anchor=O, angle=0.0, stroke=2.0, speed=0.1, name="actuator"
         )
 
         assert actuator.anchor == O
         assert actuator.angle == 0.0
         assert actuator.stroke == 2.0
-        assert actuator.velocity == 0.1
+        assert actuator.speed == 0.1
         # Initial position at extension 0 should be at anchor
         assert actuator.x == pytest.approx(0.0)
         assert actuator.y == pytest.approx(0.0)
@@ -129,7 +129,7 @@ class TestLinearActuator:
             anchor=O,
             angle=math.pi / 2,  # 90 degrees (vertical)
             stroke=2.0,
-            velocity=0.1,
+            speed=0.1,
             initial_extension=1.0,
         )
 
@@ -147,21 +147,21 @@ class TestLinearActuator:
         assert actuator.output.y == actuator.y
 
     def test_linear_actuator_constraints(self):
-        """Test linear actuator constraints (stroke, velocity)."""
+        """Test linear actuator constraints (stroke, speed)."""
         O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.1)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1)
 
         assert actuator.get_constraints() == (2.0, 0.1)
 
         actuator.set_constraints(3.0, 0.2)
         assert actuator.stroke == 3.0
-        assert actuator.velocity == 0.2
+        assert actuator.speed == 0.2
         assert actuator.get_constraints() == (3.0, 0.2)
 
     def test_linear_actuator_reload(self):
         """Test that linear actuator moves on reload."""
         O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.5)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.5)
 
         # Initial position at anchor
         assert actuator.x == pytest.approx(0.0)
@@ -178,7 +178,7 @@ class TestLinearActuator:
         """Test that linear actuator oscillates at stroke limits."""
         O = Ground(0.0, 0.0)
         actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=1.0, velocity=0.6, initial_extension=0.0
+            anchor=O, angle=0.0, stroke=1.0, speed=0.6, initial_extension=0.0
         )
 
         # Move forward: 0 -> 0.6
@@ -198,7 +198,7 @@ class TestLinearActuator:
         """Test creating actuator with initial extension."""
         O = Ground(1.0, 1.0)
         actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=3.0, velocity=0.1, initial_extension=1.5
+            anchor=O, angle=0.0, stroke=3.0, speed=0.1, initial_extension=1.5
         )
 
         # Initial position should be anchor + (1.5, 0)
@@ -211,10 +211,10 @@ class TestLinearActuator:
         O = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="Stroke must be positive"):
-            LinearActuator(anchor=O, angle=0.0, stroke=0.0, velocity=0.1)
+            LinearActuator(anchor=O, angle=0.0, stroke=0.0, speed=0.1)
 
         with pytest.raises(ValueError, match="Stroke must be positive"):
-            LinearActuator(anchor=O, angle=0.0, stroke=-1.0, velocity=0.1)
+            LinearActuator(anchor=O, angle=0.0, stroke=-1.0, speed=0.1)
 
     def test_linear_actuator_invalid_initial_extension(self):
         """Test that invalid initial extension raises error."""
@@ -222,12 +222,12 @@ class TestLinearActuator:
 
         with pytest.raises(ValueError, match="Initial extension"):
             LinearActuator(
-                anchor=O, angle=0.0, stroke=2.0, velocity=0.1, initial_extension=3.0
+                anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=3.0
             )
 
         with pytest.raises(ValueError, match="Initial extension"):
             LinearActuator(
-                anchor=O, angle=0.0, stroke=2.0, velocity=0.1, initial_extension=-0.5
+                anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=-0.5
             )
 
 
@@ -458,7 +458,7 @@ class TestLinkage:
     def test_linkage_with_linear_actuator(self):
         """Test creating a linkage with linear actuator."""
         O = Ground(0.0, 0.0, name="O")
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, velocity=0.1)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1)
 
         linkage = Linkage([O, actuator], name="Test")
 
@@ -468,11 +468,11 @@ class TestLinkage:
     def test_linkage_linear_actuator_period(self):
         """Test computing period for linear actuator."""
         O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, velocity=0.1)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.1)
 
         linkage = Linkage([O, actuator])
 
-        # Full cycle = 2 * stroke / velocity = 2 * 1.0 / 0.1 = 20
+        # Full cycle = 2 * stroke / speed = 2 * 1.0 / 0.1 = 20
         period = linkage.get_rotation_period()
         assert period == 20
 
@@ -480,7 +480,7 @@ class TestLinkage:
         """Test period with both crank and linear actuator."""
         O = Ground(0.0, 0.0)
         crank = Crank(anchor=O, radius=1.0, angular_velocity=math.pi / 5)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, velocity=0.2)
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.2)
 
         linkage = Linkage([O, crank, actuator])
 
@@ -554,7 +554,7 @@ class TestIntegration:
             anchor=O1,
             angle=math.pi / 4,  # 45 degrees
             stroke=1.5,
-            velocity=0.1,
+            speed=0.1,
             initial_extension=0.75,  # Start in middle
         )
 

@@ -34,7 +34,7 @@ Example:
         from pylinkage.actuators import LinearActuator
 
         O1 = Ground(0.0, 0.0, name="O1")
-        actuator = LinearActuator(anchor=O1, angle=0.0, stroke=2.0, velocity=0.1)
+        actuator = LinearActuator(anchor=O1, angle=0.0, stroke=2.0, speed=0.1)
 """
 
 from .arc_crank import ArcCrank as ArcCrank

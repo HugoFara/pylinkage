@@ -15,19 +15,19 @@ class LinearActuator(ConnectedComponent):
     """A motor-driven linear input (linear actuator).
 
     A linear actuator moves along a line from its anchor at constant
-    velocity, producing an output point that oscillates between 0
+    speed, producing an output point that oscillates between 0
     and the stroke limit. This provides linear reciprocating motion.
 
     Attributes:
         anchor: The ground point this actuator extends from.
         angle: Direction angle in radians (from +x axis).
         stroke: Maximum extension distance.
-        velocity: Linear velocity magnitude (units per step).
+        speed: Linear speed magnitude (units per step).
         initial_extension: Starting extension from anchor.
 
     Example:
         >>> O1 = Ground(0.0, 0.0, name="O1")
-        >>> actuator = LinearActuator(anchor=O1, angle=0.0, stroke=2.0, velocity=0.1)
+        >>> actuator = LinearActuator(anchor=O1, angle=0.0, stroke=2.0, speed=0.1)
         >>> actuator.position
         (0.0, 0.0)
         >>> actuator.reload()
@@ -39,7 +39,7 @@ class LinearActuator(ConnectedComponent):
         "anchor",
         "angle",
         "stroke",
-        "velocity",
+        "speed",
         "initial_extension",
         "_extension",
         "_direction",
@@ -49,7 +49,7 @@ class LinearActuator(ConnectedComponent):
     anchor: Ground
     angle: float
     stroke: float
-    velocity: float
+    speed: float
     initial_extension: float
     _extension: float
     _direction: float
@@ -60,7 +60,7 @@ class LinearActuator(ConnectedComponent):
         anchor: Ground,
         angle: float,
         stroke: float,
-        velocity: float = 0.1,
+        speed: float = 0.1,
         initial_extension: float = 0.0,
         name: str | None = None,
     ) -> None:
@@ -70,7 +70,7 @@ class LinearActuator(ConnectedComponent):
             anchor: The ground point this actuator extends from.
             angle: Direction angle in radians (from +x axis).
             stroke: Maximum extension distance (must be positive).
-            velocity: Linear velocity magnitude (units per step).
+            speed: Linear speed magnitude (units per step).
             initial_extension: Starting extension from anchor (0 to stroke).
             name: Human-readable identifier.
 
@@ -98,7 +98,7 @@ class LinearActuator(ConnectedComponent):
         self.anchor = anchor
         self.angle = angle
         self.stroke = stroke
-        self.velocity = velocity
+        self.speed = speed
         self.initial_extension = initial_extension
         self._extension = initial_extension
         self._direction = 1.0  # Start moving in positive direction
@@ -126,24 +126,24 @@ class LinearActuator(ConnectedComponent):
         return (self.anchor,)
 
     def get_constraints(self) -> tuple[float, float]:
-        """Return the stroke and velocity (optimizable constraints).
+        """Return the stroke and speed (optimizable constraints).
 
         Returns:
-            Tuple containing (stroke, velocity).
+            Tuple containing (stroke, speed).
         """
-        return (self.stroke, self.velocity)
+        return (self.stroke, self.speed)
 
     def set_constraints(
         self,
         stroke: float | None = None,
-        velocity: float | None = None,
+        speed: float | None = None,
         *args: float | None,
     ) -> None:
         """Set the constraints.
 
         Args:
             stroke: New stroke value (must be positive).
-            velocity: New velocity value.
+            speed: New speed value.
             *args: Ignored (for interface compatibility).
         """
         if stroke is not None:
@@ -154,13 +154,13 @@ class LinearActuator(ConnectedComponent):
             if self._extension > stroke:
                 self._extension = stroke
 
-        if velocity is not None:
-            self.velocity = velocity
+        if speed is not None:
+            self.speed = speed
 
     def reload(self, dt: float = 1) -> None:
         """Advance the actuator by one step.
 
-        Moves the actuator position by velocity * dt, reversing
+        Moves the actuator position by speed * dt, reversing
         direction when hitting stroke limits.
 
         Args:
@@ -181,6 +181,6 @@ class LinearActuator(ConnectedComponent):
             self.anchor.y,
             self.angle,
             self.stroke,
-            self.velocity,
+            self.speed,
             dt,
         )

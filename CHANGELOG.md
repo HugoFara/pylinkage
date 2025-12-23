@@ -15,6 +15,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds scipy.
   - Exact optimization solving (better than numpy) + support constraints.
   - Adds a new optimization: differential evolution.
+- **High-level velocity/acceleration API:**
+  - `Component.velocity` and `Component.acceleration` properties on all components.
+  - `simulation.Linkage.set_input_velocity(actuator, omega, alpha)` to set crank angular velocity.
+  - `simulation.Linkage.step_with_derivatives()` generator yielding (positions, velocities, accelerations).
+  - `simulation.Linkage.get_velocities()` and `get_accelerations()` batch query methods.
+  - `solver.step_single_acceleration()` numba-compiled acceleration solver.
+  - Exported acceleration solvers: `solve_crank_acceleration`, `solve_revolute_acceleration`,
+    `solve_fixed_acceleration`, `solve_prismatic_acceleration`.
+
+### Changed
+
+- **Breaking:** `Linkage.step_fast_with_kinematics()` now returns a 3-tuple
+  `(positions, velocities, accelerations)` instead of 2-tuple.
+- **Breaking:** `LinearActuator.velocity` attribute renamed to `LinearActuator.speed`
+  to avoid conflict with the new `Component.velocity` property.
+- `simulate_with_kinematics()` now computes accelerations in addition to velocities.
 
 ## [0.7.0] - 2025-12-13
 
@@ -33,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Old names kept as deprecated aliases.
 - Separate linkage definition from actual solving:
   - The internal solver is now numba + NumPy, almost 100x faster!
-  - The user-facing code is now based on [Assur groups](https://en.wikipedia.org/wiki/Assur_group), that is more formal. 
+  - The user-facing code is now based on [Assur groups](https://en.wikipedia.org/wiki/Assur_group), that is more formal.
 
 ### Fixed in 0.7.0
 

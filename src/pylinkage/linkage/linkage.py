@@ -318,11 +318,12 @@ class Linkage:
         self,
         iterations: int | None = None,
         dt: float = 1,
-    ) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
-        """Run simulation with velocity computation using numba-optimized solver.
+    ) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+        """Run simulation with velocity and acceleration using numba-optimized solver.
 
-        This extends step_fast() to also compute velocities at each step.
-        Requires that omega is set on crank joints to specify angular velocities.
+        This extends step_fast() to also compute velocities and accelerations
+        at each step. Requires that omega (and optionally alpha) is set on crank
+        joints to specify angular velocities and accelerations.
 
         Args:
             iterations: Number of iterations to run. If None, uses
@@ -331,13 +332,14 @@ class Linkage:
                 angle * dt. (Default: 1)
 
         Returns:
-            Tuple of (positions, velocities) arrays, each with shape
-            (iterations, n_joints, 2).
+            Tuple of (positions, velocities, accelerations) arrays, each with
+            shape (iterations, n_joints, 2).
 
         Example:
-            >>> linkage.set_input_velocity(crank, omega=10.0)
-            >>> positions, velocities = linkage.step_fast_with_kinematics(1000)
-            >>> print(velocities[100, 2])  # velocity of joint 2 at step 100
+            >>> linkage.set_input_velocity(crank, omega=10.0, alpha=0.0)
+            >>> pos, vel, acc = linkage.step_fast_with_kinematics(1000)
+            >>> print(vel[100, 2])  # velocity of joint 2 at step 100
+            >>> print(acc[100, 2])  # acceleration of joint 2 at step 100
         """
         from ..solver import (
             simulate_with_kinematics,
@@ -357,14 +359,17 @@ class Linkage:
         # Sync positions from joints to solver data
         update_solver_positions(self._solver_data, self)  # type: ignore[operator]
 
-        # Initialize velocity and kinematics arrays if not present
+        # Initialize velocity, acceleration, and kinematics arrays if not present
         n_joints = len(self.joints)
+        n_cranks = len(self._cranks)
         if self._solver_data.velocities is None:
             self._solver_data.velocities = np.zeros((n_joints, 2), dtype=np.float64)
+        if self._solver_data.accelerations is None:
+            self._solver_data.accelerations = np.zeros((n_joints, 2), dtype=np.float64)
         if self._solver_data.omega_values is None:
-            self._solver_data.omega_values = np.zeros(
-                len(self._cranks), dtype=np.float64
-            )
+            self._solver_data.omega_values = np.zeros(n_cranks, dtype=np.float64)
+        if self._solver_data.alpha_values is None:
+            self._solver_data.alpha_values = np.zeros(n_cranks, dtype=np.float64)
         if self._solver_data.crank_indices is None:
             crank_indices = []
             for i, j in enumerate(self.joints):
@@ -372,29 +377,32 @@ class Linkage:
                     crank_indices.append(i)
             self._solver_data.crank_indices = np.array(crank_indices, dtype=np.int32)
 
-        # Sync omega values from cranks
+        # Sync omega and alpha values from cranks
         for i, crank in enumerate(self._cranks):
             self._solver_data.omega_values[i] = crank.omega if crank.omega else 0.0
+            self._solver_data.alpha_values[i] = crank.alpha if crank.alpha else 0.0
 
         # Run numba simulation with kinematics
-        pos_trajectory, vel_trajectory = simulate_with_kinematics(
+        pos_trajectory, vel_trajectory, acc_trajectory = simulate_with_kinematics(
             self._solver_data.positions,
             self._solver_data.velocities,
+            self._solver_data.accelerations,
             self._solver_data.constraints,
             self._solver_data.joint_types,
             self._solver_data.parent_indices,
             self._solver_data.constraint_offsets,
             self._solver_data.solve_order,
             self._solver_data.omega_values,
+            self._solver_data.alpha_values,
             self._solver_data.crank_indices,
             iterations,
             dt,
         )
 
-        # Sync final positions and velocities back to joints
+        # Sync final positions, velocities, and accelerations back to joints
         solver_data_to_linkage(self._solver_data, self)  # type: ignore[operator]
 
-        return pos_trajectory, vel_trajectory
+        return pos_trajectory, vel_trajectory, acc_trajectory
 
     def set_input_velocity(
         self,

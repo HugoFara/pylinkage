@@ -49,12 +49,19 @@ from .simulation import (
     simulate_with_kinematics,
     step_single,
     step_single_velocity,
+    step_single_acceleration,
 )
 from .velocity import (
     solve_crank_velocity,
     solve_fixed_velocity,
     solve_prismatic_velocity,
     solve_revolute_velocity,
+)
+from .acceleration import (
+    solve_crank_acceleration,
+    solve_fixed_acceleration,
+    solve_prismatic_acceleration,
+    solve_revolute_acceleration,
 )
 from .types import (
     JOINT_CRANK,
@@ -106,6 +113,11 @@ __all__ = [
     "solve_revolute_velocity",
     "solve_fixed_velocity",
     "solve_prismatic_velocity",
+    # Joint solvers (acceleration)
+    "solve_crank_acceleration",
+    "solve_revolute_acceleration",
+    "solve_fixed_acceleration",
+    "solve_prismatic_acceleration",
     # Group solvers
     "solve_rrr_dyad",
     "solve_rrp_dyad",
@@ -115,6 +127,7 @@ __all__ = [
     # Simulation
     "step_single",
     "step_single_velocity",
+    "step_single_acceleration",
     "simulate",
     "simulate_with_kinematics",
     "has_nan_positions",

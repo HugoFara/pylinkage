@@ -614,7 +614,7 @@ def plot_linkage_plotly_with_velocity(
         )
 
     # Run simulation with kinematics
-    positions, velocities = linkage.step_fast_with_kinematics()
+    positions, velocities, _ = linkage.step_fast_with_kinematics()
     n_frames = positions.shape[0]
 
     if frame_index < 0 or frame_index >= n_frames:

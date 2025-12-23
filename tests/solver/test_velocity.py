@@ -255,15 +255,18 @@ class TestLinkageKinematicsAPI:
             four_bar.set_input_velocity(static, omega=10.0)  # type: ignore[arg-type]
 
     def test_step_fast_with_kinematics(self, four_bar: Linkage) -> None:
-        """Test kinematics simulation returns positions and velocities."""
+        """Test kinematics simulation returns positions, velocities, and accelerations."""
         crank = four_bar.joints[1]
         assert isinstance(crank, Crank)
         four_bar.set_input_velocity(crank, omega=10.0)
 
-        positions, velocities = four_bar.step_fast_with_kinematics(iterations=10)
+        positions, velocities, accelerations = four_bar.step_fast_with_kinematics(
+            iterations=10
+        )
 
         assert positions.shape == (10, 4, 2)
         assert velocities.shape == (10, 4, 2)
+        assert accelerations.shape == (10, 4, 2)
 
         # Static joints should have zero velocity
         assert velocities[:, 0, 0] == pytest.approx(0.0, abs=1e-10)
@@ -318,7 +321,7 @@ class TestVelocityNumericValidation:
         linkage = Linkage(joints=(a, b), order=(a, b), name="crank-only")
 
         # Run simulation
-        positions, velocities = linkage.step_fast_with_kinematics(iterations=100)
+        positions, velocities, _ = linkage.step_fast_with_kinematics(iterations=100)
 
         # Compute numerical derivative using central differences
         dt = 1.0  # Each step is dt=1

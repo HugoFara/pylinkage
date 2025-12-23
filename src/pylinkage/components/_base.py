@@ -26,15 +26,27 @@ class Component(ABC):
         x: Horizontal position coordinate.
         y: Vertical position coordinate.
         name: Human-readable identifier.
+        velocity: Linear velocity (vx, vy) in units/s. None if not computed.
+        acceleration: Linear acceleration (ax, ay) in units/s². None if not computed.
     """
 
-    __slots__ = ("x", "y", "name", "_mechanism_joint", "_mechanism_links")
+    __slots__ = (
+        "x",
+        "y",
+        "name",
+        "_mechanism_joint",
+        "_mechanism_links",
+        "_velocity",
+        "_acceleration",
+    )
 
     x: float | None
     y: float | None
     name: str
     _mechanism_joint: Joint | None
     _mechanism_links: list[Link]
+    _velocity: tuple[float, float] | None
+    _acceleration: tuple[float, float] | None
 
     def __init__(
         self,
@@ -54,6 +66,8 @@ class Component(ABC):
         self.name = name if name is not None else str(id(self))
         self._mechanism_joint = None
         self._mechanism_links = []
+        self._velocity = None
+        self._acceleration = None
 
     def __repr__(self) -> str:
         """Return string representation."""
@@ -77,6 +91,32 @@ class Component(ABC):
         """
         self.x = x
         self.y = y
+
+    @property
+    def velocity(self) -> tuple[float, float] | None:
+        """Return linear velocity (vx, vy) in units/s.
+
+        Returns None if velocity has not been computed.
+        """
+        return self._velocity
+
+    @velocity.setter
+    def velocity(self, value: tuple[float, float] | None) -> None:
+        """Set the velocity of this component."""
+        self._velocity = value
+
+    @property
+    def acceleration(self) -> tuple[float, float] | None:
+        """Return linear acceleration (ax, ay) in units/s².
+
+        Returns None if acceleration has not been computed.
+        """
+        return self._acceleration
+
+    @acceleration.setter
+    def acceleration(self, value: tuple[float, float] | None) -> None:
+        """Set the acceleration of this component."""
+        self._acceleration = value
 
     @abstractmethod
     def get_constraints(self) -> tuple[float | None, ...]:
@@ -162,6 +202,16 @@ class _AnchorProxy:
     def name(self) -> str:
         """Return the parent's name."""
         return self._parent.name
+
+    @property
+    def velocity(self) -> tuple[float, float] | None:
+        """Return the parent's velocity."""
+        return self._parent.velocity
+
+    @property
+    def acceleration(self) -> tuple[float, float] | None:
+        """Return the parent's acceleration."""
+        return self._parent.acceleration
 
 
 # Backwards compatibility aliases

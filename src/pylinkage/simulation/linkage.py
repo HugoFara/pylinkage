@@ -239,9 +239,9 @@ class Linkage:
 
         # Consider linear actuator periods
         for actuator in self._linear_actuators:
-            if actuator.velocity != 0:
-                # Full cycle is 2 * stroke / velocity (one round trip)
-                freq = round(2 * actuator.stroke / abs(actuator.velocity))
+            if actuator.speed != 0:
+                # Full cycle is 2 * stroke / speed (one round trip)
+                freq = round(2 * actuator.stroke / abs(actuator.speed))
                 periods = periods * freq // gcd(periods, freq)
 
         return periods
@@ -294,3 +294,445 @@ class Linkage:
             if n_constraints > 0:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
+
+    def set_input_velocity(
+        self,
+        actuator: Crank,
+        omega: float,
+        alpha: float = 0.0,
+    ) -> None:
+        """Set angular velocity and acceleration for a crank actuator.
+
+        This is used for kinematics computation (velocity/acceleration analysis).
+        The omega value will be used to compute linear velocities at each joint.
+
+        Args:
+            actuator: The crank actuator to set velocity for.
+            omega: Angular velocity in rad/s (physical units for analysis).
+            alpha: Angular acceleration in rad/s² (default 0).
+
+        Raises:
+            ValueError: If the actuator is not part of this linkage.
+
+        Example:
+            >>> linkage.set_input_velocity(crank, omega=10.0)  # 10 rad/s
+            >>> for pos, vel, acc in linkage.step_with_derivatives():
+            ...     print(f"Position: {pos}, Velocity: {vel}")
+        """
+        from ..actuators import Crank
+
+        if actuator not in self._cranks:
+            raise ValueError(f"{actuator} is not a crank in this linkage")
+        # Store omega/alpha as attributes for kinematics computation
+        # These are separate from angular_velocity which is radians/step
+        actuator._omega = omega  # type: ignore[attr-defined]
+        actuator._alpha = alpha  # type: ignore[attr-defined]
+
+    def get_velocities(self) -> list[tuple[float, float] | None]:
+        """Return velocities for all components.
+
+        Returns:
+            List of (vx, vy) tuples, one per component. Returns None for
+            components whose velocity has not been computed.
+        """
+        return [c.velocity for c in self.components]
+
+    def get_accelerations(self) -> list[tuple[float, float] | None]:
+        """Return accelerations for all components.
+
+        Returns:
+            List of (ax, ay) tuples, one per component. Returns None for
+            components whose acceleration has not been computed.
+        """
+        return [c.acceleration for c in self.components]
+
+    def step_with_derivatives(
+        self,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> Generator[
+        tuple[
+            tuple[tuple[float | None, float | None], ...],
+            tuple[tuple[float, float] | None, ...],
+            tuple[tuple[float, float] | None, ...],
+        ],
+        None,
+        None,
+    ]:
+        """Simulate the linkage with velocity and acceleration computation.
+
+        Yields positions, velocities, and accelerations for all components
+        at each step. Requires that omega (and optionally alpha) is set on
+        crank actuators via set_input_velocity().
+
+        Args:
+            iterations: Number of steps. If None, uses get_rotation_period().
+            dt: Time step multiplier for actuators (cranks and linear actuators).
+
+        Yields:
+            Tuple of (positions, velocities, accelerations) where:
+            - positions: Tuple of (x, y) for each component
+            - velocities: Tuple of (vx, vy) or None for each component
+            - accelerations: Tuple of (ax, ay) or None for each component
+
+        Example:
+            >>> linkage.set_input_velocity(crank, omega=10.0)
+            >>> for pos, vel, acc in linkage.step_with_derivatives():
+            ...     print(f"Crank velocity: {vel[2]}")
+        """
+        import math
+
+        from ..actuators import ArcCrank, Crank, LinearActuator
+        from ..components import Ground
+        from ..dyads import FixedDyad, RRPDyad, RRRDyad
+        from ..solver.velocity import (
+            solve_crank_velocity,
+            solve_fixed_velocity,
+            solve_prismatic_velocity,
+            solve_revolute_velocity,
+        )
+        from ..solver.acceleration import (
+            solve_crank_acceleration,
+            solve_fixed_acceleration,
+            solve_prismatic_acceleration,
+            solve_revolute_acceleration,
+        )
+
+        if not hasattr(self, "_solve_order"):
+            self._find_solve_order()
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        for _ in range(iterations):
+            # Step 1: Compute positions
+            for component in self._solve_order:
+                if isinstance(component, (Crank, ArcCrank, LinearActuator)):
+                    component.reload(dt)
+                else:
+                    component.reload()
+
+            # Step 2: Compute velocities
+            for component in self._solve_order:
+                if isinstance(component, Ground):
+                    # Ground points have zero velocity
+                    component.velocity = (0.0, 0.0)
+
+                elif isinstance(component, Crank):
+                    # Get omega from set_input_velocity or default to 0
+                    omega = getattr(component, "_omega", 0.0)
+                    if component.x is None or component.y is None:
+                        component.velocity = None
+                        continue
+                    if component.anchor.x is None or component.anchor.y is None:
+                        component.velocity = None
+                        continue
+                    anchor_vel = component.anchor.velocity or (0.0, 0.0)
+                    vx, vy = solve_crank_velocity(
+                        component.x,
+                        component.y,
+                        component.anchor.x,
+                        component.anchor.y,
+                        anchor_vel[0],
+                        anchor_vel[1],
+                        component.radius,
+                        omega,
+                    )
+                    if math.isnan(vx) or math.isnan(vy):
+                        component.velocity = None
+                    else:
+                        component.velocity = (vx, vy)
+
+                elif isinstance(component, RRRDyad):
+                    if component.x is None or component.y is None:
+                        component.velocity = None
+                        continue
+                    a1 = component.anchor1
+                    a2 = component.anchor2
+                    if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                        component.velocity = None
+                        continue
+                    v1 = a1.velocity or (0.0, 0.0)
+                    v2 = a2.velocity or (0.0, 0.0)
+                    vx, vy = solve_revolute_velocity(
+                        component.x,
+                        component.y,
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                    )
+                    if math.isnan(vx) or math.isnan(vy):
+                        component.velocity = None
+                    else:
+                        component.velocity = (vx, vy)
+
+                elif isinstance(component, RRPDyad):
+                    if component.x is None or component.y is None:
+                        component.velocity = None
+                        continue
+                    ra = component.revolute_anchor
+                    la1 = component.line_anchor1
+                    la2 = component.line_anchor2
+                    if (
+                        ra.x is None
+                        or ra.y is None
+                        or la1.x is None
+                        or la1.y is None
+                        or la2.x is None
+                        or la2.y is None
+                    ):
+                        component.velocity = None
+                        continue
+                    vr = ra.velocity or (0.0, 0.0)
+                    vl1 = la1.velocity or (0.0, 0.0)
+                    vl2 = la2.velocity or (0.0, 0.0)
+                    vx, vy = solve_prismatic_velocity(
+                        component.x,
+                        component.y,
+                        ra.x,
+                        ra.y,
+                        vr[0],
+                        vr[1],
+                        component.distance,
+                        la1.x,
+                        la1.y,
+                        vl1[0],
+                        vl1[1],
+                        la2.x,
+                        la2.y,
+                        vl2[0],
+                        vl2[1],
+                    )
+                    if math.isnan(vx) or math.isnan(vy):
+                        component.velocity = None
+                    else:
+                        component.velocity = (vx, vy)
+
+                elif isinstance(component, FixedDyad):
+                    if component.x is None or component.y is None:
+                        component.velocity = None
+                        continue
+                    a1 = component.anchor1
+                    a2 = component.anchor2
+                    if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                        component.velocity = None
+                        continue
+                    v1 = a1.velocity or (0.0, 0.0)
+                    v2 = a2.velocity or (0.0, 0.0)
+                    vx, vy = solve_fixed_velocity(
+                        component.x,
+                        component.y,
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                        component.distance,
+                        component.angle,
+                    )
+                    if math.isnan(vx) or math.isnan(vy):
+                        component.velocity = None
+                    else:
+                        component.velocity = (vx, vy)
+
+                else:
+                    # Unknown component type
+                    component.velocity = None
+
+            # Step 3: Compute accelerations
+            for component in self._solve_order:
+                if isinstance(component, Ground):
+                    # Ground points have zero acceleration
+                    component.acceleration = (0.0, 0.0)
+
+                elif isinstance(component, Crank):
+                    omega = getattr(component, "_omega", 0.0)
+                    alpha = getattr(component, "_alpha", 0.0)
+                    if (
+                        component.x is None
+                        or component.y is None
+                        or component.velocity is None
+                    ):
+                        component.acceleration = None
+                        continue
+                    if component.anchor.x is None or component.anchor.y is None:
+                        component.acceleration = None
+                        continue
+                    anchor_vel = component.anchor.velocity or (0.0, 0.0)
+                    anchor_acc = component.anchor.acceleration or (0.0, 0.0)
+                    ax, ay = solve_crank_acceleration(
+                        component.x,
+                        component.y,
+                        component.velocity[0],
+                        component.velocity[1],
+                        component.anchor.x,
+                        component.anchor.y,
+                        anchor_vel[0],
+                        anchor_vel[1],
+                        anchor_acc[0],
+                        anchor_acc[1],
+                        component.radius,
+                        omega,
+                        alpha,
+                    )
+                    if math.isnan(ax) or math.isnan(ay):
+                        component.acceleration = None
+                    else:
+                        component.acceleration = (ax, ay)
+
+                elif isinstance(component, RRRDyad):
+                    if (
+                        component.x is None
+                        or component.y is None
+                        or component.velocity is None
+                    ):
+                        component.acceleration = None
+                        continue
+                    a1 = component.anchor1
+                    a2 = component.anchor2
+                    if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                        component.acceleration = None
+                        continue
+                    v1 = a1.velocity or (0.0, 0.0)
+                    v2 = a2.velocity or (0.0, 0.0)
+                    acc1 = a1.acceleration or (0.0, 0.0)
+                    acc2 = a2.acceleration or (0.0, 0.0)
+                    ax, ay = solve_revolute_acceleration(
+                        component.x,
+                        component.y,
+                        component.velocity[0],
+                        component.velocity[1],
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        acc1[0],
+                        acc1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                        acc2[0],
+                        acc2[1],
+                    )
+                    if math.isnan(ax) or math.isnan(ay):
+                        component.acceleration = None
+                    else:
+                        component.acceleration = (ax, ay)
+
+                elif isinstance(component, RRPDyad):
+                    if (
+                        component.x is None
+                        or component.y is None
+                        or component.velocity is None
+                    ):
+                        component.acceleration = None
+                        continue
+                    ra = component.revolute_anchor
+                    la1 = component.line_anchor1
+                    la2 = component.line_anchor2
+                    if (
+                        ra.x is None
+                        or ra.y is None
+                        or la1.x is None
+                        or la1.y is None
+                        or la2.x is None
+                        or la2.y is None
+                    ):
+                        component.acceleration = None
+                        continue
+                    vr = ra.velocity or (0.0, 0.0)
+                    vl1 = la1.velocity or (0.0, 0.0)
+                    vl2 = la2.velocity or (0.0, 0.0)
+                    accr = ra.acceleration or (0.0, 0.0)
+                    accl1 = la1.acceleration or (0.0, 0.0)
+                    accl2 = la2.acceleration or (0.0, 0.0)
+                    ax, ay = solve_prismatic_acceleration(
+                        component.x,
+                        component.y,
+                        component.velocity[0],
+                        component.velocity[1],
+                        ra.x,
+                        ra.y,
+                        vr[0],
+                        vr[1],
+                        accr[0],
+                        accr[1],
+                        component.distance,
+                        la1.x,
+                        la1.y,
+                        vl1[0],
+                        vl1[1],
+                        accl1[0],
+                        accl1[1],
+                        la2.x,
+                        la2.y,
+                        vl2[0],
+                        vl2[1],
+                        accl2[0],
+                        accl2[1],
+                    )
+                    if math.isnan(ax) or math.isnan(ay):
+                        component.acceleration = None
+                    else:
+                        component.acceleration = (ax, ay)
+
+                elif isinstance(component, FixedDyad):
+                    if (
+                        component.x is None
+                        or component.y is None
+                        or component.velocity is None
+                    ):
+                        component.acceleration = None
+                        continue
+                    a1 = component.anchor1
+                    a2 = component.anchor2
+                    if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                        component.acceleration = None
+                        continue
+                    v1 = a1.velocity or (0.0, 0.0)
+                    v2 = a2.velocity or (0.0, 0.0)
+                    acc1 = a1.acceleration or (0.0, 0.0)
+                    acc2 = a2.acceleration or (0.0, 0.0)
+                    ax, ay = solve_fixed_acceleration(
+                        component.x,
+                        component.y,
+                        component.velocity[0],
+                        component.velocity[1],
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        acc1[0],
+                        acc1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                        acc2[0],
+                        acc2[1],
+                        component.distance,
+                        component.angle,
+                    )
+                    if math.isnan(ax) or math.isnan(ay):
+                        component.acceleration = None
+                    else:
+                        component.acceleration = (ax, ay)
+
+                else:
+                    # Unknown component type
+                    component.acceleration = None
+
+            # Yield results
+            positions = tuple(d.position for d in self.components)
+            velocities = tuple(d.velocity for d in self.components)
+            accelerations = tuple(d.acceleration for d in self.components)
+            yield positions, velocities, accelerations

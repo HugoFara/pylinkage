@@ -239,7 +239,7 @@ def show_kinematics(
         )
 
     # Run simulation with kinematics
-    positions, velocities = linkage.step_fast_with_kinematics()
+    positions, velocities, accelerations = linkage.step_fast_with_kinematics()
 
     # Get the specific frame
     n_frames = positions.shape[0]
@@ -353,7 +353,7 @@ def animate_kinematics(
         )
 
     # Run simulation
-    positions, velocities = linkage.step_fast_with_kinematics()
+    positions, velocities, _ = linkage.step_fast_with_kinematics()
     n_frames = positions.shape[0]
 
     # Auto-compute velocity scale
