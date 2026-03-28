@@ -7,13 +7,10 @@ Note: For dyad factory function tests, see tests/dyads/test_dyads.py.
 
 import math
 
-import pytest
-
 from pylinkage.mechanism import (
     DriverLink,
     GroundJoint,
     GroundLink,
-    Joint,
     Link,
     Mechanism,
     PrismaticJoint,

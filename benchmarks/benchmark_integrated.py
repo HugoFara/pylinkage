@@ -9,6 +9,7 @@ This script:
 
 Run with: uv run python benchmarks/benchmark_integrated.py
 """
+
 import contextlib
 import math
 import random
@@ -23,10 +24,15 @@ import pylinkage as pl
 # NUMBA-OPTIMIZED JOINT SIMULATION
 # ============================================================================
 
+
 @njit(cache=True)
 def circle_intersect_fast(
-    x1: float, y1: float, r1: float,
-    x2: float, y2: float, r2: float,
+    x1: float,
+    y1: float,
+    r1: float,
+    x2: float,
+    y2: float,
+    r2: float,
 ) -> tuple:
     """Fast circle intersection returning (n, x1, y1, x2, y2)."""
     dist_x = x2 - x1
@@ -45,8 +51,13 @@ def circle_intersect_fast(
         return (1, proj_x, proj_y, 0.0, 0.0)
 
     height = math.sqrt(height_squared) / distance
-    return (2, proj_x + height * dist_y, proj_y - height * dist_x,
-            proj_x - height * dist_y, proj_y + height * dist_x)
+    return (
+        2,
+        proj_x + height * dist_y,
+        proj_y - height * dist_x,
+        proj_x - height * dist_y,
+        proj_y + height * dist_x,
+    )
 
 
 @njit(cache=True)
@@ -65,11 +76,17 @@ def sqr_dist_fast(x1: float, y1: float, x2: float, y2: float) -> float:
 
 @njit(cache=True)
 def simulate_fourbar_step_fast(
-    crank_x: float, crank_y: float, crank_r: float, crank_angle: float,
-    pin_prev_x: float, pin_prev_y: float,
-    static_x: float, static_y: float,
-    pin_r0: float, pin_r1: float,
-    dt: float
+    crank_x: float,
+    crank_y: float,
+    crank_r: float,
+    crank_angle: float,
+    pin_prev_x: float,
+    pin_prev_y: float,
+    static_x: float,
+    static_y: float,
+    pin_r0: float,
+    pin_r1: float,
+    dt: float,
 ) -> tuple:
     """
     Simulate one step of a four-bar linkage.
@@ -81,10 +98,7 @@ def simulate_fourbar_step_fast(
     crank_new = cyl_to_cart_fast(crank_r, new_angle, 0.0, 0.0)
 
     # Solve revolute joint (pin)
-    result = circle_intersect_fast(
-        crank_new[0], crank_new[1], pin_r0,
-        static_x, static_y, pin_r1
-    )
+    result = circle_intersect_fast(crank_new[0], crank_new[1], pin_r0, static_x, static_y, pin_r1)
 
     if result[0] == 0:
         return (crank_new[0], crank_new[1], 0.0, 0.0, False)
@@ -104,10 +118,14 @@ def simulate_fourbar_step_fast(
 
 @njit(cache=True)
 def simulate_fourbar_cycle_fast(
-    crank_r: float, crank_angle: float,
-    static_x: float, static_y: float,
-    pin_r0: float, pin_r1: float,
-    n_steps: int, dt: float
+    crank_r: float,
+    crank_angle: float,
+    static_x: float,
+    static_y: float,
+    pin_r0: float,
+    pin_r1: float,
+    n_steps: int,
+    dt: float,
 ) -> tuple:
     """
     Simulate a full cycle of a four-bar linkage.
@@ -129,11 +147,17 @@ def simulate_fourbar_cycle_fast(
     # Simulate steps
     for _ in range(n_steps):
         result = simulate_fourbar_step_fast(
-            crank_x, crank_y, crank_r, current_angle,
-            pin_x, pin_y,
-            static_x, static_y,
-            pin_r0, pin_r1,
-            dt
+            crank_x,
+            crank_y,
+            crank_r,
+            current_angle,
+            pin_x,
+            pin_y,
+            static_x,
+            static_y,
+            pin_r0,
+            pin_r1,
+            dt,
         )
         if not result[4]:
             return (result[0], result[1], 0.0, 0.0, False)
@@ -148,6 +172,7 @@ def simulate_fourbar_cycle_fast(
 # ============================================================================
 # BENCHMARK FUNCTIONS
 # ============================================================================
+
 
 def create_fourbar_linkage():
     """Create a standard four-bar linkage."""
@@ -193,12 +218,16 @@ def benchmark_numba_simulation(n_cycles: int = 1000) -> dict:
 
     # Warmup (also triggers JIT compilation)
     for _ in range(10):
-        simulate_fourbar_cycle_fast(crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt)
+        simulate_fourbar_cycle_fast(
+            crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt
+        )
 
     times = []
     for _ in range(n_cycles):
         start = time.perf_counter_ns()
-        simulate_fourbar_cycle_fast(crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt)
+        simulate_fourbar_cycle_fast(
+            crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt
+        )
         end = time.perf_counter_ns()
         times.append(end - start)
 
@@ -221,8 +250,7 @@ def benchmark_optimization_scenario(n_evals: int = 1000) -> dict:
     # Generate random constraint variations
     random.seed(42)
     variations = [
-        tuple(c * random.uniform(0.8, 1.2) for c in init_constraints)
-        for _ in range(n_evals)
+        tuple(c * random.uniform(0.8, 1.2) for c in init_constraints) for _ in range(n_evals)
     ]
 
     # Warmup
@@ -279,13 +307,17 @@ def benchmark_numba_optimization_scenario(n_evals: int = 1000) -> dict:
 
     # Warmup
     for pin_r0, pin_r1 in variations[:10]:
-        simulate_fourbar_cycle_fast(crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt)
+        simulate_fourbar_cycle_fast(
+            crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt
+        )
 
     # Benchmark
     start = time.perf_counter()
     successful = 0
     for pin_r0, pin_r1 in variations:
-        result = simulate_fourbar_cycle_fast(crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt)
+        result = simulate_fourbar_cycle_fast(
+            crank_r, crank_angle, static_x, static_y, pin_r0, pin_r1, n_steps, dt
+        )
         if result[4]:
             successful += 1
     total_time = time.perf_counter() - start
@@ -302,6 +334,7 @@ def benchmark_numba_optimization_scenario(n_evals: int = 1000) -> dict:
 # ============================================================================
 # MAIN
 # ============================================================================
+
 
 def main():
     print()
@@ -333,7 +366,7 @@ def main():
     print(f"  Mean cycle time: {numba_cycle['mean_us']:.2f} µs")
     print(f"  Total time: {numba_cycle['total_ms']:.1f} ms")
     print()
-    cycle_speedup = orig_cycle['mean_us'] / numba_cycle['mean_us']
+    cycle_speedup = orig_cycle["mean_us"] / numba_cycle["mean_us"]
     print(f"Speedup: {cycle_speedup:.1f}x")
     print()
 
@@ -358,7 +391,7 @@ def main():
     print(f"  Throughput: {numba_opt['evals_per_sec']:,.0f} evals/sec")
     print(f"  Successful: {numba_opt['successful']}/{numba_opt['evals']}")
     print()
-    opt_speedup = orig_opt['total_sec'] / numba_opt['total_sec']
+    opt_speedup = orig_opt["total_sec"] / numba_opt["total_sec"]
     print(f"Speedup: {opt_speedup:.1f}x")
     print()
 
@@ -376,8 +409,8 @@ def main():
 
     for n_iter, n_particles, name in pso_configs:
         total_evals = n_iter * n_particles
-        orig_time = total_evals * orig_opt['mean_eval_us'] / 1_000_000
-        numba_time = total_evals * numba_opt['mean_eval_us'] / 1_000_000
+        orig_time = total_evals * orig_opt["mean_eval_us"] / 1_000_000
+        numba_time = total_evals * numba_opt["mean_eval_us"] / 1_000_000
         print(f"{name}:")
         print(f"  Total evaluations: {total_evals:,}")
         print(f"  Original: {orig_time:.2f} sec")

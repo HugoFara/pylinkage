@@ -159,9 +159,7 @@ class ParetoFront:
                 idx = sorted_indices[i]
                 prev_idx = sorted_indices[i - 1]
                 next_idx = sorted_indices[i + 1]
-                crowding[idx] += (
-                    scores[next_idx, obj_idx] - scores[prev_idx, obj_idx]
-                ) / obj_range
+                crowding[idx] += (scores[next_idx, obj_idx] - scores[prev_idx, obj_idx]) / obj_range
 
         # Select solutions with highest crowding distance
         selected_indices = np.argsort(crowding)[-max_solutions:]
@@ -248,8 +246,7 @@ class ParetoFront:
         for idx in objective_indices:
             if idx >= self.n_objectives:
                 raise ValueError(
-                    f"Objective index {idx} out of range "
-                    f"(only {self.n_objectives} objectives)"
+                    f"Objective index {idx} out of range (only {self.n_objectives} objectives)"
                 )
 
         # Default plot settings

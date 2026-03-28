@@ -10,7 +10,6 @@ from pylinkage.joints import Crank, Revolute, Static
 from pylinkage.solver.velocity import (
     solve_crank_velocity,
     solve_fixed_velocity,
-    solve_prismatic_velocity,
     solve_revolute_velocity,
 )
 
@@ -260,9 +259,7 @@ class TestLinkageKinematicsAPI:
         assert isinstance(crank, Crank)
         four_bar.set_input_velocity(crank, omega=10.0)
 
-        positions, velocities, accelerations = four_bar.step_fast_with_kinematics(
-            iterations=10
-        )
+        positions, velocities, accelerations = four_bar.step_fast_with_kinematics(iterations=10)
 
         assert positions.shape == (10, 4, 2)
         assert velocities.shape == (10, 4, 2)
@@ -324,7 +321,6 @@ class TestVelocityNumericValidation:
         positions, velocities, _ = linkage.step_fast_with_kinematics(iterations=100)
 
         # Compute numerical derivative using central differences
-        dt = 1.0  # Each step is dt=1
         # Convert angular velocity to per-step basis
         omega_per_step = b.omega if b.omega else 0.0  # noqa: F841
 

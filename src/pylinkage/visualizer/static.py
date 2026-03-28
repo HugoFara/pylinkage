@@ -2,7 +2,6 @@
 Static (not animated) visualization.
 """
 
-
 from typing import TYPE_CHECKING
 
 from ..joints import Fixed, Prismatic, Revolute
@@ -35,7 +34,7 @@ def plot_static_linkage(
             want to see highlighted.
         show_legend: To add an automatic legend to the graph.
     """
-    axis.set_aspect('equal')
+    axis.set_aspect("equal")
     axis.grid(True)
     # Plot loci
     for i, _joint in enumerate(linkage.joints):
@@ -53,32 +52,35 @@ def plot_static_linkage(
         pos = joint.coord()
         par_pos = joint.joint0.coord()
         axis.plot(
-            [par_pos[0], pos[0]], [par_pos[1], pos[1]],  # type: ignore[arg-type]
-            c=_get_color(joint), linewidth=.3
+            [par_pos[0], pos[0]],
+            [par_pos[1], pos[1]],  # type: ignore[arg-type]
+            c=_get_color(joint),
+            linewidth=0.3,
         )
         # Then second parent
         if isinstance(joint, (Fixed, Pivot, Revolute)) and joint.joint1 is not None:
             par_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], pos[0]], [par_pos[1], pos[1]],  # type: ignore[arg-type]
-                c=_get_color(joint), linewidth=.3
+                [par_pos[0], pos[0]],
+                [par_pos[1], pos[1]],  # type: ignore[arg-type]
+                c=_get_color(joint),
+                linewidth=0.3,
             )
         elif isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
             # Different ordering
             par_pos = joint.joint2.coord()
             other_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], other_pos[0]], [par_pos[1], other_pos[1]],  # type: ignore[arg-type]
-                c=_get_color(joint), linewidth=.3
+                [par_pos[0], other_pos[0]],
+                [par_pos[1], other_pos[1]],  # type: ignore[arg-type]
+                c=_get_color(joint),
+                linewidth=0.3,
             )
 
     # Highlight for specific loci
     if locus_highlights:
         for locus in locus_highlights:
-            axis.scatter(
-                tuple(coord[0] for coord in locus),
-                tuple(coord[1] for coord in locus)
-            )
+            axis.scatter(tuple(coord[0] for coord in locus), tuple(coord[1] for coord in locus))
 
     if show_legend:
         axis.set_title("Static representation")

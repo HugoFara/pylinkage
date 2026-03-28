@@ -5,7 +5,7 @@ import unittest
 
 import numpy as np
 
-from pylinkage.synthesis import function_generation, SynthesisType
+from pylinkage.synthesis import SynthesisType, function_generation
 from pylinkage.synthesis.function_generation import (
     coefficients_to_link_lengths,
     freudenstein_equation,
@@ -108,9 +108,7 @@ class TestSolveFreudensteinLeastSquares(unittest.TestCase):
         R1, R2, R3 = solve_freudenstein_3_positions(angle_pairs_3)
 
         # Now use these same 3 points with least squares
-        R1_ls, R2_ls, R3_ls, residual = solve_freudenstein_least_squares(
-            angle_pairs_3
-        )
+        R1_ls, R2_ls, R3_ls, residual = solve_freudenstein_least_squares(angle_pairs_3)
 
         self.assertAlmostEqual(residual, 0.0, places=8)
         self.assertAlmostEqual(R1, R1_ls, places=8)
@@ -126,9 +124,7 @@ class TestCoefficientsToLinkLengths(unittest.TestCase):
         R1, R2, R3 = 2.0, 1.5, 1.0
         ground = 4.0
 
-        crank, coupler, rocker, ground_out = coefficients_to_link_lengths(
-            R1, R2, R3, ground
-        )
+        crank, coupler, rocker, ground_out = coefficients_to_link_lengths(R1, R2, R3, ground)
 
         # Verify R1 = d/a
         self.assertAlmostEqual(R1, ground / crank, places=8)
@@ -209,7 +205,7 @@ class TestFunctionGeneration(unittest.TestCase):
             (0.8, 0.9),
         ]
 
-        result = function_generation(angle_pairs, require_grashof=False)
+        function_generation(angle_pairs, require_grashof=False)
 
         # Should have a warning about over-determination or fit
         # (may vary based on residual)
@@ -222,12 +218,8 @@ class TestFunctionGeneration(unittest.TestCase):
             (0.6, 0.75),
         ]
 
-        result1 = function_generation(
-            angle_pairs, ground_length=1.0, require_grashof=False
-        )
-        result2 = function_generation(
-            angle_pairs, ground_length=2.0, require_grashof=False
-        )
+        result1 = function_generation(angle_pairs, ground_length=1.0, require_grashof=False)
+        result2 = function_generation(angle_pairs, ground_length=2.0, require_grashof=False)
 
         if result1.raw_solutions and result2.raw_solutions:
             # Ground length should match requested value
@@ -250,9 +242,7 @@ class TestVerifyFunctionGeneration(unittest.TestCase):
 
         if result.solutions:
             linkage = result.solutions[0]
-            satisfied, errors = verify_function_generation(
-                linkage, angle_pairs, tolerance=0.1
-            )
+            satisfied, errors = verify_function_generation(linkage, angle_pairs, tolerance=0.1)
 
             # Should be satisfied within tolerance
             self.assertTrue(satisfied)
@@ -280,9 +270,7 @@ class TestVerifyFunctionGeneration(unittest.TestCase):
                 (0.6, math.pi),
             ]
 
-            satisfied, errors = verify_function_generation(
-                linkage, wrong_pairs, tolerance=0.05
-            )
+            satisfied, errors = verify_function_generation(linkage, wrong_pairs, tolerance=0.05)
 
             # Should NOT be satisfied with wrong pairs
             self.assertFalse(satisfied)

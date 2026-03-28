@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 
 from ..exceptions import UnbuildableError
 from ..solver.joints import solve_linear, solve_revolute
-from .joint import GroundJoint, Joint, JointType, PrismaticJoint, RevoluteJoint, TrackerJoint
+from .joint import GroundJoint, Joint, PrismaticJoint, RevoluteJoint, TrackerJoint
 from .link import ArcDriverLink, DriverLink, GroundLink, Link
 
 if TYPE_CHECKING:
@@ -78,8 +78,7 @@ class Mechanism:
         self._joint_map = {j.id: j for j in self.joints}
         self._link_map = {link.id: link for link in self.links}
         self._driver_links = [
-            link for link in self.links
-            if isinstance(link, (DriverLink, ArcDriverLink))
+            link for link in self.links if isinstance(link, (DriverLink, ArcDriverLink))
         ]
 
         # Auto-detect ground link if not specified
@@ -166,10 +165,7 @@ class Mechanism:
         This depends on the joint type and how it's constrained.
         """
         # Find links containing this joint
-        links_with_joint = [
-            link for link in self.links
-            if joint in link.joints
-        ]
+        links_with_joint = [link for link in self.links if joint in link.joints]
 
         if not links_with_joint:
             return False
@@ -240,7 +236,12 @@ class Mechanism:
                 if ref1 is not None and ref2 is not None:
                     pos1 = ref1.position
                     pos2 = ref2.position
-                    if pos1[0] is not None and pos1[1] is not None and pos2[0] is not None and pos2[1] is not None:
+                    if (
+                        pos1[0] is not None
+                        and pos1[1] is not None
+                        and pos2[0] is not None
+                        and pos2[1] is not None
+                    ):
                         joint.update_position((pos1[0], pos1[1]), (pos2[0], pos2[1]))
 
     def _solve_joint(self, joint: Joint) -> None:
@@ -284,9 +285,14 @@ class Mechanism:
             assert a2x is not None and a2y is not None
 
             new_x, new_y = solve_revolute(
-                curr_x, curr_y,
-                a1x, a1y, dist1,
-                a2x, a2y, dist2,
+                curr_x,
+                curr_y,
+                a1x,
+                a1y,
+                dist1,
+                a2x,
+                a2y,
+                dist2,
             )
 
             if math.isnan(new_x):
@@ -316,10 +322,15 @@ class Mechanism:
             l2x, l2y = lpx + dx * 10, lpy + dy * 10
 
             new_x, new_y = solve_linear(
-                curr_x, curr_y,
-                ax, ay, dist,
-                l1x, l1y,
-                l2x, l2y,
+                curr_x,
+                curr_y,
+                ax,
+                ay,
+                dist,
+                l1x,
+                l1y,
+                l2x,
+                l2y,
             )
 
             if math.isnan(new_x):
@@ -339,8 +350,7 @@ class Mechanism:
 
         # Find minimum angular velocity
         min_omega = min(
-            abs(d.angular_velocity) for d in self._driver_links
-            if d.angular_velocity != 0
+            abs(d.angular_velocity) for d in self._driver_links if d.angular_velocity != 0
         )
 
         if min_omega == 0:
@@ -435,7 +445,7 @@ class Mechanism:
 
     def set_joint_positions(self, positions: list[Coord]) -> None:
         """Set positions of all joints."""
-        for joint, pos in zip(self.joints, positions):
+        for joint, pos in zip(self.joints, positions, strict=False):
             joint.set_coord(pos[0], pos[1])
 
     def reset(self) -> None:

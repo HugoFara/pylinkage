@@ -272,9 +272,7 @@ def analyze_sensitivity(
     constraint_names = _get_constraint_names(linkage)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since we skip None values in the loop
-    nominal_constraints = cast(
-        list[float], list(linkage.get_num_constraints(flat=True))
-    )
+    nominal_constraints = cast(list[float], list(linkage.get_num_constraints(flat=True)))
 
     # Save initial state
     initial_coords = linkage.get_coords()
@@ -321,9 +319,7 @@ def analyze_sensitivity(
             linkage.set_coords(initial_coords)
 
             try:
-                perturbed_path = _simulate_output_path(
-                    linkage, output_joint_idx, iterations
-                )
+                perturbed_path = _simulate_output_path(linkage, output_joint_idx, iterations)
                 path_deviation = _compute_path_deviation(nominal_path, perturbed_path)
 
                 # Sensitivity = (metric change) / (constraint change)
@@ -526,17 +522,13 @@ def analyze_tolerance(
     name_to_idx = _name_to_index(linkage, constraint_names)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since constraints are always set for valid linkages
-    nominal_constraints = cast(
-        list[float], list(linkage.get_num_constraints(flat=True))
-    )
+    nominal_constraints = cast(list[float], list(linkage.get_num_constraints(flat=True)))
 
     # Validate tolerance names
     for name in tolerances:
         if name not in name_to_idx:
             available = ", ".join(constraint_names)
-            raise ValueError(
-                f"Unknown constraint name '{name}'. Available: {available}"
-            )
+            raise ValueError(f"Unknown constraint name '{name}'. Available: {available}")
 
     # Save initial state
     initial_coords = linkage.get_coords()
@@ -567,9 +559,7 @@ def analyze_tolerance(
             linkage.set_coords(initial_coords)
 
             try:
-                sample_path = _simulate_output_path(
-                    linkage, output_joint_idx, iterations
-                )
+                sample_path = _simulate_output_path(linkage, output_joint_idx, iterations)
                 output_cloud.append(sample_path)
 
                 # Compute deviation from nominal

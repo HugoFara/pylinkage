@@ -56,7 +56,6 @@ from ._types import (
 # Legacy (deprecated): to_linkage, from_linkage
 # Preferred: to_mechanism, from_mechanism
 from .conversion import from_linkage, to_linkage
-from .mechanism_conversion import from_mechanism, to_mechanism
 
 # Core graph elements
 from .core import Edge, Hyperedge, Node
@@ -66,6 +65,7 @@ from .graph import HypergraphLinkage
 
 # Hierarchical composition
 from .hierarchy import ComponentInstance, Connection, HierarchicalLinkage
+from .mechanism_conversion import from_mechanism, to_mechanism
 
 # Serialization
 from .serialization import (

@@ -90,11 +90,11 @@ class TestSymCrank:
         crank = SymCrank(parent, radius="r", name="B")
 
         x, y = crank.position_expr()
-        r = sp.Symbol("r", positive=True, real=True)
+        sp.Symbol("r", positive=True, real=True)
 
         # At theta=0, position should be (r, 0)
-        x_expr = x.subs(theta, 0)
-        y_expr = y.subs(theta, 0)
+        x.subs(theta, 0)
+        y.subs(theta, 0)
 
         # r should be in the expression
         assert crank.r in x.free_symbols

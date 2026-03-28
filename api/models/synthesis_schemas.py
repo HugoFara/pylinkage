@@ -35,9 +35,7 @@ class PoseInput(BaseModel):
 class PathGenerationRequest(BaseModel):
     """Request for path generation synthesis."""
 
-    precision_points: list[PointInput] = Field(
-        ..., min_length=3, max_length=10
-    )
+    precision_points: list[PointInput] = Field(..., min_length=3, max_length=10)
     max_solutions: int = Field(default=10, ge=1, le=50)
     require_grashof: bool = True
     require_crank_rocker: bool = False

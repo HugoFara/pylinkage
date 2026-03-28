@@ -6,7 +6,6 @@ Created on Fri Mar 8, 13:51:45 2019.
 @author: HugoFara
 """
 
-
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any
 
@@ -94,11 +93,11 @@ def particle_swarm_optimization(
                 f"must match number of dimensions ({dimensions})"
             )
     options: dict[str, float | int] = {
-        'c1': leader,
-        'c2': follower,
-        'w': inertia,
-        'k': neighbors,
-        'p': 1,
+        "c1": leader,
+        "c2": follower,
+        "w": inertia,
+        "k": neighbors,
+        "p": 1,
     }
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
         j.coord() for j in linkage.joints

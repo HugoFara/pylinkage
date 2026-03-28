@@ -57,9 +57,7 @@ class Link:
     name: str | None = None
 
     # Cached distances between joints (computed at initialization)
-    _cached_distances: dict[tuple[str, str], float] = field(
-        default_factory=dict, repr=False
-    )
+    _cached_distances: dict[tuple[str, str], float] = field(default_factory=dict, repr=False)
 
     def __post_init__(self) -> None:
         """Set default name to id if not provided."""
@@ -425,7 +423,9 @@ class ArcDriverLink(Link):
 
     def reset(self) -> None:
         """Reset the arc crank to its initial angle."""
-        self.current_angle = self.initial_angle if self.initial_angle is not None else self.arc_start
+        self.current_angle = (
+            self.initial_angle if self.initial_angle is not None else self.arc_start
+        )
         self._direction = 1.0
 
 

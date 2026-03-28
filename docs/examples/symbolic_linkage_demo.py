@@ -90,9 +90,7 @@ def demo_creating_symbolic_linkages():
     ground_A = SymStatic(x=0, y=0, name="A")
     crank_B = SymCrank(parent=ground_A, radius=L1, name="B")
     ground_D = SymStatic(x=4, y=0, name="D")
-    coupler_C = SymRevolute(
-        parent0=crank_B, parent1=ground_D, distance0=L2, distance1=L3, name="C"
-    )
+    coupler_C = SymRevolute(parent0=crank_B, parent1=ground_D, distance0=L2, distance1=L3, name="C")
 
     linkage2 = SymbolicLinkage(
         joints=[ground_A, crank_B, ground_D, coupler_C],
@@ -105,7 +103,9 @@ def demo_creating_symbolic_linkages():
     ground_A = pl.Static(0, 0, name="A")
     ground_D = pl.Static(4, 0, name="D")
     crank = pl.Crank(0, 1, joint0=ground_A, angle=0.0, distance=1.0, name="B")
-    revolute = pl.Revolute(3, 2, joint0=crank, joint1=ground_D, distance0=3.0, distance1=3.0, name="C")
+    revolute = pl.Revolute(
+        3, 2, joint0=crank, joint1=ground_D, distance0=3.0, distance1=3.0, name="C"
+    )
     numeric = pl.Linkage(joints=(ground_A, ground_D, crank, revolute), order=(crank, revolute))
 
     linkage3 = linkage_to_symbolic(numeric)
@@ -243,7 +243,8 @@ def demo_numeric_trajectory_evaluation():
             path_length = np.sum(np.sqrt(diffs[:, 0] ** 2 + diffs[:, 1] ** 2))
 
             print(
-                f"{config['name']:<30} {x_range:>6.3f}       {y_range:>6.3f}       {path_length:>6.3f}"
+                f"{config['name']:<30} {x_range:>6.3f}"
+                f"       {y_range:>6.3f}       {path_length:>6.3f}"
             )
             all_trajectories.append((config["name"], output))
         except Exception as e:
@@ -263,9 +264,7 @@ def demo_numeric_trajectory_evaluation():
         # Test at multiple angles
         for test_theta in np.linspace(0, 2 * np.pi, 8):
             try:
-                traj = compute_trajectory_numeric(
-                    linkage, params, np.array([test_theta])
-                )
+                traj = compute_trajectory_numeric(linkage, params, np.array([test_theta]))
                 # Check for NaN
                 if np.any(np.isnan(list(traj.values())[0])):
                     is_buildable = False
@@ -298,9 +297,7 @@ def demo_performance_comparison():
     n_points = 360
 
     # Setup symbolic linkage
-    linkage = fourbar_symbolic(
-        ground_length=4, crank_length=1, coupler_length=3, rocker_length=3
-    )
+    linkage = fourbar_symbolic(ground_length=4, crank_length=1, coupler_length=3, rocker_length=3)
     params: dict[str, Any] = {}  # No symbolic params - all numeric
     theta_vals = np.linspace(0, 2 * np.pi, n_points)
 
@@ -312,7 +309,10 @@ def demo_performance_comparison():
     for _ in range(n_evals):
         compute_trajectory_numeric(linkage, params, theta_vals)
     direct_time = time.perf_counter() - start
-    print(f"Direct symbolic evaluation:   {direct_time:.4f}s ({direct_time/n_evals*1000:.2f}ms/eval)")
+    print(
+        f"Direct symbolic evaluation:   {direct_time:.4f}s"
+        f" ({direct_time / n_evals * 1000:.2f}ms/eval)"
+    )
 
     # Method 2: Pre-compiled functions
     traj_funcs = create_trajectory_functions(linkage)
@@ -324,7 +324,10 @@ def demo_performance_comparison():
             x_func(theta_vals)
             y_func(theta_vals)
     compiled_time = time.perf_counter() - start
-    print(f"Pre-compiled functions:       {compiled_time:.4f}s ({compiled_time/n_evals*1000:.2f}ms/eval)")
+    print(
+        f"Pre-compiled functions:       {compiled_time:.4f}s"
+        f" ({compiled_time / n_evals * 1000:.2f}ms/eval)"
+    )
 
     # Method 3: Numeric (numba) solver for comparison
     crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.0, distance=1.0)
@@ -335,14 +338,17 @@ def demo_performance_comparison():
     for _ in range(n_evals):
         numeric_linkage.step(iterations=n_points)
     numeric_time = time.perf_counter() - start
-    print(f"Numeric (numba) solver:       {numeric_time:.4f}s ({numeric_time/n_evals*1000:.2f}ms/eval)")
+    print(
+        f"Numeric (numba) solver:       {numeric_time:.4f}s"
+        f" ({numeric_time / n_evals * 1000:.2f}ms/eval)"
+    )
 
     # Speedup analysis
     print("\n" + "-" * 70)
     print("Speedup analysis:")
-    print(f"  Compiled vs Direct:     {direct_time/compiled_time:.1f}x faster")
-    print(f"  Numeric vs Direct:      {direct_time/numeric_time:.1f}x faster")
-    print(f"  Numeric vs Compiled:    {compiled_time/numeric_time:.1f}x faster")
+    print(f"  Compiled vs Direct:     {direct_time / compiled_time:.1f}x faster")
+    print(f"  Numeric vs Direct:      {direct_time / numeric_time:.1f}x faster")
+    print(f"  Numeric vs Compiled:    {compiled_time / numeric_time:.1f}x faster")
 
     print("\nRecommendation:")
     print("  - Use numeric solver for optimization loops (fastest)")
@@ -396,7 +402,10 @@ def demo_gradient_optimization():
     bounds = {"L1": (0.3, 2.0), "L2": (1.5, 5.0), "L3": (1.5, 5.0)}
 
     print("\nObjective: Minimize average squared distance to target point (3, 1.5)")
-    print(f"Initial parameters: L1={initial_params['L1']}, L2={initial_params['L2']}, L3={initial_params['L3']}")
+    print(
+        f"Initial parameters: L1={initial_params['L1']},"
+        f" L2={initial_params['L2']}, L3={initial_params['L3']}"
+    )
     print(f"Bounds: L1={bounds['L1']}, L2={bounds['L2']}, L3={bounds['L3']}")
 
     # Compute initial objective numerically for comparison
@@ -425,7 +434,7 @@ def demo_gradient_optimization():
         for param, value in result.params.items():
             print(f"  {param}: {value:.4f}")
         print(f"\nFinal mean squared distance: {result.objective_value:.4f}")
-        print(f"Improvement: {(1 - result.objective_value/initial_objective)*100:.1f}%")
+        print(f"Improvement: {(1 - result.objective_value / initial_objective) * 100:.1f}%")
 
         # Compare trajectories
         print("\n" + "-" * 70)
@@ -752,7 +761,9 @@ def demo_symbolic_vs_pso_comparison():
         return (y - 1.5) ** 2
 
     print("\nObjective: Minimize average squared distance of output to y=1.5")
-    print(f"Initial: L1={initial_params['L1']}, L2={initial_params['L2']}, L3={initial_params['L3']}")
+    print(
+        f"Initial: L1={initial_params['L1']}, L2={initial_params['L2']}, L3={initial_params['L3']}"
+    )
 
     # Method 1: Symbolic gradient-based
     print("\n" + "-" * 70)
@@ -775,7 +786,11 @@ def demo_symbolic_vs_pso_comparison():
     print(f"  Iterations: {sym_result.iterations}")
     print(f"  Success: {sym_result.success}")
     if sym_result.success:
-        print(f"  Result: L1={sym_result.params['L1']:.4f}, L2={sym_result.params['L2']:.4f}, L3={sym_result.params['L3']:.4f}")
+        print(
+            f"  Result: L1={sym_result.params['L1']:.4f},"
+            f" L2={sym_result.params['L2']:.4f},"
+            f" L3={sym_result.params['L3']:.4f}"
+        )
         print(f"  Objective: {sym_result.objective_value:.6f}")
 
     # Method 2: PSO (numeric)
@@ -790,8 +805,12 @@ def demo_symbolic_vs_pso_comparison():
     angle_step = 2 * np.pi / 100
     crank = pl.Crank(0, 1, joint0=(0, 0), angle=angle_step, distance=initial_params["L1"])
     revolute = pl.Revolute(
-        3, 2, joint0=crank, joint1=(4, 0),
-        distance0=initial_params["L2"], distance1=initial_params["L3"]
+        3,
+        2,
+        joint0=crank,
+        joint1=(4, 0),
+        distance0=initial_params["L2"],
+        distance1=initial_params["L3"],
     )
     numeric_linkage = pl.Linkage(joints=(crank, revolute))
 
@@ -823,7 +842,9 @@ def demo_symbolic_vs_pso_comparison():
             pso_score, pso_params = pso_result[0], pso_result[1]
             print(f"  Time: {pso_time:.3f}s")
             print("  Iterations: 50 (30 particles each)")
-            print(f"  Result: L1={pso_params[0]:.4f}, L2={pso_params[1]:.4f}, L3={pso_params[2]:.4f}")
+            print(
+                f"  Result: L1={pso_params[0]:.4f}, L2={pso_params[1]:.4f}, L3={pso_params[2]:.4f}"
+            )
             print(f"  Objective: {pso_score:.6f}")
         else:
             print("  PSO returned empty result - no buildable linkages found in search space")

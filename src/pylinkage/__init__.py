@@ -87,11 +87,23 @@ from . import synthesis as synthesis
 # Canonical types (single source of truth for kinematic types)
 from ._types import (
     ComponentId as ComponentId,
+)
+from ._types import (
     EdgeId as EdgeId,
+)
+from ._types import (
     HyperedgeId as HyperedgeId,
+)
+from ._types import (
     JointType as JointType,
+)
+from ._types import (
     NodeId as NodeId,
+)
+from ._types import (
     NodeRole as NodeRole,
+)
+from ._types import (
     PortId as PortId,
 )
 from .exceptions import (

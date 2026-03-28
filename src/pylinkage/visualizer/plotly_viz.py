@@ -5,7 +5,6 @@ This module provides interactive HTML output with zoom, pan, hover tooltips,
 and animation controls. Includes velocity vector visualization.
 """
 
-
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -172,8 +171,10 @@ def plot_linkage_plotly(
                 link_index += 1
 
         # Link to joint1
-        if hasattr(joint, "joint1") and joint.joint1 is not None:
-            if isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute":
+        if (
+            hasattr(joint, "joint1") and joint.joint1 is not None
+            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
+        ):
                 parent_pos = get_position(joint.joint1)
 
                 joint_ids = (id(joint), id(joint.joint1))
@@ -367,13 +368,15 @@ def animate_linkage_plotly(
                 link_pairs.append((joint, joint.joint0))
                 drawn_links.add(joint_ids)
 
-        if hasattr(joint, "joint1") and joint.joint1 is not None:
-            if isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute":
-                joint_ids = (id(joint), id(joint.joint1))
-                rev_ids = (id(joint.joint1), id(joint))
-                if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                    link_pairs.append((joint, joint.joint1))
-                    drawn_links.add(joint_ids)
+        if (
+            hasattr(joint, "joint1") and joint.joint1 is not None
+            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
+        ):
+            joint_ids = (id(joint), id(joint.joint1))
+            rev_ids = (id(joint.joint1), id(joint))
+            if joint_ids not in drawn_links and rev_ids not in drawn_links:
+                link_pairs.append((joint, joint.joint1))
+                drawn_links.add(joint_ids)
 
     # Create frames
     frames = []
@@ -426,8 +429,7 @@ def animate_linkage_plotly(
 
     # Initial data
     initial_pos_map: dict[object, tuple[float, float]] = {
-        joint: (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
-        for i, joint in enumerate(joint_list)
+        joint: (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0) for i, joint in enumerate(joint_list)
     }
     initial_data = []
 
@@ -598,8 +600,7 @@ def plot_linkage_plotly_with_velocity(
 
     # Check that omega is set
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0
-        for j in linkage.joints
+        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
     )
     if not has_omega:
         raise ValueError(

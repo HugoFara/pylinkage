@@ -1,6 +1,5 @@
 """MutableAgent class for optimization results."""
 
-
 from collections.abc import Iterator, Sequence
 from typing import Any
 
@@ -41,7 +40,7 @@ class MutableAgent:
         elif key == 2:
             self.init_positions = value
         elif isinstance(key, slice):
-            for i, val in zip([0, 1, 2][key], value):
+            for i, val in zip([0, 1, 2][key], value, strict=False):
                 self[i] = val
         else:
             raise IndexError()

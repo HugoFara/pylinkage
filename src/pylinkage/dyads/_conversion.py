@@ -96,14 +96,10 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
         elif isinstance(dyad, RRRDyad):
             # Create two links connecting to anchors
             anchor1 = (
-                dyad.anchor1._parent
-                if isinstance(dyad.anchor1, _AnchorProxy)
-                else dyad.anchor1
+                dyad.anchor1._parent if isinstance(dyad.anchor1, _AnchorProxy) else dyad.anchor1
             )
             anchor2 = (
-                dyad.anchor2._parent
-                if isinstance(dyad.anchor2, _AnchorProxy)
-                else dyad.anchor2
+                dyad.anchor2._parent if isinstance(dyad.anchor2, _AnchorProxy) else dyad.anchor2
             )
 
             anchor1_joint = dyad_to_joint[id(anchor1)]
@@ -147,14 +143,10 @@ def to_mechanism(linkage: Linkage) -> Mechanism:
 
         elif isinstance(dyad, FixedDyad):
             anchor1 = (
-                dyad.anchor1._parent
-                if isinstance(dyad.anchor1, _AnchorProxy)
-                else dyad.anchor1
+                dyad.anchor1._parent if isinstance(dyad.anchor1, _AnchorProxy) else dyad.anchor1
             )
             anchor2 = (
-                dyad.anchor2._parent
-                if isinstance(dyad.anchor2, _AnchorProxy)
-                else dyad.anchor2
+                dyad.anchor2._parent if isinstance(dyad.anchor2, _AnchorProxy) else dyad.anchor2
             )
 
             anchor1_joint = dyad_to_joint[id(anchor1)]

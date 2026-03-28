@@ -5,7 +5,6 @@ This module provides SVG output with proper ISO 3952 kinematic symbols,
 suitable for engineering documentation and academic publications.
 """
 
-
 import math
 from typing import TYPE_CHECKING, Literal
 
@@ -83,9 +82,7 @@ def _draw_revolute_joint(
 ) -> None:
     """Draw ISO revolute (pin) joint symbol - circle with center dot."""
     # Outer circle
-    d.append(
-        draw.Circle(x, y, radius, fill="white", stroke=color, stroke_width=2.5)
-    )
+    d.append(draw.Circle(x, y, radius, fill="white", stroke=color, stroke_width=2.5))
     # Center dot
     d.append(draw.Circle(x, y, radius * 0.25, fill=color, stroke="none"))
 
@@ -272,15 +269,11 @@ def _draw_link(
 
         # End circles
         for cx, cy in [(x1, y1), (x2, y2)]:
-            d.append(
-                draw.Circle(cx, cy, width / 2, fill=color, stroke="black", stroke_width=1.5)
-            )
+            d.append(draw.Circle(cx, cy, width / 2, fill=color, stroke="black", stroke_width=1.5))
 
     else:  # LINE
         d.append(
-            draw.Line(
-                x1, y1, x2, y2, stroke=color, stroke_width=width, stroke_linecap="round"
-            )
+            draw.Line(x1, y1, x2, y2, stroke=color, stroke_width=width, stroke_linecap="round")
         )
 
 
@@ -332,11 +325,7 @@ def _draw_dimension(
     # Label
     mid_x = (dx1 + dx2) / 2
     mid_y = (dy1 + dy2) / 2
-    d.append(
-        draw.Text(
-            label, 10, mid_x, mid_y - 4, center=True, fill="#333", font_family="Arial"
-        )
-    )
+    d.append(draw.Text(label, 10, mid_x, mid_y - 4, center=True, fill="#333", font_family="Arial"))
 
 
 def _draw_velocity_arrow(
@@ -369,9 +358,7 @@ def _draw_velocity_arrow(
     end_y = y + vy * scale  # Note: vy is already flipped for canvas coords
 
     # Draw arrow shaft
-    d.append(
-        draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width)
-    )
+    d.append(draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width))
 
     # Arrowhead
     arrow_size = 8
@@ -386,9 +373,12 @@ def _draw_velocity_arrow(
 
     d.append(
         draw.Lines(
-            end_x, end_y,
-            tip1_x, tip1_y,
-            tip2_x, tip2_y,
+            end_x,
+            end_y,
+            tip1_x,
+            tip1_y,
+            tip2_x,
+            tip2_y,
             close=True,
             fill=color,
             stroke="none",
@@ -426,9 +416,7 @@ def _draw_acceleration_arrow(
     end_y = y + ay * scale
 
     # Draw arrow shaft (double line for acceleration)
-    d.append(
-        draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width)
-    )
+    d.append(draw.Line(x, y, end_x, end_y, stroke=color, stroke_width=width))
 
     # Arrowhead
     arrow_size = 6
@@ -442,9 +430,12 @@ def _draw_acceleration_arrow(
 
     d.append(
         draw.Lines(
-            end_x, end_y,
-            tip1_x, tip1_y,
-            tip2_x, tip2_y,
+            end_x,
+            end_y,
+            tip1_x,
+            tip1_y,
+            tip2_x,
+            tip2_y,
             close=True,
             fill=color,
             stroke="none",
@@ -600,12 +591,16 @@ def plot_linkage_svg(
 
                 # Dimension line
                 if show_dimensions:
-                    length = math.sqrt((pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2)
+                    length = math.sqrt(
+                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
+                    )
                     _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
 
         # Draw link to joint1 (second parent) for joints that have it
-        if hasattr(joint, "joint1") and joint.joint1 is not None:
-            if isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute":
+        if (
+            hasattr(joint, "joint1") and joint.joint1 is not None
+            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
+        ):
                 parent_pos = get_position(joint.joint1)
                 px, py = w2c(parent_pos[0], parent_pos[1])
 
@@ -799,13 +794,17 @@ def plot_linkage_svg_with_velocity(
     ground_joints = [j for j in linkage.joints if is_ground_joint(j)]
     if ground_joints:
         ground_ys = [
-            w2c(positions[list(linkage.joints).index(j), 0],
-                positions[list(linkage.joints).index(j), 1])[1]
+            w2c(
+                positions[list(linkage.joints).index(j), 0],
+                positions[list(linkage.joints).index(j), 1],
+            )[1]
             for j in ground_joints
         ]
         ground_xs = [
-            w2c(positions[list(linkage.joints).index(j), 0],
-                positions[list(linkage.joints).index(j), 1])[0]
+            w2c(
+                positions[list(linkage.joints).index(j), 0],
+                positions[list(linkage.joints).index(j), 1],
+            )[0]
             for j in ground_joints
         ]
         ground_y = max(ground_ys)
@@ -923,8 +922,7 @@ def plot_linkage_svg_with_velocity(
     legend_y = 50
     d.append(
         draw.Line(
-            legend_x - 40, legend_y, legend_x - 10, legend_y,
-            stroke=velocity_color, stroke_width=2
+            legend_x - 40, legend_y, legend_x - 10, legend_y, stroke=velocity_color, stroke_width=2
         )
     )
     d.append(
@@ -951,6 +949,9 @@ def save_linkage_svg_with_velocity(
         **kwargs: Additional arguments passed to plot_linkage_svg_with_velocity.
     """
     drawing = plot_linkage_svg_with_velocity(
-        linkage, positions, velocities, **kwargs  # type: ignore[arg-type]
+        linkage,
+        positions,
+        velocities,
+        **kwargs,  # type: ignore[arg-type]
     )
     drawing.save_svg(path)

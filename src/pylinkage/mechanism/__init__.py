@@ -48,6 +48,15 @@ See Also:
 """
 
 # Joint classes
+# Builder
+from .builder import MechanismBuilder
+
+# Conversion utilities
+from .conversion import (
+    convert_legacy_dict,
+    mechanism_from_linkage,
+    mechanism_to_linkage,
+)
 from .joint import (
     AnyJoint,
     GroundJoint,
@@ -68,16 +77,6 @@ from .link import (
 
 # Mechanism class
 from .mechanism import Mechanism
-
-# Builder
-from .builder import MechanismBuilder
-
-# Conversion utilities
-from .conversion import (
-    convert_legacy_dict,
-    mechanism_from_linkage,
-    mechanism_to_linkage,
-)
 
 # Serialization
 from .serialization import (

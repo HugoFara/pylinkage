@@ -157,9 +157,7 @@ def _filter_motion_solutions(
         valid.append(sol)
 
     if len(solutions) > 0 and len(valid) == 0:
-        warnings.append(
-            f"All {len(solutions)} candidate solutions were filtered out."
-        )
+        warnings.append(f"All {len(solutions)} candidate solutions were filtered out.")
 
     return valid, warnings
 
@@ -183,12 +181,7 @@ def _remove_duplicate_solutions(
             diff += abs(sol.rocker_length - usol.rocker_length)
             diff += abs(sol.ground_length - usol.ground_length)
 
-            scale = (
-                sol.crank_length
-                + sol.coupler_length
-                + sol.rocker_length
-                + sol.ground_length
-            )
+            scale = sol.crank_length + sol.coupler_length + sol.rocker_length + sol.ground_length
 
             if diff / scale < tolerance:
                 is_duplicate = True
@@ -300,9 +293,7 @@ def motion_generation(
                 )
 
             for dyad_left, dyad_right in dyad_pairs:
-                solution = _dyads_to_motion_fourbar(
-                    dyad_left, dyad_right, poses[0]
-                )
+                solution = _dyads_to_motion_fourbar(dyad_left, dyad_right, poses[0])
 
                 if solution is not None:
                     raw_solutions.append(solution)
@@ -391,9 +382,7 @@ def motion_generation_3_poses(
                     dyad_left = curves.get_dyad(i)
                     dyad_right = curves.get_dyad(j)
 
-                    solution = _dyads_to_motion_fourbar(
-                        dyad_left, dyad_right, poses[0]
-                    )
+                    solution = _dyads_to_motion_fourbar(dyad_left, dyad_right, poses[0])
 
                     if solution is not None:
                         # Quick validation
@@ -411,9 +400,7 @@ def motion_generation_3_poses(
     raw_solutions = _remove_duplicate_solutions(raw_solutions, tolerance=0.05)
 
     # Filter to reasonable linkages
-    raw_solutions, filter_warnings = _filter_motion_solutions(
-        raw_solutions, require_grashof=False
-    )
+    raw_solutions, filter_warnings = _filter_motion_solutions(raw_solutions, require_grashof=False)
     warnings.extend(filter_warnings)
 
     from .conversion import solutions_to_linkages

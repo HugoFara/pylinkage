@@ -87,14 +87,18 @@ def eliminate_theta(
     c, s = sp.symbols("c s", real=True)
 
     # Substitute cos(theta) -> c, sin(theta) -> s
-    x_sub = x_expr.rewrite(sp.cos, sp.sin).subs([
-        (sp.cos(theta), c),
-        (sp.sin(theta), s),
-    ])
-    y_sub = y_expr.rewrite(sp.cos, sp.sin).subs([
-        (sp.cos(theta), c),
-        (sp.sin(theta), s),
-    ])
+    x_sub = x_expr.rewrite(sp.cos, sp.sin).subs(
+        [
+            (sp.cos(theta), c),
+            (sp.sin(theta), s),
+        ]
+    )
+    y_sub = y_expr.rewrite(sp.cos, sp.sin).subs(
+        [
+            (sp.cos(theta), c),
+            (sp.sin(theta), s),
+        ]
+    )
 
     # Create polynomial equations
     eq1 = x - x_sub  # x = x_expr
@@ -233,8 +237,9 @@ def check_buildability(
         ...     print(f"Linkage is unbuildable: {msg}")
     """
     # Substitute parameters
-    param_subs = {linkage.parameters[k]: v for k, v in param_values.items()
-                  if k in linkage.parameters}
+    param_subs = {
+        linkage.parameters[k]: v for k, v in param_values.items() if k in linkage.parameters
+    }
     theta_sub = {linkage.theta: theta_value}
     all_subs = {**param_subs, **theta_sub}
 

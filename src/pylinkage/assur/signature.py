@@ -68,9 +68,9 @@ _CHAR_TO_JOINT: dict[str, JointType] = {
 # Together T and _ form a prismatic pair
 _ISOMER_CHAR_TO_ROLE: dict[str, str] = {
     "R": "revolute",
-    "T": "slider",    # Translating element of prismatic pair
-    "_": "guide",     # Guide of prismatic pair
-    "P": "prismatic", # Generic prismatic (for backwards compatibility)
+    "T": "slider",  # Translating element of prismatic pair
+    "_": "guide",  # Guide of prismatic pair
+    "P": "prismatic",  # Generic prismatic (for backwards compatibility)
 }
 
 # JointType to character mapping (P preferred for canonical form)

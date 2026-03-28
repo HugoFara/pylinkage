@@ -7,7 +7,6 @@ Note: This module only handles topological data. For dimensional data,
 use the serialization functions in pylinkage.dimensions.
 """
 
-
 import json
 from pathlib import Path
 from typing import Any

@@ -5,8 +5,8 @@ import unittest
 
 from pylinkage.synthesis import (
     FourBarSolution,
-    grashof_check,
     GrashofType,
+    grashof_check,
     is_crank_rocker,
     is_grashof,
     validate_fourbar,

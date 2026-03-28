@@ -24,25 +24,12 @@ class TestFourBarLinkageWorkflow(unittest.TestCase):
 
     def setUp(self):
         """Set up a standard four-bar linkage."""
-        self.crank = Crank(
-            0, 1,
-            joint0=(0, 0),
-            angle=0.31,
-            distance=1,
-            name="Crank"
-        )
+        self.crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
         self.pin = Revolute(
-            3, 2,
-            joint0=self.crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="Pin"
+            3, 2, joint0=self.crank, joint1=(3, 0), distance0=3, distance1=1, name="Pin"
         )
         self.linkage = pl.Linkage(
-            joints=[self.crank, self.pin],
-            order=[self.crank, self.pin],
-            name="FourBar"
+            joints=[self.crank, self.pin], order=[self.crank, self.pin], name="FourBar"
         )
 
     def test_linkage_definition_and_rebuild(self):
@@ -71,7 +58,9 @@ class TestFourBarLinkageWorkflow(unittest.TestCase):
 
         # Verify they were set
         retrieved = self.linkage.get_num_constraints()
-        for orig, new, retrieved_val in zip(original_constraints, new_constraints, retrieved):
+        for orig, new, retrieved_val in zip(
+            original_constraints, new_constraints, retrieved, strict=False
+        ):
             if orig is not None:
                 self.assertAlmostEqual(retrieved_val, new)
 
@@ -87,7 +76,7 @@ class TestFourBarLinkageWorkflow(unittest.TestCase):
         # Verify they were set
         retrieved = self.linkage.get_coords()
         for (_orig_x, _orig_y), (new_x, new_y), (ret_x, ret_y) in zip(
-            original_coords, new_coords, retrieved
+            original_coords, new_coords, retrieved, strict=False
         ):
             self.assertAlmostEqual(ret_x, new_x)
             self.assertAlmostEqual(ret_y, new_y)
@@ -104,7 +93,7 @@ class TestFourBarLinkageWorkflow(unittest.TestCase):
         positions = [(0, 1), (3, 2)]
         self.linkage.set_completely(constraints, positions)
         coords = self.linkage.get_coords()
-        for (exp_x, exp_y), (act_x, act_y) in zip(positions, coords):
+        for (exp_x, exp_y), (act_x, act_y) in zip(positions, coords, strict=False):
             self.assertAlmostEqual(exp_x, act_x)
             self.assertAlmostEqual(exp_y, act_y)
 
@@ -119,14 +108,14 @@ class TestLinkageAutoOrder(unittest.TestCase):
         When the anchor Static joint is explicitly included, auto-order works.
         """
         import warnings
+
         anchor0 = Static(0, 0, name="anchor0")
         anchor1 = Static(2, 0, name="anchor1")
         crank = Crank(0, 1, joint0=anchor0, angle=0.5, distance=1, name="crank")
         pin = Revolute(2, 1, joint0=crank, joint1=anchor1, distance0=2, distance1=1, name="pin")
 
         linkage = pl.Linkage(
-            joints=[anchor0, anchor1, crank, pin],
-            name="auto_order_test"
+            joints=[anchor0, anchor1, crank, pin], name="auto_order_test"
         )  # No order specified
 
         with warnings.catch_warnings(record=True) as w:
@@ -148,6 +137,7 @@ class TestLinkageAutoOrder(unittest.TestCase):
         explicitly included in the joints list.
         """
         import warnings
+
         crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1)
         pin = Revolute(2, 1, joint0=crank, joint1=(2, 0), distance0=2, distance1=1)
         linkage = pl.Linkage(joints=[crank, pin])  # No order specified
@@ -198,13 +188,10 @@ class TestOptimizationWorkflow(unittest.TestCase):
         """Set up linkage for optimization tests."""
         self.crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1, name="Crank")
         self.pin = Revolute(
-            2, 1, joint0=self.crank, joint1=(2, 0),
-            distance0=2, distance1=1, name="Pin"
+            2, 1, joint0=self.crank, joint1=(2, 0), distance0=2, distance1=1, name="Pin"
         )
         self.linkage = pl.Linkage(
-            joints=[self.crank, self.pin],
-            order=[self.crank, self.pin],
-            name="OptTest"
+            joints=[self.crank, self.pin], order=[self.crank, self.pin], name="OptTest"
         )
         self.linkage.rebuild()
 
@@ -220,42 +207,35 @@ class TestOptimizationWorkflow(unittest.TestCase):
 
     def test_kinematic_maximization_decorator(self):
         """Test the kinematic_maximization decorator."""
+
         @kinematic_maximization
         def dummy_fitness(linkage, params, init_pos, loci):
             # Return negative of total locus length
-            return -sum(
-                math.dist(loci[i][0], loci[i + 1][0])
-                for i in range(len(loci) - 1)
-            )
+            return -sum(math.dist(loci[i][0], loci[i + 1][0]) for i in range(len(loci) - 1))
 
         result = dummy_fitness(
-            self.linkage,
-            self.linkage.get_num_constraints(),
-            self.linkage.get_coords()
+            self.linkage, self.linkage.get_num_constraints(), self.linkage.get_coords()
         )
         self.assertIsInstance(result, float)
-        self.assertNotEqual(result, -float('inf'))  # Should not be error penalty
+        self.assertNotEqual(result, -float("inf"))  # Should not be error penalty
 
     def test_kinematic_minimization_decorator(self):
         """Test the kinematic_minimization decorator."""
+
         @kinematic_minimization
         def dummy_fitness(linkage, params, init_pos, loci):
             # Return total locus length
-            return sum(
-                math.dist(loci[i][0], loci[i + 1][0])
-                for i in range(len(loci) - 1)
-            )
+            return sum(math.dist(loci[i][0], loci[i + 1][0]) for i in range(len(loci) - 1))
 
         result = dummy_fitness(
-            self.linkage,
-            self.linkage.get_num_constraints(),
-            self.linkage.get_coords()
+            self.linkage, self.linkage.get_num_constraints(), self.linkage.get_coords()
         )
         self.assertIsInstance(result, float)
-        self.assertNotEqual(result, float('inf'))  # Should not be error penalty
+        self.assertNotEqual(result, float("inf"))  # Should not be error penalty
 
     def test_unbuildable_linkage_penalty(self):
         """Test that unbuildable configurations return penalty."""
+
         @kinematic_minimization
         def dummy_fitness(linkage, params, init_pos, loci):
             return 0
@@ -264,9 +244,13 @@ class TestOptimizationWorkflow(unittest.TestCase):
         # to avoid mutation issues
         crank = Crank(0, 1, joint0=(0, 0), angle=0.5, distance=1)
         pin = Revolute(
-            2, 1, joint0=crank, joint1=(100, 0),  # Very far fixed point
-            distance0=0.01, distance1=0.01,  # Very short distances
-            name="Pin"
+            2,
+            1,
+            joint0=crank,
+            joint1=(100, 0),  # Very far fixed point
+            distance0=0.01,
+            distance1=0.01,  # Very short distances
+            name="Pin",
         )
         bad_linkage = pl.Linkage(joints=[crank, pin], order=[crank, pin])
         bad_linkage.rebuild()
@@ -274,7 +258,7 @@ class TestOptimizationWorkflow(unittest.TestCase):
         # These constraints will make it unbuildable
         bad_constraints = [1, 0.01, 0.01]  # Normal crank but tiny distances
         result = dummy_fitness(bad_linkage, bad_constraints, None)
-        self.assertEqual(result, float('inf'))
+        self.assertEqual(result, float("inf"))
 
 
 class TestPrismaticJointWorkflow(unittest.TestCase):
@@ -286,12 +270,13 @@ class TestPrismaticJointWorkflow(unittest.TestCase):
         line_start = Static(0, 2)
         line_end = Static(4, 2)
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=anchor,
             joint1=line_start,
             joint2=line_end,
             revolute_radius=2,
-            name="Slider"
+            name="Slider",
         )
         # Get constraints
         constraints = prismatic.get_constraints()
@@ -303,7 +288,8 @@ class TestPrismaticJointWorkflow(unittest.TestCase):
         line_start = Static(0, 2)
         line_end = Static(4, 2)
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=anchor,
             joint1=line_start,
             joint2=line_end,
@@ -322,10 +308,7 @@ class TestFixedJointWorkflow(unittest.TestCase):
         anchor2 = Revolute(2, 0)
 
         for angle in [0, math.pi / 4, math.pi / 2, math.pi]:
-            fixed = Fixed(
-                joint0=anchor1, joint1=anchor2,
-                angle=angle, distance=1
-            )
+            fixed = Fixed(joint0=anchor1, joint1=anchor2, angle=angle, distance=1)
             fixed.reload()
             pos = fixed.coord()
             self.assertIsNotNone(pos[0])
@@ -340,8 +323,12 @@ class TestExceptionHandling(unittest.TestCase):
         p1 = Revolute(0, 0)
         p2 = Revolute(10, 0)  # Very far apart
         p3 = Revolute(
-            5, 5, joint0=p1, joint1=p2,
-            distance0=1, distance1=1  # Too short to reach
+            5,
+            5,
+            joint0=p1,
+            joint1=p2,
+            distance0=1,
+            distance1=1,  # Too short to reach
         )
         with self.assertRaises(UnbuildableError):
             p3.reload()
@@ -361,25 +348,12 @@ class TestSerializationSupport(unittest.TestCase):
 
     def setUp(self):
         """Set up a standard four-bar linkage for testing."""
-        self.crank = Crank(
-            0, 1,
-            joint0=(0, 0),
-            angle=0.31,
-            distance=1,
-            name="crank"
-        )
+        self.crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="crank")
         self.pin = Revolute(
-            3, 2,
-            joint0=self.crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="pin"
+            3, 2, joint0=self.crank, joint1=(3, 0), distance0=3, distance1=1, name="pin"
         )
         self.linkage = pl.Linkage(
-            joints=[self.crank, self.pin],
-            order=[self.crank, self.pin],
-            name="test_linkage"
+            joints=[self.crank, self.pin], order=[self.crank, self.pin], name="test_linkage"
         )
 
     def test_to_dict_basic(self):
@@ -444,7 +418,7 @@ class TestSerializationSupport(unittest.TestCase):
         data = self.linkage.to_dict()
         loaded = pl.Linkage.from_dict(data)
 
-        for orig, load in zip(self.linkage.joints, loaded.joints):
+        for orig, load in zip(self.linkage.joints, loaded.joints, strict=False):
             self.assertEqual(orig.x, load.x)
             self.assertEqual(orig.y, load.y)
 
@@ -457,7 +431,7 @@ class TestSerializationSupport(unittest.TestCase):
         linkage = pl.Linkage(
             joints=[anchor0, anchor1, crank, pin],
             order=[anchor0, anchor1, crank, pin],
-            name="static_test"
+            name="static_test",
         )
 
         data = linkage.to_dict()
@@ -485,17 +459,10 @@ class TestSerializationSupport(unittest.TestCase):
         anchor0 = Static(0, 0, name="anchor0")
         anchor1 = Static(3, 0, name="anchor1")
         fixed = Fixed(
-            1, 1,
-            joint0=anchor0,
-            joint1=anchor1,
-            distance=1.5,
-            angle=0.5,
-            name="fixed_joint"
+            1, 1, joint0=anchor0, joint1=anchor1, distance=1.5, angle=0.5, name="fixed_joint"
         )
         linkage = pl.Linkage(
-            joints=[anchor0, anchor1, fixed],
-            order=[anchor0, anchor1, fixed],
-            name="fixed_test"
+            joints=[anchor0, anchor1, fixed], order=[anchor0, anchor1, fixed], name="fixed_test"
         )
 
         data = linkage.to_dict()
@@ -512,25 +479,12 @@ class TestSimulationContextManager(unittest.TestCase):
 
     def setUp(self):
         """Set up a standard four-bar linkage for testing."""
-        self.crank = Crank(
-            0, 1,
-            joint0=(0, 0),
-            angle=0.31,
-            distance=1,
-            name="crank"
-        )
+        self.crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="crank")
         self.pin = Revolute(
-            3, 2,
-            joint0=self.crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="pin"
+            3, 2, joint0=self.crank, joint1=(3, 0), distance0=3, distance1=1, name="pin"
         )
         self.linkage = pl.Linkage(
-            joints=[self.crank, self.pin],
-            order=[self.crank, self.pin],
-            name="test_linkage"
+            joints=[self.crank, self.pin], order=[self.crank, self.pin], name="test_linkage"
         )
 
     def test_simulation_basic_iteration(self):
@@ -560,7 +514,7 @@ class TestSimulationContextManager(unittest.TestCase):
         final_coords = self.linkage.get_coords()
 
         # State should be restored
-        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords):
+        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords, strict=False):
             if init_x is not None and final_x is not None:
                 self.assertAlmostEqual(init_x, final_x)
             if init_y is not None and final_y is not None:
@@ -581,7 +535,7 @@ class TestSimulationContextManager(unittest.TestCase):
         final_coords = self.linkage.get_coords()
 
         # State should still be restored
-        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords):
+        for (init_x, init_y), (final_x, final_y) in zip(initial_coords, final_coords, strict=False):
             if init_x is not None and final_x is not None:
                 self.assertAlmostEqual(init_x, final_x)
             if init_y is not None and final_y is not None:
@@ -633,6 +587,7 @@ class TestIndeterminacyCalculation(unittest.TestCase):
         )
 
         import warnings
+
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             result = linkage.indeterminacy()
@@ -647,6 +602,7 @@ class TestIndeterminacyCalculation(unittest.TestCase):
         With one crank as input, it should be kinematically determinate.
         """
         import warnings
+
         crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
         pin = Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
         linkage = pl.Linkage(
@@ -664,6 +620,7 @@ class TestIndeterminacyCalculation(unittest.TestCase):
     def test_indeterminacy_with_static_only(self):
         """Test indeterminacy when only Static joints present."""
         import warnings
+
         anchor = Static(0, 0)
         linkage = pl.Linkage(joints=[anchor], order=[anchor])
 
@@ -675,5 +632,5 @@ class TestIndeterminacyCalculation(unittest.TestCase):
         self.assertIsInstance(result, int)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

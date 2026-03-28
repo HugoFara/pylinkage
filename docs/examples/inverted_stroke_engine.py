@@ -3,6 +3,7 @@ An inverted four-stroke engine, that converts a rotary motion into a linear one.
 
 See: https://en.wikipedia.org/wiki/Four-stroke_engine for details
 """
+
 import pylinkage as pl
 
 
@@ -15,9 +16,7 @@ def create_stroke_engine_linkage():
     )
 
     return pl.Linkage(
-        joints=(crank, slider),
-        order=(crank, slider),
-        name="Simple four-stroke engine"
+        joints=(crank, slider), order=(crank, slider), name="Simple four-stroke engine"
     )
 
 

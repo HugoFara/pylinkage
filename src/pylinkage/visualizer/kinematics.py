@@ -174,19 +174,16 @@ def plot_kinematics_frame(
     from .static import plot_static_linkage
 
     # Convert single frame to loci format for plot_static_linkage
-    loci = [tuple((float(positions[i, 0]), float(positions[i, 1]))
-                  for i in range(len(linkage.joints)))]
+    loci = [
+        tuple((float(positions[i, 0]), float(positions[i, 1])) for i in range(len(linkage.joints)))
+    ]
     plot_static_linkage(linkage, axis, loci, show_legend=False)
 
     if show_velocity and velocities is not None:
-        plot_velocity_vectors(
-            linkage, axis, positions, velocities, scale=velocity_scale
-        )
+        plot_velocity_vectors(linkage, axis, positions, velocities, scale=velocity_scale)
 
     if show_acceleration and accelerations is not None:
-        plot_acceleration_vectors(
-            linkage, axis, positions, accelerations, scale=acceleration_scale
-        )
+        plot_acceleration_vectors(linkage, axis, positions, accelerations, scale=acceleration_scale)
 
 
 def show_kinematics(
@@ -224,13 +221,12 @@ def show_kinematics(
     """
     import matplotlib.pyplot as plt
 
-    from ..linkage.analysis import movement_bounding_box
-
     # Check that omega is set on at least one crank
     from ..joints import Crank
+    from ..linkage.analysis import movement_bounding_box
+
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0
-        for j in linkage.joints
+        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
     )
     if not has_omega:
         raise ValueError(
@@ -255,8 +251,7 @@ def show_kinematics(
         max_vel = np.nanmax(vel_mag) if np.any(~np.isnan(vel_mag)) else 1.0
         # Scale so max velocity arrow is about 1/5 of linkage size
         bbox = movement_bounding_box(
-            [tuple((float(pos[i, 0]), float(pos[i, 1]))
-                   for i in range(len(linkage.joints)))]
+            [tuple((float(pos[i, 0]), float(pos[i, 1])) for i in range(len(linkage.joints)))]
         )
         linkage_size = max(bbox[2] - bbox[0], bbox[1] - bbox[3])
         velocity_scale = max_vel / (linkage_size * 0.2) if max_vel > 0 else 1.0
@@ -268,33 +263,35 @@ def show_kinematics(
     fig, ax = plt.subplots(figsize=figsize)
 
     # Convert to loci format
-    loci = [tuple((float(positions[i, j, 0]), float(positions[i, j, 1]))
-                  for j in range(len(linkage.joints)))
-            for i in range(n_frames)]
+    loci = [
+        tuple(
+            (float(positions[i, j, 0]), float(positions[i, j, 1]))
+            for j in range(len(linkage.joints))
+        )
+        for i in range(n_frames)
+    ]
 
     # Plot static linkage with all loci
     from .static import plot_static_linkage
+
     plot_static_linkage(linkage, ax, loci, show_legend=True)
 
     # Highlight current position
     ax.scatter(
-        pos[:, 0], pos[:, 1],
-        s=100, c='yellow', edgecolors='black', zorder=10, label='Current'
+        pos[:, 0], pos[:, 1], s=100, c="yellow", edgecolors="black", zorder=10, label="Current"
     )
 
     # Plot velocity vectors
     if show_velocity:
-        plot_velocity_vectors(
-            linkage, ax, pos, vel, scale=velocity_scale, label="Velocity"
-        )
+        plot_velocity_vectors(linkage, ax, pos, vel, scale=velocity_scale, label="Velocity")
 
     # Plot acceleration vectors (would need to extend simulation)
     if show_acceleration:
         # For now, acceleration visualization requires extending the API
         pass
 
-    ax.set_aspect('equal')
-    ax.legend(loc='upper right')
+    ax.set_aspect("equal")
+    ax.legend(loc="upper right")
     ax.set_title(title or f"Kinematics at frame {frame_index}")
     ax.grid(True, alpha=0.3)
 
@@ -343,8 +340,7 @@ def animate_kinematics(
 
     # Check that omega is set
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0
-        for j in linkage.joints
+        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
     )
     if not has_omega:
         raise ValueError(
@@ -360,9 +356,13 @@ def animate_kinematics(
     if velocity_scale is None:
         vel_mag = np.sqrt(velocities[:, :, 0] ** 2 + velocities[:, :, 1] ** 2)
         max_vel = np.nanmax(vel_mag) if np.any(~np.isnan(vel_mag)) else 1.0
-        loci = [tuple((float(positions[i, j, 0]), float(positions[i, j, 1]))
-                      for j in range(len(linkage.joints)))
-                for i in range(n_frames)]
+        loci = [
+            tuple(
+                (float(positions[i, j, 0]), float(positions[i, j, 1]))
+                for j in range(len(linkage.joints))
+            )
+            for i in range(n_frames)
+        ]
         bbox = movement_bounding_box(loci)
         linkage_size = max(bbox[2] - bbox[0], bbox[1] - bbox[3])
         velocity_scale = max_vel / (linkage_size * 0.15) if max_vel > 0 else 1.0
@@ -371,19 +371,24 @@ def animate_kinematics(
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
 
     # Set up axes limits
-    loci = [tuple((float(positions[i, j, 0]), float(positions[i, j, 1]))
-                  for j in range(len(linkage.joints)))
-            for i in range(n_frames)]
+    loci = [
+        tuple(
+            (float(positions[i, j, 0]), float(positions[i, j, 1]))
+            for j in range(len(linkage.joints))
+        )
+        for i in range(n_frames)
+    ]
     bbox = movement_bounding_box(loci)
     padding = max(bbox[2] - bbox[0], bbox[1] - bbox[3]) * 0.2
     for ax in (ax1, ax2):
         ax.set_xlim(bbox[3] - padding, bbox[1] + padding)
         ax.set_ylim(bbox[0] - padding, bbox[2] + padding)
-        ax.set_aspect('equal')
+        ax.set_aspect("equal")
         ax.grid(True, alpha=0.3)
 
     # Left plot: static with all loci
     from .static import plot_static_linkage
+
     plot_static_linkage(linkage, ax1, loci, show_legend=True)
     ax1.set_title("Trajectory paths")
 
@@ -395,19 +400,21 @@ def animate_kinematics(
     for joint in linkage.joints:
         for parent in (joint.joint0, joint.joint1):
             if parent is not None:
-                line, = ax2.plot([], [], c=_get_color(joint), linewidth=2)
+                (line,) = ax2.plot([], [], c=_get_color(joint), linewidth=2)
                 link_lines.append((joint, parent, line))
 
     # Joint markers
-    joint_scatter = ax2.scatter([], [], s=80, c='white', edgecolors='black', zorder=5)
+    joint_scatter = ax2.scatter([], [], s=80, c="white", edgecolors="black", zorder=5)
 
     # Velocity quiver (will be updated each frame)
     # Initialize with empty data
     non_static_mask = [not isinstance(j, Static) for j in linkage.joints]
     n_non_static = sum(non_static_mask)
     quiver = ax2.quiver(
-        np.zeros(n_non_static), np.zeros(n_non_static),
-        np.zeros(n_non_static), np.zeros(n_non_static),
+        np.zeros(n_non_static),
+        np.zeros(n_non_static),
+        np.zeros(n_non_static),
+        np.zeros(n_non_static),
         scale=velocity_scale,
         scale_units="xy",
         angles="xy",
@@ -416,7 +423,7 @@ def animate_kinematics(
         label="Velocity",
     )
 
-    ax2.legend(loc='upper right')
+    ax2.legend(loc="upper right")
 
     def update(frame_idx: int) -> "Iterable[Artist]":
         """Update function for animation."""
@@ -465,8 +472,8 @@ def animate_kinematics(
     )
 
     if save_path:
-        if save_path.endswith('.gif'):
-            animation.save(save_path, writer='pillow', fps=fps)
+        if save_path.endswith(".gif"):
+            animation.save(save_path, writer="pillow", fps=fps)
         else:
             animation.save(save_path, fps=fps)
 

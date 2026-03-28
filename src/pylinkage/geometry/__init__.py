@@ -37,4 +37,3 @@ from .secants import (
 from .secants import (
     intersection as intersection,
 )
-

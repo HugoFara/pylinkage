@@ -273,12 +273,7 @@ def solve_prismatic_velocity(
 
     a21 = dy
     a22 = -dx
-    b2 = (
-        line_p1_vx * dy
-        - line_p1_vy * dx
-        - (x - line_p1_x) * d_dy
-        + (y - line_p1_y) * d_dx
-    )
+    b2 = line_p1_vx * dy - line_p1_vy * dx - (x - line_p1_x) * d_dy + (y - line_p1_y) * d_dx
 
     # Determinant
     det = a11 * a22 - a12 * a21

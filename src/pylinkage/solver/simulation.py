@@ -4,10 +4,15 @@ This module provides the core simulation functions that operate on
 numeric arrays, avoiding Python object overhead for maximum performance.
 """
 
-
 import numpy as np
 from numba import njit
 
+from .acceleration import (
+    solve_crank_acceleration,
+    solve_fixed_acceleration,
+    solve_prismatic_acceleration,
+    solve_revolute_acceleration,
+)
 from .joints import solve_crank, solve_fixed, solve_linear, solve_revolute
 from .types import (
     JOINT_CRANK,
@@ -21,12 +26,6 @@ from .velocity import (
     solve_fixed_velocity,
     solve_prismatic_velocity,
     solve_revolute_velocity,
-)
-from .acceleration import (
-    solve_crank_acceleration,
-    solve_fixed_acceleration,
-    solve_prismatic_acceleration,
-    solve_revolute_acceleration,
 )
 
 
@@ -67,7 +66,7 @@ def step_single(
                 positions[joint_idx, 1],
                 positions[p0_idx, 0],
                 positions[p0_idx, 1],
-                constraints[offset],      # radius
+                constraints[offset],  # radius
                 constraints[offset + 1],  # angle_rate
                 dt,
             )
@@ -82,7 +81,7 @@ def step_single(
                 positions[joint_idx, 1],
                 positions[p0_idx, 0],
                 positions[p0_idx, 1],
-                constraints[offset],      # r0
+                constraints[offset],  # r0
                 positions[p1_idx, 0],
                 positions[p1_idx, 1],
                 constraints[offset + 1],  # r1
@@ -98,7 +97,7 @@ def step_single(
                 positions[p0_idx, 1],
                 positions[p1_idx, 0],
                 positions[p1_idx, 1],
-                constraints[offset],      # radius
+                constraints[offset],  # radius
                 constraints[offset + 1],  # angle
             )
             positions[joint_idx, 0] = new_x
@@ -302,7 +301,7 @@ def step_single_velocity(
                 positions[p1_idx, 1],
                 velocities[p1_idx, 0],
                 velocities[p1_idx, 1],
-                constraints[offset],      # radius
+                constraints[offset],  # radius
                 constraints[offset + 1],  # angle
             )
             velocities[joint_idx, 0] = vx
@@ -446,7 +445,7 @@ def step_single_acceleration(
                 velocities[p1_idx, 1],
                 accelerations[p1_idx, 0],
                 accelerations[p1_idx, 1],
-                constraints[offset],      # radius
+                constraints[offset],  # radius
                 constraints[offset + 1],  # angle
             )
             accelerations[joint_idx, 0] = ax

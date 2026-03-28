@@ -10,7 +10,6 @@ Created on 2025.
 @author: HugoFara
 """
 
-
 from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any, Literal, cast
 
@@ -171,9 +170,7 @@ def minimize_linkage(
     x0: Sequence[float] | None = None,
     bounds: tuple[Sequence[float], Sequence[float]] | None = None,
     order_relation: Callable[[float, float], float] = max,
-    method: Literal[
-        "Nelder-Mead", "Powell", "COBYLA", "L-BFGS-B", "SLSQP", "TNC"
-    ] = "Nelder-Mead",
+    method: Literal["Nelder-Mead", "Powell", "COBYLA", "L-BFGS-B", "SLSQP", "TNC"] = "Nelder-Mead",
     maxiter: int | None = None,
     tol: float | None = None,
     verbose: bool = True,

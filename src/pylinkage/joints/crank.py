@@ -75,7 +75,8 @@ class Crank(pl_joint.Joint):
         warnings.warn(
             "Crank is deprecated and will be removed in version 1.0.0. "
             "Use pylinkage.mechanism.create_crank() instead. "
-            "Example: crank_link, output_joint = create_crank(ground_joint, radius, angular_velocity)",
+            "Example: crank_link, output_joint = "
+            "create_crank(ground_joint, radius, angular_velocity)",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -93,26 +94,19 @@ class Crank(pl_joint.Joint):
             return
         if None in self.joint0.coord():
             raise pl_exceptions.UnderconstrainedError(
-                f'{self.joint0} has None coordinates. '
-                f'{self} cannot be calculated'
+                f"{self.joint0} has None coordinates. {self} cannot be calculated"
             )
         if self.x is None or self.y is None:
-            raise pl_exceptions.UnderconstrainedError(
-                f'{self} has None coordinates.'
-            )
+            raise pl_exceptions.UnderconstrainedError(f"{self} has None coordinates.")
         if self.r is None or self.angle is None:
             raise pl_exceptions.UnderconstrainedError(
-                f'{self} has None constraints (r={self.r}, angle={self.angle}).'
+                f"{self} has None constraints (r={self.r}, angle={self.angle})."
             )
 
         # Delegate to solver function (single source of truth)
         j0x = self.joint0.x if self.joint0 is not None else 0.0
         j0y = self.joint0.y if self.joint0 is not None else 0.0
-        self.x, self.y = solve_crank(
-            self.x, self.y,
-            j0x or 0.0, j0y or 0.0,
-            self.r, self.angle, dt
-        )
+        self.x, self.y = solve_crank(self.x, self.y, j0x or 0.0, j0y or 0.0, self.r, self.angle, dt)
 
     def get_constraints(self) -> tuple[float | None]:
         """Return the distance to the center of rotation."""

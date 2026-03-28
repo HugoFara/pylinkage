@@ -111,10 +111,7 @@ class PPDyad(ConnectedDyad):
         l2_p1 = self._get_anchor_position(self.line2_anchor1)
         l2_p2 = self._get_anchor_position(self.line2_anchor2)
 
-        if any(
-            pos[0] is None or pos[1] is None
-            for pos in [l1_p1, l1_p2, l2_p1, l2_p2]
-        ):
+        if any(pos[0] is None or pos[1] is None for pos in [l1_p1, l1_p2, l2_p1, l2_p2]):
             return
 
         # Type assertions since we just checked for None above
@@ -180,10 +177,7 @@ class PPDyad(ConnectedDyad):
         l2_p1 = self._get_anchor_position(self.line2_anchor1)
         l2_p2 = self._get_anchor_position(self.line2_anchor2)
 
-        if any(
-            pos[0] is None or pos[1] is None
-            for pos in [l1_p1, l1_p2, l2_p1, l2_p2]
-        ):
+        if any(pos[0] is None or pos[1] is None for pos in [l1_p1, l1_p2, l2_p1, l2_p2]):
             return  # Parents not positioned yet
 
         new_x, new_y = solve_line_line(

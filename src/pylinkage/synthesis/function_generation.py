@@ -63,12 +63,7 @@ def freudenstein_equation(
     Returns:
         Residual of the Freudenstein equation (0 if satisfied exactly).
     """
-    return (
-        R1 * math.cos(theta4)
-        - R2 * math.cos(theta2)
-        + R3
-        - math.cos(theta2 - theta4)
-    )
+    return R1 * math.cos(theta4) - R2 * math.cos(theta2) + R3 - math.cos(theta2 - theta4)
 
 
 def solve_freudenstein_3_positions(
@@ -359,9 +354,7 @@ def function_generation(
 
         # Convert to link lengths
         try:
-            crank, coupler, rocker, ground = coefficients_to_link_lengths(
-                R1, R2, R3, ground_length
-            )
+            crank, coupler, rocker, ground = coefficients_to_link_lengths(R1, R2, R3, ground_length)
         except ValueError as e:
             warnings.append(str(e))
             return SynthesisResult(
@@ -381,9 +374,7 @@ def function_generation(
                 GrashofType.GRASHOF_CRANK_ROCKER,
                 GrashofType.CHANGE_POINT,
             ):
-                warnings.append(
-                    f"Solution is not crank-rocker type (got {grashof_type.name})"
-                )
+                warnings.append(f"Solution is not crank-rocker type (got {grashof_type.name})")
                 return SynthesisResult(
                     solutions=[],
                     raw_solutions=[],
@@ -527,7 +518,6 @@ def verify_function_generation(
 
     # Determine the configuration (which branch) from initial C position
     # This is needed to consistently choose the same branch during verification
-    initial_C = (joint_C.x, joint_C.y)
 
     # Test each angle pair
     for theta2, expected_theta4 in angle_pairs:
@@ -578,7 +568,6 @@ def verify_function_generation(
 
         # Choose the solution that gives θ4 closest to the expected value
         # This handles branch selection correctly for synthesis verification
-        C = (x1, y1)
         theta4_1 = math.atan2(y1 - D[1], x1 - D[0])
         if n_intersections == 2:
             theta4_2 = math.atan2(y2 - D[1], x2 - D[0])
@@ -597,7 +586,6 @@ def verify_function_generation(
                 err2 += 2 * math.pi
 
             if abs(err2) < abs(err1):
-                C = (x2, y2)
                 theta4_1 = theta4_2
 
         # Calculate actual rocker angle theta4

@@ -6,7 +6,6 @@ Static joint definition file.
     instead for clearer terminology. Static will be removed in version 1.0.0.
 """
 
-
 import warnings
 from typing import TYPE_CHECKING
 
@@ -29,9 +28,7 @@ class Static(pl_joint.Joint):
 
     __slots__: tuple[str, ...] = ()
 
-    def __init__(
-        self, x: float = 0, y: float = 0, name: str | None = None
-    ) -> None:
+    def __init__(self, x: float = 0, y: float = 0, name: str | None = None) -> None:
         """A Static joint is a point in space to use as anchor by other joints.
 
         Args:

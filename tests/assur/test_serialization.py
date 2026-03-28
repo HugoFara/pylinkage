@@ -50,27 +50,10 @@ class TestGraphSerialization:
         data = {
             "name": "Restored",
             "nodes": [
-                {
-                    "id": "A",
-                    "joint_type": "REVOLUTE",
-                    "role": "GROUND",
-                    "name": "A"
-                },
-                {
-                    "id": "B",
-                    "joint_type": "REVOLUTE",
-                    "role": "DRIVER",
-                    "name": "B"
-                }
+                {"id": "A", "joint_type": "REVOLUTE", "role": "GROUND", "name": "A"},
+                {"id": "B", "joint_type": "REVOLUTE", "role": "DRIVER", "name": "B"},
             ],
-            "edges": [
-                {
-                    "id": "AB",
-                    "source": "A",
-                    "target": "B",
-                    "body_id": None
-                }
-            ]
+            "edges": [{"id": "AB", "source": "A", "target": "B", "body_id": None}],
         }
 
         graph = graph_from_dict(data)
@@ -136,13 +119,7 @@ class TestGraphSerialization:
         original = LinkageGraph(name="Four-bar")
         original.add_node(Node("A", role=NodeRole.GROUND))
         original.add_node(Node("D", role=NodeRole.GROUND))
-        original.add_node(
-            Node(
-                "B",
-                role=NodeRole.DRIVER,
-                joint_type=JointType.REVOLUTE
-            )
-        )
+        original.add_node(Node("B", role=NodeRole.DRIVER, joint_type=JointType.REVOLUTE))
         original.add_node(Node("C", role=NodeRole.DRIVEN))
         original.add_edge(Edge("AB", source="A", target="B"))
         original.add_edge(Edge("BC", source="B", target="C"))

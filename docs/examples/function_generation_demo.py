@@ -237,7 +237,8 @@ def demo_compare_grashof_types():
     for name, angle_pairs in test_cases:
         print(f"\n--- {name} ---")
         print(
-            f"Angles: {[(f'{math.degrees(t2):.1f}', f'{math.degrees(t4):.1f}') for t2, t4 in angle_pairs]}"
+            "Angles: "
+            f"{[(f'{math.degrees(t2):.1f}', f'{math.degrees(t4):.1f}') for t2, t4 in angle_pairs]}"
         )
 
         result = function_generation(

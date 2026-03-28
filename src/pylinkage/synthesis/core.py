@@ -240,9 +240,7 @@ class BurmesterCurves:
         Returns:
             New BurmesterCurves with only finite points.
         """
-        finite_mask = np.isfinite(self.circle_curve) & np.isfinite(
-            self.center_curve
-        )
+        finite_mask = np.isfinite(self.circle_curve) & np.isfinite(self.center_curve)
         return BurmesterCurves(
             circle_curve=self.circle_curve[finite_mask],
             center_curve=self.center_curve[finite_mask],

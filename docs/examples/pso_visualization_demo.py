@@ -38,25 +38,25 @@ DIM_NAMES = (
 # Specify which dimensions are lengths vs angles
 DIM_TYPES = (
     "length",  # triangle
-    "angle",   # aperture
+    "angle",  # aperture
     "length",  # femur
     "length",  # rockerL
     "length",  # rockerS
-    "angle",   # phi
+    "angle",  # phi
     "length",  # tibia
     "length",  # f
 )
 
 # Starting dimensions
 DIMENSIONS = (
-    2,           # triangle (AB distance)
-    np.pi / 4,   # aperture (angle)
-    1.8,         # femur
-    2.6,         # rockerL
-    1.4,         # rockerS
-    np.pi + 0.2, # phi (angle)
-    2.5,         # tibia
-    1.8,         # f
+    2,  # triangle (AB distance)
+    np.pi / 4,  # aperture (angle)
+    1.8,  # femur
+    2.6,  # rockerL
+    1.4,  # rockerS
+    np.pi + 0.2,  # phi (angle)
+    2.5,  # tibia
+    1.8,  # f
 )
 
 # Bounds for optimization
@@ -113,12 +113,8 @@ def complete_strider(constraints, prev):
     linkage["Y"].joint0 = linkage["A"]
     linkage.update(
         {
-            "B": pl.Fixed(
-                joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"
-            ),
-            "B_p": pl.Fixed(
-                joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"
-            ),
+            "B": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"),
+            "B_p": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"),
             "C": pl.Crank(
                 joint0=linkage["A"],
                 angle=-2 * np.pi / LAP_POINTS,
@@ -128,37 +124,23 @@ def complete_strider(constraints, prev):
     )
     linkage.update(
         {
-            "D": pl.Revolute(
-                joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"
-            ),
-            "E": pl.Revolute(
-                joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"
-            ),
+            "D": pl.Revolute(joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"),
+            "E": pl.Revolute(joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"),
         }
     )
     linkage.update(
         {
-            "F": pl.Fixed(
-                joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"
-            ),
-            "G": pl.Fixed(
-                joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"
-            ),
+            "F": pl.Fixed(joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"),
+            "G": pl.Fixed(joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"),
         }
     )
     linkage.update(
         {
-            "H": pl.Revolute(
-                joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"
-            ),
-            "I": pl.Revolute(
-                joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"
-            ),
+            "H": pl.Revolute(joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"),
+            "I": pl.Revolute(joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"),
         }
     )
-    strider = pl.Linkage(
-        joints=linkage.values(), order=linkage.values(), name="Strider"
-    )
+    strider = pl.Linkage(joints=linkage.values(), order=linkage.values(), name="Strider")
     strider.set_coords(prev)
     strider.set_num_constraints(constraints, flat=False)
     return strider
@@ -205,8 +187,7 @@ def run_quick_optimization(linkage, n_particles=30, n_iterations=20):
 
     # Format history into swarms per iteration
     formatted_history = [
-        (i, history[i * n_particles : (i + 1) * n_particles])
-        for i in range(n_iterations)
+        (i, history[i * n_particles : (i + 1) * n_particles]) for i in range(n_iterations)
     ]
 
     return formatted_history
@@ -277,7 +258,7 @@ def demo_dashboard_static(linkage, history):
     # Compute score history
     score_history = [max(agent[0] for agent in swarm[1]) for swarm in history]
 
-    fig = dashboard_layout(
+    dashboard_layout(
         linkage=linkage,
         swarm=history[-1],
         score_history=score_history,

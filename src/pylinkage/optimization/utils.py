@@ -55,7 +55,7 @@ def kinematic_maximization(
 
     :param func: Fitness function to be decorated.
     """
-    return kinematic_default_test(func, -float('inf'))
+    return kinematic_default_test(func, -float("inf"))
 
 
 def kinematic_minimization(
@@ -68,4 +68,4 @@ def kinematic_minimization(
 
     :param func: Fitness function to be decorated.
     """
-    return kinematic_default_test(func, float('inf'))
+    return kinematic_default_test(func, float("inf"))

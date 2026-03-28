@@ -103,9 +103,7 @@ def _target_path_distance(
     return total
 
 
-def _build_eval_func(
-    objective: ObjectiveSpec, minimize: bool
-) -> Any:
+def _build_eval_func(objective: ObjectiveSpec, minimize: bool) -> Any:
     """Build an evaluation function from an objective specification.
 
     Returns a raw fitness function (not yet wrapped with kinematic_default_test).
@@ -122,16 +120,11 @@ def _build_eval_func(
             points = 12
             n = linkage.get_rotation_period()
             # Quick buildability check
-            tuple(
-                tuple(i) for i in linkage.step(iterations=points + 1, dt=n / points)
-            )
+            tuple(tuple(i) for i in linkage.step(iterations=points + 1, dt=n / points))
             # Full simulation for fitness evaluation
             n_steps = 96
             factor = int(points / n_steps) + 1
-            loci = tuple(
-                tuple(i)
-                for i in linkage.step(iterations=n_steps * factor, dt=1 / factor)
-            )
+            loci = tuple(tuple(i) for i in linkage.step(iterations=n_steps * factor, dt=1 / factor))
         except UnbuildableError:
             return error_penalty
 
@@ -200,9 +193,7 @@ def run_optimization(request: OptimizationRequest) -> OptimizationResponse:
 
     # Get current constraints for bounds generation
     constraints = list(linkage.get_num_constraints())
-    constraint_names = [
-        f"constraint_{i}" for i in range(len(constraints))
-    ]
+    constraint_names = [f"constraint_{i}" for i in range(len(constraints))]
 
     # Generate bounds
     np_constraints = np.array(constraints, dtype=float)

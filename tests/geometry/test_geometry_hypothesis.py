@@ -103,7 +103,7 @@ class TestNorm(unittest.TestCase):
     )
     def test_norm_matches_math(self, x, y):
         """Norm matches expected formula."""
-        expected = math.sqrt(x ** 2 + y ** 2)
+        expected = math.sqrt(x**2 + y**2)
         self.assertAlmostEqual(norm(x, y), expected)
 
 
@@ -117,7 +117,7 @@ class TestCylToCart(unittest.TestCase):
     def test_cyl_to_cart_distance_preserved(self, radius, theta):
         """Distance from origin equals radius."""
         x, y = cyl_to_cart(radius, theta)
-        computed_dist = math.sqrt(x ** 2 + y ** 2)
+        computed_dist = math.sqrt(x**2 + y**2)
         self.assertAlmostEqual(computed_dist, radius, places=10)
 
     @given(
@@ -179,7 +179,9 @@ class TestCircleIntersect(unittest.TestCase):
     def test_intersection_count_valid(self, x1, y1, r1, x2, y2, r2):
         """Intersection count should be 0, 1, 2, or 3."""
         result = circle_intersect(x1, y1, r1, x2, y2, r2)
-        self.assertIn(result[0], [INTERSECTION_NONE, INTERSECTION_ONE, INTERSECTION_TWO, INTERSECTION_SAME])
+        self.assertIn(
+            result[0], [INTERSECTION_NONE, INTERSECTION_ONE, INTERSECTION_TWO, INTERSECTION_SAME]
+        )
 
     @given(
         st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),

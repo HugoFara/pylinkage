@@ -41,14 +41,7 @@ class TestLinkageToGraph:
     def test_convert_four_bar(self):
         """Test converting a four-bar linkage to graph."""
         crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="B")
-        pin = pl.Revolute(
-            3, 2,
-            joint0=crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="C"
-        )
+        pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
         linkage = pl.Linkage(joints=[crank, pin], order=[crank, pin], name="Four-bar")
 
         graph, dimensions = linkage_to_graph(linkage)
@@ -70,18 +63,8 @@ class TestLinkageToGraph:
         anchor0 = pl.Static(0, 0, name="anchor0")
         anchor1 = pl.Static(3, 0, name="anchor1")
         crank = pl.Crank(0, 1, joint0=anchor0, angle=0.31, distance=1, name="crank")
-        pin = pl.Revolute(
-            3, 2,
-            joint0=crank,
-            joint1=anchor1,
-            distance0=3,
-            distance1=1,
-            name="pin"
-        )
-        linkage = pl.Linkage(
-            joints=[anchor0, anchor1, crank, pin],
-            order=[crank, pin]
-        )
+        pin = pl.Revolute(3, 2, joint0=crank, joint1=anchor1, distance0=3, distance1=1, name="pin")
+        linkage = pl.Linkage(joints=[anchor0, anchor1, crank, pin], order=[crank, pin])
 
         graph, dimensions = linkage_to_graph(linkage)
 
@@ -125,6 +108,7 @@ class TestGraphToLinkage:
 
         # Dimensions separate
         from pylinkage.dimensions import DriverAngle
+
         dimensions = Dimensions(
             node_positions={
                 "A": (0.0, 0.0),
@@ -148,14 +132,7 @@ class TestGraphToLinkage:
         """Test that linkage -> graph -> linkage preserves structure."""
         # Create original linkage
         crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="B")
-        pin = pl.Revolute(
-            3, 2,
-            joint0=crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="C"
-        )
+        pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
         original = pl.Linkage(joints=[crank, pin], order=[crank, pin], name="Test")
 
         # Convert to graph (returns topology + dimensions)
@@ -186,6 +163,7 @@ class TestGraphToLinkage:
 
         # Dimensions separate
         from pylinkage.dimensions import DriverAngle
+
         dimensions = Dimensions(
             node_positions={
                 "A": (0.0, 0.0),
@@ -215,17 +193,8 @@ class TestLinkageToGraphFixed:
         """Test converting linkage with Fixed joint."""
         anchor0 = pl.Static(0, 0, name="anchor0")
         anchor1 = pl.Static(3, 0, name="anchor1")
-        fixed = pl.Fixed(
-            joint0=anchor0,
-            joint1=anchor1,
-            distance=2.0,
-            angle=0.5,
-            name="fixed"
-        )
-        linkage = pl.Linkage(
-            joints=[anchor0, anchor1, fixed],
-            order=[anchor0, anchor1, fixed]
-        )
+        fixed = pl.Fixed(joint0=anchor0, joint1=anchor1, distance=2.0, angle=0.5, name="fixed")
+        linkage = pl.Linkage(joints=[anchor0, anchor1, fixed], order=[anchor0, anchor1, fixed])
 
         graph, dimensions = linkage_to_graph(linkage)
 
@@ -242,16 +211,17 @@ class TestLinkageToGraphPrismatic:
         line_start = pl.Static(0, 2, name="line_start")
         line_end = pl.Static(5, 2, name="line_end")
         prismatic = pl.Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=anchor,
             joint1=line_start,
             joint2=line_end,
             revolute_radius=2.5,
-            name="prismatic"
+            name="prismatic",
         )
         linkage = pl.Linkage(
             joints=[anchor, line_start, line_end, prismatic],
-            order=[anchor, line_start, line_end, prismatic]
+            order=[anchor, line_start, line_end, prismatic],
         )
 
         graph, dimensions = linkage_to_graph(linkage)

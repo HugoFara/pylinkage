@@ -2,7 +2,6 @@
 Basic geometry features with numba optimization.
 """
 
-
 import math
 from typing import TYPE_CHECKING
 

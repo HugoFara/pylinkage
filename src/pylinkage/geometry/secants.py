@@ -215,9 +215,7 @@ def intersection(
 
     # Two circles
     if len(obj_1) == 3 and len(obj_2) == 3:
-        result = circle_intersect(
-            obj_1[0], obj_1[1], obj_1[2], obj_2[0], obj_2[1], obj_2[2], tol
-        )
+        result = circle_intersect(obj_1[0], obj_1[1], obj_1[2], obj_2[0], obj_2[1], obj_2[2], tol)
         if result[0] == INTERSECTION_NONE:
             return ()
         if result[0] == INTERSECTION_ONE:

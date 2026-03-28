@@ -8,6 +8,7 @@ This script measures performance improvements from:
 
 Run with: uv run python benchmarks/benchmark_optimizations.py
 """
+
 import math
 import random
 import statistics
@@ -43,6 +44,7 @@ from pylinkage.geometry.secants import (
 # NUMBA OPTIMIZED IMPLEMENTATIONS
 # ============================================================================
 
+
 @njit(cache=True)
 def sqr_dist_numba(p1_x: float, p1_y: float, p2_x: float, p2_y: float) -> float:
     """Numba-optimized squared distance."""
@@ -65,9 +67,7 @@ def cyl_to_cart_numba(radius: float, theta: float, ori_x: float, ori_y: float) -
 
 @njit(cache=True)
 def get_nearest_point_numba(
-    ref_x: float, ref_y: float,
-    p1_x: float, p1_y: float,
-    p2_x: float, p2_y: float
+    ref_x: float, ref_y: float, p1_x: float, p1_y: float, p2_x: float, p2_y: float
 ) -> tuple:
     """Numba-optimized nearest point selection."""
     d1 = sqr_dist_numba(ref_x, ref_y, p1_x, p1_y)
@@ -79,9 +79,7 @@ def get_nearest_point_numba(
 
 @njit(cache=True)
 def circle_intersect_numba(
-    x1: float, y1: float, r1: float,
-    x2: float, y2: float, r2: float,
-    tol: float = 0.0
+    x1: float, y1: float, r1: float, x2: float, y2: float, r2: float, tol: float = 0.0
 ) -> tuple:
     """
     Numba-optimized circle intersection.
@@ -134,9 +132,7 @@ def circle_intersect_numba(
 
 @njit(cache=True)
 def circle_line_numba(
-    cx: float, cy: float, r: float,
-    p1_x: float, p1_y: float,
-    p2_x: float, p2_y: float
+    cx: float, cy: float, r: float, p1_x: float, p1_y: float, p2_x: float, p2_y: float
 ) -> tuple:
     """
     Numba-optimized circle-line intersection.
@@ -182,6 +178,7 @@ def circle_line_numba(
 # NUMPY VECTORIZED IMPLEMENTATIONS
 # ============================================================================
 
+
 def sqr_dist_numpy(points1: np.ndarray, points2: np.ndarray) -> np.ndarray:
     """Vectorized squared distance for arrays of points."""
     diff = points1 - points2
@@ -216,11 +213,7 @@ def circle_intersect_numpy(circles1: np.ndarray, circles2: np.ndarray) -> np.nda
     valid = (distance <= r1 + r2) & (distance >= np.abs(r2 - r1))
 
     # For valid circles, compute intersections
-    mid_dist = np.where(
-        distance > 0,
-        (r1**2 - r2**2 + distance**2) / (2.0 * distance),
-        0
-    )
+    mid_dist = np.where(distance > 0, (r1**2 - r2**2 + distance**2) / (2.0 * distance), 0)
 
     proj_x = x1 + np.where(distance > 0, (mid_dist * dist_x) / distance, 0)
     proj_y = y1 + np.where(distance > 0, (mid_dist * dist_y) / distance, 0)
@@ -242,7 +235,10 @@ def circle_intersect_numpy(circles1: np.ndarray, circles2: np.ndarray) -> np.nda
 # BENCHMARK UTILITIES
 # ============================================================================
 
-def benchmark_single(func: Callable, args: tuple, n_iterations: int = 100_000, warmup: int = 1000) -> dict:
+
+def benchmark_single(
+    func: Callable, args: tuple, n_iterations: int = 100_000, warmup: int = 1000
+) -> dict:
     """Benchmark a function with fixed arguments."""
     # Warmup
     for _ in range(warmup):
@@ -264,7 +260,9 @@ def benchmark_single(func: Callable, args: tuple, n_iterations: int = 100_000, w
     }
 
 
-def benchmark_batch(func: Callable, args: tuple, n_iterations: int = 1000, warmup: int = 100) -> dict:
+def benchmark_batch(
+    func: Callable, args: tuple, n_iterations: int = 1000, warmup: int = 100
+) -> dict:
     """Benchmark a vectorized function with batch arguments."""
     # Warmup
     for _ in range(warmup):
@@ -300,6 +298,7 @@ def format_comparison(name: str, orig: dict, new: dict, new_name: str = "optimiz
 # ============================================================================
 # BENCHMARK RUNNERS
 # ============================================================================
+
 
 def run_numba_comparison():
     """Compare original vs numba implementations."""
@@ -359,7 +358,9 @@ def run_numba_comparison():
     p1, p2 = (-10.0, 2.0), (10.0, 2.0)
     orig = benchmark_single(lambda: circle_line_orig(circle, p1, p2), (), n_iter)
     numba = benchmark_single(
-        lambda: circle_line_numba(circle[0], circle[1], circle[2], p1[0], p1[1], p2[0], p2[1]), (), n_iter
+        lambda: circle_line_numba(circle[0], circle[1], circle[2], p1[0], p1[1], p2[0], p2[1]),
+        (),
+        n_iter,
     )
     print(format_comparison("circle_line_intersection", orig, numba, "numba"))
     results.append(("circle_line", orig, numba))
@@ -387,31 +388,48 @@ def run_numpy_comparison():
 
     # sqr_dist batch
     def loop_sqr_dist():
-        return [sqr_dist_orig(tuple(p1), tuple(p2)) for p1, p2 in zip(points1, points2, strict=False)]
+        return [
+            sqr_dist_orig(tuple(p1), tuple(p2)) for p1, p2 in zip(points1, points2, strict=False)
+        ]
 
     orig = benchmark_batch(loop_sqr_dist, (), n_iter, warmup=10)
     numpy_result = benchmark_batch(lambda: sqr_dist_numpy(points1, points2), (), n_iter, warmup=10)
     print(f"sqr_dist (batch of {batch_size}):")
-    print(f"  Loop:     {orig['mean_ns']/1000:8.1f} µs  ({orig['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  NumPy:    {numpy_result['mean_ns']/1000:8.1f} µs  ({numpy_result['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  Speedup:  {orig['mean_ns']/numpy_result['mean_ns']:.2f}x")
+    print(
+        f"  Loop:     {orig['mean_ns'] / 1000:8.1f} µs  ({orig['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(
+        f"  NumPy:    {numpy_result['mean_ns'] / 1000:8.1f} µs"
+        f"  ({numpy_result['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(f"  Speedup:  {orig['mean_ns'] / numpy_result['mean_ns']:.2f}x")
     print()
     results.append(("sqr_dist", orig, numpy_result))
 
     # cyl_to_cart batch
     radii = np.random.uniform(1, 100, batch_size)
-    thetas = np.random.uniform(0, 2*np.pi, batch_size)
+    thetas = np.random.uniform(0, 2 * np.pi, batch_size)
     origins = np.random.uniform(-50, 50, (batch_size, 2))
 
     def loop_cyl():
-        return [cyl_to_cart_orig(r, t, tuple(o)) for r, t, o in zip(radii, thetas, origins, strict=False)]
+        return [
+            cyl_to_cart_orig(r, t, tuple(o))
+            for r, t, o in zip(radii, thetas, origins, strict=False)
+        ]
 
     orig = benchmark_batch(loop_cyl, (), n_iter, warmup=10)
-    numpy_result = benchmark_batch(lambda: cyl_to_cart_numpy(radii, thetas, origins), (), n_iter, warmup=10)
+    numpy_result = benchmark_batch(
+        lambda: cyl_to_cart_numpy(radii, thetas, origins), (), n_iter, warmup=10
+    )
     print(f"cyl_to_cart (batch of {batch_size}):")
-    print(f"  Loop:     {orig['mean_ns']/1000:8.1f} µs  ({orig['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  NumPy:    {numpy_result['mean_ns']/1000:8.1f} µs  ({numpy_result['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  Speedup:  {orig['mean_ns']/numpy_result['mean_ns']:.2f}x")
+    print(
+        f"  Loop:     {orig['mean_ns'] / 1000:8.1f} µs  ({orig['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(
+        f"  NumPy:    {numpy_result['mean_ns'] / 1000:8.1f} µs"
+        f"  ({numpy_result['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(f"  Speedup:  {orig['mean_ns'] / numpy_result['mean_ns']:.2f}x")
     print()
     results.append(("cyl_to_cart", orig, numpy_result))
 
@@ -423,21 +441,31 @@ def run_numpy_comparison():
     circles1[:, 1] = np.random.uniform(-50, 50, batch_size)
     circles1[:, 2] = np.random.uniform(3, 10, batch_size)
     # Make circles2 intersect with circles1
-    angles = np.random.uniform(0, 2*np.pi, batch_size)
+    angles = np.random.uniform(0, 2 * np.pi, batch_size)
     dists = np.random.uniform(2, 8, batch_size)
     circles2[:, 0] = circles1[:, 0] + dists * np.cos(angles)
     circles2[:, 1] = circles1[:, 1] + dists * np.sin(angles)
     circles2[:, 2] = np.random.uniform(3, 10, batch_size)
 
     def loop_circle():
-        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2, strict=False)]
+        return [
+            circle_intersect_orig(tuple(c1), tuple(c2))
+            for c1, c2 in zip(circles1, circles2, strict=False)
+        ]
 
     orig = benchmark_batch(loop_circle, (), n_iter, warmup=10)
-    numpy_result = benchmark_batch(lambda: circle_intersect_numpy(circles1, circles2), (), n_iter, warmup=10)
+    numpy_result = benchmark_batch(
+        lambda: circle_intersect_numpy(circles1, circles2), (), n_iter, warmup=10
+    )
     print(f"circle_intersect (batch of {batch_size}):")
-    print(f"  Loop:     {orig['mean_ns']/1000:8.1f} µs  ({orig['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  NumPy:    {numpy_result['mean_ns']/1000:8.1f} µs  ({numpy_result['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  Speedup:  {orig['mean_ns']/numpy_result['mean_ns']:.2f}x")
+    print(
+        f"  Loop:     {orig['mean_ns'] / 1000:8.1f} µs  ({orig['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(
+        f"  NumPy:    {numpy_result['mean_ns'] / 1000:8.1f} µs"
+        f"  ({numpy_result['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(f"  Speedup:  {orig['mean_ns'] / numpy_result['mean_ns']:.2f}x")
     print()
     results.append(("circle_intersect", orig, numpy_result))
 
@@ -462,7 +490,7 @@ def run_combined_numba_numpy():
     circles1[:, 0] = np.random.uniform(-50, 50, batch_size)
     circles1[:, 1] = np.random.uniform(-50, 50, batch_size)
     circles1[:, 2] = np.random.uniform(3, 10, batch_size)
-    angles = np.random.uniform(0, 2*np.pi, batch_size)
+    angles = np.random.uniform(0, 2 * np.pi, batch_size)
     dists = np.random.uniform(2, 8, batch_size)
     circles2[:, 0] = circles1[:, 0] + dists * np.cos(angles)
     circles2[:, 1] = circles1[:, 1] + dists * np.sin(angles)
@@ -470,7 +498,10 @@ def run_combined_numba_numpy():
 
     # Pure Python loop with original
     def loop_original():
-        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2, strict=False)]
+        return [
+            circle_intersect_orig(tuple(c1), tuple(c2))
+            for c1, c2 in zip(circles1, circles2, strict=False)
+        ]
 
     # Python loop with numba functions
     def loop_numba():
@@ -488,12 +519,21 @@ def run_combined_numba_numpy():
     numpy_result = benchmark_batch(batch_numpy, (), n_iter, warmup=10)
 
     print(f"circle_intersect (batch of {batch_size}):")
-    print(f"  Python loop:      {orig['mean_ns']/1000:8.1f} µs  ({orig['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  Numba loop:       {numba_result['mean_ns']/1000:8.1f} µs  ({numba_result['mean_ns']/batch_size:.1f} ns/op)")
-    print(f"  NumPy vectorized: {numpy_result['mean_ns']/1000:8.1f} µs  ({numpy_result['mean_ns']/batch_size:.1f} ns/op)")
+    print(
+        f"  Python loop:      {orig['mean_ns'] / 1000:8.1f} µs"
+        f"  ({orig['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(
+        f"  Numba loop:       {numba_result['mean_ns'] / 1000:8.1f} µs"
+        f"  ({numba_result['mean_ns'] / batch_size:.1f} ns/op)"
+    )
+    print(
+        f"  NumPy vectorized: {numpy_result['mean_ns'] / 1000:8.1f} µs"
+        f"  ({numpy_result['mean_ns'] / batch_size:.1f} ns/op)"
+    )
     print()
-    print(f"  Numba speedup vs Python: {orig['mean_ns']/numba_result['mean_ns']:.2f}x")
-    print(f"  NumPy speedup vs Python: {orig['mean_ns']/numpy_result['mean_ns']:.2f}x")
+    print(f"  Numba speedup vs Python: {orig['mean_ns'] / numba_result['mean_ns']:.2f}x")
+    print(f"  NumPy speedup vs Python: {orig['mean_ns'] / numpy_result['mean_ns']:.2f}x")
 
 
 def main():

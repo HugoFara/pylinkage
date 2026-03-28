@@ -24,11 +24,11 @@ For direct access to the solver:
 """
 
 # Pure numba components (no Python object dependencies)
-from .joints import (
-    solve_crank,
-    solve_fixed,
-    solve_linear,
-    solve_revolute,
+from .acceleration import (
+    solve_crank_acceleration,
+    solve_fixed_acceleration,
+    solve_prismatic_acceleration,
+    solve_revolute_acceleration,
 )
 
 # Group solvers (standalone functions for Assur groups)
@@ -36,11 +36,11 @@ from .groups import (
     solve_rrp_dyad,
     solve_rrr_dyad,
 )
-
-# High-level solving API
-from .solve import (
-    solve_decomposition,
-    solve_group,
+from .joints import (
+    solve_crank,
+    solve_fixed,
+    solve_linear,
+    solve_revolute,
 )
 from .simulation import (
     first_nan_step,
@@ -48,20 +48,14 @@ from .simulation import (
     simulate,
     simulate_with_kinematics,
     step_single,
-    step_single_velocity,
     step_single_acceleration,
+    step_single_velocity,
 )
-from .velocity import (
-    solve_crank_velocity,
-    solve_fixed_velocity,
-    solve_prismatic_velocity,
-    solve_revolute_velocity,
-)
-from .acceleration import (
-    solve_crank_acceleration,
-    solve_fixed_acceleration,
-    solve_prismatic_acceleration,
-    solve_revolute_acceleration,
+
+# High-level solving API
+from .solve import (
+    solve_decomposition,
+    solve_group,
 )
 from .types import (
     JOINT_CRANK,
@@ -71,6 +65,12 @@ from .types import (
     JOINT_STATIC,
     MAX_PARENTS,
     SolverData,
+)
+from .velocity import (
+    solve_crank_velocity,
+    solve_fixed_velocity,
+    solve_prismatic_velocity,
+    solve_revolute_velocity,
 )
 
 # Conversion functions are loaded lazily to avoid circular imports.

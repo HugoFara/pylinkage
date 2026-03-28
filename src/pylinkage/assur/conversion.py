@@ -47,7 +47,7 @@ def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
         >>> graph, dims = linkage_to_graph(linkage)
         >>> print(f"Nodes: {list(graph.nodes.keys())}")
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+    from ..joints import Crank, Fixed, Prismatic, Revolute
     from ..joints.joint import _StaticBase
 
     graph = LinkageGraph(name=linkage.name)
@@ -61,7 +61,9 @@ def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
     joint_to_node: dict[int, NodeId] = {}
     edge_counter = 0
 
-    def get_or_create_anchor_node(joint: object, coord: tuple[float | None, float | None]) -> NodeId:
+    def get_or_create_anchor_node(
+        joint: object, coord: tuple[float | None, float | None]
+    ) -> NodeId:
         """Get existing node for joint or create anchor node."""
         nonlocal edge_counter
 
@@ -255,7 +257,7 @@ def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
                 graph.add_edge(edge)
                 edge_counter += 1
 
-            if hasattr(joint, 'joint2') and joint.joint2 is not None:
+            if hasattr(joint, "joint2") and joint.joint2 is not None:
                 parent_id = joint_to_node.get(id(joint.joint2))
                 if parent_id is None:
                     parent_id = get_or_create_anchor_node(joint.joint2, joint.joint2.coord())
@@ -322,7 +324,7 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
         DeprecationWarning,
         stacklevel=2,
     )
-    from ..joints import Crank, Revolute, Static
+    from ..joints import Crank, Revolute
     from ..joints.joint import Joint, _StaticBase
     from ..linkage.linkage import Linkage as LinkageClass
 
@@ -386,7 +388,9 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
         if group.joint_signature == "RRR":
             # Create Revolute joint
             if len(group.internal_nodes) != 1:
-                raise ValueError(f"RRR group should have 1 internal node, got {len(group.internal_nodes)}")
+                raise ValueError(
+                    f"RRR group should have 1 internal node, got {len(group.internal_nodes)}"
+                )
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
@@ -395,7 +399,9 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
             y = pos[1] if pos else 0.0
 
             anchor0 = node_to_joint.get(group.anchor_nodes[0])
-            anchor1 = node_to_joint.get(group.anchor_nodes[1]) if len(group.anchor_nodes) > 1 else None
+            anchor1 = (
+                node_to_joint.get(group.anchor_nodes[1]) if len(group.anchor_nodes) > 1 else None
+            )
 
             # Get distances from dimensions using edge IDs
             distance0: float | None = None
@@ -420,7 +426,9 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
         elif group.joint_signature == "RRP":
             # Create Prismatic joint
             if len(group.internal_nodes) != 1:
-                raise ValueError(f"RRP group should have 1 internal node, got {len(group.internal_nodes)}")
+                raise ValueError(
+                    f"RRP group should have 1 internal node, got {len(group.internal_nodes)}"
+                )
 
             internal_id = group.internal_nodes[0]
             node = graph.nodes[internal_id]
@@ -429,8 +437,8 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
             y = pos[1] if pos else 0.0
 
             anchor = node_to_joint.get(group.anchor_nodes[0]) if group.anchor_nodes else None
-            line1 = node_to_joint.get(getattr(group, 'line_node1', None) or '')
-            line2 = node_to_joint.get(getattr(group, 'line_node2', None) or '')
+            line1 = node_to_joint.get(getattr(group, "line_node1", None) or "")
+            line2 = node_to_joint.get(getattr(group, "line_node2", None) or "")
 
             # Get revolute distance from dimensions using edge ID
             revolute_distance: float | None = None

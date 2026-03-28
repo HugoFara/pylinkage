@@ -103,7 +103,7 @@ class Revolute(pl_joint.Joint):
             assert self.joint1.x is not None and self.joint1.y is not None
             assert self.r1 is not None
             return self.joint1.x, self.joint1.y, self.r1
-        raise ValueError(f'index should be 0 or 1, not {index}')
+        raise ValueError(f"index should be 0 or 1, not {index}")
 
     def circle(self, joint: pl_joint.Joint) -> Circle:
         """
@@ -119,7 +119,7 @@ class Revolute(pl_joint.Joint):
         if self.joint1 is joint:
             assert self.r1 is not None
             return joint.x, joint.y, self.r1
-        raise ValueError(f'{joint} is not in joints of {self}')
+        raise ValueError(f"{joint} is not in joints of {self}")
 
     def reload(self, dt: float = 1) -> None:
         """Compute position using solver (RRR dyad - circle-circle).
@@ -146,8 +146,7 @@ class Revolute(pl_joint.Joint):
         # Validate constraints
         if self.r0 is None or self.r1 is None:
             warnings.warn(
-                f"Revolute joint {self.name} missing distance constraints. "
-                "Coordinates unchanged",
+                f"Revolute joint {self.name} missing distance constraints. Coordinates unchanged",
                 stacklevel=2,
             )
             return
@@ -175,10 +174,13 @@ class Revolute(pl_joint.Joint):
 
         # Delegate to solver function (single source of truth)
         new_x, new_y = solve_revolute(
-            self.x, self.y,
-            j0x or 0.0, j0y or 0.0,
+            self.x,
+            self.y,
+            j0x or 0.0,
+            j0y or 0.0,
             self.r0,
-            j1x or 0.0, j1y or 0.0,
+            j1x or 0.0,
+            j1y or 0.0,
             self.r1,
         )
 

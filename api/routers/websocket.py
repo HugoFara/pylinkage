@@ -91,11 +91,13 @@ async def simulation_websocket(websocket: WebSocket, mechanism_id: str) -> None:
     joint_names = mechanism_service.get_joint_names(mechanism)
 
     # Send initial info
-    await websocket.send_json({
-        "type": "ready",
-        "joint_names": joint_names,
-        "rotation_period": mechanism.get_rotation_period(),
-    })
+    await websocket.send_json(
+        {
+            "type": "ready",
+            "joint_names": joint_names,
+            "rotation_period": mechanism.get_rotation_period(),
+        }
+    )
 
     try:
         while True:
@@ -120,11 +122,13 @@ async def simulation_websocket(websocket: WebSocket, mechanism_id: str) -> None:
                         ]
                         for pos in positions
                     ]
-                    await websocket.send_json({
-                        "type": "frame",
-                        "step": step,
-                        "positions": frame,
-                    })
+                    await websocket.send_json(
+                        {
+                            "type": "frame",
+                            "step": step,
+                            "positions": frame,
+                        }
+                    )
                     step += 1
                     if step >= iterations:
                         break
@@ -190,11 +194,13 @@ async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> 
     joint_names = mechanism_service.get_joint_names(mechanism)
     rotation_period = mechanism.get_rotation_period()
 
-    await websocket.send_json({
-        "type": "ready",
-        "joint_names": joint_names,
-        "rotation_period": rotation_period,
-    })
+    await websocket.send_json(
+        {
+            "type": "ready",
+            "joint_names": joint_names,
+            "rotation_period": rotation_period,
+        }
+    )
 
     try:
         while True:
@@ -222,11 +228,13 @@ async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> 
 
                     # Send progress updates periodically
                     if step % progress_interval == 0:
-                        await websocket.send_json({
-                            "type": "progress",
-                            "current": step,
-                            "total": iterations,
-                        })
+                        await websocket.send_json(
+                            {
+                                "type": "progress",
+                                "current": step,
+                                "total": iterations,
+                            }
+                        )
                         # Yield to event loop occasionally
                         await asyncio.sleep(0)
 
@@ -234,11 +242,13 @@ async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> 
                         break
 
                 # Send all frames
-                await websocket.send_json({
-                    "type": "frames",
-                    "frames": frames,
-                    "total_frames": len(frames),
-                })
+                await websocket.send_json(
+                    {
+                        "type": "frames",
+                        "frames": frames,
+                        "total_frames": len(frames),
+                    }
+                )
 
             elif data.get("action") == "close":
                 break

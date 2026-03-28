@@ -271,8 +271,7 @@ def hierarchical_to_dict(linkage: HierarchicalLinkage) -> dict[str, Any]:
     return {
         "name": linkage.name,
         "instances": {
-            iid: component_instance_to_dict(inst)
-            for iid, inst in linkage.instances.items()
+            iid: component_instance_to_dict(inst) for iid, inst in linkage.instances.items()
         },
         "connections": [connection_to_dict(c) for c in linkage.connections],
     }

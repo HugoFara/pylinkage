@@ -9,7 +9,6 @@ This is a pure topological representation - dimensional data (positions,
 distances, angles) is stored separately in a Dimensions object.
 """
 
-
 import copy
 from dataclasses import dataclass, field
 
@@ -146,9 +145,7 @@ class LinkageGraph:
     name: str = ""
 
     # Adjacency structure (computed lazily)
-    _adjacency: dict[NodeId, list[EdgeId]] = field(
-        default_factory=dict, repr=False, compare=False
-    )
+    _adjacency: dict[NodeId, list[EdgeId]] = field(default_factory=dict, repr=False, compare=False)
 
     def add_node(self, node: Node) -> None:
         """Add a node to the graph.
@@ -225,13 +222,9 @@ class LinkageGraph:
 
         # Update adjacency lists
         if edge.source in self._adjacency:
-            self._adjacency[edge.source] = [
-                e for e in self._adjacency[edge.source] if e != edge_id
-            ]
+            self._adjacency[edge.source] = [e for e in self._adjacency[edge.source] if e != edge_id]
         if edge.target in self._adjacency:
-            self._adjacency[edge.target] = [
-                e for e in self._adjacency[edge.target] if e != edge_id
-            ]
+            self._adjacency[edge.target] = [e for e in self._adjacency[edge.target] if e != edge_id]
 
         return edge
 

@@ -155,6 +155,7 @@ def _determine_branch(
 
     # Get distances from original joint
     from ..joints.revolute import Revolute
+
     if isinstance(joint, Revolute):
         r0 = joint.r0 if joint.r0 is not None else 1.0
         r1 = joint.r1 if joint.r1 is not None else 1.0
@@ -215,9 +216,7 @@ def symbolic_to_linkage(
 
     # Build substitution dictionary
     param_subs = {
-        sym_linkage.parameters[k]: v
-        for k, v in param_values.items()
-        if k in sym_linkage.parameters
+        sym_linkage.parameters[k]: v for k, v in param_values.items() if k in sym_linkage.parameters
     }
     theta_sub = {sym_linkage.theta: initial_theta}
     all_subs = {**param_subs, **theta_sub}

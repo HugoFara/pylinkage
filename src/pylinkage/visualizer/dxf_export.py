@@ -38,9 +38,7 @@ DXF_LAYERS = {
 def _check_ezdxf() -> "ezdxf":
     """Check that ezdxf is available, raise ImportError if not."""
     if _ezdxf is None:
-        raise ImportError(
-            "DXF export requires ezdxf. Install with: pip install pylinkage[cad]"
-        )
+        raise ImportError("DXF export requires ezdxf. Install with: pip install pylinkage[cad]")
     return _ezdxf
 
 

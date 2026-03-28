@@ -4,7 +4,6 @@ Each function solves a specific joint type given the parent positions
 and constraints. All functions are numba-compiled for maximum performance.
 """
 
-
 import math
 
 from numba import njit
@@ -319,8 +318,14 @@ def solve_line_line(
         New (x, y) position, or (NaN, NaN) if unbuildable (parallel lines).
     """
     result = line_line_intersection(
-        line1_p1_x, line1_p1_y, line1_p2_x, line1_p2_y,
-        line2_p1_x, line2_p1_y, line2_p2_x, line2_p2_y,
+        line1_p1_x,
+        line1_p1_y,
+        line1_p2_x,
+        line1_p2_y,
+        line2_p1_x,
+        line2_p1_y,
+        line2_p2_x,
+        line2_p2_y,
     )
 
     if result[0] == INTERSECTION_NONE:

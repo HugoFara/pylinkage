@@ -9,6 +9,7 @@ Created on Sat Jun 19, 12:32:37 2021.
 
 @author: HugoFara
 """
+
 import pylinkage as pl
 
 
@@ -20,24 +21,18 @@ def define_linkage():
     """
     # Main motor
     crank = pl.Crank(
-        0, 1,
+        0,
+        1,
         joint0=(0, 0),  # Fixed to a single point in space
-        angle=0.31, distance=1,
-        name="B"
+        angle=0.31,
+        distance=1,
+        name="B",
     )
     # Close the loop
-    pin = pl.Revolute(
-        3, 2,
-        joint0=crank, joint1=(3, 0),
-        distance0=3, distance1=1, name="C"
-    )
+    pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
 
     # Linkage definition
-    my_linkage = pl.Linkage(
-        joints=(crank, pin),
-        order=(crank, pin),
-        name="My four-bar linkage"
-    )
+    my_linkage = pl.Linkage(joints=(crank, pin), order=(crank, pin), name="My four-bar linkage")
     return my_linkage
 
 
@@ -61,7 +56,7 @@ def quadrant_fitness(loci, **kwargs):
     # Reference bounding box in order (min_y, max_x, max_y, min_x)
     ref_bb = (0, 5, 2, 3)
     # Our score is the square sum of the edge distances
-    return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb))
+    return sum((pos - ref_pos) ** 2 for pos, ref_pos in zip(curr_bb, ref_bb, strict=False))
 
 
 def main():
@@ -77,10 +72,7 @@ def main():
 
     constraints = tuple(my_linkage.get_num_constraints())
 
-    print(
-        "Score before optimization:",
-        quadrant_fitness(my_linkage, constraints, init_pos)
-    )
+    print("Score before optimization:", quadrant_fitness(my_linkage, constraints, init_pos))
 
     # Trials and errors optimization as an example ONLY
 

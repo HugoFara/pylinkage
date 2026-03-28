@@ -2,7 +2,6 @@
 Definition of the different joints used for pylinkage.
 """
 
-
 import abc
 import warnings
 
@@ -128,16 +127,12 @@ class Joint(abc.ABC):
     @abc.abstractmethod
     def get_constraints(self) -> Constraints:
         """Return geometric constraints applying to this Joint."""
-        raise NotImplementedError(
-            "You can't call a constraint from an abstract class."
-        )
+        raise NotImplementedError("You can't call a constraint from an abstract class.")
 
     @abc.abstractmethod
     def set_constraints(self, *args: float | None) -> None:
         """Set geometric constraints applying to this Joint."""
-        raise NotImplementedError(
-            "You can't set a constraint from an abstract class."
-        )
+        raise NotImplementedError("You can't set a constraint from an abstract class.")
 
     @abc.abstractmethod
     def reload(self, dt: float = 1) -> None:
@@ -145,9 +140,7 @@ class Joint(abc.ABC):
 
         :param dt: Time step or fraction of movement. The default is 1.
         """
-        raise NotImplementedError(
-            "You can't reload from an abstract class."
-        )
+        raise NotImplementedError("You can't reload from an abstract class.")
 
 
 class _StaticBase(Joint):

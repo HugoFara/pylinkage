@@ -60,7 +60,7 @@ class TestSymbolicLinkage:
         assert "D" in trajectories
 
         # Each should be a tuple of (x_expr, y_expr)
-        for name, (x, y) in trajectories.items():
+        for _name, (x, y) in trajectories.items():
             assert isinstance(x, sp.Basic)
             assert isinstance(y, sp.Basic)
 
@@ -106,10 +106,12 @@ class TestSymbolicLinkage:
 
     def test_substitute(self, fourbar_linkage):
         """Test parameter substitution."""
-        new_linkage = fourbar_linkage.substitute({
-            "r_AB": 1.0,
-            "r_BC": 3.0,
-        })
+        new_linkage = fourbar_linkage.substitute(
+            {
+                "r_AB": 1.0,
+                "r_BC": 3.0,
+            }
+        )
 
         # New linkage should have fewer symbolic parameters
         assert "r_AB" not in new_linkage.parameters

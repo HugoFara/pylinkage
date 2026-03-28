@@ -221,9 +221,7 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
 
         if isinstance(joint, Crank):
             data.constraints[offset] = joint.r if joint.r is not None else 0.0
-            data.constraints[offset + 1] = (
-                joint.angle if joint.angle is not None else 0.0
-            )
+            data.constraints[offset + 1] = joint.angle if joint.angle is not None else 0.0
 
         elif isinstance(joint, Revolute):
             data.constraints[offset] = joint.r0 if joint.r0 is not None else 0.0
@@ -231,9 +229,7 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
 
         elif isinstance(joint, Fixed):
             data.constraints[offset] = joint.r if joint.r is not None else 0.0
-            data.constraints[offset + 1] = (
-                joint.angle if joint.angle is not None else 0.0
-            )
+            data.constraints[offset + 1] = joint.angle if joint.angle is not None else 0.0
 
         elif isinstance(joint, Prismatic):
             data.constraints[offset] = (

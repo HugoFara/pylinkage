@@ -4,7 +4,6 @@ Serialization support for linkages.
 Provides JSON serialization and deserialization for Linkage objects.
 """
 
-
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -168,7 +167,7 @@ def joint_from_dict(
 
     result: Joint
     # Use _StaticBase for Static to avoid triggering deprecation warnings
-    if cls == _StaticBase or cls == Static:
+    if cls in (_StaticBase, Static):
         result = _StaticBase(
             x=data.get("x", 0),
             y=data.get("y", 0),
@@ -233,9 +232,7 @@ def linkage_to_dict(linkage: "Linkage") -> dict[str, Any]:
         "name": linkage.name,
         "joints": [joint_to_dict(j, linkage.joints) for j in linkage.joints],
         "solve_order": (
-            [j.name for j in linkage._solve_order]
-            if hasattr(linkage, "_solve_order")
-            else None
+            [j.name for j in linkage._solve_order] if hasattr(linkage, "_solve_order") else None
         ),
     }
 

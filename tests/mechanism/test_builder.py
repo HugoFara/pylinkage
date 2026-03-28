@@ -8,7 +8,7 @@ import math
 import pytest
 
 from pylinkage.exceptions import UnbuildableError, UnderconstrainedError
-from pylinkage.mechanism import MechanismBuilder, Mechanism
+from pylinkage.mechanism import Mechanism, MechanismBuilder
 
 
 class TestMechanismBuilderBasic:
@@ -58,8 +58,7 @@ class TestFourBarAssembly:
             MechanismBuilder("four-bar")
             .add_ground_link("ground", ports={"O1": (0, 0), "O2": (4, 0)})
             .add_driver_link(
-                "crank", length=1.0, motor_port="O1",
-                omega=0.1, initial_angle=math.pi / 4
+                "crank", length=1.0, motor_port="O1", omega=0.1, initial_angle=math.pi / 4
             )
             .add_link("coupler", length=3.5)
             .add_link("rocker", length=3.0)
@@ -128,6 +127,7 @@ class TestSliderCrankAssembly:
         prismatic_found = False
         for joint in mechanism.joints:
             from pylinkage.mechanism import PrismaticJoint
+
             if isinstance(joint, PrismaticJoint):
                 prismatic_found = True
                 break
@@ -140,10 +140,7 @@ class TestTernaryLinkAssembly:
     def test_ternary_link_creation(self):
         """Test adding a ternary link."""
         builder = MechanismBuilder("test")
-        builder.add_ternary_link(
-            "coupler",
-            port_geometry={"A": (0, 0), "B": (3, 0), "P": (1.5, 1)}
-        )
+        builder.add_ternary_link("coupler", port_geometry={"A": (0, 0), "B": (3, 0), "P": (1.5, 1)})
         assert "coupler" in builder._pending_links
         link = builder._pending_links["coupler"]
         assert len(link.ports) == 3
@@ -151,10 +148,7 @@ class TestTernaryLinkAssembly:
     def test_ternary_link_distances(self):
         """Test that ternary link computes distances correctly."""
         builder = MechanismBuilder("test")
-        builder.add_ternary_link(
-            "coupler",
-            port_geometry={"A": (0, 0), "B": (3, 0), "P": (0, 4)}
-        )
+        builder.add_ternary_link("coupler", port_geometry={"A": (0, 0), "B": (3, 0), "P": (0, 4)})
         link = builder._pending_links["coupler"]
 
         # A to B should be 3
@@ -168,10 +162,7 @@ class TestTernaryLinkAssembly:
         """Test that ternary link requires exactly 3 ports."""
         builder = MechanismBuilder("test")
         with pytest.raises(ValueError, match="exactly 3 ports"):
-            builder.add_ternary_link(
-                "coupler",
-                port_geometry={"A": (0, 0), "B": (3, 0)}
-            )
+            builder.add_ternary_link("coupler", port_geometry={"A": (0, 0), "B": (3, 0)})
 
 
 class TestValidation:
@@ -232,7 +223,7 @@ class TestAssemblyErrors:
             .add_ground_link("ground", ports={"O1": (0, 0), "O2": (10, 0)})
             .add_driver_link("crank", length=1.0, motor_port="O1", omega=0.1)
             .add_link("coupler", length=1.0)  # Too short
-            .add_link("rocker", length=1.0)   # Too short
+            .add_link("rocker", length=1.0)  # Too short
             .connect("crank.tip", "coupler.0")
             .connect("coupler.1", "rocker.0")
             .connect("rocker.1", "ground.O2")
@@ -324,8 +315,10 @@ class TestBranchSelection:
             if joint_id in pos_alt:
                 d_x, d_y = pos_default[joint_id]
                 a_x, a_y = pos_alt[joint_id]
-                if d_x is not None and a_x is not None:
-                    if abs(d_x - a_x) > 0.01 or abs(d_y - a_y) > 0.01:
+                if (
+                    d_x is not None and a_x is not None
+                    and (abs(d_x - a_x) > 0.01 or abs(d_y - a_y) > 0.01)
+                ):
                         positions_differ = True
                         break
 
@@ -339,8 +332,7 @@ class TestQuaternaryLink:
         """Test adding a quaternary link."""
         builder = MechanismBuilder("test")
         builder.add_quaternary_link(
-            "plate",
-            port_geometry={"A": (0, 0), "B": (2, 0), "C": (2, 1), "D": (0, 1)}
+            "plate", port_geometry={"A": (0, 0), "B": (2, 0), "C": (2, 1), "D": (0, 1)}
         )
         assert "plate" in builder._pending_links
         link = builder._pending_links["plate"]
@@ -351,6 +343,5 @@ class TestQuaternaryLink:
         builder = MechanismBuilder("test")
         with pytest.raises(ValueError, match="exactly 4 ports"):
             builder.add_quaternary_link(
-                "plate",
-                port_geometry={"A": (0, 0), "B": (2, 0), "C": (2, 1)}
+                "plate", port_geometry={"A": (0, 0), "B": (2, 0), "C": (2, 1)}
             )

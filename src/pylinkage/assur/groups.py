@@ -199,13 +199,21 @@ class Dyad(AssurGroup):
 
         if signature is not None:
             return _check_dyad_signature(
-                signature, internal_id, internal_node, anchor_node_ids, graph,
+                signature,
+                internal_id,
+                internal_node,
+                anchor_node_ids,
+                graph,
             )
 
         # Try all common signatures
         for sig in ("RRR", "RRP", "RPR", "PRR", "PP"):
             if _check_dyad_signature(
-                sig, internal_id, internal_node, anchor_node_ids, graph,
+                sig,
+                internal_id,
+                internal_node,
+                anchor_node_ids,
+                graph,
             ):
                 return True
         return False
@@ -240,8 +248,10 @@ def _check_dyad_signature(
                 return False
             for anchor_id in anchor_node_ids:
                 anchor = graph.nodes.get(anchor_id)
-                if anchor and anchor.joint_type == JointType.REVOLUTE:
-                    if graph.get_edge_between(internal_id, anchor_id) is not None:
+                if (
+                    anchor and anchor.joint_type == JointType.REVOLUTE
+                    and graph.get_edge_between(internal_id, anchor_id) is not None
+                ):
                         return True
             return False
         elif signature == "PRR":
@@ -341,9 +351,13 @@ class Triad(AssurGroup):
                 if graph.get_edge_between(iid, aid) is not None:
                     edge_count += 1
         # Also count edge between the two internals
-        if graph.get_edge_between(
-            internal_node_ids[0], internal_node_ids[1],
-        ) is not None:
+        if (
+            graph.get_edge_between(
+                internal_node_ids[0],
+                internal_node_ids[1],
+            )
+            is not None
+        ):
             edge_count += 1
 
         return edge_count >= 4
@@ -374,7 +388,11 @@ def identify_group_type(
             if internal_node is None:
                 return None
             if _check_dyad_signature(
-                sig, internal_id, internal_node, anchor_node_ids, graph,
+                sig,
+                internal_id,
+                internal_node,
+                anchor_node_ids,
+                graph,
             ):
                 return Dyad(_signature=sig)
         return None
@@ -458,7 +476,11 @@ def identify_dyad_type(
         return None
     for sig, dyad_cls in DYAD_TYPES.items():
         if _check_dyad_signature(
-            sig, internal_id, internal_node, anchor_node_ids, graph,
+            sig,
+            internal_id,
+            internal_node,
+            anchor_node_ids,
+            graph,
         ):
             return dyad_cls
     return None

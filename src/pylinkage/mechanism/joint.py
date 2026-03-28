@@ -239,9 +239,7 @@ class TrackerJoint(Joint):
         """Return TRACKER type."""
         return JointType.TRACKER
 
-    def update_position(
-        self, ref1_pos: tuple[float, float], ref2_pos: tuple[float, float]
-    ) -> None:
+    def update_position(self, ref1_pos: tuple[float, float], ref2_pos: tuple[float, float]) -> None:
         """Compute position from reference joint positions.
 
         Args:

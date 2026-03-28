@@ -7,7 +7,7 @@ Run with: uv run python docs/examples/pso_animation_demo.py
 
 import matplotlib
 
-matplotlib.use('Agg')  # Non-interactive backend for saving
+matplotlib.use("Agg")  # Non-interactive backend for saving
 
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
@@ -24,18 +24,36 @@ LAP_POINTS = 10
 
 # Dimension names and types
 DIM_NAMES = (
-    "triangle", "aperture", "femur", "rockerL",
-    "rockerS", "phi", "tibia", "f",
+    "triangle",
+    "aperture",
+    "femur",
+    "rockerL",
+    "rockerS",
+    "phi",
+    "tibia",
+    "f",
 )
 
 DIM_TYPES = (
-    "length", "angle", "length", "length",
-    "length", "angle", "length", "length",
+    "length",
+    "angle",
+    "length",
+    "length",
+    "length",
+    "angle",
+    "length",
+    "length",
 )
 
 DIMENSIONS = (
-    2, np.pi / 4, 1.8, 2.6,
-    1.4, np.pi + 0.2, 2.5, 1.8,
+    2,
+    np.pi / 4,
+    1.8,
+    2.6,
+    1.4,
+    np.pi + 0.2,
+    2.5,
+    1.8,
 )
 
 BOUNDS = (
@@ -44,21 +62,34 @@ BOUNDS = (
 )
 
 INIT_COORD = (
-    (0, 0), (0, 1), (1.41, 1.41), (-1.41, 1.41), (0, -1),
-    (-2.25, 0), (2.25, 0), (-1.4, -1.2), (1.4, -1.2),
-    (-2.7, -2.7), (2.7, -2.7),
+    (0, 0),
+    (0, 1),
+    (1.41, 1.41),
+    (-1.41, 1.41),
+    (0, -1),
+    (-2.25, 0),
+    (2.25, 0),
+    (-1.4, -1.2),
+    (1.4, -1.2),
+    (-2.7, -2.7),
+    (2.7, -2.7),
 )
 
 
 def param2dimensions(param=DIMENSIONS, flat=False):
     """Expand dimensions to fit in strider.set_num_constraints."""
     out = (
-        (), (),
-        (param[0], -param[1]), (param[0], param[1]),
+        (),
+        (),
+        (param[0], -param[1]),
+        (param[0], param[1]),
         (1,),
-        (param[2], param[3]), (param[2], param[3]),
-        (param[4], -param[5]), (param[4], param[5]),
-        (param[6], param[7]), (param[6], param[7]),
+        (param[2], param[3]),
+        (param[2], param[3]),
+        (param[4], -param[5]),
+        (param[4], param[5]),
+        (param[6], param[7]),
+        (param[6], param[7]),
     )
     if not flat:
         return out
@@ -75,23 +106,33 @@ def complete_strider(constraints, prev):
         "Y": pl.Static(0, 1, name="Point (0, 1)"),
     }
     linkage["Y"].joint0 = linkage["A"]
-    linkage.update({
-        "B": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"),
-        "B_p": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"),
-        "C": pl.Crank(joint0=linkage["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)"),
-    })
-    linkage.update({
-        "D": pl.Revolute(joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"),
-        "E": pl.Revolute(joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"),
-    })
-    linkage.update({
-        "F": pl.Fixed(joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"),
-        "G": pl.Fixed(joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"),
-    })
-    linkage.update({
-        "H": pl.Revolute(joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"),
-        "I": pl.Revolute(joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"),
-    })
+    linkage.update(
+        {
+            "B": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"),
+            "B_p": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"),
+            "C": pl.Crank(
+                joint0=linkage["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)"
+            ),
+        }
+    )
+    linkage.update(
+        {
+            "D": pl.Revolute(joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"),
+            "E": pl.Revolute(joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"),
+        }
+    )
+    linkage.update(
+        {
+            "F": pl.Fixed(joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"),
+            "G": pl.Fixed(joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"),
+        }
+    )
+    linkage.update(
+        {
+            "H": pl.Revolute(joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"),
+            "I": pl.Revolute(joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"),
+        }
+    )
     strider = pl.Linkage(joints=linkage.values(), order=linkage.values(), name="Strider")
     strider.set_coords(prev)
     strider.set_num_constraints(constraints, flat=False)
@@ -135,8 +176,7 @@ def run_optimization(linkage, n_particles=50, n_iterations=40):
 
     # Format history into swarms per iteration
     formatted_history = [
-        (i, history[i * n_particles : (i + 1) * n_particles])
-        for i in range(n_iterations)
+        (i, history[i * n_particles : (i + 1) * n_particles]) for i in range(n_iterations)
     ]
 
     return formatted_history
@@ -174,7 +214,7 @@ def create_parallel_coordinates_animation(history, output_path="parallel_coords_
     )
 
     print(f"Saving to {output_path}...")
-    animation.save(output_path, writer='pillow', fps=4)
+    animation.save(output_path, writer="pillow", fps=4)
     plt.close(fig)
     print(f"Saved: {output_path}")
 
@@ -202,7 +242,7 @@ def create_dashboard_animation(linkage, history, output_path="dashboard_animatio
         dashboard_layout(
             linkage=linkage,
             swarm=swarm,
-            score_history=score_history[:frame_idx + 1],
+            score_history=score_history[: frame_idx + 1],
             dim_names=DIM_NAMES,
             dim_types=DIM_TYPES,
             bounds=BOUNDS,
@@ -221,7 +261,7 @@ def create_dashboard_animation(linkage, history, output_path="dashboard_animatio
     )
 
     print(f"Saving to {output_path}...")
-    animation.save(output_path, writer='pillow', fps=3)
+    animation.save(output_path, writer="pillow", fps=3)
     plt.close(fig)
     print(f"Saved: {output_path}")
 

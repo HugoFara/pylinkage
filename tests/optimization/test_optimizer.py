@@ -18,9 +18,7 @@ def prepare_linkage():
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
     # Close the loop
-    pin = pl.Revolute(
-        0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1
-    )
+    pin = pl.Revolute(0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1)
     # Linkage definition
     return pl.Linkage(joints=[pin], order=[pin])
 
@@ -49,19 +47,20 @@ class TestGenerateBounds(unittest.TestCase):
         """Test is the function runs simply."""
         center = [1, 2, 3]
         bounds = optimization.generate_bounds(center=center, min_ratio=2, max_factor=2)
-        self.assertTrue(np.all(bounds[0] == [.5, 1, 1.5]))
+        self.assertTrue(np.all(bounds[0] == [0.5, 1, 1.5]))
         self.assertTrue(np.all(bounds[1] == [2, 4, 6]))
 
 
 class TestEvaluation(unittest.TestCase):
     """Test if a linkage can properly be evaluated."""
+
     linkage = prepare_linkage()
     constraints = tuple(linkage.get_num_constraints())
 
     def test_score(self):
         """Test if score is well returned."""
         score = fitness_func(self.linkage, self.constraints)
-        self.assertAlmostEqual(1, score, delta=.1)
+        self.assertAlmostEqual(1, score, delta=0.1)
 
 
 class TestVariator(unittest.TestCase):
@@ -70,20 +69,17 @@ class TestVariator(unittest.TestCase):
     def test_length(self):
         """Test that the length is about the number of subdivisions."""
         sequence = [1]
-        bounds = ((0, ), (3, ))
+        bounds = ((0,), (3,))
         for divisions in (1, 2, 3, 5, 6, 13, 30):
-            length = sum(
-                1 for _ in sequential_variator(sequence, divisions, bounds)
-            )
+            length = sum(1 for _ in sequential_variator(sequence, divisions, bounds))
             self.assertAlmostEqual(length, divisions, delta=1)
-            length = sum(
-                1 for _ in fast_variator(divisions, bounds)
-            )
+            length = sum(1 for _ in fast_variator(divisions, bounds))
             self.assertAlmostEqual(length, divisions)
 
 
 class TestTrialsAndErrors(unittest.TestCase):
     """Tests for the trials and errors optimization."""
+
     linkage = prepare_linkage()
 
     def test_convergence(self):
@@ -103,6 +99,7 @@ class TestTrialsAndErrors(unittest.TestCase):
 
 class TestPSO(unittest.TestCase):
     """Test the particle swarm optimization."""
+
     linkage = prepare_linkage()
     constraints = tuple(linkage.get_num_constraints())
 
@@ -118,19 +115,21 @@ class TestPSO(unittest.TestCase):
             "n_particles": 20,
             "iters": 30,
             "order_relation": min,
-            "verbose": False
+            "verbose": False,
         }
         score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         if score > delta:
             # Try again with more agents
-            opti_kwargs.update({
-                "n_particles": 50,
-                "iters": 100,
-            })
+            opti_kwargs.update(
+                {
+                    "n_particles": 50,
+                    "iters": 100,
+                }
+            )
             score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
         # Do not apply optimization problems
         self.assertAlmostEqual(0.0, score, delta=delta)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

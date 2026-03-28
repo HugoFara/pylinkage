@@ -1,11 +1,9 @@
 """Tests for dyad factory function."""
 
-import math
-
 import pytest
 
-from pylinkage.components import Ground
 from pylinkage.actuators import Crank
+from pylinkage.components import Ground
 from pylinkage.dyads import (
     PPDyad,
     RRPDyad,

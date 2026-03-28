@@ -9,6 +9,7 @@ This script measures performance of:
 
 Run with: uv run python benchmarks/benchmark_geometry.py
 """
+
 import contextlib
 import math
 import random
@@ -32,7 +33,9 @@ from pylinkage.geometry.secants import (
 )
 
 
-def benchmark(func: Callable, args_generator: Callable, n_iterations: int = 100_000, warmup: int = 1000) -> dict:
+def benchmark(
+    func: Callable, args_generator: Callable, n_iterations: int = 100_000, warmup: int = 1000
+) -> dict:
     """
     Benchmark a function with generated arguments.
 
@@ -74,7 +77,7 @@ def format_results(name: str, results: dict) -> str:
     """Format benchmark results for display."""
     return (
         f"{name}:\n"
-        f"  Mean: {results['mean_ns']:.1f} ns ({results['mean_ns']/1000:.2f} µs)\n"
+        f"  Mean: {results['mean_ns']:.1f} ns ({results['mean_ns'] / 1000:.2f} µs)\n"
         f"  Median: {results['median_ns']:.1f} ns\n"
         f"  Stdev: {results['stdev_ns']:.1f} ns\n"
         f"  Min/Max: {results['min_ns']:.1f} / {results['max_ns']:.1f} ns\n"
@@ -85,6 +88,7 @@ def format_results(name: str, results: dict) -> str:
 # ============================================================================
 # Argument generators for different functions (scalar-based API)
 # ============================================================================
+
 
 def gen_sqr_dist_args():
     """Generate random points for sqr_dist."""
@@ -152,24 +156,12 @@ def gen_circle_line_args():
 # Linkage benchmarks
 # ============================================================================
 
+
 def create_fourbar_linkage():
     """Create a standard four-bar linkage for benchmarking."""
-    crank = pl.Crank(
-        0, 1,
-        joint0=(0, 0),
-        angle=0.31, distance=1,
-        name="B"
-    )
-    pin = pl.Revolute(
-        3, 2,
-        joint0=crank, joint1=(3, 0),
-        distance0=3, distance1=1, name="C"
-    )
-    return pl.Linkage(
-        joints=(crank, pin),
-        order=(crank, pin),
-        name="Benchmark four-bar"
-    )
+    crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="B")
+    pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
+    return pl.Linkage(joints=(crank, pin), order=(crank, pin), name="Benchmark four-bar")
 
 
 def benchmark_linkage_step(linkage, n_cycles: int = 1000) -> dict:
@@ -259,6 +251,7 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
 # Main benchmark runner
 # ============================================================================
 
+
 def run_geometry_benchmarks(n_iterations: int = 100_000):
     """Run all geometry function benchmarks."""
     print("=" * 70)
@@ -273,7 +266,11 @@ def run_geometry_benchmarks(n_iterations: int = 100_000):
         ("norm", norm, gen_norm_args),
         ("cyl_to_cart", cyl_to_cart, gen_cyl_to_cart_args),
         ("circle_intersect", circle_intersect, gen_circle_intersect_args),
-        ("circle_line_from_points_intersection", circle_line_from_points_intersection, gen_circle_line_args),
+        (
+            "circle_line_from_points_intersection",
+            circle_line_from_points_intersection,
+            gen_circle_line_args,
+        ),
     ]
 
     results = {}
@@ -342,7 +339,7 @@ def main():
     print()
     print("Geometry functions (mean time):")
     for name, result in geometry_results.items():
-        print(f"  {name}: {result['mean_ns']:.0f} ns ({result['mean_ns']/1000:.2f} µs)")
+        print(f"  {name}: {result['mean_ns']:.0f} ns ({result['mean_ns'] / 1000:.2f} µs)")
     print()
     print("Linkage simulation:")
     print(f"  Step cycle: {linkage_results['step']['mean_cycle_us']:.0f} µs")
@@ -355,8 +352,11 @@ def main():
     pso_iterations = 200
     particles = 50
     total_evals = pso_iterations * particles
-    est_pso_time = total_evals * linkage_results['optimization']['mean_eval_us'] / 1_000_000
-    print(f"Estimated PSO time ({pso_iterations} iters × {particles} particles = {total_evals:,} evals):")
+    est_pso_time = total_evals * linkage_results["optimization"]["mean_eval_us"] / 1_000_000
+    print(
+        f"Estimated PSO time ({pso_iterations} iters"
+        f" × {particles} particles = {total_evals:,} evals):"
+    )
     print(f"  ~{est_pso_time:.1f} seconds")
 
 

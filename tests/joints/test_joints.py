@@ -11,7 +11,7 @@ import unittest
 from pylinkage import UnbuildableError
 from pylinkage.exceptions import NotCompletelyDefinedError
 from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
-from pylinkage.joints.joint import joint_syntax_parser, _StaticBase
+from pylinkage.joints.joint import _StaticBase, joint_syntax_parser
 from pylinkage.joints.revolute import Pivot
 from pylinkage.joints.static import Static as StaticFromModule
 
@@ -217,6 +217,7 @@ class TestCrankJoint(unittest.TestCase):
     def test_crank_reload_joint0_none_coords(self):
         """Test Crank reload raises when joint0 has None coordinates."""
         from pylinkage.exceptions import UnderconstrainedError
+
         j0 = Revolute()
         j0.x = None
         j0.y = None
@@ -227,6 +228,7 @@ class TestCrankJoint(unittest.TestCase):
     def test_crank_reload_missing_distance(self):
         """Test Crank reload raises when distance is missing."""
         from pylinkage.exceptions import UnderconstrainedError
+
         crank = Crank(1, 0, joint0=(0, 0), angle=0.5)
         with self.assertRaises(UnderconstrainedError):
             crank.reload()
@@ -234,6 +236,7 @@ class TestCrankJoint(unittest.TestCase):
     def test_crank_reload_missing_angle(self):
         """Test Crank reload raises when angle is missing."""
         from pylinkage.exceptions import UnderconstrainedError
+
         crank = Crank(1, 0, joint0=(0, 0), distance=1)
         with self.assertRaises(UnderconstrainedError):
             crank.reload()
@@ -259,12 +262,13 @@ class TestPrismaticJoint(unittest.TestCase):
     def test_prismatic_creation(self):
         """Test Prismatic joint creation."""
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
             revolute_radius=2,
-            name="TestPrismatic"
+            name="TestPrismatic",
         )
         self.assertEqual(prismatic.name, "TestPrismatic")
         self.assertEqual(prismatic.revolute_radius, 2)
@@ -272,22 +276,24 @@ class TestPrismaticJoint(unittest.TestCase):
     def test_prismatic_get_constraints(self):
         """Test Prismatic get_constraints."""
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
-            revolute_radius=2.5
+            revolute_radius=2.5,
         )
         self.assertEqual(prismatic.get_constraints(), (2.5,))
 
     def test_prismatic_set_constraints(self):
         """Test Prismatic set_constraints."""
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
-            revolute_radius=2
+            revolute_radius=2,
         )
         prismatic.set_constraints(3.5)
         self.assertEqual(prismatic.revolute_radius, 3.5)
@@ -295,11 +301,12 @@ class TestPrismaticJoint(unittest.TestCase):
     def test_prismatic_reload(self):
         """Test Prismatic reload computes position."""
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
-            revolute_radius=2.5
+            revolute_radius=2.5,
         )
         prismatic.reload()
         x, y = prismatic.coord()
@@ -316,11 +323,7 @@ class TestPrismaticJoint(unittest.TestCase):
 
     def test_prismatic_reload_missing_line_joints(self):
         """Test Prismatic reload raises when line joints missing."""
-        prismatic = Prismatic(
-            2, 2,
-            joint0=self.anchor,
-            revolute_radius=2
-        )
+        prismatic = Prismatic(2, 2, joint0=self.anchor, revolute_radius=2)
         with self.assertRaises(NotCompletelyDefinedError):
             prismatic.reload()
 
@@ -328,11 +331,12 @@ class TestPrismaticJoint(unittest.TestCase):
         """Test Prismatic reload raises when no intersection possible."""
         # Circle too small to reach the line
         prismatic = Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=self.anchor,
             joint1=self.line_start,
             joint2=self.line_end,
-            revolute_radius=0.5  # Too small
+            revolute_radius=0.5,  # Too small
         )
         with self.assertRaises(UnbuildableError):
             prismatic.reload()
@@ -340,10 +344,12 @@ class TestPrismaticJoint(unittest.TestCase):
     def test_linear_alias_deprecated(self):
         """Test that Linear alias emits deprecation warning."""
         import warnings
+
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             Linear(
-                2, 2,
+                2,
+                2,
                 joint0=self.anchor,
                 joint1=self.line_start,
                 joint2=self.line_end,
@@ -364,40 +370,28 @@ class TestPivot(unittest.TestCase):
     def test_buildable(self):
         """Upper intersect test."""
         pivot2 = Revolute(1, 0)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
-        self.assertEqual((.5, math.sqrt(.75)), pivot3.coord())
+        self.assertEqual((0.5, math.sqrt(0.75)), pivot3.coord())
 
     def test_under_intersect(self):
         """Under intersect test."""
         pivot2 = Revolute(1, 0)
-        pivot3 = Revolute(
-            y=-1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=-1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
-        self.assertEqual((.5, -math.sqrt(.75)), pivot3.coord())
+        self.assertEqual((0.5, -math.sqrt(0.75)), pivot3.coord())
 
     def test_limit_intersect(self):
         """Test system almost breaking."""
         pivot2 = Revolute(2, 0)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
         self.assertEqual((1, 0), pivot3.coord())
 
     def test_no_intersect(self):
         """Test system almost breaking."""
         pivot2 = Revolute(0, 3)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         with self.assertRaises(UnbuildableError):
             pivot3.reload()
 
@@ -410,40 +404,28 @@ class TestRevolute(unittest.TestCase):
     def test_buildable(self):
         """Upper intersect test."""
         pivot2 = Revolute(1, 0)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
-        self.assertEqual((.5, math.sqrt(.75)), pivot3.coord())
+        self.assertEqual((0.5, math.sqrt(0.75)), pivot3.coord())
 
     def test_under_intersect(self):
         """Under intersect test."""
         pivot2 = Revolute(1, 0)
-        pivot3 = Revolute(
-            y=-1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=-1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
-        self.assertEqual((.5, -math.sqrt(.75)), pivot3.coord())
+        self.assertEqual((0.5, -math.sqrt(0.75)), pivot3.coord())
 
     def test_limit_intersect(self):
         """Test system almost breaking."""
         pivot2 = Revolute(2, 0)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         pivot3.reload()
         self.assertEqual((1, 0), pivot3.coord())
 
     def test_no_intersect(self):
         """Test system almost breaking."""
         pivot2 = Revolute(0, 3)
-        pivot3 = Revolute(
-            y=1, joint0=self.pivot1, joint1=pivot2,
-            distance0=1, distance1=1
-        )
+        pivot3 = Revolute(y=1, joint0=self.pivot1, joint1=pivot2, distance0=1, distance1=1)
         with self.assertRaises(UnbuildableError):
             pivot3.reload()
 
@@ -522,6 +504,7 @@ class TestRevolute(unittest.TestCase):
     def test_reload_one_constraint_warning(self):
         """Test reload with only one valid constraint emits warning."""
         import warnings
+
         parent = Static(0, 0)
         joint = Revolute(1, 1, joint0=parent, distance0=1.5)
         with warnings.catch_warnings(record=True) as w:
@@ -533,6 +516,7 @@ class TestRevolute(unittest.TestCase):
     def test_reload_coincident_circles_warning(self):
         """Test reload with coincident circles emits warning."""
         import warnings
+
         parent1 = Static(0, 0)
         parent2 = Static(0, 0)  # Same position
         joint = Revolute(1, 0, joint0=parent1, joint1=parent2, distance0=1, distance1=1)
@@ -551,9 +535,7 @@ class TestFixed(unittest.TestCase):
     def test_pos(self):
         """Test Fixed_Joint positioning."""
         pivot2 = Revolute(1, 0)
-        fixed = Fixed(
-            joint0=self.pivot1, joint1=pivot2, angle=0, distance=1
-        )
+        fixed = Fixed(joint0=self.pivot1, joint1=pivot2, angle=0, distance=1)
         fixed.reload()
         self.assertEqual((1, 0), fixed.coord())
 
@@ -594,6 +576,7 @@ class TestFixed(unittest.TestCase):
     def test_reload_missing_joint0(self):
         """Test reload raises when joint0 is missing."""
         from pylinkage.exceptions import UnderconstrainedError
+
         fixed = Fixed(joint1=Static(1, 0), distance=1, angle=0)
         with self.assertRaises(UnderconstrainedError):
             fixed.reload()
@@ -601,6 +584,7 @@ class TestFixed(unittest.TestCase):
     def test_reload_missing_joint1(self):
         """Test reload raises when joint1 is missing."""
         from pylinkage.exceptions import UnderconstrainedError
+
         fixed = Fixed(joint0=Static(0, 0), distance=1, angle=0)
         with self.assertRaises(UnderconstrainedError):
             fixed.reload()
@@ -608,6 +592,7 @@ class TestFixed(unittest.TestCase):
     def test_reload_missing_constraints(self):
         """Test reload raises when constraints are missing."""
         from pylinkage.exceptions import UnderconstrainedError
+
         fixed = Fixed(joint0=Static(0, 0), joint1=Static(1, 0))
         with self.assertRaises(UnderconstrainedError):
             fixed.reload()
@@ -615,6 +600,7 @@ class TestFixed(unittest.TestCase):
     def test_reload_joint0_none_coords(self):
         """Test reload raises when joint0 has None coordinates."""
         from pylinkage.exceptions import UnderconstrainedError
+
         j0 = Revolute()  # Has None coordinates
         j0.x = None
         j0.y = None
@@ -625,6 +611,7 @@ class TestFixed(unittest.TestCase):
     def test_reload_joint1_none_coords(self):
         """Test reload raises when joint1 has None coordinates."""
         from pylinkage.exceptions import UnderconstrainedError
+
         j1 = Revolute()
         j1.x = None
         j1.y = None
@@ -639,6 +626,7 @@ class TestPivotDeprecation(unittest.TestCase):
     def test_pivot_deprecation_warning(self):
         """Test that Pivot emits deprecation warning."""
         import warnings
+
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             Pivot(0, 0)
@@ -651,6 +639,7 @@ class TestPivotDeprecation(unittest.TestCase):
     def test_pivot_inherits_revolute(self):
         """Test that Pivot still works as Revolute."""
         import warnings
+
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             pivot = Pivot(1, 2, distance0=1, distance1=2)
@@ -658,5 +647,5 @@ class TestPivotDeprecation(unittest.TestCase):
             self.assertEqual(pivot.get_constraints(), (1, 2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

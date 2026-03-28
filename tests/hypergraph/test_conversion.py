@@ -104,9 +104,7 @@ class TestFromLinkage(unittest.TestCase):
         """Test conversion of simple four-bar linkage to hypergraph."""
         ground = pl.Static(0, 0, name="ground")
         crank = pl.Crank(1, 0, joint0=ground, distance=1, angle=0.1, name="crank")
-        pin = pl.Revolute(
-            2, 1, joint0=crank, joint1=(3, 0), distance0=2, distance1=2, name="pin"
-        )
+        pin = pl.Revolute(2, 1, joint0=crank, joint1=(3, 0), distance0=2, distance1=2, name="pin")
         linkage = pl.Linkage(
             joints=(ground, crank, pin),
             order=(ground, crank, pin),
@@ -154,7 +152,8 @@ class TestFromLinkage(unittest.TestCase):
         line_start = pl.Static(0, 2, name="line_start")
         line_end = pl.Static(5, 2, name="line_end")
         prismatic = pl.Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=ground,
             joint1=line_start,
             joint2=line_end,
@@ -171,9 +170,7 @@ class TestFromLinkage(unittest.TestCase):
         hg, dims = from_linkage(linkage)
 
         # Check prismatic joint was converted correctly
-        prismatic_nodes = [
-            n for n in hg.nodes.values() if n.joint_type == JointType.PRISMATIC
-        ]
+        prismatic_nodes = [n for n in hg.nodes.values() if n.joint_type == JointType.PRISMATIC]
         self.assertEqual(len(prismatic_nodes), 1)
 
     def test_preserves_positions_in_dimensions(self):

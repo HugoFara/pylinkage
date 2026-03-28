@@ -2,7 +2,6 @@
 
 import math
 
-import numpy as np
 import pytest
 import sympy as sp
 
@@ -108,10 +107,14 @@ class TestSymbolicCircleIntersect:
 
         # One of the symbolic results should match each numeric result
         # (order might be different based on branch)
-        points_sym = {(round(sx1_val, 10), round(sy1_val, 10)),
-                      (round(sx2_val, 10), round(sy2_val, 10))}
-        points_num = {(round(n_result[1], 10), round(n_result[2], 10)),
-                      (round(n_result[3], 10), round(n_result[4], 10))}
+        points_sym = {
+            (round(sx1_val, 10), round(sy1_val, 10)),
+            (round(sx2_val, 10), round(sy2_val, 10)),
+        }
+        points_num = {
+            (round(n_result[1], 10), round(n_result[2], 10)),
+            (round(n_result[3], 10), round(n_result[4], 10)),
+        }
 
         assert points_sym == points_num
 

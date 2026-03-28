@@ -27,9 +27,7 @@ def prepare_linkage():
     """
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
-    pin = pl.Revolute(
-        0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1
-    )
+    pin = pl.Revolute(0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1)
     return pl.Linkage(joints=[pin], order=[pin])
 
 

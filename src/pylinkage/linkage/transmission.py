@@ -165,21 +165,17 @@ def _auto_detect_fourbar_joints(
 
     if crank is None:
         raise ValueError(
-            "Cannot auto-detect: no Crank joint found. "
-            "Please specify joints explicitly."
+            "Cannot auto-detect: no Crank joint found. Please specify joints explicitly."
         )
     if revolute is None:
         raise ValueError(
-            "Cannot auto-detect: no Revolute joint found. "
-            "Please specify joints explicitly."
+            "Cannot auto-detect: no Revolute joint found. Please specify joints explicitly."
         )
 
     # The rocker pivot is joint1 of the Revolute
     rocker_pivot = revolute.joint1
     if rocker_pivot is None:
-        raise ValueError(
-            "Cannot auto-detect: Revolute.joint1 (rocker pivot) is None."
-        )
+        raise ValueError("Cannot auto-detect: Revolute.joint1 (rocker pivot) is None.")
 
     return crank, revolute, rocker_pivot
 
@@ -205,9 +201,7 @@ def transmission_angle_at_position(
         ValueError: If joints cannot be determined or positions are invalid.
     """
     if coupler_joint is None or output_joint is None or rocker_pivot is None:
-        coupler_joint, output_joint, rocker_pivot = _auto_detect_fourbar_joints(
-            linkage
-        )
+        coupler_joint, output_joint, rocker_pivot = _auto_detect_fourbar_joints(linkage)
 
     b_coord = _get_joint_coord(coupler_joint)
     c_coord = _get_joint_coord(output_joint)
@@ -400,8 +394,7 @@ def _auto_detect_prismatic_joint(linkage: Linkage) -> object:
             return joint
 
     raise ValueError(
-        "Cannot auto-detect: no Prismatic joint found. "
-        "Please specify the joint explicitly."
+        "Cannot auto-detect: no Prismatic joint found. Please specify the joint explicitly."
     )
 
 

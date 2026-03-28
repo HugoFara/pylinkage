@@ -106,4 +106,3 @@ from .symbols import LINK_COLORS as LINK_COLORS
 from .symbols import SYMBOL_SPECS as SYMBOL_SPECS
 from .symbols import LinkStyle as LinkStyle
 from .symbols import SymbolType as SymbolType
-

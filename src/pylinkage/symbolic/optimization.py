@@ -131,12 +131,9 @@ class SymbolicOptimizer:
         all_symbols = [self.linkage.theta] + self.param_list
 
         # Lambdify objective and gradient
-        self._objective_func = sp.lambdify(
-            all_symbols, self.objective_expr, modules=["numpy"]
-        )
+        self._objective_func = sp.lambdify(all_symbols, self.objective_expr, modules=["numpy"])
         self._gradient_funcs = [
-            sp.lambdify(all_symbols, g, modules=["numpy"])
-            for g in self.gradient_exprs
+            sp.lambdify(all_symbols, g, modules=["numpy"]) for g in self.gradient_exprs
         ]
 
     def evaluate(

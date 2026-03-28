@@ -195,9 +195,7 @@ def multi_objective_optimization(
 
     # Get constraints and generate bounds if needed
     raw_constraints = tuple(linkage.get_num_constraints())
-    constraints = tuple(
-        c for c in raw_constraints if c is not None and isinstance(c, (int, float))
-    )
+    constraints = tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float)))
     dimensions = len(constraints)
 
     if dimensions <= 0:

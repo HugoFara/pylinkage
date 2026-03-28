@@ -20,7 +20,6 @@ from collections.abc import Callable, Sequence
 from enum import IntEnum
 from typing import TypeAlias
 
-
 # =============================================================================
 # Kinematic Enums (canonical definitions)
 # =============================================================================

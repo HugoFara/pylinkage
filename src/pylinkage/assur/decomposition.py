@@ -14,10 +14,8 @@ Assur groups are pure topology. For solving kinematics, use
 pylinkage.solver.solve.solve_decomposition() with a Dimensions object.
 """
 
-import warnings
 from dataclasses import dataclass, field
 
-from .._types import Coord
 from ._types import JointType, NodeId, NodeRole
 from .graph import LinkageGraph
 from .groups import AssurGroup, Dyad, Triad
@@ -117,10 +115,7 @@ def decompose_assur_groups(graph: LinkageGraph) -> DecompositionResult:
     known: set[NodeId] = set(result.ground) | set(result.drivers)
 
     # Remaining nodes to assign to groups
-    remaining: set[NodeId] = {
-        n.id for n in graph.nodes.values()
-        if n.id not in known
-    }
+    remaining: set[NodeId] = {n.id for n in graph.nodes.values() if n.id not in known}
 
     # Phase 2: Iteratively identify Assur groups
     max_iterations = len(remaining) + 1  # Safety limit
@@ -162,7 +157,10 @@ def decompose_assur_groups(graph: LinkageGraph) -> DecompositionResult:
         # Try to form a triad from pairs of remaining nodes
         if not found_group:
             found_group = _try_find_triad(
-                graph, remaining, known, result,
+                graph,
+                remaining,
+                known,
+                result,
             )
 
         if not found_group:
@@ -290,7 +288,7 @@ def _try_find_triad(
     """
     remaining_list = list(remaining)
     for i, node_a in enumerate(remaining_list):
-        for node_b in remaining_list[i + 1:]:
+        for node_b in remaining_list[i + 1 :]:
             triad = _try_create_triad(graph, node_a, node_b, known)
             if triad is not None:
                 result.groups.append(triad)
@@ -439,5 +437,3 @@ def validate_decomposition(result: DecompositionResult) -> list[str]:
             messages.append(f"Nodes in groups but not in graph: {extra}")
 
     return messages
-
-

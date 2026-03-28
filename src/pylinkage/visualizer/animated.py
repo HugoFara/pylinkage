@@ -7,14 +7,13 @@ Created on Mon Jun 14, 12:13:58 2021.
 @author: HugoFara
 """
 
-
 from typing import TYPE_CHECKING, Any
 
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 
 from ..exceptions import UnbuildableError
-from ..joints import Crank, Static
+from ..joints import Crank
 from ..joints.joint import _StaticBase
 from ..linkage.analysis import movement_bounding_box
 from .core import _get_color
@@ -99,27 +98,26 @@ def plot_kinematic_linkage(
     Returns:
         The animation object.
     """
-    axis.set_aspect('equal')
+    axis.set_aspect("equal")
     axis.set_title("Animation")
 
     images: list[Line2D] = []
     for joint in linkage.joints:
         for parent in (joint.joint0, joint.joint1):
             if parent is not None:
-                images.append(axis.plot(
-                    [], [], c=_get_color(joint),
-                    animated=isinstance(joint, _StaticBase)
-                )[0])
+                images.append(
+                    axis.plot([], [], c=_get_color(joint), animated=isinstance(joint, _StaticBase))[
+                        0
+                    ]
+                )
 
     animation = anim.FuncAnimation(
         fig=fig,
-        func=lambda index: update_animated_plot(
-            linkage, index % len(loci), images, loci
-        ),
+        func=lambda index: update_animated_plot(linkage, index % len(loci), images, loci),
         frames=frames,
         blit=True,
         interval=interval,
-        repeat=True
+        repeat=True,
     )
     return animation
 
@@ -159,9 +157,9 @@ def show_linkage(
     linkage.rebuild(prev)
     if loci is None:
         loci = tuple(
-            tuple(pos) for pos in linkage.step(  # type: ignore[arg-type]
-                iterations=int(points * iteration_factor),
-                dt=1 / iteration_factor
+            tuple(pos)
+            for pos in linkage.step(  # type: ignore[arg-type]
+                iterations=int(points * iteration_factor), dt=1 / iteration_factor
             )
         )
 
@@ -174,17 +172,14 @@ def show_linkage(
     linkage_bb = movement_bounding_box(loci)
     # We introduce a relative padding of 20%
     padding = (
-        (linkage_bb[2] - linkage_bb[0]) ** 2
-        + (linkage_bb[3] - linkage_bb[1]) ** 2
-    ) ** .5 * .2
+        (linkage_bb[2] - linkage_bb[0]) ** 2 + (linkage_bb[3] - linkage_bb[1]) ** 2
+    ) ** 0.5 * 0.2
     for axis in (ax1, ax2):
         axis.set_xlim(linkage_bb[3] - padding, linkage_bb[1] + padding)
         axis.set_ylim(linkage_bb[0] - padding, linkage_bb[2] + padding)
 
     plot_static_linkage(linkage, ax1, loci, show_legend=True)
-    animation = plot_kinematic_linkage(
-        linkage, fig, ax2, loci, interval=1000 / fps
-    )
+    animation = plot_kinematic_linkage(linkage, fig, ax2, loci, interval=1000 / fps)
     plt.tight_layout()
     if plt.isinteractive() or plt.get_backend() not in ("agg", "Agg"):
         plt.show(block=False)
@@ -229,9 +224,9 @@ def swarm_tiled_repr(
         linkage.set_coords(agent[2])
         try:
             loci = tuple(
-                tuple(pos) for pos in linkage.step(
-                    iterations=int(points * iteration_factor),
-                    dt=1 / iteration_factor
+                tuple(pos)
+                for pos in linkage.step(
+                    iterations=int(points * iteration_factor), dt=1 / iteration_factor
                 )
             )
         except UnbuildableError:

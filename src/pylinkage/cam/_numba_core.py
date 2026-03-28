@@ -172,37 +172,22 @@ def evaluate_modified_trapezoidal(u: float) -> float:
     """
     if u <= 0.125:
         # First acceleration segment (0 to 1/8)
-        return (
-            u / 4.0
-            - math.sin(4.0 * math.pi * u) / (8.0 * math.pi)
-        )
+        return u / 4.0 - math.sin(4.0 * math.pi * u) / (8.0 * math.pi)
     elif u <= 0.375:
         # Constant acceleration segment (1/8 to 3/8)
         return 2.0 * u**2 - u / 4.0 + 1.0 / 32.0
     elif u <= 0.5:
         # Deceleration to constant velocity (3/8 to 1/2)
-        return (
-            u / 4.0
-            + 1.0 / 4.0
-            + math.sin(4.0 * math.pi * u - math.pi) / (8.0 * math.pi)
-        )
+        return u / 4.0 + 1.0 / 4.0 + math.sin(4.0 * math.pi * u - math.pi) / (8.0 * math.pi)
     elif u <= 0.625:
         # Symmetric: deceleration from constant velocity (1/2 to 5/8)
-        return (
-            3.0 / 4.0
-            - u / 4.0
-            - math.sin(4.0 * math.pi * u - math.pi) / (8.0 * math.pi)
-        )
+        return 3.0 / 4.0 - u / 4.0 - math.sin(4.0 * math.pi * u - math.pi) / (8.0 * math.pi)
     elif u <= 0.875:
         # Constant deceleration segment (5/8 to 7/8)
         return -2.0 * u**2 + 9.0 * u / 4.0 - 17.0 / 32.0
     else:
         # Final deceleration segment (7/8 to 1)
-        return (
-            3.0 / 4.0
-            + u / 4.0
-            + math.sin(4.0 * math.pi * u) / (8.0 * math.pi)
-        )
+        return 3.0 / 4.0 + u / 4.0 + math.sin(4.0 * math.pi * u) / (8.0 * math.pi)
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]

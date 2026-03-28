@@ -296,8 +296,12 @@ class SymRevolute(SymJoint):
         x2, y2 = self.parent1.position_expr()
 
         return symbolic_circle_intersect(
-            x1, y1, self.r0,
-            x2, y2, self.r1,
+            x1,
+            y1,
+            self.r0,
+            x2,
+            y2,
+            self.r1,
             self.branch,
         )
 

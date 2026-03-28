@@ -107,9 +107,7 @@ def _generate_orientation_candidates(
     yield base_orientations
 
     # Then yield uniform perturbations (all same delta)
-    deltas = np.linspace(
-        -perturbation_range, perturbation_range, n_samples, endpoint=True
-    )
+    deltas = np.linspace(-perturbation_range, perturbation_range, n_samples, endpoint=True)
 
     for delta in deltas:
         if abs(delta) < 1e-10:
@@ -119,9 +117,7 @@ def _generate_orientation_candidates(
 
     # Progressive rotation (orientation increases along path)
     for total_rotation in [math.pi / 4, math.pi / 2, math.pi, -math.pi / 4, -math.pi / 2]:
-        progressive = [
-            base_orientations[i] + total_rotation * i / (n - 1) for i in range(n)
-        ]
+        progressive = [base_orientations[i] + total_rotation * i / (n - 1) for i in range(n)]
         yield progressive
 
 
@@ -138,10 +134,7 @@ def _points_to_poses(
     Returns:
         List of Pose objects.
     """
-    return [
-        Pose(x=p[0], y=p[1], angle=o)
-        for p, o in zip(points, orientations, strict=True)
-    ]
+    return [Pose(x=p[0], y=p[1], angle=o) for p, o in zip(points, orientations, strict=True)]
 
 
 def _dyads_to_fourbar(
@@ -295,12 +288,7 @@ def _remove_duplicate_solutions(
             diff += abs(sol.rocker_length - usol.rocker_length)
             diff += abs(sol.ground_length - usol.ground_length)
 
-            scale = (
-                sol.crank_length
-                + sol.coupler_length
-                + sol.rocker_length
-                + sol.ground_length
-            )
+            scale = sol.crank_length + sol.coupler_length + sol.rocker_length + sol.ground_length
 
             if diff / scale < tolerance:
                 is_duplicate = True
@@ -417,9 +405,7 @@ def path_generation(
             coupler_pt: Point2D = precision_points[0]
 
             for dyad_left, dyad_right in dyad_pairs:
-                solution = _dyads_to_fourbar(
-                    dyad_left, dyad_right, coupler_point_world=coupler_pt
-                )
+                solution = _dyads_to_fourbar(dyad_left, dyad_right, coupler_point_world=coupler_pt)
 
                 if solution is not None:
                     raw_solutions.append(solution)
@@ -472,7 +458,7 @@ def path_generation(
 
 
 def verify_path_generation(
-    linkage: "Linkage",
+    linkage: Linkage,
     precision_points: list[PrecisionPoint],
     tolerance: float | None = None,
 ) -> tuple[bool, list[float]]:
@@ -516,9 +502,7 @@ def verify_path_generation(
     if tolerance is None:
         xs = [p[0] for p in precision_points]
         ys = [p[1] for p in precision_points]
-        diag = math.sqrt(
-            (max(xs) - min(xs)) ** 2 + (max(ys) - min(ys)) ** 2
-        )
+        diag = math.sqrt((max(xs) - min(xs)) ** 2 + (max(ys) - min(ys)) ** 2)
         tolerance = max(0.05 * diag, 0.01)
 
     # Simulate one full rotation
@@ -539,10 +523,7 @@ def verify_path_generation(
     # For each precision point, find the minimum distance to trajectory
     distances: list[float] = []
     for px, py in precision_points:
-        min_dist = min(
-            math.sqrt((tx - px) ** 2 + (ty - py) ** 2)
-            for tx, ty in trajectory
-        )
+        min_dist = min(math.sqrt((tx - px) ** 2 + (ty - py) ** 2) for tx, ty in trajectory)
         distances.append(min_dist)
 
     all_ok = all(d <= tolerance for d in distances)
@@ -619,9 +600,7 @@ def path_generation_with_timing(
 
             coupler_pt: Point2D = precision_points[0]
             for dyad_left, dyad_right in dyad_pairs:
-                solution = _dyads_to_fourbar(
-                    dyad_left, dyad_right, coupler_point_world=coupler_pt
-                )
+                solution = _dyads_to_fourbar(dyad_left, dyad_right, coupler_point_world=coupler_pt)
                 if solution is not None:
                     raw_solutions.append(solution)
 

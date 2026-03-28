@@ -106,9 +106,7 @@ select = [
     "SIM",    # flake8-simplify
 ]
 ignore = [
-    "E501",   # line too long (handled by formatter)
     "E741",   # ambiguous variable name (l, I, O common in geometry/kinematics)
-    "SIM102", # collapsible if — often less readable when collapsed
 ]
 
 [tool.ruff.lint.isort]

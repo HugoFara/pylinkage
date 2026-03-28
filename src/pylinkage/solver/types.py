@@ -4,7 +4,6 @@ This module defines the numeric representation of linkages for use
 in the pure-numba simulation loop.
 """
 
-
 from dataclasses import dataclass
 
 import numpy as np
@@ -70,18 +69,10 @@ class SolverData:
             constraint_counts=self.constraint_counts.copy(),
             solve_order=self.solve_order.copy(),
             velocities=self.velocities.copy() if self.velocities is not None else None,
-            accelerations=(
-                self.accelerations.copy() if self.accelerations is not None else None
-            ),
-            omega_values=(
-                self.omega_values.copy() if self.omega_values is not None else None
-            ),
-            alpha_values=(
-                self.alpha_values.copy() if self.alpha_values is not None else None
-            ),
-            crank_indices=(
-                self.crank_indices.copy() if self.crank_indices is not None else None
-            ),
+            accelerations=(self.accelerations.copy() if self.accelerations is not None else None),
+            omega_values=(self.omega_values.copy() if self.omega_values is not None else None),
+            alpha_values=(self.alpha_values.copy() if self.alpha_values is not None else None),
+            crank_indices=(self.crank_indices.copy() if self.crank_indices is not None else None),
         )
 
     @property

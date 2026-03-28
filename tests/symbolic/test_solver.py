@@ -144,9 +144,7 @@ class TestComputeTrajectoryNumeric:
         linkage = SymbolicLinkage([A, B])
 
         theta_vals = np.linspace(0, 2 * np.pi, 10)
-        trajectories = compute_trajectory_numeric(
-            linkage, {}, theta_vals, output_joints=["B"]
-        )
+        trajectories = compute_trajectory_numeric(linkage, {}, theta_vals, output_joints=["B"])
 
         assert "B" in trajectories
         assert "A" not in trajectories

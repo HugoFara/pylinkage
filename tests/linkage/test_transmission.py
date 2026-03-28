@@ -122,14 +122,16 @@ class TestFourBarTransmissionAnalysis:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
                 name="B",
             )
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -213,14 +215,16 @@ class TestLinkageConvenienceMethods:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
                 name="B",
             )
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -410,7 +414,8 @@ class TestSliderCrankStrokeAnalysis:
             warnings.simplefilter("ignore", DeprecationWarning)
             # Crank rotating around origin
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
@@ -418,7 +423,8 @@ class TestSliderCrankStrokeAnalysis:
             )
             # Slider moving along horizontal line
             slider = pl.Prismatic(
-                3, 0,
+                3,
+                0,
                 joint0=crank,  # Connected to crank
                 joint1=(0, 0),  # Line point 1
                 joint2=(10, 0),  # Line point 2 (horizontal line)
@@ -494,13 +500,15 @@ class TestLinkageStrokeConvenienceMethods:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
             )
             slider = pl.Prismatic(
-                3, 0,
+                3,
+                0,
                 joint0=crank,
                 joint1=(0, 0),
                 joint2=(10, 0),

@@ -23,9 +23,7 @@ def prepare_linkage():
     """
     frame_first = pl.Static(0, 0)
     frame_second = pl.Static(3, 0)
-    pin = pl.Revolute(
-        0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1
-    )
+    pin = pl.Revolute(0, 2, joint0=frame_first, joint1=frame_second, distance0=3, distance1=1)
     return pl.Linkage(joints=[pin], order=[pin])
 
 
@@ -78,10 +76,9 @@ class TestTrialsAndErrorsAsync(unittest.TestCase):
 
     def test_basic_optimization(self):
         """Test basic async optimization runs successfully."""
+
         async def run_test():
-            bounds = optimization.generate_bounds(
-                self.linkage.get_num_constraints(), 2, 2
-            )
+            bounds = optimization.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
             results = await trials_and_errors_optimization_async(
                 eval_func=fitness_func,
                 linkage=self.linkage,
@@ -104,9 +101,7 @@ class TestTrialsAndErrorsAsync(unittest.TestCase):
             progress_updates.append(progress)
 
         async def run_test():
-            bounds = optimization.generate_bounds(
-                self.linkage.get_num_constraints(), 2, 2
-            )
+            bounds = optimization.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
             return await trials_and_errors_optimization_async(
                 eval_func=fitness_func,
                 linkage=self.linkage,
@@ -128,11 +123,10 @@ class TestTrialsAndErrorsAsync(unittest.TestCase):
 
     def test_convergence(self):
         """Test if the output after some iterations is improved."""
+
         # Use the same test parameters as the original sync test
         async def run_test():
-            bounds = optimization.generate_bounds(
-                self.linkage.get_num_constraints(), 2, 2
-            )
+            bounds = optimization.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
             return await trials_and_errors_optimization_async(
                 eval_func=fitness_func,
                 linkage=self.linkage,
@@ -147,7 +141,7 @@ class TestTrialsAndErrorsAsync(unittest.TestCase):
         # Grid search may not find optimal solution, just verify it found something
         self.assertIsNotNone(score)
         # Score should be finite (not inf)
-        self.assertLess(score, float('inf'))
+        self.assertLess(score, float("inf"))
 
 
 class TestPSOAsync(unittest.TestCase):
@@ -158,6 +152,7 @@ class TestPSOAsync(unittest.TestCase):
 
     def test_basic_optimization(self):
         """Test basic async PSO runs successfully."""
+
         async def run_test():
             dim = len(self.constraints)
             bounds = np.zeros(dim), np.ones(dim) * 5
@@ -240,5 +235,5 @@ class TestPSOAsync(unittest.TestCase):
         self.assertAlmostEqual(0.0, score, delta=delta)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

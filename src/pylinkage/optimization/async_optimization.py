@@ -11,7 +11,6 @@ Created on 2025.
 @author: HugoFara
 """
 
-
 import asyncio
 from collections.abc import Callable, Sequence
 from concurrent.futures import ThreadPoolExecutor
@@ -125,12 +124,14 @@ async def particle_swarm_optimization_async(
 
     # Signal progress at start
     if on_progress is not None:
-        on_progress(OptimizationProgress(
-            current_iteration=0,
-            total_iterations=iters,
-            best_score=None,
-            is_complete=False,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=0,
+                total_iterations=iters,
+                best_score=None,
+                is_complete=False,
+            )
+        )
 
     def run_optimization() -> list[Agent]:
         return particle_swarm_optimization(
@@ -159,12 +160,14 @@ async def particle_swarm_optimization_async(
     # Signal completion
     if on_progress is not None:
         best_score = result[0].score if result else None
-        on_progress(OptimizationProgress(
-            current_iteration=iters,
-            total_iterations=iters,
-            best_score=best_score,
-            is_complete=True,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=iters,
+                total_iterations=iters,
+                best_score=best_score,
+                is_complete=True,
+            )
+        )
 
     return result
 
@@ -227,16 +230,18 @@ async def trials_and_errors_optimization_async(
         num_params = len(tuple(linkage.get_num_constraints()))
     else:
         num_params = len(parameters)
-    total_iterations = divisions ** num_params
+    total_iterations = divisions**num_params
 
     # Signal progress at start
     if on_progress is not None:
-        on_progress(OptimizationProgress(
-            current_iteration=0,
-            total_iterations=total_iterations,
-            best_score=None,
-            is_complete=False,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=0,
+                total_iterations=total_iterations,
+                best_score=None,
+                is_complete=False,
+            )
+        )
 
     def run_optimization() -> list[MutableAgent]:
         return trials_and_errors_optimization(
@@ -258,12 +263,14 @@ async def trials_and_errors_optimization_async(
     # Signal completion
     if on_progress is not None:
         best_score = result[0].score if result else None
-        on_progress(OptimizationProgress(
-            current_iteration=total_iterations,
-            total_iterations=total_iterations,
-            best_score=best_score,
-            is_complete=True,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=total_iterations,
+                total_iterations=total_iterations,
+                best_score=best_score,
+                is_complete=True,
+            )
+        )
 
     return result
 
@@ -316,12 +323,14 @@ async def differential_evolution_optimization_async(
 
     # Signal progress at start
     if on_progress is not None:
-        on_progress(OptimizationProgress(
-            current_iteration=0,
-            total_iterations=maxiter,
-            best_score=None,
-            is_complete=False,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=0,
+                total_iterations=maxiter,
+                best_score=None,
+                is_complete=False,
+            )
+        )
 
     def run_optimization() -> list[Agent]:
         return differential_evolution_optimization(
@@ -350,12 +359,14 @@ async def differential_evolution_optimization_async(
     # Signal completion
     if on_progress is not None:
         best_score = result[0].score if result else None
-        on_progress(OptimizationProgress(
-            current_iteration=maxiter,
-            total_iterations=maxiter,
-            best_score=best_score,
-            is_complete=True,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=maxiter,
+                total_iterations=maxiter,
+                best_score=best_score,
+                is_complete=True,
+            )
+        )
 
     return result
 
@@ -405,12 +416,14 @@ async def minimize_linkage_async(
 
     # Signal progress at start
     if on_progress is not None:
-        on_progress(OptimizationProgress(
-            current_iteration=0,
-            total_iterations=total_iters,
-            best_score=None,
-            is_complete=False,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=0,
+                total_iterations=total_iters,
+                best_score=None,
+                is_complete=False,
+            )
+        )
 
     def run_optimization() -> list[Agent]:
         return minimize_linkage(
@@ -435,11 +448,13 @@ async def minimize_linkage_async(
     # Signal completion
     if on_progress is not None:
         best_score = result[0].score if result else None
-        on_progress(OptimizationProgress(
-            current_iteration=total_iters,
-            total_iterations=total_iters,
-            best_score=best_score,
-            is_complete=True,
-        ))
+        on_progress(
+            OptimizationProgress(
+                current_iteration=total_iters,
+                total_iterations=total_iters,
+                best_score=best_score,
+                is_complete=True,
+            )
+        )
 
     return result

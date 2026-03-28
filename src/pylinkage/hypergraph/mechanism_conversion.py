@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from ..mechanism import Mechanism
 
 
-def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Mechanism":
+def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mechanism:
     """Convert a HypergraphLinkage and Dimensions to a Mechanism.
 
     This converts the hypergraph topology plus dimensional data to the
@@ -126,10 +126,7 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Mech
         if motor_joint:
             # Compute initial angle from motor to output
             mx, my = motor_joint.position
-            if mx is not None and my is not None:
-                initial_angle = math.atan2(y - my, x - mx)
-            else:
-                initial_angle = 0.0
+            initial_angle = math.atan2(y - my, x - mx) if mx is not None and my is not None else 0.0
 
             # Get driver angle from dimensions
             driver_angle = dimensions.get_driver_angle(node.id)
@@ -220,7 +217,7 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Mech
     )
 
 
-def from_mechanism(mechanism: "Mechanism") -> tuple[HypergraphLinkage, Dimensions]:
+def from_mechanism(mechanism: Mechanism) -> tuple[HypergraphLinkage, Dimensions]:
     """Convert a Mechanism to a HypergraphLinkage and Dimensions.
 
     This converts an existing Mechanism to the hypergraph representation
@@ -269,8 +266,10 @@ def from_mechanism(mechanism: "Mechanism") -> tuple[HypergraphLinkage, Dimension
             # Check if this joint is a driver output
             is_driver_output = False
             for link in mechanism.links:
-                if isinstance(link, DriverLink):
-                    if link.output_joint and link.output_joint.id == joint.id:
+                if (
+                    isinstance(link, DriverLink)
+                    and link.output_joint and link.output_joint.id == joint.id
+                ):
                         is_driver_output = True
                         break
 
@@ -292,8 +291,10 @@ def from_mechanism(mechanism: "Mechanism") -> tuple[HypergraphLinkage, Dimension
         # Add driver-specific attributes to dimensions
         if role == NodeRole.DRIVER:
             for link in mechanism.links:
-                if isinstance(link, DriverLink):
-                    if link.output_joint and link.output_joint.id == joint.id:
+                if (
+                    isinstance(link, DriverLink)
+                    and link.output_joint and link.output_joint.id == joint.id
+                ):
                         driver_angles[node_id] = DriverAngle(
                             angular_velocity=link.angular_velocity,
                             initial_angle=link.initial_angle,

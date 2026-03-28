@@ -55,7 +55,10 @@ def _compute_coupler_point_params(
 
 
 def _compute_crank_limits(
-    a: float, b: float, c: float, d: float,
+    a: float,
+    b: float,
+    c: float,
+    d: float,
 ) -> tuple[float, float] | None:
     """Compute crank angular limits for a non-Grashof four-bar.
 
@@ -76,9 +79,11 @@ def _compute_crank_limits(
     from .utils import GrashofType, grashof_check
 
     gt = grashof_check(a, b, c, d)
-    if gt in (GrashofType.GRASHOF_CRANK_ROCKER,
-              GrashofType.GRASHOF_DOUBLE_CRANK,
-              GrashofType.CHANGE_POINT):
+    if gt in (
+        GrashofType.GRASHOF_CRANK_ROCKER,
+        GrashofType.GRASHOF_DOUBLE_CRANK,
+        GrashofType.CHANGE_POINT,
+    ):
         return None  # Full rotation possible
 
     # Limit positions: coupler + rocker collinear
@@ -149,8 +154,10 @@ def solution_to_linkage(
 
     # Check if the four-bar needs limited rotation
     arc_limits = _compute_crank_limits(
-        solution.crank_length, solution.coupler_length,
-        solution.rocker_length, solution.ground_length,
+        solution.crank_length,
+        solution.coupler_length,
+        solution.rocker_length,
+        solution.ground_length,
     )
 
     # Angle step per iteration (full rotation in `iterations` steps)
@@ -283,15 +290,11 @@ def linkage_to_synthesis_params(
 
     # Validate structure
     if len(statics) < 2:
-        raise ValueError(
-            f"Four-bar needs 2 static joints, found {len(statics)}"
-        )
+        raise ValueError(f"Four-bar needs 2 static joints, found {len(statics)}")
     if len(cranks) < 1:
         raise ValueError(f"Four-bar needs 1 crank joint, found {len(cranks)}")
     if len(revolutes) < 1:
-        raise ValueError(
-            f"Four-bar needs 1 revolute joint, found {len(revolutes)}"
-        )
+        raise ValueError(f"Four-bar needs 1 revolute joint, found {len(revolutes)}")
 
     # Identify joints
     crank = cranks[0]
@@ -324,16 +327,22 @@ def linkage_to_synthesis_params(
     C: Point2D = (revolute.x, revolute.y)
 
     # Extract lengths
-    crank_length_val: float = crank.r if hasattr(crank, "r") and crank.r is not None else math.sqrt(
-        (B[0] - A[0]) ** 2 + (B[1] - A[1]) ** 2
+    crank_length_val: float = (
+        crank.r
+        if hasattr(crank, "r") and crank.r is not None
+        else math.sqrt((B[0] - A[0]) ** 2 + (B[1] - A[1]) ** 2)
     )
 
-    coupler_length_val: float = revolute.r0 if hasattr(revolute, "r0") and revolute.r0 is not None else math.sqrt(
-        (C[0] - B[0]) ** 2 + (C[1] - B[1]) ** 2
+    coupler_length_val: float = (
+        revolute.r0
+        if hasattr(revolute, "r0") and revolute.r0 is not None
+        else math.sqrt((C[0] - B[0]) ** 2 + (C[1] - B[1]) ** 2)
     )
 
-    rocker_length_val: float = revolute.r1 if hasattr(revolute, "r1") and revolute.r1 is not None else math.sqrt(
-        (C[0] - D[0]) ** 2 + (C[1] - D[1]) ** 2
+    rocker_length_val: float = (
+        revolute.r1
+        if hasattr(revolute, "r1") and revolute.r1 is not None
+        else math.sqrt((C[0] - D[0]) ** 2 + (C[1] - D[1]) ** 2)
     )
 
     ground_length = math.sqrt((D[0] - A[0]) ** 2 + (D[1] - A[1]) ** 2)

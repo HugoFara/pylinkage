@@ -14,7 +14,6 @@ from pylinkage.symbolic import (
     generate_symbolic_bounds,
     symbolic_gradient,
     symbolic_hessian,
-    theta,
 )
 
 

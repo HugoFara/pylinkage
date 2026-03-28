@@ -14,7 +14,6 @@ from pylinkage.cam import (
     HarmonicMotionLaw,
     ModifiedTrapezoidalMotionLaw,
     PointArrayProfile,
-    PolynomialMotionLaw,
     polynomial_345,
 )
 from pylinkage.components import Ground

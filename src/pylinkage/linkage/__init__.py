@@ -30,6 +30,18 @@ from .analysis import (
 )
 from .linkage import Linkage as Linkage
 from .linkage import Simulation as Simulation
+from .sensitivity import (
+    SensitivityAnalysis as SensitivityAnalysis,
+)
+from .sensitivity import (
+    ToleranceAnalysis as ToleranceAnalysis,
+)
+from .sensitivity import (
+    analyze_sensitivity as analyze_sensitivity,
+)
+from .sensitivity import (
+    analyze_tolerance as analyze_tolerance,
+)
 from .transmission import (
     StrokeAnalysis as StrokeAnalysis,
 )
@@ -47,16 +59,4 @@ from .transmission import (
 )
 from .transmission import (
     compute_transmission_angle as compute_transmission_angle,
-)
-from .sensitivity import (
-    SensitivityAnalysis as SensitivityAnalysis,
-)
-from .sensitivity import (
-    ToleranceAnalysis as ToleranceAnalysis,
-)
-from .sensitivity import (
-    analyze_sensitivity as analyze_sensitivity,
-)
-from .sensitivity import (
-    analyze_tolerance as analyze_tolerance,
 )

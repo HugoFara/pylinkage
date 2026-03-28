@@ -18,7 +18,7 @@ from numpy.typing import NDArray
 
 from .._types import JointPositions
 from ..exceptions import UnderconstrainedError
-from ..joints import Crank, Fixed, Revolute, Static
+from ..joints import Crank, Fixed, Revolute
 from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
@@ -115,9 +115,9 @@ class Linkage:
                     solved_in_pass = True
         if joints_solved < len(self.joints):
             raise UnderconstrainedError(
-                'Unable to determine automatic order! '
-                'Those joints are left unsolved: '
-                + ', '.join(str(j) for j in self.joints if j not in solvable)
+                "Unable to determine automatic order! "
+                "Those joints are left unsolved: "
+                + ", ".join(str(j) for j in self.joints if j not in solvable)
             )
         self._solve_order = tuple(solvable)
         return self._solve_order
@@ -130,7 +130,7 @@ class Linkage:
             fitting position between all possible positions satisfying
             constraints. (Default value = None).
         """
-        if not hasattr(self, '_solve_order'):
+        if not hasattr(self, "_solve_order"):
             self.__find_solving_order__()
 
         # Links parenting in descending order solely.
@@ -148,7 +148,7 @@ class Linkage:
 
         :param coords: Joint coordinates.
         """
-        for joint, coord in zip(self.joints, coords):
+        for joint, coord in zip(self.joints, coords, strict=False):
             joint.set_coord(coord)
 
     def indeterminacy(self) -> int:
@@ -192,7 +192,7 @@ class Linkage:
                 solids += 1
                 # A Revolute Joint creates at least two revolute joints
                 kinematic_undetermined += 4
-                if not hasattr(j, 'joint1') or j.joint1 is None:
+                if not hasattr(j, "joint1") or j.joint1 is None:
                     mobilities += 1
                 else:
                     solids += 1
@@ -216,7 +216,7 @@ class Linkage:
 
         :returns: Iterable of the joints' coordinates.
         """
-        if not hasattr(self, '_solve_order'):
+        if not hasattr(self, "_solve_order"):
             self.__find_solving_order__()
         if iterations is None:
             iterations = self.get_rotation_period()
@@ -502,7 +502,7 @@ class Linkage:
                 elif isinstance(joint, (Fixed, Revolute)):
                     joint.set_constraints(next(dispatcher), next(dispatcher))  # type: ignore[arg-type]
         else:
-            for joint, constraint in zip(self.joints, constraints):
+            for joint, constraint in zip(self.joints, constraints, strict=False):
                 joint.set_constraints(*constraint)  # type: ignore[misc]
 
     def get_rotation_period(self) -> int:
@@ -548,6 +548,7 @@ class Linkage:
             >>> new_linkage = Linkage.from_dict(data)
         """
         from .serialization import linkage_to_dict
+
         return linkage_to_dict(self)
 
     @classmethod
@@ -565,6 +566,7 @@ class Linkage:
             >>> new_linkage = Linkage.from_dict(data)
         """
         from .serialization import linkage_from_dict
+
         return linkage_from_dict(data)
 
     def to_json(self, path: str | Path) -> None:
@@ -578,6 +580,7 @@ class Linkage:
             >>> loaded = Linkage.from_json("my_linkage.json")
         """
         from .serialization import save_to_json
+
         save_to_json(self, path)
 
     @classmethod
@@ -595,6 +598,7 @@ class Linkage:
             >>> loaded = Linkage.from_json("my_linkage.json")
         """
         from .serialization import load_from_json
+
         return load_from_json(path)
 
     def simulation(
@@ -663,7 +667,6 @@ class Linkage:
             >>> print(f"Max: {analysis.max_angle:.1f}°")
             >>> print(f"Acceptable: {analysis.is_acceptable}")
         """
-        from .transmission import TransmissionAngleAnalysis
         from .transmission import analyze_transmission as _analyze
 
         return _analyze(self, iterations, acceptable_range)
@@ -712,7 +715,6 @@ class Linkage:
             >>> print(f"Min: {analysis.min_position:.2f}")
             >>> print(f"Max: {analysis.max_position:.2f}")
         """
-        from .transmission import StrokeAnalysis
         from .transmission import analyze_stroke as _analyze
 
         return _analyze(self, iterations=iterations)
@@ -838,9 +840,7 @@ class Simulation:
             Tuples of (step_number, joint_coordinates) where step_number is 0-indexed
             and joint_coordinates is a tuple of (x, y) for each joint.
         """
-        yield from enumerate(
-            self._linkage.step(iterations=self._iterations, dt=self._dt)
-        )
+        yield from enumerate(self._linkage.step(iterations=self._iterations, dt=self._dt))
 
     @property
     def linkage(self) -> Linkage:

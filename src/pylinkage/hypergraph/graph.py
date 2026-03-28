@@ -8,7 +8,6 @@ This is a pure topological representation - dimensional data (positions,
 distances, angles) is stored separately in a Dimensions object.
 """
 
-
 import copy
 from dataclasses import dataclass, field
 
@@ -53,9 +52,7 @@ class HypergraphLinkage:
     name: str = ""
 
     # Adjacency structure (computed lazily)
-    _adjacency: dict[NodeId, list[EdgeId]] = field(
-        default_factory=dict, repr=False, compare=False
-    )
+    _adjacency: dict[NodeId, list[EdgeId]] = field(default_factory=dict, repr=False, compare=False)
     _hyperedge_membership: dict[NodeId, list[HyperedgeId]] = field(
         default_factory=dict, repr=False, compare=False
     )
@@ -164,13 +161,9 @@ class HypergraphLinkage:
 
         # Update adjacency lists
         if edge.source in self._adjacency:
-            self._adjacency[edge.source] = [
-                e for e in self._adjacency[edge.source] if e != edge_id
-            ]
+            self._adjacency[edge.source] = [e for e in self._adjacency[edge.source] if e != edge_id]
         if edge.target in self._adjacency:
-            self._adjacency[edge.target] = [
-                e for e in self._adjacency[edge.target] if e != edge_id
-            ]
+            self._adjacency[edge.target] = [e for e in self._adjacency[edge.target] if e != edge_id]
 
         return edge
 
@@ -279,9 +272,7 @@ class HypergraphLinkage:
         Returns:
             List of Hyperedge objects containing the node.
         """
-        return [
-            self.hyperedges[hid] for hid in self._hyperedge_membership.get(node_id, [])
-        ]
+        return [self.hyperedges[hid] for hid in self._hyperedge_membership.get(node_id, [])]
 
     def ground_nodes(self) -> list[Node]:
         """Get all ground/frame nodes."""

@@ -110,9 +110,7 @@ class TestLinearActuator:
     def test_linear_actuator_creation(self):
         """Test creating a linear actuator."""
         O = Ground(0.0, 0.0, name="O")
-        actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=2.0, speed=0.1, name="actuator"
-        )
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, name="actuator")
 
         assert actuator.anchor == O
         assert actuator.angle == 0.0
@@ -177,9 +175,7 @@ class TestLinearActuator:
     def test_linear_actuator_oscillation(self):
         """Test that linear actuator oscillates at stroke limits."""
         O = Ground(0.0, 0.0)
-        actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=1.0, speed=0.6, initial_extension=0.0
-        )
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.6, initial_extension=0.0)
 
         # Move forward: 0 -> 0.6
         actuator.reload(dt=1.0)
@@ -197,9 +193,7 @@ class TestLinearActuator:
     def test_linear_actuator_with_initial_extension(self):
         """Test creating actuator with initial extension."""
         O = Ground(1.0, 1.0)
-        actuator = LinearActuator(
-            anchor=O, angle=0.0, stroke=3.0, speed=0.1, initial_extension=1.5
-        )
+        actuator = LinearActuator(anchor=O, angle=0.0, stroke=3.0, speed=0.1, initial_extension=1.5)
 
         # Initial position should be anchor + (1.5, 0)
         assert actuator.x == pytest.approx(2.5)
@@ -221,14 +215,10 @@ class TestLinearActuator:
         O = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="Initial extension"):
-            LinearActuator(
-                anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=3.0
-            )
+            LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=3.0)
 
         with pytest.raises(ValueError, match="Initial extension"):
-            LinearActuator(
-                anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=-0.5
-            )
+            LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=-0.5)
 
 
 class TestRRRDyad:
@@ -628,9 +618,7 @@ class TestArcCrank:
     def test_arc_crank_constraints(self):
         """Test arc crank constraints (radius, arc_start, arc_end)."""
         O = Ground(0.0, 0.0)
-        arc_crank = ArcCrank(
-            anchor=O, radius=2.0, arc_start=0.0, arc_end=math.pi / 2
-        )
+        arc_crank = ArcCrank(anchor=O, radius=2.0, arc_start=0.0, arc_end=math.pi / 2)
 
         assert arc_crank.get_constraints() == (2.0, 0.0, math.pi / 2)
 
@@ -852,7 +840,10 @@ class TestPointTracker:
         assert positions[-1][4] != positions[0][4]
 
     def test_point_tracker_vs_fixed_dyad(self):
-        """Test that PointTracker and FixedDyad compute same positions but have different constraints."""
+        """Test that PointTracker and FixedDyad compute same positions.
+
+        They should have different constraints.
+        """
         A = Ground(0.0, 0.0)
         B = Ground(1.0, 0.0)
 

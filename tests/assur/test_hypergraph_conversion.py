@@ -3,9 +3,8 @@
 import unittest
 
 from pylinkage.assur.graph import Edge as AssurEdge
-from pylinkage.assur.graph import LinkageGraph
+from pylinkage.assur.graph import JointType, LinkageGraph, NodeRole
 from pylinkage.assur.graph import Node as AssurNode
-from pylinkage.assur.graph import NodeRole, JointType
 from pylinkage.assur.hypergraph_conversion import from_hypergraph, to_hypergraph
 from pylinkage.hypergraph._types import JointType as HyperJointType
 from pylinkage.hypergraph._types import NodeRole as HyperNodeRole
@@ -22,16 +21,20 @@ class TestFromHypergraph(unittest.TestCase):
         hg = HypergraphLinkage(name="Test")
 
         # Add nodes (topology only - no positions)
-        hg.add_node(HyperNode(
-            id="ground",
-            role=HyperNodeRole.GROUND,
-            joint_type=HyperJointType.REVOLUTE,
-        ))
-        hg.add_node(HyperNode(
-            id="driver",
-            role=HyperNodeRole.DRIVER,
-            joint_type=HyperJointType.REVOLUTE,
-        ))
+        hg.add_node(
+            HyperNode(
+                id="ground",
+                role=HyperNodeRole.GROUND,
+                joint_type=HyperJointType.REVOLUTE,
+            )
+        )
+        hg.add_node(
+            HyperNode(
+                id="driver",
+                role=HyperNodeRole.DRIVER,
+                joint_type=HyperJointType.REVOLUTE,
+            )
+        )
 
         # Add edge (topology only - no distance)
         hg.add_edge(HyperEdge(id="e1", source="ground", target="driver"))
@@ -70,11 +73,13 @@ class TestFromHypergraph(unittest.TestCase):
         hg = HypergraphLinkage(name="Slider")
 
         hg.add_node(HyperNode(id="ground", role=HyperNodeRole.GROUND))
-        hg.add_node(HyperNode(
-            id="slider",
-            role=HyperNodeRole.DRIVEN,
-            joint_type=HyperJointType.PRISMATIC,
-        ))
+        hg.add_node(
+            HyperNode(
+                id="slider",
+                role=HyperNodeRole.DRIVEN,
+                joint_type=HyperJointType.PRISMATIC,
+            )
+        )
 
         hg.add_edge(HyperEdge(id="e1", source="ground", target="slider"))
 
@@ -128,11 +133,13 @@ class TestToHypergraph(unittest.TestCase):
         assur = LinkageGraph(name="Slider")
 
         assur.add_node(AssurNode(id="ground", role=NodeRole.GROUND))
-        assur.add_node(AssurNode(
-            id="slider",
-            role=NodeRole.DRIVEN,
-            joint_type=JointType.PRISMATIC,
-        ))
+        assur.add_node(
+            AssurNode(
+                id="slider",
+                role=NodeRole.DRIVEN,
+                joint_type=JointType.PRISMATIC,
+            )
+        )
 
         assur.add_edge(AssurEdge(id="e1", source="ground", target="slider"))
 

@@ -1,6 +1,5 @@
 """Agent class for optimization results."""
 
-
 from collections.abc import Sequence
 from typing import Any, NamedTuple
 

@@ -9,7 +9,6 @@ angles, scores).
 Created for improved PSO visualization in pylinkage.
 """
 
-
 from typing import TYPE_CHECKING
 
 import matplotlib.animation as anim
@@ -363,9 +362,7 @@ def dashboard_layout(
     # === Panel 1: Score History (top-left) ===
     ax_score = fig.add_subplot(gs[0, 0])
     ax_score.plot(score_history, "b-", lw=2, label="Best score")
-    ax_score.scatter(
-        len(score_history) - 1, score_history[-1], color="red", s=100, zorder=5
-    )
+    ax_score.scatter(len(score_history) - 1, score_history[-1], color="red", s=100, zorder=5)
     ax_score.set_xlabel("Iteration")
     ax_score.set_ylabel("Score")
     ax_score.set_title("Optimization Progress")
@@ -403,9 +400,7 @@ def dashboard_layout(
         plot_static_linkage(linkage, ax_linkage, loci)  # type: ignore[arg-type]
         ax_linkage.set_title(f"Best Linkage (score: {best_agent[0]:.4f})")
     except UnbuildableError:
-        ax_linkage.text(
-            0.5, 0.5, "Unbuildable", ha="center", va="center", fontsize=14
-        )
+        ax_linkage.text(0.5, 0.5, "Unbuildable", ha="center", va="center", fontsize=14)
         ax_linkage.set_title("Best Linkage (unbuildable)")
 
     ax_linkage.set_aspect("equal")
@@ -418,9 +413,7 @@ def dashboard_layout(
         length_names = [dim_names[i] for i in length_indices]
 
         # Box plot for lengths
-        bp = ax_lengths.boxplot(
-            length_data, tick_labels=length_names, patch_artist=True
-        )
+        bp = ax_lengths.boxplot(length_data, tick_labels=length_names, patch_artist=True)
 
         # Color boxes
         for patch in bp["boxes"]:

@@ -75,12 +75,7 @@ class FixedDyad(BinaryDyad):
         a1_pos = self._get_anchor_position(self.anchor1)
         a2_pos = self._get_anchor_position(self.anchor2)
 
-        if (
-            a1_pos[0] is None
-            or a1_pos[1] is None
-            or a2_pos[0] is None
-            or a2_pos[1] is None
-        ):
+        if a1_pos[0] is None or a1_pos[1] is None or a2_pos[0] is None or a2_pos[1] is None:
             return
 
         # Compute position deterministically

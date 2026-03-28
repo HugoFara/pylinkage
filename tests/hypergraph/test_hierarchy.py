@@ -107,31 +107,39 @@ class TestHierarchicalLinkage:
     def test_add_instance_duplicate_raises(self, simple_topology):
         """Test that adding duplicate instance raises."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        with pytest.raises(ValueError, match="already exists"):
-            linkage.add_instance(ComponentInstance(
+        linkage.add_instance(
+            ComponentInstance(
                 id="inst1",
                 topology=simple_topology,
                 ports={"input": "A", "output": "B"},
-            ))
+            )
+        )
+        with pytest.raises(ValueError, match="already exists"):
+            linkage.add_instance(
+                ComponentInstance(
+                    id="inst1",
+                    topology=simple_topology,
+                    ports={"input": "A", "output": "B"},
+                )
+            )
 
     def test_add_connection(self, simple_topology):
         """Test adding connections."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst2",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst2",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
 
         conn = Connection("inst1", "output", "inst2", "input")
         linkage.add_connection(conn)
@@ -140,44 +148,48 @@ class TestHierarchicalLinkage:
     def test_add_connection_invalid_instance_raises(self, simple_topology):
         """Test that connection to invalid instance raises."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
 
         with pytest.raises(ValueError, match="unknown instance"):
-            linkage.add_connection(
-                Connection("inst1", "output", "nonexistent", "input")
-            )
+            linkage.add_connection(Connection("inst1", "output", "nonexistent", "input"))
 
     def test_add_connection_invalid_port_raises(self, simple_topology):
         """Test that connection to invalid port raises."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst2",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst2",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
 
         with pytest.raises(ValueError, match="unknown port"):
-            linkage.add_connection(
-                Connection("inst1", "nonexistent_port", "inst2", "input")
-            )
+            linkage.add_connection(Connection("inst1", "nonexistent_port", "inst2", "input"))
 
     def test_flatten_single_instance(self, simple_topology):
         """Test flattening with a single instance."""
         linkage = HierarchicalLinkage(name="Single")
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
 
         flat = linkage.flatten()
         assert flat.name == "Single"
@@ -188,16 +200,20 @@ class TestHierarchicalLinkage:
     def test_flatten_with_connection(self, simple_topology):
         """Test flattening merges connected ports."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst2",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst2",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
         linkage.add_connection(Connection("inst1", "output", "inst2", "input"))
 
         flat = linkage.flatten()
@@ -216,21 +232,27 @@ class TestHierarchicalLinkage:
     def test_flatten_chain_of_three(self, simple_topology):
         """Test flattening a chain of three components."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst2",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst3",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst2",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst3",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
         linkage.add_connection(Connection("inst1", "output", "inst2", "input"))
         linkage.add_connection(Connection("inst2", "output", "inst3", "input"))
 
@@ -246,16 +268,20 @@ class TestHierarchicalLinkage:
     def test_get_all_port_nodes(self, simple_topology):
         """Test getting all port nodes."""
         linkage = HierarchicalLinkage()
-        linkage.add_instance(ComponentInstance(
-            id="inst1",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="inst2",
-            topology=simple_topology,
-            ports={"input": "A", "output": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst1",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="inst2",
+                topology=simple_topology,
+                ports={"input": "A", "output": "B"},
+            )
+        )
 
         ports = linkage.get_all_port_nodes()
         assert ports["inst1.input"] == "inst1.A"

@@ -4,7 +4,7 @@ import unittest
 
 import matplotlib
 
-matplotlib.use('Agg')  # Non-interactive backend for CI
+matplotlib.use("Agg")  # Non-interactive backend for CI
 
 import matplotlib.pyplot as plt
 
@@ -26,37 +26,36 @@ class TestGetColor(unittest.TestCase):
     def test_static_joint_color(self):
         """Test color for Static joint."""
         joint = Static(0, 0)
-        self.assertEqual(_get_color(joint), 'k')
+        self.assertEqual(_get_color(joint), "k")
 
     def test_crank_joint_color(self):
         """Test color for Crank joint."""
         crank = Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
-        self.assertEqual(_get_color(crank), 'g')
+        self.assertEqual(_get_color(crank), "g")
 
     def test_revolute_joint_color(self):
         """Test color for Revolute joint."""
         joint1 = Revolute(0, 0)
         joint2 = Revolute(1, 0)
-        revolute = Revolute(
-            0.5, 0.5, joint0=joint1, joint1=joint2,
-            distance0=1, distance1=1
-        )
-        self.assertEqual(_get_color(revolute), 'b')
+        revolute = Revolute(0.5, 0.5, joint0=joint1, joint1=joint2, distance0=1, distance1=1)
+        self.assertEqual(_get_color(revolute), "b")
 
     def test_fixed_joint_color(self):
         """Test color for Fixed joint."""
         joint1 = Revolute(0, 0)
         joint2 = Revolute(1, 0)
         fixed = Fixed(joint0=joint1, joint1=joint2, angle=0, distance=1)
-        self.assertEqual(_get_color(fixed), 'r')
+        self.assertEqual(_get_color(fixed), "r")
 
     def test_prismatic_joint_color(self):
         """Test color for Prismatic joint."""
         joint0 = Revolute(0, 0)
         joint1 = Revolute(0, 1)
         joint2 = Revolute(1, 1)
-        prismatic = Prismatic(0.5, 0.5, joint0=joint0, joint1=joint1, joint2=joint2, revolute_radius=1)
-        self.assertEqual(_get_color(prismatic), 'orange')
+        prismatic = Prismatic(
+            0.5, 0.5, joint0=joint0, joint1=joint1, joint2=joint2, revolute_radius=1
+        )
+        self.assertEqual(_get_color(prismatic), "orange")
 
     def test_color_switcher_has_all_types(self):
         """Test that COLOR_SWITCHER has colors for all joint types."""
@@ -69,31 +68,16 @@ class FourBarLinkageTestCase(unittest.TestCase):
 
     def setUp(self):
         """Set up a standard four-bar linkage for testing."""
-        self.crank = Crank(
-            0, 1,
-            joint0=(0, 0),
-            angle=0.31,
-            distance=1,
-            name="Crank"
-        )
+        self.crank = Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
         self.pin = Revolute(
-            3, 2,
-            joint0=self.crank,
-            joint1=(3, 0),
-            distance0=3,
-            distance1=1,
-            name="Pin"
+            3, 2, joint0=self.crank, joint1=(3, 0), distance0=3, distance1=1, name="Pin"
         )
         self.linkage = pl.Linkage(
-            joints=[self.crank, self.pin],
-            order=[self.crank, self.pin],
-            name="TestFourBar"
+            joints=[self.crank, self.pin], order=[self.crank, self.pin], name="TestFourBar"
         )
         # Pre-compute loci
         self.linkage.rebuild()
-        self.loci = tuple(
-            tuple(pos) for pos in self.linkage.step(iterations=10, dt=1)
-        )
+        self.loci = tuple(tuple(pos) for pos in self.linkage.step(iterations=10, dt=1))
 
 
 class TestPlotStaticLinkage(FourBarLinkageTestCase):
@@ -124,9 +108,7 @@ class TestPlotStaticLinkage(FourBarLinkageTestCase):
         fig, ax = plt.subplots()
         highlights = [[self.loci[0][0], self.loci[5][0]]]
         try:
-            plot_static_linkage(
-                self.linkage, ax, self.loci, locus_highlights=highlights
-            )
+            plot_static_linkage(self.linkage, ax, self.loci, locus_highlights=highlights)
             self.assertTrue(True)
         finally:
             plt.close(fig)
@@ -178,7 +160,7 @@ class TestUpdateAnimatedPlot(FourBarLinkageTestCase):
             for joint in self.linkage.joints:
                 for parent in (joint.joint0, joint.joint1):
                     if parent is not None:
-                        images.append(ax.plot([], [], c='b')[0])
+                        images.append(ax.plot([], [], c="b")[0])
 
             result = update_animated_plot(self.linkage, 0, images, self.loci)
             self.assertEqual(result, images)
@@ -197,19 +179,14 @@ class TestShowLinkage(FourBarLinkageTestCase):
             save=False,
             loci=self.loci,
             duration=0.1,  # Very short duration for testing
-            fps=10
+            fps=10,
         )
         self.assertIsNotNone(animation)
 
     def test_show_linkage_with_custom_title(self):
         """Test show_linkage with custom title."""
         animation = show_linkage(
-            self.linkage,
-            save=False,
-            loci=self.loci,
-            title="CustomTitle",
-            duration=0.1,
-            fps=10
+            self.linkage, save=False, loci=self.loci, title="CustomTitle", duration=0.1, fps=10
         )
         self.assertIsNotNone(animation)
 
@@ -223,7 +200,7 @@ class TestShowLinkage(FourBarLinkageTestCase):
             points=5,  # Few points for fast test
             iteration_factor=1,
             duration=0.1,
-            fps=10
+            fps=10,
         )
         self.assertIsNotNone(animation)
 
@@ -237,17 +214,18 @@ class TestPrismaticJointVisualization(unittest.TestCase):
         self.joint1 = Static(0, 2)
         self.joint2 = Static(2, 2)
         self.prismatic = Prismatic(
-            1, 1,
+            1,
+            1,
             joint0=self.joint0,
             joint1=self.joint1,
             joint2=self.joint2,
             revolute_radius=1.5,
-            name="PrismaticJoint"
+            name="PrismaticJoint",
         )
 
     def test_prismatic_joint_color_in_plot(self):
         """Test that Prismatic joint gets correct color."""
-        self.assertEqual(_get_color(self.prismatic), 'orange')
+        self.assertEqual(_get_color(self.prismatic), "orange")
 
 
 class TestSymbols(unittest.TestCase):
@@ -256,13 +234,13 @@ class TestSymbols(unittest.TestCase):
     def test_symbols_import(self):
         """Test that symbols module can be imported."""
         from pylinkage.visualizer.symbols import (
-            get_symbol_spec,
-            get_link_color,
-            is_ground_joint,
-            SYMBOL_SPECS,
             LINK_COLORS,
-            SymbolType,
+            SYMBOL_SPECS,
+            get_link_color,
+            get_symbol_spec,
+            is_ground_joint,
         )
+
         # Just verify import works
         self.assertTrue(callable(get_symbol_spec))
         self.assertTrue(callable(get_link_color))
@@ -272,28 +250,32 @@ class TestSymbols(unittest.TestCase):
 
     def test_get_symbol_spec_for_static(self):
         """Test getting symbol spec for Static joint."""
-        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        from pylinkage.visualizer.symbols import SymbolType, get_symbol_spec
+
         joint = Static(0, 0)
         spec = get_symbol_spec(joint)
         self.assertEqual(spec.symbol_type, SymbolType.GROUND)
 
     def test_get_symbol_spec_for_crank(self):
         """Test getting symbol spec for Crank joint."""
-        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        from pylinkage.visualizer.symbols import SymbolType, get_symbol_spec
+
         joint = Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
         spec = get_symbol_spec(joint)
         self.assertEqual(spec.symbol_type, SymbolType.CRANK)
 
     def test_get_symbol_spec_for_revolute(self):
         """Test getting symbol spec for Revolute joint."""
-        from pylinkage.visualizer.symbols import get_symbol_spec, SymbolType
+        from pylinkage.visualizer.symbols import SymbolType, get_symbol_spec
+
         joint = Revolute(0, 0)
         spec = get_symbol_spec(joint)
         self.assertEqual(spec.symbol_type, SymbolType.REVOLUTE)
 
     def test_get_link_color_cycles(self):
         """Test that get_link_color cycles through colors."""
-        from pylinkage.visualizer.symbols import get_link_color, LINK_COLORS
+        from pylinkage.visualizer.symbols import LINK_COLORS, get_link_color
+
         # First color
         self.assertEqual(get_link_color(0), LINK_COLORS[0])
         # Last color
@@ -304,12 +286,14 @@ class TestSymbols(unittest.TestCase):
     def test_is_ground_joint_true(self):
         """Test is_ground_joint returns True for Static with no parent."""
         from pylinkage.visualizer.symbols import is_ground_joint
+
         joint = Static(0, 0)
         self.assertTrue(is_ground_joint(joint))
 
     def test_is_ground_joint_false_for_crank(self):
         """Test is_ground_joint returns False for Crank."""
         from pylinkage.visualizer.symbols import is_ground_joint
+
         joint = Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
         self.assertFalse(is_ground_joint(joint))
 
@@ -320,12 +304,14 @@ class TestPlotlyVizImport(unittest.TestCase):
     def test_import(self):
         """Test that plotly_viz module can be imported."""
         from pylinkage.visualizer import plotly_viz
+
         # Check main functions exist
-        self.assertTrue(hasattr(plotly_viz, 'plot_linkage_plotly'))
+        self.assertTrue(hasattr(plotly_viz, "plot_linkage_plotly"))
 
     def test_create_linkage_figure_function_exists(self):
         """Test that create_linkage_figure function exists."""
         from pylinkage.visualizer.plotly_viz import plot_linkage_plotly
+
         self.assertTrue(callable(plot_linkage_plotly))
 
 
@@ -335,7 +321,8 @@ class TestDrawsvgVizImport(unittest.TestCase):
     def test_import(self):
         """Test that drawsvg_viz module can be imported."""
         from pylinkage.visualizer import drawsvg_viz
-        self.assertTrue(hasattr(drawsvg_viz, 'save_linkage_svg'))
+
+        self.assertTrue(hasattr(drawsvg_viz, "save_linkage_svg"))
 
 
 class TestAnimatedVisualization(FourBarLinkageTestCase):
@@ -343,16 +330,10 @@ class TestAnimatedVisualization(FourBarLinkageTestCase):
 
     def test_show_linkage_creates_figure(self):
         """Test that show_linkage creates a matplotlib figure."""
-        animation = show_linkage(
-            self.linkage,
-            save=False,
-            loci=self.loci,
-            duration=0.1,
-            fps=5
-        )
+        animation = show_linkage(self.linkage, save=False, loci=self.loci, duration=0.1, fps=5)
         # Animation should have a reference to the figure
         self.assertIsNotNone(animation)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

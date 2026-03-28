@@ -116,15 +116,17 @@ class OptimizationRequest(BaseModel):
         ..., discriminator="type", description="Objective function specification"
     )
     algorithm: AlgorithmParams = Field(
-        default_factory=PSOParams, discriminator="algorithm",
-        description="Optimization algorithm and parameters"
+        default_factory=PSOParams,
+        discriminator="algorithm",
+        description="Optimization algorithm and parameters",
     )
     minimize: bool = Field(
         default=False,
         description="If true, minimize the objective. Otherwise maximize.",
     )
     bounds_factor: float = Field(
-        default=5.0, gt=0.0,
+        default=5.0,
+        gt=0.0,
         description="Factor for auto-generating constraint bounds (center * factor).",
     )
 

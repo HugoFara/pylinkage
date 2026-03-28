@@ -93,21 +93,13 @@ class Prismatic(pl_joint.Joint):
 
         # Validate all required values
         if self.joint0.x is None or self.joint0.y is None:
-            raise pl_exceptions.UnbuildableError(
-                self, message="joint0 has None coordinates"
-            )
+            raise pl_exceptions.UnbuildableError(self, message="joint0 has None coordinates")
         if self.revolute_radius is None:
-            raise pl_exceptions.UnbuildableError(
-                self, message="revolute_radius is not set"
-            )
+            raise pl_exceptions.UnbuildableError(self, message="revolute_radius is not set")
         if self.joint1.x is None or self.joint1.y is None:
-            raise pl_exceptions.UnbuildableError(
-                self, message="joint1 has None coordinates"
-            )
+            raise pl_exceptions.UnbuildableError(self, message="joint1 has None coordinates")
         if self.joint2.x is None or self.joint2.y is None:
-            raise pl_exceptions.UnbuildableError(
-                self, message="joint2 has None coordinates"
-            )
+            raise pl_exceptions.UnbuildableError(self, message="joint2 has None coordinates")
 
         if self.x is None or self.y is None:
             # Initialize to a reasonable position
@@ -116,11 +108,15 @@ class Prismatic(pl_joint.Joint):
 
         # Delegate to solver function (single source of truth)
         new_x, new_y = solve_linear(
-            self.x, self.y,
-            self.joint0.x, self.joint0.y,
+            self.x,
+            self.y,
+            self.joint0.x,
+            self.joint0.y,
             self.revolute_radius,
-            self.joint1.x, self.joint1.y,
-            self.joint2.x, self.joint2.y,
+            self.joint1.x,
+            self.joint1.y,
+            self.joint2.x,
+            self.joint2.y,
         )
 
         # Handle unbuildable case

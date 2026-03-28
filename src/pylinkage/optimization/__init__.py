@@ -35,8 +35,17 @@ from .async_optimization import (
 from .async_optimization import (
     trials_and_errors_optimization_async as trials_and_errors_optimization_async,
 )
+from .collections.pareto import (
+    ParetoFront as ParetoFront,
+)
+from .collections.pareto import (
+    ParetoSolution as ParetoSolution,
+)
 from .grid_search import (
     trials_and_errors_optimization as trials_and_errors_optimization,
+)
+from .multi_objective import (
+    multi_objective_optimization as multi_objective_optimization,
 )
 from .particle_swarm import (
     particle_swarm_optimization as particle_swarm_optimization,
@@ -55,13 +64,4 @@ from .utils import (
 )
 from .utils import (
     kinematic_minimization as kinematic_minimization,
-)
-from .collections.pareto import (
-    ParetoFront as ParetoFront,
-)
-from .collections.pareto import (
-    ParetoSolution as ParetoSolution,
-)
-from .multi_objective import (
-    multi_objective_optimization as multi_objective_optimization,
 )

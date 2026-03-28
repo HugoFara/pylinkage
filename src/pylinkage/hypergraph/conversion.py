@@ -66,7 +66,6 @@ def to_linkage(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Linkag
         stacklevel=2,
     )
     from ..joints import Crank, Prismatic, Revolute, Static
-    from ..joints.joint import Joint
     from ..linkage.linkage import Linkage as LinkageClass
 
     # First expand hyperedges to simple graph
@@ -326,9 +325,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint0, joint.joint0.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -345,9 +342,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint0, joint.joint0.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -363,9 +358,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint1 is not None:
                 parent_id = joint_to_node.get(id(joint.joint1))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint1, joint.joint1.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint1, joint.joint1.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -382,9 +375,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint0, joint.joint0.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -400,9 +391,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint1 is not None:
                 parent_id = joint_to_node.get(id(joint.joint1))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint1, joint.joint1.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint1, joint.joint1.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -417,9 +406,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint0 is not None:
                 parent_id = joint_to_node.get(id(joint.joint0))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint0, joint.joint0.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint0, joint.joint0.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -435,9 +422,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if joint.joint1 is not None:
                 parent_id = joint_to_node.get(id(joint.joint1))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint1, joint.joint1.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint1, joint.joint1.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(
@@ -451,9 +436,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
             if hasattr(joint, "joint2") and joint.joint2 is not None:
                 parent_id = joint_to_node.get(id(joint.joint2))
                 if parent_id is None:
-                    parent_id = get_or_create_anchor_node(
-                        joint.joint2, joint.joint2.coord()
-                    )
+                    parent_id = get_or_create_anchor_node(joint.joint2, joint.joint2.coord())
 
                 edge_id = f"edge_{edge_counter}"
                 edge = Edge(

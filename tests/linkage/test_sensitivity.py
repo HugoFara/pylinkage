@@ -16,7 +16,6 @@ from pylinkage.linkage.sensitivity import (
     analyze_tolerance,
 )
 
-
 # =============================================================================
 # Helper Function Tests
 # =============================================================================
@@ -31,14 +30,16 @@ class TestGetConstraintNames:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
                 name="crank",
             )
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -113,7 +114,8 @@ class TestGetOutputJointIndex:
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0)
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -169,14 +171,16 @@ class TestSensitivityAnalysis:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
                 name="crank",
             )
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -198,7 +202,7 @@ class TestSensitivityAnalysis:
         """sensitivities should be a dict of name -> float."""
         result = analyze_sensitivity(fourbar_linkage, iterations=10)
         assert isinstance(result.sensitivities, dict)
-        assert all(isinstance(k, str) for k in result.sensitivities.keys())
+        assert all(isinstance(k, str) for k in result.sensitivities)
         assert all(isinstance(v, (int, float)) for v in result.sensitivities.values())
 
     def test_constraint_names_tuple(self, fourbar_linkage):
@@ -329,9 +333,7 @@ class TestLinkageSensitivityConvenienceMethod:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0)
-            revolute = pl.Revolute(
-                3, 1, joint0=crank, joint1=(4, 0), distance0=3.0, distance1=2.0
-            )
+            revolute = pl.Revolute(3, 1, joint0=crank, joint1=(4, 0), distance0=3.0, distance1=2.0)
             linkage = pl.Linkage(
                 joints=[crank, revolute],
                 order=[crank, revolute],
@@ -358,14 +360,16 @@ class TestToleranceAnalysis:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(
-                1, 0,
+                1,
+                0,
                 joint0=(0, 0),
                 angle=0.1,
                 distance=1.0,
                 name="crank",
             )
             revolute = pl.Revolute(
-                3, 1,
+                3,
+                1,
                 joint0=crank,
                 joint1=(4, 0),
                 distance0=3.0,
@@ -488,9 +492,7 @@ class TestToleranceAnalysis:
             iterations=10,
             seed=42,
         )
-        np.testing.assert_array_almost_equal(
-            result1.output_cloud, result2.output_cloud
-        )
+        np.testing.assert_array_almost_equal(result1.output_cloud, result2.output_cloud)
 
     def test_state_restored_after_analysis(self, fourbar_linkage):
         """Linkage state should be restored after analysis."""
@@ -561,12 +563,8 @@ class TestLinkageToleranceConvenienceMethod:
         """Create a four-bar linkage."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            crank = pl.Crank(
-                1, 0, joint0=(0, 0), angle=0.1, distance=1.0, name="crank"
-            )
-            revolute = pl.Revolute(
-                3, 1, joint0=crank, joint1=(4, 0), distance0=3.0, distance1=2.0
-            )
+            crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0, name="crank")
+            revolute = pl.Revolute(3, 1, joint0=crank, joint1=(4, 0), distance0=3.0, distance1=2.0)
             linkage = pl.Linkage(
                 joints=[crank, revolute],
                 order=[crank, revolute],

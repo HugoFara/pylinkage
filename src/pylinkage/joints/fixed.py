@@ -85,25 +85,19 @@ class Fixed(pl_joint.Joint):
         :param dt: Unused, but preserves the object structure.
         """
         if self.joint0 is None or self.joint1 is None:
-            raise pl_exceptions.UnderconstrainedError(f'Not enough constraints for {self}')
+            raise pl_exceptions.UnderconstrainedError(f"Not enough constraints for {self}")
         if self.joint0.x is None or self.joint0.y is None:
-            raise pl_exceptions.UnderconstrainedError(
-                f'{self.joint0} has None coordinates.'
-            )
+            raise pl_exceptions.UnderconstrainedError(f"{self.joint0} has None coordinates.")
         if self.joint1.x is None or self.joint1.y is None:
-            raise pl_exceptions.UnderconstrainedError(
-                f'{self.joint1} has None coordinates.'
-            )
+            raise pl_exceptions.UnderconstrainedError(f"{self.joint1} has None coordinates.")
         if self.r is None or self.angle is None:
             raise pl_exceptions.UnderconstrainedError(
-                f'{self} has None constraints (r={self.r}, angle={self.angle}).'
+                f"{self} has None constraints (r={self.r}, angle={self.angle})."
             )
 
         # Delegate to solver function (single source of truth)
         self.x, self.y = solve_fixed(
-            self.joint0.x, self.joint0.y,
-            self.joint1.x, self.joint1.y,
-            self.r, self.angle
+            self.joint0.x, self.joint0.y, self.joint1.x, self.joint1.y, self.r, self.angle
         )
 
     def get_constraints(self) -> tuple[float | None, float | None]:

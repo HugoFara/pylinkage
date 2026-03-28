@@ -123,8 +123,7 @@ class TestSymbolicToLinkage:
         sym_A = SymStatic(0, 0, name="A")
         sym_D = SymStatic(4, 0, name="D")
         sym_B = SymCrank(sym_A, radius="r_AB", name="B")
-        sym_C = SymRevolute(sym_B, sym_D, distance0="r_BC", distance1="r_CD",
-                           branch=1, name="C")
+        sym_C = SymRevolute(sym_B, sym_D, distance0="r_BC", distance1="r_CD", branch=1, name="C")
         sym_linkage = SymbolicLinkage([sym_A, sym_D, sym_B, sym_C])
 
         params = {"r_AB": 1.0, "r_BC": 3.0, "r_CD": 3.0}

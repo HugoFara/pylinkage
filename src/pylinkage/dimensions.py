@@ -54,9 +54,7 @@ class Dimensions:
     node_positions: dict[str, tuple[float, float]] = field(default_factory=dict)
     driver_angles: dict[str, DriverAngle] = field(default_factory=dict)
     edge_distances: dict[str, float] = field(default_factory=dict)
-    hyperedge_constraints: dict[str, dict[tuple[str, str], float]] = field(
-        default_factory=dict
-    )
+    hyperedge_constraints: dict[str, dict[tuple[str, str], float]] = field(default_factory=dict)
     name: str = ""
 
     def copy(self) -> "Dimensions":
@@ -72,9 +70,7 @@ class Dimensions:
                 for k, v in self.driver_angles.items()
             },
             edge_distances=dict(self.edge_distances),
-            hyperedge_constraints={
-                k: dict(v) for k, v in self.hyperedge_constraints.items()
-            },
+            hyperedge_constraints={k: dict(v) for k, v in self.hyperedge_constraints.items()},
             name=self.name,
         )
 
@@ -127,9 +123,7 @@ class Dimensions:
         if hyperedge_ids is not None:
             for he_id in self.hyperedge_constraints:
                 if he_id not in hyperedge_set:
-                    errors.append(
-                        f"Unknown hyperedge '{he_id}' in hyperedge_constraints"
-                    )
+                    errors.append(f"Unknown hyperedge '{he_id}' in hyperedge_constraints")
 
         return errors
 
@@ -166,9 +160,7 @@ class Dimensions:
         """
         return self.driver_angles.get(node_id)
 
-    def get_hyperedge_distance(
-        self, hyperedge_id: str, node1: str, node2: str
-    ) -> float | None:
+    def get_hyperedge_distance(self, hyperedge_id: str, node1: str, node2: str) -> float | None:
         """Get a pairwise distance constraint from a hyperedge.
 
         Args:

@@ -5,7 +5,6 @@ This module provides shared symbol metadata used by visualization backends
 to render proper ISO 3952 kinematic diagram symbols.
 """
 
-
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import TYPE_CHECKING

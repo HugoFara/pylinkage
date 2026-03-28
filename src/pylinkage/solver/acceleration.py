@@ -246,16 +246,8 @@ def solve_fixed_acceleration(
     sin_angle = math.sin(total_angle)
     cos_angle = math.cos(total_angle)
 
-    ax = (
-        p0_ax
-        - radius * d2_alpha_dt2 * sin_angle
-        - radius * d_alpha_dt * d_alpha_dt * cos_angle
-    )
-    ay = (
-        p0_ay
-        + radius * d2_alpha_dt2 * cos_angle
-        - radius * d_alpha_dt * d_alpha_dt * sin_angle
-    )
+    ax = p0_ax - radius * d2_alpha_dt2 * sin_angle - radius * d_alpha_dt * d_alpha_dt * cos_angle
+    ay = p0_ay + radius * d2_alpha_dt2 * cos_angle - radius * d_alpha_dt * d_alpha_dt * sin_angle
 
     return (ax, ay)
 
@@ -320,12 +312,7 @@ def solve_prismatic_acceleration(
     rel_vx_c = vx - circle_vx
     rel_vy_c = vy - circle_vy
 
-    b1 = (
-        a11 * circle_ax
-        + a12 * circle_ay
-        - rel_vx_c * rel_vx_c
-        - rel_vy_c * rel_vy_c
-    )
+    b1 = a11 * circle_ax + a12 * circle_ay - rel_vx_c * rel_vx_c - rel_vy_c * rel_vy_c
 
     # Line constraint derivatives
     dx = line_p2_x - line_p1_x

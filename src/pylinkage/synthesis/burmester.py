@@ -77,10 +77,7 @@ def _body_point_world_positions(
     Returns:
         List of world-frame positions (complex numbers).
     """
-    return [
-        pose.to_complex() + q * cmath.exp(1j * pose.angle)
-        for pose in poses
-    ]
+    return [pose.to_complex() + q * cmath.exp(1j * pose.angle) for pose in poses]
 
 
 def _circumcenter(z1: ComplexPoint, z2: ComplexPoint, z3: ComplexPoint) -> ComplexPoint:
@@ -225,8 +222,7 @@ def _compute_curves_3_positions(
     """
     # Compute characteristic scale from the poses
     pose_positions = [p.to_complex() for p in poses]
-    dists = [abs(pose_positions[i] - pose_positions[j])
-             for i in range(3) for j in range(i + 1, 3)]
+    dists = [abs(pose_positions[i] - pose_positions[j]) for i in range(3) for j in range(i + 1, 3)]
     char_scale = max(dists) if dists else 1.0
     if char_scale < _EPS:
         char_scale = 1.0
@@ -303,8 +299,7 @@ def _compute_curves_4_positions(
     """
     # Characteristic scale
     pose_positions = [p.to_complex() for p in poses]
-    dists = [abs(pose_positions[i] - pose_positions[j])
-             for i in range(4) for j in range(i + 1, 4)]
+    dists = [abs(pose_positions[i] - pose_positions[j]) for i in range(4) for j in range(i + 1, 4)]
     char_scale = max(dists) if dists else 1.0
     if char_scale < _EPS:
         char_scale = 1.0
@@ -377,8 +372,7 @@ def _compute_curves_5_positions(
     """
     # Characteristic scale
     pose_positions = [p.to_complex() for p in poses]
-    dists = [abs(pose_positions[i] - pose_positions[j])
-             for i in range(5) for j in range(i + 1, 5)]
+    dists = [abs(pose_positions[i] - pose_positions[j]) for i in range(5) for j in range(i + 1, 5)]
     char_scale = max(dists) if dists else 1.0
     if char_scale < _EPS:
         char_scale = 1.0
@@ -590,14 +584,8 @@ def select_compatible_dyads(
                 dist_A_right = abs(dyad_right.center_point - A_complex)
                 dist_D_left = abs(dyad_left.center_point - D_complex)
 
-                assignment1_ok = (
-                    dist_A_left < ground_tolerance
-                    and dist_D_right < ground_tolerance
-                )
-                assignment2_ok = (
-                    dist_A_right < ground_tolerance
-                    and dist_D_left < ground_tolerance
-                )
+                assignment1_ok = dist_A_left < ground_tolerance and dist_D_right < ground_tolerance
+                assignment2_ok = dist_A_right < ground_tolerance and dist_D_left < ground_tolerance
 
                 if not (assignment1_ok or assignment2_ok):
                     continue
@@ -607,9 +595,7 @@ def select_compatible_dyads(
                     dyad_left, dyad_right = dyad_right, dyad_left
 
             # Check coupler length is reasonable
-            coupler_length = abs(
-                dyad_left.circle_point - dyad_right.circle_point
-            )
+            coupler_length = abs(dyad_left.circle_point - dyad_right.circle_point)
             if not (min_link_length < coupler_length < max_link_length):
                 continue
 

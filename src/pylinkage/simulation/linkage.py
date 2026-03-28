@@ -73,12 +73,8 @@ class Linkage:
         self.name = name if name is not None else str(id(self))
         self.components = tuple(components)
         self._cranks = tuple(d for d in self.components if isinstance(d, Crank))
-        self._arc_cranks = tuple(
-            d for d in self.components if isinstance(d, ArcCrank)
-        )
-        self._linear_actuators = tuple(
-            d for d in self.components if isinstance(d, LinearActuator)
-        )
+        self._arc_cranks = tuple(d for d in self.components if isinstance(d, ArcCrank))
+        self._linear_actuators = tuple(d for d in self.components if isinstance(d, LinearActuator))
 
         if order is not None:
             self._solve_order = tuple(order)
@@ -105,9 +101,7 @@ class Linkage:
         from ..components import Ground
 
         # Start with ground points (always solvable)
-        solved: list[Component] = [
-            d for d in self.components if isinstance(d, Ground)
-        ]
+        solved: list[Component] = [d for d in self.components if isinstance(d, Ground)]
         solved_set: set[Component] = set(solved)
 
         # Track progress
@@ -128,8 +122,7 @@ class Linkage:
                     # Connected components can solve if all anchors are solved
                     anchors = d.anchors
                     can_solve = all(
-                        a in solved_set or self._is_anchor_solved(a, solved_set)
-                        for a in anchors
+                        a in solved_set or self._is_anchor_solved(a, solved_set) for a in anchors
                     )
 
                 if can_solve:
@@ -147,9 +140,7 @@ class Linkage:
         self._solve_order = tuple(solved)
         return self._solve_order
 
-    def _is_anchor_solved(
-        self, anchor: Component, solved_set: set[Component]
-    ) -> bool:
+    def _is_anchor_solved(self, anchor: Component, solved_set: set[Component]) -> bool:
         """Check if an anchor (possibly a proxy) is solved.
 
         Args:
@@ -288,9 +279,7 @@ class Linkage:
         """
         idx = 0
         for component in self.components:
-            n_constraints = len(
-                [c for c in component.get_constraints() if c is not None]
-            )
+            n_constraints = len([c for c in component.get_constraints() if c is not None])
             if n_constraints > 0:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
@@ -319,7 +308,6 @@ class Linkage:
             >>> for pos, vel, acc in linkage.step_with_derivatives():
             ...     print(f"Position: {pos}, Velocity: {vel}")
         """
-        from ..actuators import Crank
 
         if actuator not in self._cranks:
             raise ValueError(f"{actuator} is not a crank in this linkage")
@@ -385,17 +373,17 @@ class Linkage:
         from ..actuators import ArcCrank, Crank, LinearActuator
         from ..components import Ground
         from ..dyads import FixedDyad, RRPDyad, RRRDyad
-        from ..solver.velocity import (
-            solve_crank_velocity,
-            solve_fixed_velocity,
-            solve_prismatic_velocity,
-            solve_revolute_velocity,
-        )
         from ..solver.acceleration import (
             solve_crank_acceleration,
             solve_fixed_acceleration,
             solve_prismatic_acceleration,
             solve_revolute_acceleration,
+        )
+        from ..solver.velocity import (
+            solve_crank_velocity,
+            solve_fixed_velocity,
+            solve_prismatic_velocity,
+            solve_revolute_velocity,
         )
 
         if not hasattr(self, "_solve_order"):
@@ -556,11 +544,7 @@ class Linkage:
                 elif isinstance(component, Crank):
                     omega = getattr(component, "_omega", 0.0)
                     alpha = getattr(component, "_alpha", 0.0)
-                    if (
-                        component.x is None
-                        or component.y is None
-                        or component.velocity is None
-                    ):
+                    if component.x is None or component.y is None or component.velocity is None:
                         component.acceleration = None
                         continue
                     if component.anchor.x is None or component.anchor.y is None:
@@ -589,11 +573,7 @@ class Linkage:
                         component.acceleration = (ax, ay)
 
                 elif isinstance(component, RRRDyad):
-                    if (
-                        component.x is None
-                        or component.y is None
-                        or component.velocity is None
-                    ):
+                    if component.x is None or component.y is None or component.velocity is None:
                         component.acceleration = None
                         continue
                     a1 = component.anchor1
@@ -629,11 +609,7 @@ class Linkage:
                         component.acceleration = (ax, ay)
 
                 elif isinstance(component, RRPDyad):
-                    if (
-                        component.x is None
-                        or component.y is None
-                        or component.velocity is None
-                    ):
+                    if component.x is None or component.y is None or component.velocity is None:
                         component.acceleration = None
                         continue
                     ra = component.revolute_anchor
@@ -686,11 +662,7 @@ class Linkage:
                         component.acceleration = (ax, ay)
 
                 elif isinstance(component, FixedDyad):
-                    if (
-                        component.x is None
-                        or component.y is None
-                        or component.velocity is None
-                    ):
+                    if component.x is None or component.y is None or component.velocity is None:
                         component.acceleration = None
                         continue
                     a1 = component.anchor1

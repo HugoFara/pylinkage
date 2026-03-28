@@ -252,8 +252,7 @@ class SymbolicLinkage:
         from .joints import SymCrank, SymRevolute, SymStatic
 
         # Build substitution dict with Symbol keys
-        subs = {self.parameters[k]: v for k, v in param_values.items()
-                if k in self.parameters}
+        subs = {self.parameters[k]: v for k, v in param_values.items() if k in self.parameters}
 
         new_joints: list[SymJoint] = []
         joint_map: dict[str, SymJoint] = {}

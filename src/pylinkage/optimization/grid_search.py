@@ -5,7 +5,6 @@ It should be used for reference only as the search space
 will almost certainly be too big.
 """
 
-
 import itertools
 import math
 import warnings
@@ -106,7 +105,7 @@ def fast_variator(
     """
     lists = (
         iter(np.linspace(low, high, divisions))
-        for low, high in zip(bounds[0], bounds[1])
+        for low, high in zip(bounds[0], bounds[1], strict=False)
     )
     for j in itertools.product(*lists):
         yield list(j)
@@ -158,14 +157,12 @@ def trials_and_errors_optimization(
     if divisions <= 0:
         raise OptimizationError(f"Number of divisions must be positive, got {divisions}")
     center: NDArray[np.floating] = (
-        np.array(linkage.get_num_constraints())
-        if parameters is None
-        else np.array(parameters)
+        np.array(linkage.get_num_constraints()) if parameters is None else np.array(parameters)
     )
-    if 'bounds' not in kwargs or kwargs['bounds'] is None:
+    if "bounds" not in kwargs or kwargs["bounds"] is None:
         bounds = generate_bounds(center)
     else:
-        bounds = kwargs['bounds']
+        bounds = kwargs["bounds"]
 
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
@@ -178,18 +175,20 @@ def trials_and_errors_optimization(
         "best score": None,
         "best dimensions": [],
     }
-    if 'sequential' in kwargs and kwargs['sequential']:
+    if "sequential" in kwargs and kwargs["sequential"]:
         variations_generator: Generator[Any, None, None] = sequential_variator(
-            center, divisions, bounds  # type: ignore[arg-type]
+            center,
+            divisions,
+            bounds,  # type: ignore[arg-type]
         )
     else:
         variations_generator = fast_variator(divisions, bounds)  # type: ignore[arg-type]
-    order_relation: Callable[[float, float], float] = kwargs.get('order_relation', max)
-    verbose: bool = 'verbose' in kwargs and kwargs['verbose']
+    order_relation: Callable[[float, float], float] = kwargs.get("order_relation", max)
+    verbose: bool = "verbose" in kwargs and kwargs["verbose"]
     # Iterable of all possible dimensions
     pbar = tqdm.tqdm(
         variations_generator,
-        desc='Trials and errors optimization',
+        desc="Trials and errors optimization",
         total=divisions ** len(center),
         postfix=postfix,
         disable=not verbose,
@@ -201,10 +200,12 @@ def trials_and_errors_optimization(
             if result.score is None or order_relation(result.score, new_score) != result.score:
                 result[:] = new_score, list(dim).copy(), prev.copy()
                 if verbose:
-                    postfix.update({
-                        "best score": results[0][0],
-                        "best dimensions": results[0][1],
-                    })
+                    postfix.update(
+                        {
+                            "best score": results[0][0],
+                            "best dimensions": results[0][1],
+                        }
+                    )
                     pbar.set_postfix(postfix)
                 break
     if results[0].score is None:

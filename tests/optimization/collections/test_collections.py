@@ -7,6 +7,7 @@ from pylinkage.optimization.collections import Agent, MutableAgent
 
 class TestAgent(unittest.TestCase):
     """Test an Agent object."""
+
     def test_definition(self):
         """Test if we can faithfully define an agent object."""
         score = (np.random.rand() - 0.5) * 100
@@ -22,6 +23,7 @@ class TestAgent(unittest.TestCase):
 
 class TestMutableAgent(unittest.TestCase):
     """Test a Mutable agent object."""
+
     def test_definition(self):
         """Test if we can faithfully define an agent object."""
         score = (np.random.rand() - 0.5) * 100
@@ -47,5 +49,5 @@ class TestMutableAgent(unittest.TestCase):
             self.assertTupleEqual(tuple(val), tuple(agent[i + 1]))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

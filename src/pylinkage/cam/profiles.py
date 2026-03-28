@@ -280,17 +280,22 @@ class FunctionProfile(CamProfile):
         """Convert to numba-compatible representation."""
         coeffs = self.motion_law.to_numba_coefficients()
         # Pack timing parameters and coefficients into single array
-        data = np.concatenate([
-            np.array([
-                self.base_radius,
-                self.total_lift,
-                self.rise_start,
-                self.rise_end,
-                self.dwell_high_end,
-                self.fall_end,
-            ], dtype=np.float64),
-            coeffs,
-        ])
+        data = np.concatenate(
+            [
+                np.array(
+                    [
+                        self.base_radius,
+                        self.total_lift,
+                        self.rise_start,
+                        self.rise_end,
+                        self.dwell_high_end,
+                        self.fall_end,
+                    ],
+                    dtype=np.float64,
+                ),
+                coeffs,
+            ]
+        )
         return (self.motion_law.profile_type, data)
 
 

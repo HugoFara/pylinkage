@@ -212,14 +212,10 @@ class MechanismBuilder:
 
     # Internal storage
     _ground_link_id: str | None = field(default=None, repr=False)
-    _ground_ports: dict[str, tuple[float, float]] = field(
-        default_factory=dict, repr=False
-    )
+    _ground_ports: dict[str, tuple[float, float]] = field(default_factory=dict, repr=False)
     _pending_links: dict[str, PendingLink] = field(default_factory=dict, repr=False)
     _connections: list[Connection] = field(default_factory=list, repr=False)
-    _prismatic_connections: list[PrismaticConnection] = field(
-        default_factory=list, repr=False
-    )
+    _prismatic_connections: list[PrismaticConnection] = field(default_factory=list, repr=False)
     _slide_axes: dict[str, SlideAxis] = field(default_factory=dict, repr=False)
     _configuration: dict[str, int] = field(default_factory=dict, repr=False)
     _pending_trackers: list[PendingTracker] = field(default_factory=list, repr=False)
@@ -501,16 +497,11 @@ class MechanismBuilder:
             link_id = ref_port1.split(".")[0]
             if link_id in self._pending_links:
                 link = self._pending_links[link_id]
-                if link.length is not None:
-                    distance = link.length / 2
-                else:
-                    distance = 0.0
+                distance = link.length / 2 if link.length is not None else 0.0
             else:
                 distance = 0.0
 
-        self._pending_trackers.append(
-            PendingTracker(id, ref_port1, ref_port2, distance, angle)
-        )
+        self._pending_trackers.append(PendingTracker(id, ref_port1, ref_port2, distance, angle))
         return self
 
     def connect(self, port1: str, port2: str) -> Self:
@@ -625,7 +616,9 @@ class MechanismBuilder:
                 self._validate_triangle(link, errors)
 
         if errors:
-            raise ValueError("Invalid mechanism definition:\n" + "\n".join(f"  - {e}" for e in errors))
+            raise ValueError(
+                "Invalid mechanism definition:\n" + "\n".join(f"  - {e}" for e in errors)
+            )
 
     def _validate_triangle(self, link: PendingLink, errors: list[str]) -> None:
         """Validate that ternary link satisfies triangle inequality."""
@@ -720,8 +713,7 @@ class MechanismBuilder:
 
             if not progress:
                 raise UnderconstrainedError(
-                    f"Cannot solve ports: {pending}. "
-                    "Check that all links are properly connected."
+                    f"Cannot solve ports: {pending}. Check that all links are properly connected."
                 )
 
         return solved
@@ -891,9 +883,7 @@ class MechanismBuilder:
         (cx, cy), r = c
         (p1x, p1y), (p2x, p2y) = axis.get_line_points()
 
-        n, px1, py1, px2, py2 = circle_line_from_points_intersection(
-            cx, cy, r, p1x, p1y, p2x, p2y
-        )
+        n, px1, py1, px2, py2 = circle_line_from_points_intersection(cx, cy, r, p1x, p1y, p2x, p2y)
 
         if n == INTERSECTION_NONE:
             raise UnbuildableError(
@@ -947,13 +937,9 @@ class MechanismBuilder:
 
             # Determine joint type
             is_ground = any(
-                p.startswith(f"{self._ground_link_id}.")
-                for p in group
-                if self._ground_link_id
+                p.startswith(f"{self._ground_link_id}.") for p in group if self._ground_link_id
             )
-            is_prismatic = any(
-                pconn.port in group for pconn in self._prismatic_connections
-            )
+            is_prismatic = any(pconn.port in group for pconn in self._prismatic_connections)
 
             # Create joint
             joint_id = "_".join(sorted(group))
@@ -971,9 +957,7 @@ class MechanismBuilder:
                             axis_dir = axis.get_normalized_direction()
                             line_point = axis.point
                         break
-                joint = PrismaticJoint(
-                    joint_id, position=pos, axis=axis_dir, line_point=line_point
-                )
+                joint = PrismaticJoint(joint_id, position=pos, axis=axis_dir, line_point=line_point)
             else:
                 joint = RevoluteJoint(joint_id, position=pos)
 

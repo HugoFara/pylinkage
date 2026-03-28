@@ -4,7 +4,6 @@ This module provides classes for assembling linkages from component instances
 and flattening them to a single HypergraphLinkage for analysis or simulation.
 """
 
-
 from dataclasses import dataclass, field
 
 from ._types import NodeId, PortId
@@ -147,13 +146,9 @@ class HierarchicalLinkage:
         for conn in self.connections:
             # Check instances exist
             if conn.from_instance not in self.instances:
-                raise ValueError(
-                    f"Connection references unknown instance '{conn.from_instance}'"
-                )
+                raise ValueError(f"Connection references unknown instance '{conn.from_instance}'")
             if conn.to_instance not in self.instances:
-                raise ValueError(
-                    f"Connection references unknown instance '{conn.to_instance}'"
-                )
+                raise ValueError(f"Connection references unknown instance '{conn.to_instance}'")
 
             # Check ports exist
             from_inst = self.instances[conn.from_instance]
@@ -194,25 +189,17 @@ class HierarchicalLinkage:
         """
         # Validate before adding
         if connection.from_instance not in self.instances:
-            raise ValueError(
-                f"Connection references unknown instance '{connection.from_instance}'"
-            )
+            raise ValueError(f"Connection references unknown instance '{connection.from_instance}'")
         if connection.to_instance not in self.instances:
-            raise ValueError(
-                f"Connection references unknown instance '{connection.to_instance}'"
-            )
+            raise ValueError(f"Connection references unknown instance '{connection.to_instance}'")
 
         from_inst = self.instances[connection.from_instance]
         to_inst = self.instances[connection.to_instance]
 
         if connection.from_port not in from_inst.ports:
-            raise ValueError(
-                f"Connection references unknown port '{connection.from_port}'"
-            )
+            raise ValueError(f"Connection references unknown port '{connection.from_port}'")
         if connection.to_port not in to_inst.ports:
-            raise ValueError(
-                f"Connection references unknown port '{connection.to_port}'"
-            )
+            raise ValueError(f"Connection references unknown port '{connection.to_port}'")
 
         self.connections.append(connection)
 
@@ -295,12 +282,8 @@ class HierarchicalLinkage:
         # Third pass: add edges from all instances
         for instance_id, instance in self.instances.items():
             for edge in instance.topology.edges.values():
-                qualified_source = get_canonical(
-                    instance.get_qualified_node_id(edge.source)
-                )
-                qualified_target = get_canonical(
-                    instance.get_qualified_node_id(edge.target)
-                )
+                qualified_source = get_canonical(instance.get_qualified_node_id(edge.source))
+                qualified_target = get_canonical(instance.get_qualified_node_id(edge.target))
 
                 # Skip self-loops created by merging
                 if qualified_source == qualified_target:
@@ -320,8 +303,7 @@ class HierarchicalLinkage:
         for instance_id, instance in self.instances.items():
             for hyperedge in instance.topology.hyperedges.values():
                 qualified_nodes = tuple(
-                    get_canonical(instance.get_qualified_node_id(n))
-                    for n in hyperedge.nodes
+                    get_canonical(instance.get_qualified_node_id(n)) for n in hyperedge.nodes
                 )
 
                 # Deduplicate nodes (in case of merging)
@@ -333,9 +315,7 @@ class HierarchicalLinkage:
                         Hyperedge(
                             id=qualified_he_id,
                             nodes=unique_nodes,
-                            name=f"{instance_id}.{hyperedge.name}"
-                            if hyperedge.name
-                            else None,
+                            name=f"{instance_id}.{hyperedge.name}" if hyperedge.name else None,
                         )
                     )
 

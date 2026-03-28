@@ -3,7 +3,7 @@
 import math
 import unittest
 
-from pylinkage.synthesis import motion_generation, Pose, SynthesisType
+from pylinkage.synthesis import Pose, SynthesisType, motion_generation
 from pylinkage.synthesis.motion_generation import motion_generation_3_poses
 
 
@@ -46,7 +46,7 @@ class TestMotionGeneration(unittest.TestCase):
             Pose(1.8, 0, 0.6),
         ]
 
-        result = motion_generation(poses, require_grashof=False)
+        motion_generation(poses, require_grashof=False)
 
         # May have 0 solutions due to over-constraint
 
@@ -109,9 +109,7 @@ class TestMotionGeneration(unittest.TestCase):
             Pose(2, 0.5, 0.6),
         ]
 
-        result = motion_generation(
-            poses, max_solutions=2, require_grashof=False
-        )
+        result = motion_generation(poses, max_solutions=2, require_grashof=False)
 
         self.assertLessEqual(len(result.solutions), 2)
 
@@ -139,7 +137,7 @@ class TestMotionGeneration3Poses(unittest.TestCase):
             Pose(2, 0, 0.6),
         ]
 
-        result = motion_generation_3_poses(poses, n_samples=20)
+        motion_generation_3_poses(poses, n_samples=20)
 
         # May have multiple solutions from curve sampling
 

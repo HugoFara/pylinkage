@@ -23,7 +23,6 @@ from .groups import solve_pp_dyad, solve_rrp_dyad, solve_rrr_dyad, solve_triad
 if TYPE_CHECKING:
     from .._types import Coord, NodeId
     from ..assur.decomposition import DecompositionResult
-    from ..assur.graph import LinkageGraph
     from ..assur.groups import AssurGroup
 
 
@@ -75,8 +74,7 @@ def solve_group(
         return _solve_triad(group, positions, dimensions, hint_positions)
     else:
         raise NotImplementedError(
-            f"Solver not implemented for group type: {group.joint_signature} "
-            f"(category: {category})"
+            f"Solver not implemented for group type: {group.joint_signature} (category: {category})"
         )
 
 
@@ -171,7 +169,8 @@ def _solve_dyad_rrp(
 
     if revolute_distance is None:
         raise ValueError(
-            f"DyadRRP revolute_distance must be set in dimensions for edge {group.internal_edges[0] if group.internal_edges else 'N/A'}"
+            "DyadRRP revolute_distance must be set in dimensions"
+            f" for edge {group.internal_edges[0] if group.internal_edges else 'N/A'}"
         )
 
     # Get hint from hint_positions if available
@@ -282,15 +281,12 @@ def _solve_triad(
         distance = dimensions.get_edge_distance(edge_id)
         if distance is None:
             raise ValueError(
-                f"Triad edge '{edge_id}' ({node_a} ↔ {node_b}) "
-                f"has no distance in dimensions"
+                f"Triad edge '{edge_id}' ({node_a} ↔ {node_b}) has no distance in dimensions"
             )
         constraints.append((node_a, node_b, distance))
 
     if len(constraints) < 4:
-        raise ValueError(
-            f"Triad needs at least 4 distance constraints, got {len(constraints)}"
-        )
+        raise ValueError(f"Triad needs at least 4 distance constraints, got {len(constraints)}")
 
     # Build hints
     hints: dict[str, Coord] = {}

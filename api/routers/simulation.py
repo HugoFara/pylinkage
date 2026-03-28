@@ -82,9 +82,7 @@ def simulate_direct(request: DirectSimulationRequest) -> SimulationResponse:
 
 
 @router.post("/{mechanism_id}/simulate", response_model=SimulationResponse)
-def simulate_mechanism(
-    mechanism_id: str, request: SimulationRequest
-) -> SimulationResponse:
+def simulate_mechanism(mechanism_id: str, request: SimulationRequest) -> SimulationResponse:
     """Run simulation on a mechanism."""
     stored = storage.get(mechanism_id)
     if stored is None:

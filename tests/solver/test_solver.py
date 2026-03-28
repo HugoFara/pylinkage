@@ -208,11 +208,6 @@ class TestConversion(unittest.TestCase):
 
     def test_fourbar_conversion_with_fixed(self):
         """Test conversion of linkage with Fixed joint."""
-        from pylinkage.bridge.solver_conversion import (
-            solver_data_to_linkage,
-            update_solver_constraints,
-            update_solver_positions,
-        )
 
         ground = pl.Static(0, 0, name="ground")
         ref = pl.Static(1, 0, name="ref")
@@ -244,7 +239,8 @@ class TestConversion(unittest.TestCase):
         line_start = pl.Static(0, 2, name="line_start")
         line_end = pl.Static(5, 2, name="line_end")
         prismatic = pl.Prismatic(
-            2, 2,
+            2,
+            2,
             joint0=ground,
             joint1=line_start,
             joint2=line_end,
@@ -510,8 +506,15 @@ class TestSimulation(unittest.TestCase):
         constraint_offsets = np.array([0], dtype=np.int32)
         solve_order = np.array([0], dtype=np.int32)
 
-        step_single(positions, constraints, joint_types, parent_indices,
-                   constraint_offsets, solve_order, dt=1.0)
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt=1.0,
+        )
 
         # Static joint should not move
         np.testing.assert_array_equal(positions[0], [1.0, 2.0])
@@ -526,8 +529,15 @@ class TestSimulation(unittest.TestCase):
         constraint_offsets = np.array([0, 0], dtype=np.int32)
         solve_order = np.array([0, 1], dtype=np.int32)
 
-        step_single(positions, constraints, joint_types, parent_indices,
-                   constraint_offsets, solve_order, dt=1.0)
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt=1.0,
+        )
 
         # After pi/2 rotation, should be at (0, 1)
         np.testing.assert_array_almost_equal(positions[1], [0.0, 1.0])
@@ -535,19 +545,29 @@ class TestSimulation(unittest.TestCase):
     def test_step_single_revolute(self):
         """Test step_single with revolute joint."""
         # Two static joints and a revolute
-        positions = np.array([
-            [0.0, 0.0],
-            [2.0, 0.0],
-            [1.0, 1.5],  # Hint toward upper intersection
-        ], dtype=np.float64)
+        positions = np.array(
+            [
+                [0.0, 0.0],
+                [2.0, 0.0],
+                [1.0, 1.5],  # Hint toward upper intersection
+            ],
+            dtype=np.float64,
+        )
         constraints = np.array([2.0, 2.0], dtype=np.float64)  # Both radii = 2
         joint_types = np.array([JOINT_STATIC, JOINT_STATIC, JOINT_REVOLUTE], dtype=np.int32)
         parent_indices = np.array([[-1, -1, -1], [-1, -1, -1], [0, 1, -1]], dtype=np.int32)
         constraint_offsets = np.array([0, 0, 0], dtype=np.int32)
         solve_order = np.array([0, 1, 2], dtype=np.int32)
 
-        step_single(positions, constraints, joint_types, parent_indices,
-                   constraint_offsets, solve_order, dt=1.0)
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt=1.0,
+        )
 
         # Should be at intersection of circles
         self.assertAlmostEqual(positions[2, 0], 1.0, places=5)
@@ -555,39 +575,63 @@ class TestSimulation(unittest.TestCase):
 
     def test_step_single_fixed(self):
         """Test step_single with fixed joint."""
-        positions = np.array([
-            [0.0, 0.0],
-            [1.0, 0.0],
-            [0.0, 0.0],  # Will be computed
-        ], dtype=np.float64)
+        positions = np.array(
+            [
+                [0.0, 0.0],
+                [1.0, 0.0],
+                [0.0, 0.0],  # Will be computed
+            ],
+            dtype=np.float64,
+        )
         constraints = np.array([1.0, math.pi / 2], dtype=np.float64)  # radius=1, angle=pi/2
         joint_types = np.array([JOINT_STATIC, JOINT_STATIC, JOINT_FIXED], dtype=np.int32)
         parent_indices = np.array([[-1, -1, -1], [-1, -1, -1], [0, 1, -1]], dtype=np.int32)
         constraint_offsets = np.array([0, 0, 0], dtype=np.int32)
         solve_order = np.array([0, 1, 2], dtype=np.int32)
 
-        step_single(positions, constraints, joint_types, parent_indices,
-                   constraint_offsets, solve_order, dt=1.0)
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt=1.0,
+        )
 
         # Should be at (0, 1) - 90 degrees from line pointing to (1,0)
         np.testing.assert_array_almost_equal(positions[2], [0.0, 1.0])
 
     def test_step_single_linear(self):
         """Test step_single with linear joint."""
-        positions = np.array([
-            [0.0, 0.0],  # Circle center
-            [0.0, 1.0],  # Line point 1
-            [5.0, 1.0],  # Line point 2
-            [0.0, 1.0],  # Linear joint (hint)
-        ], dtype=np.float64)
+        positions = np.array(
+            [
+                [0.0, 0.0],  # Circle center
+                [0.0, 1.0],  # Line point 1
+                [5.0, 1.0],  # Line point 2
+                [0.0, 1.0],  # Linear joint (hint)
+            ],
+            dtype=np.float64,
+        )
         constraints = np.array([2.0], dtype=np.float64)  # radius=2
-        joint_types = np.array([JOINT_STATIC, JOINT_STATIC, JOINT_STATIC, JOINT_LINEAR], dtype=np.int32)
-        parent_indices = np.array([[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [0, 1, 2]], dtype=np.int32)
+        joint_types = np.array(
+            [JOINT_STATIC, JOINT_STATIC, JOINT_STATIC, JOINT_LINEAR], dtype=np.int32
+        )
+        parent_indices = np.array(
+            [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1], [0, 1, 2]], dtype=np.int32
+        )
         constraint_offsets = np.array([0, 0, 0, 0], dtype=np.int32)
         solve_order = np.array([0, 1, 2, 3], dtype=np.int32)
 
-        step_single(positions, constraints, joint_types, parent_indices,
-                   constraint_offsets, solve_order, dt=1.0)
+        step_single(
+            positions,
+            constraints,
+            joint_types,
+            parent_indices,
+            constraint_offsets,
+            solve_order,
+            dt=1.0,
+        )
 
         # Should be on line y=1, at distance 2 from origin
         self.assertAlmostEqual(positions[3, 1], 1.0, places=5)

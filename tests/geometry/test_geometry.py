@@ -230,8 +230,13 @@ class TestCircleLineFromPointsIntersection(unittest.TestCase):
     def test_two_intersections(self):
         """Test line crossing circle twice."""
         result = circle_line_from_points_intersection(
-            0.0, 0.0, 2.0,  # Circle at origin, radius 2
-            -5.0, 0.0, 5.0, 0.0  # Horizontal line through center
+            0.0,
+            0.0,
+            2.0,  # Circle at origin, radius 2
+            -5.0,
+            0.0,
+            5.0,
+            0.0,  # Horizontal line through center
         )
         self.assertEqual(result[0], INTERSECTION_TWO)
         # Intersections should be at (-2, 0) and (2, 0)
@@ -242,8 +247,13 @@ class TestCircleLineFromPointsIntersection(unittest.TestCase):
     def test_tangent_line(self):
         """Test tangent line (one intersection)."""
         result = circle_line_from_points_intersection(
-            0.0, 0.0, 1.0,  # Circle at origin, radius 1
-            -5.0, 1.0, 5.0, 1.0  # Horizontal line at y=1
+            0.0,
+            0.0,
+            1.0,  # Circle at origin, radius 1
+            -5.0,
+            1.0,
+            5.0,
+            1.0,  # Horizontal line at y=1
         )
         # Should be tangent or very close to tangent
         self.assertIn(result[0], [INTERSECTION_ONE, INTERSECTION_TWO])
@@ -251,16 +261,26 @@ class TestCircleLineFromPointsIntersection(unittest.TestCase):
     def test_no_intersection(self):
         """Test line not crossing circle."""
         result = circle_line_from_points_intersection(
-            0.0, 0.0, 1.0,  # Circle at origin, radius 1
-            -5.0, 5.0, 5.0, 5.0  # Horizontal line at y=5
+            0.0,
+            0.0,
+            1.0,  # Circle at origin, radius 1
+            -5.0,
+            5.0,
+            5.0,
+            5.0,  # Horizontal line at y=5
         )
         self.assertEqual(result[0], INTERSECTION_NONE)
 
     def test_vertical_line(self):
         """Test vertical line intersection."""
         result = circle_line_from_points_intersection(
-            0.0, 0.0, 2.0,  # Circle at origin, radius 2
-            1.0, -5.0, 1.0, 5.0  # Vertical line at x=1
+            0.0,
+            0.0,
+            2.0,  # Circle at origin, radius 2
+            1.0,
+            -5.0,
+            1.0,
+            5.0,  # Vertical line at x=1
         )
         self.assertEqual(result[0], INTERSECTION_TWO)
 

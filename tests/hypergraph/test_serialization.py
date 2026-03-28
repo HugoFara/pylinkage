@@ -142,16 +142,20 @@ class TestHierarchicalSerialization:
         graph.add_edge(Edge("AB", "A", "B"))
 
         linkage = HierarchicalLinkage(name="Test")
-        linkage.add_instance(ComponentInstance(
-            id="i1",
-            topology=graph,
-            ports={"in": "A", "out": "B"},
-        ))
-        linkage.add_instance(ComponentInstance(
-            id="i2",
-            topology=graph,
-            ports={"in": "A", "out": "B"},
-        ))
+        linkage.add_instance(
+            ComponentInstance(
+                id="i1",
+                topology=graph,
+                ports={"in": "A", "out": "B"},
+            )
+        )
+        linkage.add_instance(
+            ComponentInstance(
+                id="i2",
+                topology=graph,
+                ports={"in": "A", "out": "B"},
+            )
+        )
         linkage.add_connection(Connection("i1", "out", "i2", "in"))
 
         return linkage

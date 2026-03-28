@@ -9,25 +9,10 @@ def create_fourbar_linkage():
     """Create a four-bar linkage for benchmarking."""
     ground1 = pl.Static(0, 0, name="ground1")
     ground2 = pl.Static(3, 0, name="ground2")
-    crank = pl.Crank(
-        1, 0,
-        joint0=ground1,
-        distance=1,
-        angle=0.1,
-        name="crank"
-    )
-    pin = pl.Revolute(
-        2, 1,
-        joint0=crank,
-        joint1=ground2,
-        distance0=2,
-        distance1=2,
-        name="pin"
-    )
+    crank = pl.Crank(1, 0, joint0=ground1, distance=1, angle=0.1, name="crank")
+    pin = pl.Revolute(2, 1, joint0=crank, joint1=ground2, distance0=2, distance1=2, name="pin")
     return pl.Linkage(
-        joints=(ground1, ground2, crank, pin),
-        order=(ground1, ground2, crank, pin),
-        name="four-bar"
+        joints=(ground1, ground2, crank, pin), order=(ground1, ground2, crank, pin), name="four-bar"
     )
 
 

@@ -13,7 +13,6 @@ from pylinkage.assur import (
 )
 from pylinkage.assur.groups import Triad
 from pylinkage.dimensions import Dimensions
-from pylinkage.exceptions import UnbuildableError
 from pylinkage.solver.groups import solve_triad
 from pylinkage.solver.solve import solve_decomposition, solve_group
 
@@ -61,9 +60,7 @@ class TestSolveTriad:
         for na, nb, dist in constraints:
             pa, pb = all_pos[na], all_pos[nb]
             actual = math.sqrt((pa[0] - pb[0]) ** 2 + (pa[1] - pb[1]) ** 2)
-            assert abs(actual - dist) < 1e-4, (
-                f"Constraint {na}-{nb}: expected {dist}, got {actual}"
-            )
+            assert abs(actual - dist) < 1e-4, f"Constraint {na}-{nb}: expected {dist}, got {actual}"
 
     def test_rectangle_triad(self):
         """Solve a triad in a rectangular configuration.
@@ -299,7 +296,7 @@ class TestSolveDecompositionWithTriad:
 
         # Check that at least one group is a triad or that decomposition
         # found some valid grouping
-        has_triad = any(g.group_class == 2 for g in result.groups)
+        any(g.group_class == 2 for g in result.groups)
         # If Y has 2 known neighbors (B,C), it may decompose as dyad first.
         # That's fine — the decomposer prefers dyads.
 
@@ -316,10 +313,7 @@ class TestSolveDecompositionWithTriad:
             if dist is not None:
                 pa = positions[edge.source]
                 pb = positions[edge.target]
-                actual = math.sqrt(
-                    (pa[0] - pb[0]) ** 2 + (pa[1] - pb[1]) ** 2
-                )
+                actual = math.sqrt((pa[0] - pb[0]) ** 2 + (pa[1] - pb[1]) ** 2)
                 assert abs(actual - dist) < 1e-3, (
-                    f"Edge {edge.id} ({edge.source}-{edge.target}): "
-                    f"expected {dist}, got {actual}"
+                    f"Edge {edge.id} ({edge.source}-{edge.target}): expected {dist}, got {actual}"
                 )

@@ -36,8 +36,10 @@ logger = logging.getLogger(__name__)
 def _solution_to_dto(sol: FourBarSolution) -> FourBarSolutionDTO:
     """Convert a FourBarSolution to a DTO."""
     gt = grashof_check(
-        sol.crank_length, sol.coupler_length,
-        sol.rocker_length, sol.ground_length,
+        sol.crank_length,
+        sol.coupler_length,
+        sol.rocker_length,
+        sol.ground_length,
     )
     return FourBarSolutionDTO(
         ground_pivot_a=list(sol.ground_pivot_a),
@@ -53,9 +55,7 @@ def _solution_to_dto(sol: FourBarSolution) -> FourBarSolutionDTO:
     )
 
 
-def _linkage_to_mechanism_dict(
-    sol: FourBarSolution, index: int
-) -> dict[str, Any] | None:
+def _linkage_to_mechanism_dict(sol: FourBarSolution, index: int) -> dict[str, Any] | None:
     """Convert a FourBarSolution to a mechanism dict for the frontend.
 
     Returns None if conversion fails (e.g. unbuildable geometry).
@@ -91,8 +91,10 @@ def _build_response(result: SynthesisResult) -> SynthesisResponse:
     for i, raw_sol in enumerate(result.raw_solutions):
         # Compute arc limits for non-Grashof solutions
         arc_limits = _compute_crank_limits(
-            raw_sol.crank_length, raw_sol.coupler_length,
-            raw_sol.rocker_length, raw_sol.ground_length,
+            raw_sol.crank_length,
+            raw_sol.coupler_length,
+            raw_sol.rocker_length,
+            raw_sol.ground_length,
         )
         if arc_limits is not None:
             raw_sol = raw_sol._replace(arc_limits=arc_limits)

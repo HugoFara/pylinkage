@@ -138,7 +138,7 @@ def generate_python_code(mechanism: Mechanism) -> str:
                     f"anchor1={joint_vars[a1_id]}, "
                     f"anchor2={joint_vars[a2_id]}, "
                     f"distance1={d1:.6g}, "
-                    f'slide_direction=({joint.axis[0]:.6g}, {joint.axis[1]:.6g}))'
+                    f"slide_direction=({joint.axis[0]:.6g}, {joint.axis[1]:.6g}))"
                 )
             else:
                 lines.append(
@@ -183,9 +183,7 @@ def generate_python_code(mechanism: Mechanism) -> str:
     lines.append("")
     lines.append("# Assemble and simulate")
     components_str = ", ".join(all_vars)
-    lines.append(
-        f'linkage = Linkage([{components_str}], name="{mechanism.name or "Unnamed"}")'
-    )
+    lines.append(f'linkage = Linkage([{components_str}], name="{mechanism.name or "Unnamed"}")')
     lines.append("")
     lines.append("# Run simulation")
     lines.append("loci = list(linkage.step())")

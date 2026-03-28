@@ -16,9 +16,7 @@ if TYPE_CHECKING:
 class UnbuildableError(Exception):
     """Should be raised when the constraints cannot be solved."""
 
-    def __init__(
-        self, joint: Any, message: str = 'Unable to solve constraints'
-    ) -> None:
+    def __init__(self, joint: Any, message: str = "Unable to solve constraints") -> None:
         self.joint = joint
         self.message = message
         super().__init__(message)
@@ -36,7 +34,7 @@ class UnderconstrainedError(Exception):
     """The linkage is under-constrained and multiple solutions may exist."""
 
     def __init__(
-        self, linkage: "Linkage | str", message: str = 'The linkage is under-constrained!'
+        self, linkage: "Linkage | str", message: str = "The linkage is under-constrained!"
     ) -> None:
         self.linkage = linkage
         super().__init__(message)
@@ -49,9 +47,7 @@ HypostaticError = UnderconstrainedError
 class NotCompletelyDefinedError(Exception):
     """The linkage definition is incomplete."""
 
-    def __init__(
-        self, joint: Any, message: str = 'The joint is not completely defined!'
-    ) -> None:
+    def __init__(self, joint: Any, message: str = "The joint is not completely defined!") -> None:
         self.joint = joint
         super().__init__(message)
 
@@ -59,8 +55,6 @@ class NotCompletelyDefinedError(Exception):
 class OptimizationError(Exception):
     """Should be raised when the optimization process fails."""
 
-    def __init__(
-        self, message: str = 'Optimization failed'
-    ) -> None:
+    def __init__(self, message: str = "Optimization failed") -> None:
         self.message = message
         super().__init__(message)

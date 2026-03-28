@@ -3,7 +3,7 @@
 import math
 import unittest
 
-from pylinkage.synthesis import path_generation, SynthesisType
+from pylinkage.synthesis import SynthesisType, path_generation
 from pylinkage.synthesis.path_generation import (
     _estimate_orientations_from_path,
     _points_to_poses,
@@ -102,18 +102,14 @@ class TestPathGeneration(unittest.TestCase):
         result = path_generation(points, require_grashof=False)
 
         # Should have warning about over-constraint
-        has_overconstraint_warning = any(
-            "over-constrained" in w.lower() for w in result.warnings
-        )
+        has_overconstraint_warning = any("over-constrained" in w.lower() for w in result.warnings)
         self.assertTrue(has_overconstraint_warning)
 
     def test_max_solutions_limit(self):
         """Test that max_solutions limits output."""
         points = [(0, 1), (1, 2), (2, 1)]
 
-        result = path_generation(
-            points, max_solutions=3, require_grashof=False
-        )
+        result = path_generation(points, max_solutions=3, require_grashof=False)
 
         self.assertLessEqual(len(result.solutions), 3)
 
@@ -150,8 +146,7 @@ class TestPathGeneration(unittest.TestCase):
 
         for linkage in result.solutions:
             joint_names = [j.name for j in linkage.joints]
-            self.assertIn("P", joint_names,
-                          "Synthesized linkage should have coupler point joint P")
+            self.assertIn("P", joint_names, "Synthesized linkage should have coupler point joint P")
 
     def test_raw_solutions_have_coupler_point(self):
         """Test that raw FourBarSolutions include coupler_point."""
@@ -161,8 +156,7 @@ class TestPathGeneration(unittest.TestCase):
 
         for sol in result.raw_solutions:
             self.assertIsNotNone(
-                sol.coupler_point,
-                "Path generation solutions should have coupler_point set"
+                sol.coupler_point, "Path generation solutions should have coupler_point set"
             )
 
 
@@ -178,9 +172,7 @@ class TestPathGenerationWithTiming(unittest.TestCase):
         points = [(0, 1), (1, 2), (2, 1)]
         angles = [0, math.pi / 3, 2 * math.pi / 3]
 
-        result = path_generation_with_timing(
-            points, angles, require_grashof=False
-        )
+        result = path_generation_with_timing(points, angles, require_grashof=False)
 
         self.assertEqual(result.problem.synthesis_type, SynthesisType.PATH)
 
@@ -231,14 +223,12 @@ class TestVerifyPathGeneration(unittest.TestCase):
             sample_points = [trajectory[i] for i in sample_indices]
 
             # Verify: joint C should pass through these points
-            is_ok, distances = verify_path_generation(
-                linkage, sample_points, tolerance=0.5
-            )
+            is_ok, distances = verify_path_generation(linkage, sample_points, tolerance=0.5)
 
             # At least some distances should be small (trajectory was sampled from this linkage)
             self.assertTrue(
                 any(d < 0.5 for d in distances),
-                f"At least one sample point should be close to trajectory, got {distances}"
+                f"At least one sample point should be close to trajectory, got {distances}",
             )
 
     def test_verify_returns_correct_structure(self):
@@ -301,10 +291,7 @@ class TestPathGenerationIntegration(unittest.TestCase):
                 continue
 
             positions_list = list(linkage.step(iterations=20))
-            p_positions = [
-                pos[p_idx] for pos in positions_list
-                if pos[p_idx][0] is not None
-            ]
+            p_positions = [pos[p_idx] for pos in positions_list if pos[p_idx][0] is not None]
 
             if len(p_positions) < 2:
                 continue
@@ -313,8 +300,7 @@ class TestPathGenerationIntegration(unittest.TestCase):
             x_range = max(p[0] for p in p_positions) - min(p[0] for p in p_positions)
             y_range = max(p[1] for p in p_positions) - min(p[1] for p in p_positions)
             self.assertGreater(
-                x_range + y_range, 0.01,
-                "Coupler point P should move during simulation"
+                x_range + y_range, 0.01, "Coupler point P should move during simulation"
             )
 
 

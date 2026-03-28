@@ -1,13 +1,11 @@
 """Tests for triad decomposition in the Assur module."""
 
-import pytest
-
 from pylinkage.assur import (
     Edge,
+    JointType,
     LinkageGraph,
     Node,
     NodeRole,
-    JointType,
     decompose_assur_groups,
     validate_decomposition,
 )
@@ -202,8 +200,7 @@ class TestTriadDecomposition:
         # All groups should be dyads since Watt I can be decomposed that way
         for group in result.groups:
             assert isinstance(group, Dyad), (
-                f"Expected Dyad, got {type(group).__name__} "
-                f"with signature {group.joint_signature}"
+                f"Expected Dyad, got {type(group).__name__} with signature {group.joint_signature}"
             )
         assert validate_decomposition(result) == []
 

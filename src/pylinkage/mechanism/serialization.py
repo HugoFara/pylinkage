@@ -289,10 +289,9 @@ def mechanism_from_dict(data: dict[str, Any]) -> Mechanism:
         link = link_from_dict(ldata, joint_map)
         links.append(link)
 
-        if isinstance(link, GroundLink):
-            if ground_id and link.id == ground_id:
-                ground = link
-            elif ground is None:
+        if isinstance(link, GroundLink) and (
+            ground_id and link.id == ground_id or ground is None
+        ):
                 ground = link
 
     return Mechanism(
