@@ -339,7 +339,9 @@ def _try_create_triad(
         return None
 
     # Collect edges: internal↔anchor and internal↔internal
+    # edge_map tracks which node pair each edge connects (for the solver)
     edge_ids: list[str] = []
+    edge_map: dict[str, tuple[NodeId, NodeId]] = {}
     anchor_ids: list[NodeId] = []
 
     # Edges from internal_a to known anchors
@@ -347,6 +349,7 @@ def _try_create_triad(
         edge = graph.get_edge_between(internal_a, anchor_id)
         if edge is not None:
             edge_ids.append(edge.id)
+            edge_map[edge.id] = (internal_a, anchor_id)
             if anchor_id not in anchor_ids:
                 anchor_ids.append(anchor_id)
 
@@ -355,6 +358,7 @@ def _try_create_triad(
         edge = graph.get_edge_between(internal_b, anchor_id)
         if edge is not None:
             edge_ids.append(edge.id)
+            edge_map[edge.id] = (internal_b, anchor_id)
             if anchor_id not in anchor_ids:
                 anchor_ids.append(anchor_id)
 
@@ -362,6 +366,7 @@ def _try_create_triad(
     internal_edge = graph.get_edge_between(internal_a, internal_b)
     if internal_edge is not None:
         edge_ids.append(internal_edge.id)
+        edge_map[internal_edge.id] = (internal_a, internal_b)
 
     # Need at least 4 edges total for a valid triad
     if len(edge_ids) < 4:
@@ -395,6 +400,7 @@ def _try_create_triad(
         internal_nodes=(internal_a, internal_b),
         anchor_nodes=tuple(anchor_ids[:3]),
         internal_edges=tuple(edge_ids),
+        edge_map=edge_map,
     )
 
 

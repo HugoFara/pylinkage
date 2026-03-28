@@ -103,11 +103,15 @@ class AssurGroup(ABC):
         """Return the solving geometry category.
 
         The solver dispatches based on this, not on the specific class.
-        Categories:
+        Categories for dyads (group_class=1):
         - "circle_circle": All-revolute constraints (e.g., RRR)
         - "circle_line": Mixed revolute + prismatic (e.g., RRP, RPR, PRR)
         - "line_line": All-prismatic constraints (e.g., PP, PPR)
+        Categories for higher-order groups (group_class>=2):
+        - "newton_raphson": Simultaneous constraint solving
         """
+        if self.group_class >= 2:
+            return "newton_raphson"
         sig = self.joint_signature
         n_prismatic = _count_prismatic(sig)
         if n_prismatic == 0:
@@ -290,9 +294,13 @@ class Triad(AssurGroup):
 
     Attributes:
         _signature: Canonical joint signature string (6 chars).
+        edge_map: Maps edge ID → (node_a, node_b) for all internal edges.
+            The solver uses this to know which pair of nodes each
+            distance constraint connects.
     """
 
     _signature: str = "RRRRRR"
+    edge_map: dict[str, tuple[NodeId, NodeId]] = field(default_factory=dict)
 
     @property
     def group_class(self) -> int:

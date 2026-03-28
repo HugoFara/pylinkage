@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions
 from ..exceptions import UnbuildableError
-from .groups import solve_pp_dyad, solve_rrp_dyad, solve_rrr_dyad
+from .groups import solve_pp_dyad, solve_rrp_dyad, solve_rrr_dyad, solve_triad
 
 if TYPE_CHECKING:
     from .._types import Coord, NodeId
@@ -71,6 +71,8 @@ def solve_group(
         return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
     elif category == "line_line":
         return _solve_dyad_pp(group, positions, dimensions, hint_positions)
+    elif category == "newton_raphson":
+        return _solve_triad(group, positions, dimensions, hint_positions)
     else:
         raise NotImplementedError(
             f"Solver not implemented for group type: {group.joint_signature} "
@@ -241,6 +243,75 @@ def _solve_dyad_pp(
         ) from e
 
     return {internal_id: pos}
+
+
+def _solve_triad(
+    group: AssurGroup,
+    positions: dict[NodeId, Coord],
+    dimensions: Dimensions,
+    hint_positions: dict[NodeId, Coord] | None,
+) -> dict[NodeId, Coord]:
+    """Solve a triad (Class II) using Newton-Raphson on distance constraints.
+
+    Builds distance constraints from the group's edge_map and dimensions,
+    then delegates to solve_triad() for the numerical solve.
+    """
+    if len(group.internal_nodes) != 2:
+        raise ValueError(
+            f"Triad must have exactly 2 internal nodes, got {len(group.internal_nodes)}"
+        )
+
+    internal_ids = (group.internal_nodes[0], group.internal_nodes[1])
+
+    # Validate anchor positions exist
+    for anchor_id in group.anchor_nodes:
+        if anchor_id not in positions:
+            raise ValueError(f"Anchor {anchor_id} position not found")
+
+    # Build constraints from edge_map + dimensions
+    # edge_map: {edge_id: (node_a, node_b)}
+    if not hasattr(group, "edge_map") or not group.edge_map:
+        raise ValueError(
+            "Triad has no edge_map — cannot determine which nodes "
+            "each edge connects. Ensure the triad was created by "
+            "decompose_assur_groups() or has edge_map populated."
+        )
+
+    constraints: list[tuple[str, str, float]] = []
+    for edge_id, (node_a, node_b) in group.edge_map.items():
+        distance = dimensions.get_edge_distance(edge_id)
+        if distance is None:
+            raise ValueError(
+                f"Triad edge '{edge_id}' ({node_a} ↔ {node_b}) "
+                f"has no distance in dimensions"
+            )
+        constraints.append((node_a, node_b, distance))
+
+    if len(constraints) < 4:
+        raise ValueError(
+            f"Triad needs at least 4 distance constraints, got {len(constraints)}"
+        )
+
+    # Build hints
+    hints: dict[str, Coord] = {}
+    for nid in internal_ids:
+        if hint_positions and nid in hint_positions:
+            hints[nid] = hint_positions[nid]
+        elif dimensions.get_node_position(nid):
+            hints[nid] = dimensions.get_node_position(nid)
+
+    try:
+        return solve_triad(
+            constraints=constraints,
+            positions=positions,
+            internal_ids=internal_ids,
+            hints=hints or None,
+        )
+    except ValueError as e:
+        raise UnbuildableError(
+            internal_ids[0],
+            message=f"Triad solver failed for {internal_ids}: {e}",
+        ) from e
 
 
 def solve_decomposition(
