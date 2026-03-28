@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .routers import examples, mechanisms, optimization, simulation, synthesis, websocket
+from .routers import examples, export, mechanisms, optimization, simulation, synthesis, websocket
 
 
 @asynccontextmanager
@@ -39,6 +39,7 @@ app.include_router(examples.router, prefix="/api")
 app.include_router(synthesis.router, prefix="/api")
 app.include_router(optimization.router, prefix="/api")
 app.include_router(websocket.router, prefix="/api")
+app.include_router(export.router, prefix="/api")
 
 
 @app.get("/health")
@@ -63,5 +64,9 @@ def api_info() -> dict[str, str | list[str]]:
             "/api/optimization",
             "/api/ws/simulation/{id}",
             "/api/ws/simulation-fast/{id}",
+            "/api/export/python",
+            "/api/export/svg",
+            "/api/export/dxf",
+            "/api/export/step",
         ],
     }
