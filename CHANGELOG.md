@@ -54,6 +54,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Exported acceleration solvers: `solve_crank_acceleration`, `solve_revolute_acceleration`,
     `solve_fixed_acceleration`, `solve_prismatic_acceleration`.
 
+### Fixed
+
+- **PSO score sign:** `particle_swarm_optimization()` returned the negated pyswarms
+  cost when `order_relation=max`, producing incorrect (often negative) scores.
+- **Mechanism builder branch selection:** `MechanismBuilder.set_branch()` produced
+  inconsistent assembly configurations because circle-circle constraints arrived in
+  non-deterministic order depending on which connected port was solved first.
+  Constraints are now sorted by center position before intersection, making branch
+  0/1 deterministic.
+
 ### Changed
 
 - **Breaking:** Dropped Python 3.9 support. Minimum version is now Python 3.10.

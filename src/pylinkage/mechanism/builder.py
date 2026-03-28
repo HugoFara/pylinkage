@@ -858,7 +858,15 @@ class MechanismBuilder:
         c2: tuple[tuple[float, float], float],
         port_id: str,
     ) -> tuple[float, float]:
-        """Solve circle-circle intersection."""
+        """Solve circle-circle intersection.
+
+        Constraints are sorted by center position before solving so that
+        branch 0/1 always maps to the same physical configuration,
+        regardless of which connected port triggered the solve.
+        """
+        # Sort constraints by center coordinates for deterministic branch mapping
+        if c1[0] > c2[0]:
+            c1, c2 = c2, c1
         (x1, y1), r1 = c1
         (x2, y2), r2 = c2
 

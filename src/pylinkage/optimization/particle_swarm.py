@@ -128,4 +128,7 @@ def particle_swarm_optimization(
         iters,
         verbose=verbose,
     )
+    # pyswarms returns the minimized cost; un-negate for maximization
+    if order_relation is max:
+        score = -score
     return [Agent(score, constraints, joint_pos)]
