@@ -3,6 +3,7 @@ SciPy-based optimization algorithms for linkage optimization.
 
 This module provides wrappers around SciPy's optimization functions:
 - differential_evolution_optimization: Global optimization using differential evolution
+- dual_annealing_optimization: Global optimization using generalized simulated annealing
 - minimize_linkage: Local optimization using various gradient-free methods
 
 Created on 2025.
@@ -165,6 +166,141 @@ def differential_evolution_optimization(
     return [Agent(best_score, best_dims, joint_pos)]
 
 
+def dual_annealing_optimization(
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
+    bounds: tuple[Sequence[float], Sequence[float]] | None = None,
+    order_relation: Callable[[float, float], float] = max,
+    maxiter: int = 1000,
+    initial_temp: float = 5230.0,
+    restart_temp_ratio: float = 2e-5,
+    visit: float = 2.62,
+    accept: float = -5.0,
+    seed: int | None = None,
+    verbose: bool = True,
+    **kwargs: Any,
+) -> list[Agent]:
+    """Dual Annealing optimization wrapper for scipy.
+
+    This function wraps scipy's generalized simulated annealing optimizer.
+    Unlike population-based methods (PSO, DE), it follows a single trajectory
+    with controlled random jumps, making it effective for problems with many
+    local minima and expensive evaluations.
+
+    :param eval_func: The evaluation function.
+        Input: (linkage, num_constraints, initial_coordinates).
+        Output: score (float).
+    :param linkage: Linkage to be optimized.
+    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
+        If None, bounds will be generated from linkage constraints.
+    :param order_relation: How to compare scores (max or min). Default is max.
+    :param maxiter: Maximum number of global iterations. Default is 1000.
+    :param initial_temp: Initial temperature for the annealing schedule.
+        Higher values allow more exploration. Default is 5230.0.
+    :param restart_temp_ratio: Fraction of initial_temp at which the
+        temperature is restarted. Default is 2e-5.
+    :param visit: Parameter for the visiting distribution. Higher values
+        give heavier tails (more long-range jumps). Default is 2.62.
+    :param accept: Parameter for the acceptance distribution. Lower values
+        make acceptance more restrictive. Default is -5.0.
+    :param seed: Random seed for reproducibility.
+    :param verbose: Print progress if True. Default is True.
+    :param kwargs: Additional keyword arguments passed to dual_annealing.
+
+    :returns: List containing single Agent with best score, dimensions, and positions.
+
+    :raises OptimizationError: If parameters are invalid or optimization fails.
+
+    Example::
+
+        from pylinkage.optimization import dual_annealing_optimization
+        from pylinkage.optimization.utils import kinematic_minimization
+
+        @kinematic_minimization
+        def fitness(loci, **kwargs):
+            return some_metric(loci)
+
+        results = dual_annealing_optimization(
+            eval_func=fitness,
+            linkage=my_linkage,
+            maxiter=500,
+            order_relation=min,
+        )
+        best_score, best_dims, init_pos = results[0]
+    """
+    raw_constraints = tuple(linkage.get_num_constraints())
+    constraints = cast(
+        tuple[float, ...],
+        tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float))),
+    )
+    dimensions = len(constraints)
+
+    if dimensions <= 0:
+        raise OptimizationError(f"Dimensions must be positive, got {dimensions}")
+    if maxiter <= 0:
+        raise OptimizationError(f"Maximum iterations must be positive, got {maxiter}")
+
+    if bounds is None:
+        generated = generate_bounds(constraints)
+        bounds = (list(generated[0]), list(generated[1]))
+
+    if len(bounds) != 2:
+        raise OptimizationError(
+            f"Bounds must be a tuple of (lower, upper), got {len(bounds)} elements"
+        )
+    if len(bounds[0]) != dimensions or len(bounds[1]) != dimensions:
+        raise OptimizationError(
+            f"Bounds dimensions ({len(bounds[0])}, {len(bounds[1])}) "
+            f"must match number of dimensions ({dimensions})"
+        )
+
+    scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
+
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
+        j.coord() for j in linkage.joints
+    )
+
+    def objective(x: np.ndarray) -> float:
+        score = eval_func(linkage, x.tolist(), joint_pos)
+        if order_relation is max:
+            return -score
+        return score
+
+    from scipy.optimize import dual_annealing
+
+    callback = None
+    if verbose:
+        _iter_count = [0]
+
+        def callback(x: np.ndarray, f: float, context: int) -> bool:
+            _iter_count[0] += 1
+            score = -f if order_relation is max else f
+            print(
+                f"DA iter {_iter_count[0]}  score: {score:.6f}  context: {context}",
+                end="\r",
+            )
+            return False
+
+    result = dual_annealing(
+        objective,
+        bounds=scipy_bounds,
+        maxiter=maxiter,
+        initial_temp=initial_temp,
+        restart_temp_ratio=restart_temp_ratio,
+        visit=visit,
+        accept=accept,
+        seed=seed,
+        callback=callback,
+        **kwargs,
+    )
+
+    if verbose:
+        print()
+
+    best_score = -result.fun if order_relation is max else result.fun
+    return [Agent(best_score, result.x, joint_pos)]
+
+
 def minimize_linkage(
     eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
     linkage: "Linkage",
@@ -299,3 +435,94 @@ def minimize_linkage(
     best_dims = result.x
 
     return [Agent(best_score, best_dims, joint_pos)]
+
+
+def chain_optimizers(
+    eval_func: "Callable[[Linkage, Sequence[float], JointPositions], float]",
+    linkage: "Linkage",
+    stages: Sequence[
+        tuple[
+            "Callable[..., list[Agent]]",
+            dict[str, Any],
+        ]
+    ],
+    order_relation: Callable[[float, float], float] = max,
+    verbose: bool = True,
+) -> list[Agent]:
+    """Run multiple optimizers in sequence, feeding each result to the next.
+
+    A common pattern is global search followed by local refinement, e.g.
+    DE or PSO for exploration, then Nelder-Mead to polish the best solution.
+
+    Each stage receives the best solution from the previous stage as its
+    starting point (via ``center`` for population-based methods, or ``x0``
+    for local methods).
+
+    :param eval_func: The evaluation function, shared across all stages.
+    :param linkage: Linkage to be optimized.
+    :param stages: Sequence of ``(optimizer_func, kwargs)`` tuples. Each
+        ``optimizer_func`` must accept ``eval_func`` and ``linkage`` as
+        its first two positional arguments. ``kwargs`` are passed through.
+        Do **not** include ``eval_func`` or ``linkage`` in ``kwargs``.
+    :param order_relation: How to compare scores (max or min). Default is max.
+    :param verbose: Print stage headers and progress. Default is True.
+
+    :returns: List containing the single best Agent from the final stage.
+
+    :raises OptimizationError: If no stages are provided.
+
+    Example::
+
+        from pylinkage.optimization import (
+            chain_optimizers,
+            differential_evolution_optimization,
+            minimize_linkage,
+        )
+
+        results = chain_optimizers(
+            eval_func=fitness,
+            linkage=my_linkage,
+            stages=[
+                (differential_evolution_optimization, {"maxiter": 300}),
+                (minimize_linkage, {"method": "Nelder-Mead", "maxiter": 500}),
+            ],
+            order_relation=min,
+        )
+        best = results[0]
+    """
+    if not stages:
+        raise OptimizationError("At least one optimization stage is required")
+
+    best_result: list[Agent] | None = None
+
+    for i, (optimizer, kwargs) in enumerate(stages):
+        if verbose:
+            name = getattr(optimizer, "__name__", str(optimizer))
+            print(f"\n=== Stage {i + 1}/{len(stages)}: {name} ===")
+
+        stage_kwargs: dict[str, Any] = {
+            "eval_func": eval_func,
+            "linkage": linkage,
+            "order_relation": order_relation,
+            "verbose": verbose,
+            **kwargs,
+        }
+
+        # Feed previous result as starting point
+        if best_result is not None:
+            best_dims = best_result[0].dimensions
+            # Local methods use x0, population-based use center
+            if "x0" not in stage_kwargs and "center" not in stage_kwargs:
+                import inspect
+
+                sig = inspect.signature(optimizer)
+                if "x0" in sig.parameters:
+                    stage_kwargs["x0"] = list(best_dims)
+                elif "center" in sig.parameters:
+                    stage_kwargs["center"] = list(best_dims)
+
+        result = optimizer(**stage_kwargs)
+        best_result = result
+
+    assert best_result is not None
+    return best_result

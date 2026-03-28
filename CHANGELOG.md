@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Dual Annealing optimizer:** `dual_annealing_optimization()` wraps scipy's
+  generalized simulated annealing — a single-trajectory global optimizer effective
+  for problems with many local minima and expensive evaluations.
+- **Optimizer chaining:** `chain_optimizers()` runs multiple optimizers in sequence,
+  automatically feeding each result as the starting point for the next stage.
+  Common pattern: global search (DE/PSO) → local refinement (Nelder-Mead).
+
 ### Changed
 
 - **PSO is now pure NumPy:** `particle_swarm_optimization()` no longer depends on

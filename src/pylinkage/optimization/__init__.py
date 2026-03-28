@@ -1,9 +1,11 @@
 """Optimization package."""
 
 __all__ = [
+    "chain_optimizers",
     "collections",
     "differential_evolution_optimization",
     "differential_evolution_optimization_async",
+    "dual_annealing_optimization",
     "generate_bounds",
     "kinematic_maximization",
     "kinematic_minimization",
@@ -41,9 +43,14 @@ from .utils import (
 
 # Lazy-loaded attributes (require scipy / pyswarms)
 _LAZY_ATTRS: dict[str, tuple[str, str]] = {
+    "chain_optimizers": (".scipy_optimize", "chain_optimizers"),
     "differential_evolution_optimization": (
         ".scipy_optimize",
         "differential_evolution_optimization",
+    ),
+    "dual_annealing_optimization": (
+        ".scipy_optimize",
+        "dual_annealing_optimization",
     ),
     "minimize_linkage": (".scipy_optimize", "minimize_linkage"),
     "particle_swarm_optimization": (
