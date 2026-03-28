@@ -56,6 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Breaking:** Dropped Python 3.9 support. Minimum version is now Python 3.10.
+- Added Python 3.14 to CI test matrix.
 - **Breaking:** `Linkage.step_fast_with_kinematics()` now returns a 3-tuple
   `(positions, velocities, accelerations)` instead of 2-tuple.
 - **Breaking:** `LinearActuator.velocity` attribute renamed to `LinearActuator.speed`
