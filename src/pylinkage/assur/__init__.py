@@ -51,6 +51,10 @@ __all__ = [
     "Edge",
     # Assur groups (pure data classes)
     "AssurGroup",
+    "Dyad",
+    "Triad",
+    "identify_group_type",
+    # Backwards-compatible aliases
     "DyadRRR",
     "DyadRRP",
     "DyadRPR",
@@ -96,11 +100,14 @@ from .graph import Edge, LinkageGraph, Node
 from .groups import (
     DYAD_TYPES,
     AssurGroup,
+    Dyad,
     DyadPRR,
     DyadRPR,
     DyadRRP,
     DyadRRR,
+    Triad,
     identify_dyad_type,
+    identify_group_type,
 )
 from .hypergraph_conversion import from_hypergraph, to_hypergraph
 from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph

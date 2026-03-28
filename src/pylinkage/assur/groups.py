@@ -7,11 +7,9 @@ An Assur group is a kinematic substructure with DOF = 0 when attached to
 the frame (or previously solved groups). It represents the minimal structural
 unit that can be identified and analyzed independently.
 
-Assur groups are classified by:
-- Class (k): number of links minus 1 divided by 2 for dyads
-- Order: related to the number of binary links
-
-Class I groups (k=1) are dyads - two binary links, three joints.
+Groups are **parameterized by signature** rather than having one class per
+joint-type combination. This scales to triads (64 combinations) and
+tetrads (512 combinations) without an explosion of classes.
 
 IMPORTANT: These classes are pure topological data structures.
 They do NOT contain solving behavior or dimensional data.
@@ -19,11 +17,18 @@ Use pylinkage.solver.solve.solve_group() with a Dimensions object
 to compute positions.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 from ._types import JointType, NodeId
 from .graph import LinkageGraph
+
+
+def _count_prismatic(signature: str) -> int:
+    """Count prismatic joints in a canonical signature string."""
+    return sum(1 for c in signature if c == "P")
 
 
 @dataclass
@@ -93,301 +98,59 @@ class AssurGroup(ABC):
         """
         ...
 
-
-@dataclass
-class DyadRRR(AssurGroup):
-    """RRR Dyad: Three revolute joints forming a triangle (topology only).
-
-    This is the most common Assur group, equivalent to the Revolute joint.
-    It consists of two binary links connecting one internal node to two
-    anchor nodes.
-
-    Structure::
-
-        anchor0 ----d0---- internal ----d1---- anchor1
-
-    The internal node position is found at the intersection of two circles:
-    - Circle 1: centered at anchor0 with radius from Dimensions
-    - Circle 2: centered at anchor1 with radius from Dimensions
-
-    This is a pure topological data class. Distance constraints are stored
-    in a Dimensions object. Use pylinkage.solver.solve.solve_group()
-    to compute positions.
-    """
-
     @property
-    def group_class(self) -> int:
-        return 1
+    def solver_category(self) -> str:
+        """Return the solving geometry category.
 
-    @property
-    def joint_signature(self) -> str:
-        return "RRR"
-
-    @classmethod
-    def can_form(
-        cls,
-        internal_node_ids: list[NodeId],
-        anchor_node_ids: list[NodeId],
-        graph: LinkageGraph,
-    ) -> bool:
-        """Check if nodes form an RRR dyad.
-
-        Requires:
-        - Exactly 1 internal node (revolute type)
-        - Exactly 2 anchor nodes
-        - Edges connecting internal to both anchors
+        The solver dispatches based on this, not on the specific class.
+        Categories:
+        - "circle_circle": All-revolute constraints (e.g., RRR)
+        - "circle_line": Mixed revolute + prismatic (e.g., RRP, RPR, PRR)
+        - "line_line": All-prismatic constraints (e.g., PP, PPR)
         """
-        if len(internal_node_ids) != 1:
-            return False
-        if len(anchor_node_ids) < 2:
-            return False
-
-        internal_id = internal_node_ids[0]
-        internal_node = graph.nodes.get(internal_id)
-        if internal_node is None:
-            return False
-
-        # Check joint type is revolute
-        if internal_node.joint_type != JointType.REVOLUTE:
-            return False
-
-        # Check edges exist to both anchors
-        for anchor_id in anchor_node_ids[:2]:
-            edge = graph.get_edge_between(internal_id, anchor_id)
-            if edge is None:
-                return False
-
-        return True
+        sig = self.joint_signature
+        n_prismatic = _count_prismatic(sig)
+        if n_prismatic == 0:
+            return "circle_circle"
+        elif n_prismatic >= 2:
+            return "line_line"
+        else:
+            return "circle_line"
 
 
 @dataclass
-class DyadRRP(AssurGroup):
-    """RRP Dyad: Two revolute joints and one prismatic joint (topology only).
+class Dyad(AssurGroup):
+    """Class I Assur group — parameterized by joint signature.
 
-    This corresponds to the Linear joint - a point constrained by a circle
-    (from revolute connection) and a line (from prismatic connection).
+    A dyad consists of 2 binary links, 3 joints, and 1 internal node.
+    The signature (e.g., "RRR", "RRP", "RPR") determines the joint
+    types and solving geometry.
 
     Structure::
 
-        revolute_anchor ----distance---- internal
-                                            |
-                                     (slides on line)
-                                            |
-        line_node1 ................... line_node2
+        anchor_0 ----link_0---- internal_0 ----link_1---- anchor_1
+        (joint_0)               (joint_1)                 (joint_2)
 
-    The internal node is at the intersection of:
-    - A circle centered at revolute_anchor with radius from Dimensions
-    - A line passing through line_node1 and line_node2
-
-    This is a pure topological data class. Distance constraints are stored
-    in a Dimensions object. Use pylinkage.solver.solve.solve_group()
-    to compute positions.
+    For prismatic variants, additional line-defining nodes are stored:
+    - RRP/RPR/PRR: one line defined by (line_node1, line_node2)
+    - PP: two lines defined by (line_node1, line_node2) and
+      (line2_node1, line2_node2)
 
     Attributes:
-        line_node1: First node defining the prismatic axis (topological).
-        line_node2: Second node defining the prismatic axis (topological).
+        _signature: Canonical joint signature string (e.g., "RRR").
+        line_node1: First node defining prismatic line constraint.
+        line_node2: Second node defining prismatic line constraint.
+        line2_node1: First node of second line (PP only).
+        line2_node2: Second node of second line (PP only).
     """
 
+    _signature: str = "RRR"
+
+    # Line constraint nodes (for prismatic variants)
     line_node1: NodeId | None = None
     line_node2: NodeId | None = None
 
-    @property
-    def group_class(self) -> int:
-        return 1
-
-    @property
-    def joint_signature(self) -> str:
-        return "RRP"
-
-    @classmethod
-    def can_form(
-        cls,
-        internal_node_ids: list[NodeId],
-        anchor_node_ids: list[NodeId],
-        graph: LinkageGraph,
-    ) -> bool:
-        """Check if nodes form an RRP dyad.
-
-        This is more complex than RRR - needs to identify:
-        - One revolute connection (edge to anchor)
-        - One line constraint (defined by two other nodes)
-        """
-        if len(internal_node_ids) != 1:
-            return False
-
-        internal_id = internal_node_ids[0]
-        internal_node = graph.nodes.get(internal_id)
-        if internal_node is None:
-            return False
-
-        # The internal node should have connections suggesting a line constraint
-        # This is a simplified check - in practice we'd need more info
-        # about which connection is the prismatic one
-        edges = graph.get_edges_for_node(internal_id)
-
-        # Need at least 3 connections: 1 revolute + 2 for line
-        return len(edges) >= 3
-
-
-@dataclass
-class DyadRPR(AssurGroup):
-    """RPR Dyad: Revolute-Prismatic-Revolute configuration (topology only).
-
-    The internal node has a prismatic (sliding) constraint, positioned at the
-    intersection of a circle (from revolute anchor) and a line (defined by
-    the prismatic axis).
-
-    Geometrically equivalent to RRP but with the prismatic at the internal node.
-
-    Structure::
-
-        anchor0 ----distance---- internal (prismatic) ----line---- anchor1
-                                      |
-                                 slides on line
-    """
-
-    # Line-defining nodes for the prismatic axis
-    line_node1: NodeId | None = None
-    line_node2: NodeId | None = None
-
-    @property
-    def group_class(self) -> int:
-        return 1
-
-    @property
-    def joint_signature(self) -> str:
-        return "RPR"
-
-    @classmethod
-    def can_form(
-        cls,
-        internal_node_ids: list[NodeId],
-        anchor_node_ids: list[NodeId],
-        graph: LinkageGraph,
-    ) -> bool:
-        """Check if nodes form an RPR dyad.
-
-        Requires:
-        - Exactly 1 internal node (prismatic type)
-        - At least 1 revolute anchor connection
-        - Line constraint from other anchors
-        """
-        if len(internal_node_ids) != 1:
-            return False
-
-        internal_id = internal_node_ids[0]
-        internal_node = graph.nodes.get(internal_id)
-        if internal_node is None:
-            return False
-
-        # Internal node should be prismatic type
-        if internal_node.joint_type != JointType.PRISMATIC:
-            return False
-
-        # Check for at least one revolute anchor connection
-        has_revolute_anchor = False
-        for anchor_id in anchor_node_ids:
-            anchor = graph.nodes.get(anchor_id)
-            if anchor and anchor.joint_type == JointType.REVOLUTE:
-                edge = graph.get_edge_between(internal_id, anchor_id)
-                if edge is not None:
-                    has_revolute_anchor = True
-                    break
-
-        return has_revolute_anchor
-
-
-@dataclass
-class DyadPRR(AssurGroup):
-    """PRR Dyad: Prismatic-Revolute-Revolute configuration (topology only).
-
-    Similar to RRP but with different anchor types. The internal node is
-    revolute, with one anchor providing a prismatic constraint.
-
-    Geometrically equivalent to RRP - circle-line intersection.
-    """
-
-    # Line-defining nodes for the prismatic axis
-    line_node1: NodeId | None = None
-    line_node2: NodeId | None = None
-
-    @property
-    def group_class(self) -> int:
-        return 1
-
-    @property
-    def joint_signature(self) -> str:
-        return "PRR"
-
-    @classmethod
-    def can_form(
-        cls,
-        internal_node_ids: list[NodeId],
-        anchor_node_ids: list[NodeId],
-        graph: LinkageGraph,
-    ) -> bool:
-        """Check if nodes form a PRR dyad.
-
-        Requires:
-        - Exactly 1 internal node (revolute type)
-        - At least one prismatic anchor
-        - At least one revolute anchor
-        """
-        if len(internal_node_ids) != 1:
-            return False
-
-        internal_id = internal_node_ids[0]
-        internal_node = graph.nodes.get(internal_id)
-        if internal_node is None:
-            return False
-
-        # Internal node should be revolute type
-        if internal_node.joint_type != JointType.REVOLUTE:
-            return False
-
-        # Check for at least one prismatic anchor
-        has_prismatic = False
-        has_revolute = False
-        for anchor_id in anchor_node_ids:
-            anchor = graph.nodes.get(anchor_id)
-            if anchor:
-                edge = graph.get_edge_between(internal_id, anchor_id)
-                if edge is not None:
-                    if anchor.joint_type == JointType.PRISMATIC:
-                        has_prismatic = True
-                    elif anchor.joint_type == JointType.REVOLUTE:
-                        has_revolute = True
-
-        return has_prismatic and has_revolute
-
-
-@dataclass
-class DyadPP(AssurGroup):
-    """PP Dyad: Two prismatic joints - line-line intersection (topology only).
-
-    The internal node is positioned at the intersection of two lines.
-    This covers isomers like T_R_T, T_RT_, _TRT_.
-
-    Structure::
-
-        line1_node1 ......... internal ......... line1_node2
-                                 |
-                                 |
-        line2_node1 .............|.............. line2_node2
-
-    The internal node is at the intersection of:
-    - Line 1: passing through line1_node1 and line1_node2
-    - Line 2: passing through line2_node1 and line2_node2
-
-    Attributes:
-        line1_node1: First node of line 1.
-        line1_node2: Second node of line 1.
-        line2_node1: First node of line 2.
-        line2_node2: Second node of line 2.
-    """
-
-    line1_node1: NodeId | None = None
-    line1_node2: NodeId | None = None
+    # Second line constraint nodes (for PP / line-line variants)
     line2_node1: NodeId | None = None
     line2_node2: NodeId | None = None
 
@@ -397,7 +160,147 @@ class DyadPP(AssurGroup):
 
     @property
     def joint_signature(self) -> str:
-        return "PP"
+        return self._signature
+
+    @classmethod
+    def can_form(
+        cls,
+        internal_node_ids: list[NodeId],
+        anchor_node_ids: list[NodeId],
+        graph: LinkageGraph,
+        *,
+        signature: str | None = None,
+    ) -> bool:
+        """Check if nodes can form a dyad with the given (or any) signature.
+
+        If signature is provided, checks against that specific joint pattern.
+        Otherwise, checks if any valid dyad can be formed.
+
+        Args:
+            internal_node_ids: Candidate internal nodes (must be exactly 1).
+            anchor_node_ids: Candidate anchor nodes.
+            graph: The linkage graph to check against.
+            signature: Optional specific signature to check (e.g., "RRR").
+
+        Returns:
+            True if these elements can form a dyad.
+        """
+        if len(internal_node_ids) != 1:
+            return False
+
+        internal_id = internal_node_ids[0]
+        internal_node = graph.nodes.get(internal_id)
+        if internal_node is None:
+            return False
+
+        if signature is not None:
+            return _check_dyad_signature(
+                signature, internal_id, internal_node, anchor_node_ids, graph,
+            )
+
+        # Try all common signatures
+        for sig in ("RRR", "RRP", "RPR", "PRR", "PP"):
+            if _check_dyad_signature(
+                sig, internal_id, internal_node, anchor_node_ids, graph,
+            ):
+                return True
+        return False
+
+
+def _check_dyad_signature(
+    signature: str,
+    internal_id: NodeId,
+    internal_node,
+    anchor_node_ids: list[NodeId],
+    graph: LinkageGraph,
+) -> bool:
+    """Check if a specific dyad signature can be formed."""
+    n_prismatic = _count_prismatic(signature)
+
+    if n_prismatic == 0:
+        # RRR: revolute internal, 2 anchors with edges
+        if internal_node.joint_type != JointType.REVOLUTE:
+            return False
+        if len(anchor_node_ids) < 2:
+            return False
+        for anchor_id in anchor_node_ids[:2]:
+            if graph.get_edge_between(internal_id, anchor_id) is None:
+                return False
+        return True
+
+    elif n_prismatic == 1:
+        # One prismatic joint — check position in signature
+        if signature == "RPR":
+            # Internal node is prismatic
+            if internal_node.joint_type != JointType.PRISMATIC:
+                return False
+            for anchor_id in anchor_node_ids:
+                anchor = graph.nodes.get(anchor_id)
+                if anchor and anchor.joint_type == JointType.REVOLUTE:
+                    if graph.get_edge_between(internal_id, anchor_id) is not None:
+                        return True
+            return False
+        elif signature == "PRR":
+            # Internal is revolute, need prismatic + revolute anchors
+            if internal_node.joint_type != JointType.REVOLUTE:
+                return False
+            has_p = has_r = False
+            for anchor_id in anchor_node_ids:
+                anchor = graph.nodes.get(anchor_id)
+                if anchor and graph.get_edge_between(internal_id, anchor_id) is not None:
+                    if anchor.joint_type == JointType.PRISMATIC:
+                        has_p = True
+                    elif anchor.joint_type == JointType.REVOLUTE:
+                        has_r = True
+            return has_p and has_r
+        else:
+            # RRP: need >= 3 connections (1 revolute edge + 2 line nodes)
+            edges = graph.get_edges_for_node(internal_id)
+            return len(edges) >= 3
+
+    else:
+        # PP: line-line intersection, need >= 4 anchors with >= 2 prismatic
+        if len(anchor_node_ids) < 4:
+            return False
+        prismatic_count = sum(
+            1
+            for aid in anchor_node_ids
+            if (a := graph.nodes.get(aid)) and a.joint_type == JointType.PRISMATIC
+        )
+        return prismatic_count >= 2
+
+
+@dataclass
+class Triad(AssurGroup):
+    """Class II Assur group — parameterized by joint signature.
+
+    A triad consists of 4 links, 6 joints, and 2 internal nodes connected
+    to 3 anchor nodes. The signature has 6 characters (e.g., "RRRRRR").
+
+    Triads require solving 3 simultaneous constraints (Newton-Raphson),
+    unlike dyads which only intersect 2 constraints.
+
+    Structure (one possible arrangement)::
+
+        anchor_0 ------- internal_0 ------- anchor_1
+                             |
+                         internal_1
+                             |
+                         anchor_2
+
+    Attributes:
+        _signature: Canonical joint signature string (6 chars).
+    """
+
+    _signature: str = "RRRRRR"
+
+    @property
+    def group_class(self) -> int:
+        return 2
+
+    @property
+    def joint_signature(self) -> str:
+        return self._signature
 
     @classmethod
     def can_form(
@@ -406,44 +309,116 @@ class DyadPP(AssurGroup):
         anchor_node_ids: list[NodeId],
         graph: LinkageGraph,
     ) -> bool:
-        """Check if nodes form a PP dyad (line-line intersection).
+        """Check if nodes can form a triad.
 
         Requires:
-        - Exactly 1 internal node
-        - At least 4 anchor nodes (2 per line)
-        - Suitable edge structure for two line constraints
+        - Exactly 2 internal nodes
+        - At least 3 anchor nodes
+        - Edges connecting internals to anchors (4 total)
         """
-        if len(internal_node_ids) != 1:
+        if len(internal_node_ids) != 2:
+            return False
+        if len(anchor_node_ids) < 3:
             return False
 
-        # Need 4 anchors to define two lines
-        if len(anchor_node_ids) < 4:
-            return False
+        # Check that internal nodes exist and are connected
+        for nid in internal_node_ids:
+            if nid not in graph.nodes:
+                return False
 
-        internal_id = internal_node_ids[0]
-        internal_node = graph.nodes.get(internal_id)
-        if internal_node is None:
-            return False
+        # Count edges between internals and anchors
+        edge_count = 0
+        for iid in internal_node_ids:
+            for aid in anchor_node_ids:
+                if graph.get_edge_between(iid, aid) is not None:
+                    edge_count += 1
+        # Also count edge between the two internals
+        if graph.get_edge_between(
+            internal_node_ids[0], internal_node_ids[1],
+        ) is not None:
+            edge_count += 1
 
-        # Count prismatic-type connections
-        prismatic_count = 0
-        for anchor_id in anchor_node_ids:
-            anchor = graph.nodes.get(anchor_id)
-            if anchor and anchor.joint_type == JointType.PRISMATIC:
-                prismatic_count += 1
-
-        # Need at least 2 prismatic connections for line-line
-        return prismatic_count >= 2
+        return edge_count >= 4
 
 
-# Registry of dyad types for identification
+def identify_group_type(
+    internal_node_ids: list[NodeId],
+    anchor_node_ids: list[NodeId],
+    graph: LinkageGraph,
+) -> Dyad | Triad | None:
+    """Identify which Assur group can be formed from the given elements.
+
+    Tries dyad first (simpler), then triad. Returns an instance
+    with the matching signature, or None.
+
+    Args:
+        internal_node_ids: Candidate internal nodes.
+        anchor_node_ids: Candidate anchor nodes.
+        graph: The linkage graph.
+
+    Returns:
+        A Dyad or Triad instance, or None if no match found.
+    """
+    if len(internal_node_ids) == 1:
+        for sig in ("RRR", "RRP", "RPR", "PRR", "PP"):
+            internal_id = internal_node_ids[0]
+            internal_node = graph.nodes.get(internal_id)
+            if internal_node is None:
+                return None
+            if _check_dyad_signature(
+                sig, internal_id, internal_node, anchor_node_ids, graph,
+            ):
+                return Dyad(_signature=sig)
+        return None
+
+    if len(internal_node_ids) == 2:
+        if Triad.can_form(internal_node_ids, anchor_node_ids, graph):
+            return Triad()
+        return None
+
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Backwards-compatible aliases
+# ---------------------------------------------------------------------------
+# Old code used per-signature classes (DyadRRR, DyadRRP, etc.).
+# These factory functions produce Dyad instances with the right signature,
+# preserving the old constructor interface.
+
+
+def _dyad_factory(signature: str):
+    """Create a backwards-compatible alias class for a specific dyad signature."""
+
+    class _CompatDyad(Dyad):
+        """Backwards-compatible alias. Use Dyad(_signature=...) for new code."""
+
+        def __init__(self, **kwargs):
+            kwargs.setdefault("_signature", signature)
+            super().__init__(**kwargs)
+
+        def __init_subclass__(cls, **kwargs):
+            super().__init_subclass__(**kwargs)
+
+    _CompatDyad.__name__ = f"Dyad{signature}"
+    _CompatDyad.__qualname__ = f"Dyad{signature}"
+    return _CompatDyad
+
+
+DyadRRR = _dyad_factory("RRR")
+DyadRRP = _dyad_factory("RRP")
+DyadRPR = _dyad_factory("RPR")
+DyadPRR = _dyad_factory("PRR")
+DyadPP = _dyad_factory("PP")
+
+
+# Registry mapping signature strings to group types
 DYAD_TYPES: dict[str, type[AssurGroup]] = {
     "RRR": DyadRRR,
     "RRP": DyadRRP,
     "RPR": DyadRPR,
     "PRR": DyadPRR,
     "PP": DyadPP,
-    # Aliases for isomer notation
     "PRP": DyadPP,
     "PPR": DyadPP,
 }
@@ -467,7 +442,15 @@ def identify_dyad_type(
     Returns:
         The matching AssurGroup subclass, or None if no match found.
     """
-    for dyad_cls in DYAD_TYPES.values():
-        if dyad_cls.can_form(internal_node_ids, anchor_node_ids, graph):
+    if len(internal_node_ids) != 1:
+        return None
+    internal_id = internal_node_ids[0]
+    internal_node = graph.nodes.get(internal_id)
+    if internal_node is None:
+        return None
+    for sig, dyad_cls in DYAD_TYPES.items():
+        if _check_dyad_signature(
+            sig, internal_id, internal_node, anchor_node_ids, graph,
+        ):
             return dyad_cls
     return None

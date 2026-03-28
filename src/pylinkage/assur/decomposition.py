@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from .._types import Coord
 from ._types import JointType, NodeId, NodeRole
 from .graph import LinkageGraph
-from .groups import AssurGroup, DyadRRP, DyadRRR
+from .groups import AssurGroup, Dyad
 
 
 @dataclass
@@ -174,7 +174,7 @@ def _try_create_rrr_dyad(
     graph: LinkageGraph,
     internal_id: NodeId,
     known_neighbors: list[NodeId],
-) -> DyadRRR | None:
+) -> Dyad | None:
     """Try to create an RRR dyad from the given node and known neighbors.
 
     Args:
@@ -183,7 +183,7 @@ def _try_create_rrr_dyad(
         known_neighbors: List of known neighbor node IDs.
 
     Returns:
-        A DyadRRR if successful (topology only), None otherwise.
+        A Dyad with signature "RRR" if successful, None otherwise.
     """
     if len(known_neighbors) < 2:
         return None
@@ -203,7 +203,8 @@ def _try_create_rrr_dyad(
     if edge0 is None or edge1 is None:
         return None
 
-    return DyadRRR(
+    return Dyad(
+        _signature="RRR",
         internal_nodes=(internal_id,),
         anchor_nodes=(anchor0_id, anchor1_id),
         internal_edges=(edge0.id, edge1.id),
@@ -214,7 +215,7 @@ def _try_create_rrp_dyad(
     graph: LinkageGraph,
     internal_id: NodeId,
     known_neighbors: list[NodeId],
-) -> DyadRRP | None:
+) -> Dyad | None:
     """Try to create an RRP dyad from the given node and known neighbors.
 
     This is more complex than RRR - we need to identify which connection
@@ -226,7 +227,7 @@ def _try_create_rrp_dyad(
         known_neighbors: List of known neighbor node IDs.
 
     Returns:
-        A DyadRRP if successful (topology only), None otherwise.
+        A Dyad with signature "RRP" if successful, None otherwise.
     """
     if len(known_neighbors) < 3:
         return None
@@ -250,7 +251,8 @@ def _try_create_rrp_dyad(
     if len(line_nodes) < 2:
         return None
 
-    return DyadRRP(
+    return Dyad(
+        _signature="RRP",
         internal_nodes=(internal_id,),
         anchor_nodes=(revolute_anchor,),
         internal_edges=(revolute_edge_id,) if revolute_edge_id else (),

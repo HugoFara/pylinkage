@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from .._types import Coord, NodeId
     from ..assur.decomposition import DecompositionResult
     from ..assur.graph import LinkageGraph
-    from ..assur.groups import AssurGroup, DyadPP, DyadPRR, DyadRPR, DyadRRP, DyadRRR
+    from ..assur.groups import AssurGroup
 
 
 def solve_group(
@@ -64,35 +64,31 @@ def solve_group(
         ...     new_pos = solve_group(group, positions, dims)
         ...     positions.update(new_pos)
     """
-    # Import here to avoid circular imports at module load time
-    from ..assur.groups import DyadPP, DyadPRR, DyadRPR, DyadRRP, DyadRRR
-
-    if isinstance(group, DyadRRR):
+    category = group.solver_category
+    if category == "circle_circle":
         return _solve_dyad_rrr(group, positions, dimensions, hint_positions)
-    elif isinstance(group, DyadRRP):
+    elif category == "circle_line":
         return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
-    elif isinstance(group, (DyadRPR, DyadPRR)):
-        # RPR and PRR are geometrically equivalent to RRP (circle-line)
-        return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
-    elif isinstance(group, DyadPP):
+    elif category == "line_line":
         return _solve_dyad_pp(group, positions, dimensions, hint_positions)
     else:
         raise NotImplementedError(
-            f"Solver not implemented for group type: {group.joint_signature}"
+            f"Solver not implemented for group type: {group.joint_signature} "
+            f"(category: {category})"
         )
 
 
 def _solve_dyad_rrr(
-    group: DyadRRR,
+    group: AssurGroup,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
 ) -> dict[NodeId, Coord]:
-    """Solve an RRR dyad group."""
+    """Solve a circle-circle dyad group (RRR and all-revolute variants)."""
     if len(group.internal_nodes) != 1:
-        raise ValueError("DyadRRR must have exactly 1 internal node")
+        raise ValueError("Dyad must have exactly 1 internal node")
     if len(group.anchor_nodes) != 2:
-        raise ValueError("DyadRRR must have exactly 2 anchor nodes")
+        raise ValueError("Circle-circle dyad must have exactly 2 anchor nodes")
 
     internal_id = group.internal_nodes[0]
     anchor0_id, anchor1_id = group.anchor_nodes
@@ -142,16 +138,16 @@ def _solve_dyad_rrr(
 
 
 def _solve_dyad_rrp(
-    group: DyadRRP | DyadRPR | DyadPRR,
+    group: AssurGroup,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
 ) -> dict[NodeId, Coord]:
-    """Solve an RRP dyad group (also handles RPR and PRR variants)."""
+    """Solve a circle-line dyad group (RRP, RPR, PRR variants)."""
     if len(group.internal_nodes) != 1:
-        raise ValueError("DyadRRP must have exactly 1 internal node")
+        raise ValueError("Dyad must have exactly 1 internal node")
     if len(group.anchor_nodes) < 1:
-        raise ValueError("DyadRRP must have at least 1 anchor node")
+        raise ValueError("Circle-line dyad must have at least 1 anchor node")
     if group.line_node1 is None or group.line_node2 is None:
         raise ValueError("DyadRRP line nodes must be set")
 
@@ -201,30 +197,30 @@ def _solve_dyad_rrp(
 
 
 def _solve_dyad_pp(
-    group: DyadPP,
+    group: AssurGroup,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
 ) -> dict[NodeId, Coord]:
-    """Solve a PP dyad group (line-line intersection)."""
+    """Solve a line-line dyad group (PP and multi-prismatic variants)."""
     if len(group.internal_nodes) != 1:
-        raise ValueError("DyadPP must have exactly 1 internal node")
+        raise ValueError("Dyad must have exactly 1 internal node")
 
     # Validate line nodes are set
     if (
-        group.line1_node1 is None
-        or group.line1_node2 is None
-        or group.line2_node1 is None
+        group.line2_node1 is None
         or group.line2_node2 is None
+        or group.line_node1 is None
+        or group.line_node2 is None
     ):
-        raise ValueError("DyadPP line nodes must be set")
+        raise ValueError("Line-line dyad: all four line nodes must be set")
 
     internal_id = group.internal_nodes[0]
 
     # Validate required positions exist
     for node_id in [
-        group.line1_node1,
-        group.line1_node2,
+        group.line_node1,
+        group.line_node2,
         group.line2_node1,
         group.line2_node2,
     ]:
@@ -233,8 +229,8 @@ def _solve_dyad_pp(
 
     try:
         pos = solve_pp_dyad(
-            line1_pos1=positions[group.line1_node1],
-            line1_pos2=positions[group.line1_node2],
+            line1_pos1=positions[group.line_node1],
+            line1_pos2=positions[group.line_node2],
             line2_pos1=positions[group.line2_node1],
             line2_pos2=positions[group.line2_node2],
         )

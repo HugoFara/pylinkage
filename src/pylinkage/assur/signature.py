@@ -275,11 +275,7 @@ def signature_to_hypergraph(
     if signature.group_class == AssurGroupClass.DYAD:
         return _generate_dyad_hypergraph(signature, prefix, name)
     elif signature.group_class == AssurGroupClass.TRIAD:
-        msg = (
-            "Hypergraph generation for TRIAD (Class II) not yet implemented. "
-            "Dyads (RRR, RRP, RPR, PRR, etc.) are currently supported."
-        )
-        raise NotImplementedError(msg)
+        return _generate_triad_hypergraph(signature, prefix, name)
     elif signature.group_class == AssurGroupClass.TETRAD:
         msg = (
             "Hypergraph generation for TETRAD (Class III) not yet implemented. "
@@ -359,6 +355,96 @@ def _generate_dyad_hypergraph(
             id=make_id("link_1"),
             source=make_id("internal_0"),
             target=make_id("anchor_1"),
+        )
+    )
+
+    return graph
+
+
+def _generate_triad_hypergraph(
+    signature: AssurSignature,
+    prefix: str,
+    name: str | None,
+) -> HypergraphLinkage:
+    """Generate hypergraph for a triad (Class II Assur group).
+
+    Triad topology (one arrangement)::
+
+        anchor_0 ---link_0--- internal_0 ---link_1--- anchor_1
+                                   |
+                                 link_2
+                                   |
+                              internal_1 ---link_3--- anchor_2
+
+    2 internal nodes, 3 anchor nodes, 4 edges.
+
+    The 6 joint types from the signature map to the nodes:
+    - joints[0..2]: anchor_0, anchor_1, anchor_2
+    - joints[3..4]: internal_0, internal_1
+    - joints[5]: the constraint between the two internals
+      (encoded as joint type of internal_0's connection hub)
+    """
+
+    def make_id(base: str) -> str:
+        return f"{prefix}{base}" if prefix else base
+
+    graph_name = name or f"Triad-{signature.canonical_form}"
+    graph = HypergraphLinkage(name=graph_name)
+
+    joint_types = signature.joints
+
+    # Create anchor nodes (3)
+    for i in range(3):
+        graph.add_node(
+            Node(
+                id=make_id(f"anchor_{i}"),
+                role=NodeRole.DRIVEN,
+                joint_type=joint_types[i],
+                name=f"Anchor {i} ({_JOINT_TO_CHAR[joint_types[i]]})",
+            )
+        )
+
+    # Create internal nodes (2)
+    for i in range(2):
+        graph.add_node(
+            Node(
+                id=make_id(f"internal_{i}"),
+                role=NodeRole.DRIVEN,
+                joint_type=joint_types[3 + i],
+                name=f"Internal {i} ({_JOINT_TO_CHAR[joint_types[3 + i]]})",
+            )
+        )
+
+    # Create edges (4 links)
+    # internal_0 connects to anchor_0 and anchor_1
+    graph.add_edge(
+        Edge(
+            id=make_id("link_0"),
+            source=make_id("anchor_0"),
+            target=make_id("internal_0"),
+        )
+    )
+    graph.add_edge(
+        Edge(
+            id=make_id("link_1"),
+            source=make_id("internal_0"),
+            target=make_id("anchor_1"),
+        )
+    )
+    # internal_0 connects to internal_1
+    graph.add_edge(
+        Edge(
+            id=make_id("link_2"),
+            source=make_id("internal_0"),
+            target=make_id("internal_1"),
+        )
+    )
+    # internal_1 connects to anchor_2
+    graph.add_edge(
+        Edge(
+            id=make_id("link_3"),
+            source=make_id("internal_1"),
+            target=make_id("anchor_2"),
         )
     )
 
@@ -494,9 +580,13 @@ def signature_to_group_class(signature: AssurSignature | str) -> type[AssurGroup
         'DyadRPR'
     """
     # Import here to avoid circular imports
-    from .groups import DYAD_TYPES
+    from .groups import DYAD_TYPES, Triad
 
     if isinstance(signature, str):
         signature = parse_signature(signature)
 
-    return DYAD_TYPES.get(signature.canonical_form)
+    if signature.group_class == AssurGroupClass.DYAD:
+        return DYAD_TYPES.get(signature.canonical_form)
+    elif signature.group_class == AssurGroupClass.TRIAD:
+        return Triad
+    return None

@@ -229,10 +229,19 @@ class TestSignatureToHypergraph:
         assert link1.source == "internal_0"
         assert link1.target == "anchor_1"
 
-    def test_triad_raises_not_implemented(self):
-        """Test triad generation raises NotImplementedError."""
-        with pytest.raises(NotImplementedError, match="TRIAD"):
-            signature_to_hypergraph("RRRRRR")
+    def test_triad_generates_hypergraph(self):
+        """Test triad generation produces correct topology."""
+        graph = signature_to_hypergraph("RRRRRR")
+        # 3 anchors + 2 internals = 5 nodes
+        assert len(graph.nodes) == 5
+        # 4 edges
+        assert len(graph.edges) == 4
+        # Check node names exist
+        assert "anchor_0" in graph.nodes
+        assert "anchor_1" in graph.nodes
+        assert "anchor_2" in graph.nodes
+        assert "internal_0" in graph.nodes
+        assert "internal_1" in graph.nodes
 
     def test_tetrad_raises_not_implemented(self):
         """Test tetrad generation raises NotImplementedError."""
