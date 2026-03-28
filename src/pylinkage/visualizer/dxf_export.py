@@ -18,11 +18,10 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 # Try to import ezdxf, set to None if not available
-import contextlib
-
-_ezdxf: Any = None
-with contextlib.suppress(ImportError):
+try:
     import ezdxf as _ezdxf
+except ImportError:
+    _ezdxf = None  # type: ignore[assignment,unused-ignore]
 
 
 # DXF layer configuration

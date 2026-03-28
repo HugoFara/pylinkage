@@ -19,11 +19,10 @@ if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
 
 # Try to import build123d, set to None if not available
-import contextlib
-
-_bd: Any = None
-with contextlib.suppress(ImportError):
+try:
     import build123d as _bd
+except ImportError:
+    _bd = None  # type: ignore[assignment,unused-ignore]
 
 
 @dataclass
