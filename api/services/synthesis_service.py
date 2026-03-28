@@ -63,7 +63,19 @@ def _linkage_to_mechanism_dict(
     try:
         linkage = solution_to_linkage(sol, name=f"synthesis-{index}")
         mechanism = mechanism_from_linkage(linkage)
-        return mechanism_to_dict(mechanism)
+        mech_dict = mechanism_to_dict(mechanism)
+
+        # For non-Grashof: patch the driver link to arc_driver with limits
+        if sol.arc_limits is not None:
+            arc_start, arc_end = sol.arc_limits
+            for link in mech_dict.get("links", []):
+                if link.get("type") == "driver":
+                    link["type"] = "arc_driver"
+                    link["arc_start"] = arc_start
+                    link["arc_end"] = arc_end
+                    break
+
+        return mech_dict
     except Exception:
         logger.warning("Failed to convert solution %d to mechanism dict", index)
         return None
@@ -71,10 +83,20 @@ def _linkage_to_mechanism_dict(
 
 def _build_response(result: SynthesisResult) -> SynthesisResponse:
     """Build a SynthesisResponse from a SynthesisResult."""
+    from pylinkage.synthesis.conversion import _compute_crank_limits
+
     solution_dtos: list[FourBarSolutionDTO] = []
     mechanism_dicts: list[dict[str, Any]] = []
 
     for i, raw_sol in enumerate(result.raw_solutions):
+        # Compute arc limits for non-Grashof solutions
+        arc_limits = _compute_crank_limits(
+            raw_sol.crank_length, raw_sol.coupler_length,
+            raw_sol.rocker_length, raw_sol.ground_length,
+        )
+        if arc_limits is not None:
+            raw_sol = raw_sol._replace(arc_limits=arc_limits)
+
         mech_dict = _linkage_to_mechanism_dict(raw_sol, i)
         if mech_dict is not None:
             solution_dtos.append(_solution_to_dto(raw_sol))

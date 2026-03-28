@@ -54,6 +54,60 @@ def _compute_coupler_point_params(
     return distance, angle
 
 
+def _compute_crank_limits(
+    a: float, b: float, c: float, d: float,
+) -> tuple[float, float] | None:
+    """Compute crank angular limits for a non-Grashof four-bar.
+
+    For a non-Grashof linkage the crank cannot make a full rotation.
+    The limit positions occur when the coupler and rocker are collinear
+    (either extended or folded). Returns the two crank angles at which
+    this happens, or None if the crank can rotate fully.
+
+    Args:
+        a: Crank length.
+        b: Coupler length.
+        c: Rocker length.
+        d: Ground length.
+
+    Returns:
+        (min_angle, max_angle) in radians, or None if full rotation is possible.
+    """
+    from .utils import GrashofType, grashof_check
+
+    gt = grashof_check(a, b, c, d)
+    if gt in (GrashofType.GRASHOF_CRANK_ROCKER,
+              GrashofType.GRASHOF_DOUBLE_CRANK,
+              GrashofType.CHANGE_POINT):
+        return None  # Full rotation possible
+
+    # Limit positions: coupler + rocker collinear
+    # Triangle A-D with side BD at the limit:
+    #   Extended: BD = b + c
+    #   Folded:   BD = |b - c|
+    # Law of cosines at vertex A: cos(θ) = (a² + d² - BD²) / (2·a·d)
+    angles = []
+    for bd in [b + c, abs(b - c)]:
+        cos_val = (a * a + d * d - bd * bd) / (2.0 * a * d)
+        cos_val = max(-1.0, min(1.0, cos_val))  # Clamp for numerical safety
+        angles.append(math.acos(cos_val))
+
+    # The crank oscillates between these two angles
+    angle_min = min(angles)
+    angle_max = max(angles)
+
+    # Add small margin to avoid exactly hitting the singularity
+    margin = 0.02  # ~1 degree
+    angle_min += margin
+    angle_max -= margin
+
+    if angle_min >= angle_max:
+        # Range too narrow after margin — mechanism barely moves
+        return None
+
+    return (angle_min, angle_max)
+
+
 def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
@@ -67,6 +121,10 @@ def solution_to_linkage(
     - One Revolute joint (C) connecting B to D
     - Optionally, a Fixed joint (P) for the coupler point that traces
       the target path (only if solution.coupler_point is set)
+
+    For non-Grashof linkages, arc limits are stored on the Crank joint
+    so that downstream conversion to a Mechanism can create an
+    ArcDriverLink instead of a DriverLink.
 
     Args:
         solution: FourBarSolution containing geometry.
@@ -89,6 +147,12 @@ def solution_to_linkage(
     # Create crank joint
     B = solution.crank_pivot_b
 
+    # Check if the four-bar needs limited rotation
+    arc_limits = _compute_crank_limits(
+        solution.crank_length, solution.coupler_length,
+        solution.rocker_length, solution.ground_length,
+    )
+
     # Angle step per iteration (full rotation in `iterations` steps)
     angle_step = 2 * math.pi / iterations
 
@@ -100,6 +164,15 @@ def solution_to_linkage(
         angle=angle_step,
         name="B",
     )
+
+    # For non-Grashof: reposition crank within valid arc range
+    if arc_limits is not None:
+        arc_start, arc_end = arc_limits
+        initial_angle = math.atan2(B[1] - A[1], B[0] - A[0])
+        if initial_angle < arc_start or initial_angle > arc_end:
+            mid_angle = (arc_start + arc_end) / 2
+            joint_B.x = A[0] + solution.crank_length * math.cos(mid_angle)
+            joint_B.y = A[1] + solution.crank_length * math.sin(mid_angle)
 
     # Create revolute joint connecting crank to rocker
     C = solution.coupler_pivot_c

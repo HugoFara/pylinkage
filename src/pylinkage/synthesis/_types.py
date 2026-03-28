@@ -101,6 +101,7 @@ class FourBarSolution(NamedTuple):
     rocker_length: float
     ground_length: float
     coupler_point: Point2D | None = None
+    arc_limits: tuple[float, float] | None = None
 
 
 class DyadSolution(NamedTuple):
