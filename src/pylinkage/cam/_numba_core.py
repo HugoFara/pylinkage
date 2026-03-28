@@ -269,7 +269,7 @@ def evaluate_cubic_spline(
     c = coeffs[i, 2]
     d = coeffs[i, 3]
 
-    return a + t * (b + t * (c + t * d))
+    return a + t * (b + t * (c + t * d))  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -328,7 +328,7 @@ def evaluate_cubic_spline_derivative(
     dr_dt = b + t * (2.0 * c + 3.0 * d * t)
 
     # Convert to dr/dtheta
-    return dr_dt / h
+    return dr_dt / h  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -385,7 +385,7 @@ def evaluate_profile_displacement(
             s = evaluate_modified_trapezoidal(u)
         else:
             s = 0.0
-        return base_radius + lift * s
+        return base_radius + lift * s  # type: ignore[no-any-return]
 
     elif angle < dwell_high_end:
         # Dwell high
@@ -404,7 +404,7 @@ def evaluate_profile_displacement(
             s = 1.0 - evaluate_modified_trapezoidal(u)
         else:
             s = 1.0
-        return base_radius + lift * s
+        return base_radius + lift * s  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -423,7 +423,7 @@ def evaluate_spline_profile_displacement(
     Returns:
         Cam radius at the given angle.
     """
-    return evaluate_cubic_spline(angle, spline_angles, spline_coeffs)
+    return evaluate_cubic_spline(angle, spline_angles, spline_coeffs)  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -442,7 +442,7 @@ def evaluate_spline_profile_derivative(
     Returns:
         Derivative dr/dtheta at the given angle.
     """
-    return evaluate_cubic_spline_derivative(angle, spline_angles, spline_coeffs)
+    return evaluate_cubic_spline_derivative(angle, spline_angles, spline_coeffs)  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]
@@ -499,7 +499,7 @@ def evaluate_profile_derivative(
         else:
             ds_du = 0.0
         # Chain rule: dr/dtheta = lift * ds/du * du/dtheta
-        return lift * ds_du / delta
+        return lift * ds_du / delta  # type: ignore[no-any-return]
 
     elif angle < dwell_high_end:
         # Dwell high
@@ -519,7 +519,7 @@ def evaluate_profile_derivative(
             ds_du = -evaluate_modified_trapezoidal_velocity(u)
         else:
             ds_du = 0.0
-        return lift * ds_du / delta
+        return lift * ds_du / delta  # type: ignore[no-any-return]
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]

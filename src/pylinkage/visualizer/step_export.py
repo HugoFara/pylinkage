@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 try:
     import build123d as _bd
 except ImportError:
-    _bd = None  # type: ignore[assignment]
+    _bd = None
 
 
 @dataclass
@@ -246,7 +246,7 @@ def build_linkage_3d(
     bd = _check_build123d()
 
     # Run simulation if no loci provided
-    loci = list(linkage.step()) if loci is None else list(loci)
+    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

@@ -470,9 +470,9 @@ class PointArrayProfile(CamProfile):
     @property
     def angles(self) -> NDArray[np.float64]:
         """Return the angle values."""
-        return self._angles.copy()
+        return self._angles.copy()  # type: ignore[no-any-return]
 
     @property
     def radii(self) -> NDArray[np.float64]:
         """Return the radius values."""
-        return self._radii.copy()
+        return self._radii.copy()  # type: ignore[no-any-return]

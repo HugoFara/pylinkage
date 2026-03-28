@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 try:
     import ezdxf as _ezdxf
 except ImportError:
-    _ezdxf = None  # type: ignore[assignment]
+    _ezdxf = None
 
 
 # DXF layer configuration
@@ -280,7 +280,7 @@ def plot_linkage_dxf(
     ezdxf = _check_ezdxf()
 
     # Run simulation if no loci provided
-    loci = list(linkage.step()) if loci is None else list(loci)
+    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

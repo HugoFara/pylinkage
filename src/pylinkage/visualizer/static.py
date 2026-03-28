@@ -52,7 +52,7 @@ def plot_static_linkage(
         pos = joint.coord()
         par_pos = joint.joint0.coord()
         axis.plot(
-            [par_pos[0], pos[0]],
+            [par_pos[0], pos[0]],  # type: ignore[arg-type]
             [par_pos[1], pos[1]],  # type: ignore[arg-type]
             c=_get_color(joint),
             linewidth=0.3,
@@ -61,7 +61,7 @@ def plot_static_linkage(
         if isinstance(joint, (Fixed, Pivot, Revolute)) and joint.joint1 is not None:
             par_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], pos[0]],
+                [par_pos[0], pos[0]],  # type: ignore[arg-type]
                 [par_pos[1], pos[1]],  # type: ignore[arg-type]
                 c=_get_color(joint),
                 linewidth=0.3,
@@ -71,7 +71,7 @@ def plot_static_linkage(
             par_pos = joint.joint2.coord()
             other_pos = joint.joint1.coord()
             axis.plot(
-                [par_pos[0], other_pos[0]],
+                [par_pos[0], other_pos[0]],  # type: ignore[arg-type]
                 [par_pos[1], other_pos[1]],  # type: ignore[arg-type]
                 c=_get_color(joint),
                 linewidth=0.3,

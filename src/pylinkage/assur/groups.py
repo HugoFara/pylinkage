@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
 from ._types import JointType, NodeId
-from .graph import LinkageGraph
+from .graph import LinkageGraph, Node
 
 
 def _count_prismatic(signature: str) -> int:
@@ -222,7 +222,7 @@ class Dyad(AssurGroup):
 def _check_dyad_signature(
     signature: str,
     internal_id: NodeId,
-    internal_node,
+    internal_node: Node,
     anchor_node_ids: list[NodeId],
     graph: LinkageGraph,
 ) -> bool:
@@ -413,17 +413,17 @@ def identify_group_type(
 # preserving the old constructor interface.
 
 
-def _dyad_factory(signature: str):
+def _dyad_factory(signature: str) -> type[Dyad]:
     """Create a backwards-compatible alias class for a specific dyad signature."""
 
     class _CompatDyad(Dyad):
         """Backwards-compatible alias. Use Dyad(_signature=...) for new code."""
 
-        def __init__(self, **kwargs):
+        def __init__(self, **kwargs: object) -> None:
             kwargs.setdefault("_signature", signature)
-            super().__init__(**kwargs)
+            super().__init__(**kwargs)  # type: ignore[arg-type]
 
-        def __init_subclass__(cls, **kwargs):
+        def __init_subclass__(cls, **kwargs: object) -> None:
             super().__init_subclass__(**kwargs)
 
     _CompatDyad.__name__ = f"Dyad{signature}"

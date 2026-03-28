@@ -23,7 +23,7 @@ from .groups import solve_pp_dyad, solve_rrp_dyad, solve_rrr_dyad, solve_triad
 if TYPE_CHECKING:
     from .._types import Coord, NodeId
     from ..assur.decomposition import DecompositionResult
-    from ..assur.groups import AssurGroup
+    from ..assur.groups import AssurGroup, Dyad
 
 
 def solve_group(
@@ -67,9 +67,9 @@ def solve_group(
     if category == "circle_circle":
         return _solve_dyad_rrr(group, positions, dimensions, hint_positions)
     elif category == "circle_line":
-        return _solve_dyad_rrp(group, positions, dimensions, hint_positions)
+        return _solve_dyad_rrp(group, positions, dimensions, hint_positions)  # type: ignore[arg-type]
     elif category == "line_line":
-        return _solve_dyad_pp(group, positions, dimensions, hint_positions)
+        return _solve_dyad_pp(group, positions, dimensions, hint_positions)  # type: ignore[arg-type]
     elif category == "newton_raphson":
         return _solve_triad(group, positions, dimensions, hint_positions)
     else:
@@ -138,7 +138,7 @@ def _solve_dyad_rrr(
 
 
 def _solve_dyad_rrp(
-    group: AssurGroup,
+    group: Dyad,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
@@ -198,7 +198,7 @@ def _solve_dyad_rrp(
 
 
 def _solve_dyad_pp(
-    group: AssurGroup,
+    group: Dyad,
     positions: dict[NodeId, Coord],
     dimensions: Dimensions,
     hint_positions: dict[NodeId, Coord] | None,
@@ -293,8 +293,10 @@ def _solve_triad(
     for nid in internal_ids:
         if hint_positions and nid in hint_positions:
             hints[nid] = hint_positions[nid]
-        elif dimensions.get_node_position(nid):
-            hints[nid] = dimensions.get_node_position(nid)
+        else:
+            pos = dimensions.get_node_position(nid)
+            if pos is not None:
+                hints[nid] = pos
 
     try:
         return solve_triad(

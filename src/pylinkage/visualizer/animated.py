@@ -157,8 +157,8 @@ def show_linkage(
     linkage.rebuild(prev)
     if loci is None:
         loci = tuple(
-            tuple(pos)
-            for pos in linkage.step(  # type: ignore[arg-type]
+            tuple(pos)  # type: ignore[arg-type]
+            for pos in linkage.step(
                 iterations=int(points * iteration_factor), dt=1 / iteration_factor
             )
         )
