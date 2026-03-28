@@ -27,6 +27,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `OscillatingCamFollower` dyad for rocker arm motion driven by cam rotation.
   - Both knife-edge (roller_radius=0) and roller followers supported.
   - Numba-compiled profile evaluation for high-performance simulation.
+- **Triad (Class II) Assur groups:**
+  - New `Dyad` and `Triad` classes parameterized by signature string, replacing
+    the per-type classes (`DyadRRR`, `DyadRRP`, etc.) which are kept as aliases.
+  - `signature_to_hypergraph()` now generates triad topologies (6-joint signatures).
+  - `decompose_assur_groups()` detects triads when no dyad can be formed,
+    enabling decomposition of six-bar mechanisms (Watt and Stephenson types).
+  - Solver dispatches by `solver_category` (circle-circle, circle-line, line-line)
+    instead of `isinstance()`, automatically supporting new group signatures.
+- **Topology analysis:**
+  - New `pylinkage.topology` module with `compute_dof()` implementing Grübler's
+    formula (`DOF = 3(n−1) − 2j₁ − j₂`) on `HypergraphLinkage`.
+  - `compute_mobility()` returns full `MobilityInfo` (DOF, link count, joint counts).
 - SymPy for analytical optimization.
 - Native computation of velocity and acceleration with visualizations.
 - Linkage synthesis with Burgmester's theory, function, path and motion generation.
