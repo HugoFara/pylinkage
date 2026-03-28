@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 import pylinkage as pl
-from pylinkage.joints import Crank, Prismatic, Revolute, Static
+from pylinkage.joints import Crank, Revolute
 
 
 class FourBarLinkageTestCase(unittest.TestCase):
@@ -65,10 +65,9 @@ class TestSTEPExportImport(unittest.TestCase):
     def test_import_from_visualizer(self):
         """Test that STEP export can be imported from visualizer."""
         from pylinkage.visualizer import (
+            LinkProfile,
             build_linkage_3d,
             save_linkage_step,
-            LinkProfile,
-            JointProfile,
         )
         self.assertTrue(callable(build_linkage_3d))
         self.assertTrue(callable(save_linkage_step))
@@ -82,8 +81,6 @@ class TestSTEPExportImport(unittest.TestCase):
         from pylinkage.visualizer.step_export import (
             build_linkage_3d,
             save_linkage_step,
-            LinkProfile,
-            JointProfile,
         )
         self.assertTrue(callable(build_linkage_3d))
         self.assertTrue(callable(save_linkage_step))
@@ -91,7 +88,7 @@ class TestSTEPExportImport(unittest.TestCase):
 
 # Skip tests if ezdxf is not installed
 try:
-    import ezdxf
+    import ezdxf  # noqa: F401
     HAS_EZDXF = True
 except ImportError:
     HAS_EZDXF = False
@@ -177,7 +174,7 @@ class TestDXFMissingDependency(FourBarLinkageTestCase):
 
 # Skip tests if build123d is not installed
 try:
-    import build123d
+    import build123d  # noqa: F401
     HAS_BUILD123D = True
 except ImportError:
     HAS_BUILD123D = False
@@ -211,7 +208,7 @@ class TestSTEPExport(FourBarLinkageTestCase):
 
     def test_step_custom_profiles(self):
         """Test STEP export with custom profiles."""
-        from pylinkage.visualizer import build_linkage_3d, LinkProfile, JointProfile
+        from pylinkage.visualizer import JointProfile, LinkProfile, build_linkage_3d
         link_profile = LinkProfile(width=0.5, thickness=0.1, fillet_radius=0.0)
         joint_profile = JointProfile(radius=0.1, length=0.15)
         model = build_linkage_3d(

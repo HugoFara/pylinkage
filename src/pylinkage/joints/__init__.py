@@ -39,9 +39,9 @@ warnings.warn(
     stacklevel=2,
 )
 
-from .crank import Crank as Crank
-from .fixed import Fixed as Fixed
-from .joint import Static as Static
-from .prismatic import Linear as Linear  # Deprecated alias
-from .prismatic import Prismatic as Prismatic
-from .revolute import Revolute as Revolute
+from .crank import Crank as Crank  # noqa: E402
+from .fixed import Fixed as Fixed  # noqa: E402
+from .joint import Static as Static  # noqa: E402
+from .prismatic import Linear as Linear  # noqa: E402 - Deprecated alias
+from .prismatic import Prismatic as Prismatic  # noqa: E402
+from .revolute import Revolute as Revolute  # noqa: E402

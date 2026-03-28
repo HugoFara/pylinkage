@@ -9,6 +9,7 @@ This script measures performance of:
 
 Run with: uv run python benchmarks/benchmark_geometry.py
 """
+import contextlib
 import math
 import random
 import statistics
@@ -184,7 +185,7 @@ def benchmark_linkage_step(linkage, n_cycles: int = 1000) -> dict:
     times = []
     for _ in range(n_cycles):
         start = time.perf_counter_ns()
-        coords = list(linkage.step(iterations=period))
+        list(linkage.step(iterations=period))
         end = time.perf_counter_ns()
         times.append(end - start)
 
@@ -218,10 +219,8 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
     for i in range(min(10, n_evaluations)):
         linkage.set_num_constraints(variations[i])
         linkage.set_coords(init_coords)
-        try:
+        with contextlib.suppress(Exception):
             list(linkage.step(iterations=period))
-        except Exception:
-            pass
 
     # Reset
     linkage.set_num_constraints(init_constraints)
@@ -235,7 +234,7 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
         linkage.set_num_constraints(variation)
         linkage.set_coords(init_coords)
         try:
-            coords = list(linkage.step(iterations=period))
+            list(linkage.step(iterations=period))
             successful += 1
         except Exception:
             pass  # Unbuildable configuration

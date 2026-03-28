@@ -9,6 +9,7 @@ This script:
 
 Run with: uv run python benchmarks/benchmark_integrated.py
 """
+import contextlib
 import math
 import random
 import statistics
@@ -228,10 +229,8 @@ def benchmark_optimization_scenario(n_evals: int = 1000) -> dict:
     for v in variations[:10]:
         linkage.set_num_constraints(v)
         linkage.set_coords(init_coords)
-        try:
+        with contextlib.suppress(Exception):
             list(linkage.step(iterations=period))
-        except Exception:
-            pass
 
     linkage.set_num_constraints(init_constraints)
     linkage.set_coords(init_coords)

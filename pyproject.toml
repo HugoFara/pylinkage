@@ -107,6 +107,10 @@ select = [
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
+    "E741",   # ambiguous variable name (l, I, O common in geometry/kinematics)
+    "SIM102", # collapsible if — often less readable when collapsed
+    "SIM108", # ternary operator — multi-line if/else is clearer for type narrowing
+    "SIM116", # dict instead of if/elif — not always clearer
 ]
 
 [tool.ruff.lint.isort]

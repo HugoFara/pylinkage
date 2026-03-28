@@ -387,7 +387,7 @@ def run_numpy_comparison():
 
     # sqr_dist batch
     def loop_sqr_dist():
-        return [sqr_dist_orig(tuple(p1), tuple(p2)) for p1, p2 in zip(points1, points2)]
+        return [sqr_dist_orig(tuple(p1), tuple(p2)) for p1, p2 in zip(points1, points2, strict=False)]
 
     orig = benchmark_batch(loop_sqr_dist, (), n_iter, warmup=10)
     numpy_result = benchmark_batch(lambda: sqr_dist_numpy(points1, points2), (), n_iter, warmup=10)
@@ -404,7 +404,7 @@ def run_numpy_comparison():
     origins = np.random.uniform(-50, 50, (batch_size, 2))
 
     def loop_cyl():
-        return [cyl_to_cart_orig(r, t, tuple(o)) for r, t, o in zip(radii, thetas, origins)]
+        return [cyl_to_cart_orig(r, t, tuple(o)) for r, t, o in zip(radii, thetas, origins, strict=False)]
 
     orig = benchmark_batch(loop_cyl, (), n_iter, warmup=10)
     numpy_result = benchmark_batch(lambda: cyl_to_cart_numpy(radii, thetas, origins), (), n_iter, warmup=10)
@@ -430,7 +430,7 @@ def run_numpy_comparison():
     circles2[:, 2] = np.random.uniform(3, 10, batch_size)
 
     def loop_circle():
-        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2)]
+        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2, strict=False)]
 
     orig = benchmark_batch(loop_circle, (), n_iter, warmup=10)
     numpy_result = benchmark_batch(lambda: circle_intersect_numpy(circles1, circles2), (), n_iter, warmup=10)
@@ -470,12 +470,12 @@ def run_combined_numba_numpy():
 
     # Pure Python loop with original
     def loop_original():
-        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2)]
+        return [circle_intersect_orig(tuple(c1), tuple(c2)) for c1, c2 in zip(circles1, circles2, strict=False)]
 
     # Python loop with numba functions
     def loop_numba():
         results = []
-        for c1, c2 in zip(circles1, circles2):
+        for c1, c2 in zip(circles1, circles2, strict=False):
             results.append(circle_intersect_numba(c1[0], c1[1], c1[2], c2[0], c2[1], c2[2]))
         return results
 
