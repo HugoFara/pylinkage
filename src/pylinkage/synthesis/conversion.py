@@ -16,6 +16,44 @@ if TYPE_CHECKING:
     from ..linkage import Linkage
 
 
+def _compute_coupler_point_params(
+    B: Point2D,
+    C: Point2D,
+    P: Point2D,
+) -> tuple[float, float]:
+    """Compute Fixed joint parameters (distance, angle) for a coupler point.
+
+    The coupler point P is on the rigid coupler link B-C. We express
+    P in polar coordinates relative to B, with the angle measured from
+    the B→C direction.
+
+    Args:
+        B: Crank-coupler joint position.
+        C: Coupler-rocker joint position.
+        P: Coupler point (traced point) position.
+
+    Returns:
+        Tuple of (distance_from_B, angle_from_BC_direction).
+    """
+    # Vector B→P
+    bp_x = P[0] - B[0]
+    bp_y = P[1] - B[1]
+    distance = math.sqrt(bp_x * bp_x + bp_y * bp_y)
+
+    # Angle of B→P
+    bp_angle = math.atan2(bp_y, bp_x)
+
+    # Angle of B→C (reference direction for the Fixed joint)
+    bc_x = C[0] - B[0]
+    bc_y = C[1] - B[1]
+    bc_angle = math.atan2(bc_y, bc_x)
+
+    # Relative angle
+    angle = bp_angle - bc_angle
+
+    return distance, angle
+
+
 def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
@@ -27,6 +65,8 @@ def solution_to_linkage(
     - Two Static joints (A, D) as ground pivots
     - One Crank joint (B) connected to A
     - One Revolute joint (C) connecting B to D
+    - Optionally, a Fixed joint (P) for the coupler point that traces
+      the target path (only if solution.coupler_point is set)
 
     Args:
         solution: FourBarSolution containing geometry.
@@ -36,7 +76,7 @@ def solution_to_linkage(
     Returns:
         Linkage object ready for simulation.
     """
-    from ..joints import Crank, Revolute, Static
+    from ..joints import Crank, Fixed, Revolute, Static
     from ..linkage import Linkage
 
     # Create ground pivots
@@ -47,9 +87,7 @@ def solution_to_linkage(
     joint_D = Static(x=D[0], y=D[1], name="D")
 
     # Create crank joint
-    # Get crank position from solution
     B = solution.crank_pivot_b
-    # Note: initial_angle could be computed as math.atan2(B[1] - A[1], B[0] - A[0])
 
     # Angle step per iteration (full rotation in `iterations` steps)
     angle_step = 2 * math.pi / iterations
@@ -76,10 +114,30 @@ def solution_to_linkage(
         name="C",
     )
 
+    joints = [joint_A, joint_D, joint_B, joint_C]
+    order = [joint_B, joint_C]
+
+    # Add coupler point tracker if present
+    if solution.coupler_point is not None:
+        P = solution.coupler_point
+        dist_bp, angle_bp = _compute_coupler_point_params(B, C, P)
+
+        joint_P = Fixed(
+            x=P[0],
+            y=P[1],
+            joint0=joint_B,
+            joint1=joint_C,
+            distance=dist_bp,
+            angle=angle_bp,
+            name="P",
+        )
+        joints.append(joint_P)
+        order.append(joint_P)
+
     # Create linkage with solve order
     linkage = Linkage(
-        joints=[joint_A, joint_D, joint_B, joint_C],
-        order=[joint_B, joint_C],
+        joints=joints,
+        order=order,
         name=name,
     )
 
@@ -132,20 +190,23 @@ def linkage_to_synthesis_params(
     Raises:
         ValueError: If linkage is not a valid four-bar.
     """
-    from ..joints import Crank, Revolute, Static
+    from ..joints import Crank, Fixed, Revolute, Static
 
     # Find joints by type
     statics: list[Static] = []
     cranks: list[Crank] = []
     revolutes: list[Revolute] = []
+    fixed_joints: list[Fixed] = []
 
     for joint in linkage.joints:
-        if isinstance(joint, Static) and not isinstance(joint, Crank):
-            statics.append(joint)
-        elif isinstance(joint, Crank):
+        if isinstance(joint, Crank):
             cranks.append(joint)
+        elif isinstance(joint, Fixed):
+            fixed_joints.append(joint)
         elif isinstance(joint, Revolute):
             revolutes.append(joint)
+        elif isinstance(joint, Static):
+            statics.append(joint)
 
     # Validate structure
     if len(statics) < 2:
@@ -160,11 +221,6 @@ def linkage_to_synthesis_params(
         )
 
     # Identify joints
-    # A: static joint connected to crank
-    # D: other static joint
-    # B: crank joint
-    # C: revolute joint
-
     crank = cranks[0]
     revolute = revolutes[0]
 
@@ -209,6 +265,13 @@ def linkage_to_synthesis_params(
 
     ground_length = math.sqrt((D[0] - A[0]) ** 2 + (D[1] - A[1]) ** 2)
 
+    # Extract coupler point if present
+    coupler_point: Point2D | None = None
+    for fj in fixed_joints:
+        if fj.name == "P" and fj.x is not None and fj.y is not None:
+            coupler_point = (fj.x, fj.y)
+            break
+
     return FourBarSolution(
         ground_pivot_a=A,
         ground_pivot_d=D,
@@ -218,6 +281,7 @@ def linkage_to_synthesis_params(
         coupler_length=coupler_length_val,
         rocker_length=rocker_length_val,
         ground_length=ground_length,
+        coupler_point=coupler_point,
     )
 
 

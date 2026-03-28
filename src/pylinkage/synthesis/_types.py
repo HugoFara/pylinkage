@@ -75,6 +75,10 @@ class FourBarSolution(NamedTuple):
     - Coupler: from B to C
     - Rocker (output link): from D to C
 
+    Optionally, a coupler point P (on the coupler link B-C) that traces
+    the desired path. This is the point that should pass through the
+    precision points in path/motion generation.
+
     Attributes:
         ground_pivot_a: Position of fixed pivot A (crank base).
         ground_pivot_d: Position of fixed pivot D (rocker base).
@@ -84,6 +88,8 @@ class FourBarSolution(NamedTuple):
         coupler_length: Length of coupler link (B to C).
         rocker_length: Length of rocker link (D to C).
         ground_length: Length of ground link (A to D).
+        coupler_point: Optional traced point on the coupler (world frame
+            at initial position). None if not applicable (e.g. function gen).
     """
 
     ground_pivot_a: Point2D
@@ -94,6 +100,7 @@ class FourBarSolution(NamedTuple):
     coupler_length: float
     rocker_length: float
     ground_length: float
+    coupler_point: Point2D | None = None
 
 
 class DyadSolution(NamedTuple):

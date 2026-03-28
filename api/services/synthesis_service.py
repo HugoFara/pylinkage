@@ -43,6 +43,7 @@ def _solution_to_dto(sol: FourBarSolution) -> FourBarSolutionDTO:
         coupler_length=sol.coupler_length,
         rocker_length=sol.rocker_length,
         ground_length=sol.ground_length,
+        coupler_point=list(sol.coupler_point) if sol.coupler_point else None,
     )
 
 

@@ -46,7 +46,7 @@ from .core import Dyad, SynthesisProblem, SynthesisResult
 from .utils import GrashofType, grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
-    pass
+    from ..linkage import Linkage
 
 
 def _estimate_orientations_from_path(
@@ -147,7 +147,7 @@ def _points_to_poses(
 def _dyads_to_fourbar(
     dyad_left: Dyad,
     dyad_right: Dyad,
-    coupler_point_offset: tuple[float, float] = (0.0, 0.0),
+    coupler_point_world: Point2D | None = None,
 ) -> FourBarSolution | None:
     """Convert two dyads to a four-bar solution.
 
@@ -157,7 +157,9 @@ def _dyads_to_fourbar(
     Args:
         dyad_left: Dyad for the crank side (A-B).
         dyad_right: Dyad for the rocker side (D-C).
-        coupler_point_offset: Offset of traced point from B-C line.
+        coupler_point_world: World-frame position of the traced coupler
+            point at the first precision position. This is the point that
+            should pass through the precision points.
 
     Returns:
         FourBarSolution if valid, None if degenerate.
@@ -190,6 +192,7 @@ def _dyads_to_fourbar(
         coupler_length=coupler,
         rocker_length=rocker,
         ground_length=ground,
+        coupler_point=coupler_point_world,
     )
 
 
@@ -409,9 +412,13 @@ def path_generation(
                 max_pairs=remaining,
             )
 
+            # The coupler point is the first precision point — it's the
+            # body reference that should trace through all precision points.
+            coupler_pt: Point2D = precision_points[0]
+
             for dyad_left, dyad_right in dyad_pairs:
                 solution = _dyads_to_fourbar(
-                    dyad_left, dyad_right, coupler_point_offset
+                    dyad_left, dyad_right, coupler_point_world=coupler_pt
                 )
 
                 if solution is not None:
@@ -462,6 +469,84 @@ def path_generation(
         problem=problem,
         warnings=warnings,
     )
+
+
+def verify_path_generation(
+    linkage: "Linkage",
+    precision_points: list[PrecisionPoint],
+    tolerance: float | None = None,
+) -> tuple[bool, list[float]]:
+    """Verify that a synthesized linkage's coupler point passes near target points.
+
+    Simulates the linkage for one full crank rotation and finds, for each
+    precision point, the minimum distance from the coupler point trajectory
+    to that target point.
+
+    The linkage must have a joint named "P" (the coupler point tracker
+    added by ``solution_to_linkage``). If no such joint exists, the last
+    joint in the solve order is used as the coupler point.
+
+    Args:
+        linkage: The synthesized Linkage to verify.
+        precision_points: Target (x, y) points the coupler should pass through.
+        tolerance: Maximum acceptable distance for each point. If None,
+            defaults to 5% of the bounding box diagonal of the precision points.
+
+    Returns:
+        Tuple of (all_satisfied, distances) where distances[i] is the
+        minimum distance from the coupler trajectory to precision_points[i].
+    """
+    from ..exceptions import UnbuildableError
+
+    if not precision_points:
+        return True, []
+
+    # Find the coupler point joint
+    coupler_joint = None
+    for joint in linkage.joints:
+        if getattr(joint, "name", None) == "P":
+            coupler_joint = joint
+            break
+
+    if coupler_joint is None:
+        # Fallback: use last joint in order (typically joint C)
+        coupler_joint = linkage.joints[-1]
+
+    # Compute auto-tolerance from precision point spread
+    if tolerance is None:
+        xs = [p[0] for p in precision_points]
+        ys = [p[1] for p in precision_points]
+        diag = math.sqrt(
+            (max(xs) - min(xs)) ** 2 + (max(ys) - min(ys)) ** 2
+        )
+        tolerance = max(0.05 * diag, 0.01)
+
+    # Simulate one full rotation
+    try:
+        trajectory: list[tuple[float, float]] = []
+        for positions in linkage.step():
+            idx = linkage.joints.index(coupler_joint)
+            px, py = positions[idx]
+            if px is not None and py is not None:
+                trajectory.append((px, py))
+    except UnbuildableError:
+        # Linkage locks up — return worst-case
+        return False, [float("inf")] * len(precision_points)
+
+    if not trajectory:
+        return False, [float("inf")] * len(precision_points)
+
+    # For each precision point, find the minimum distance to trajectory
+    distances: list[float] = []
+    for px, py in precision_points:
+        min_dist = min(
+            math.sqrt((tx - px) ** 2 + (ty - py) ** 2)
+            for tx, ty in trajectory
+        )
+        distances.append(min_dist)
+
+    all_ok = all(d <= tolerance for d in distances)
+    return all_ok, distances
 
 
 def path_generation_with_timing(
@@ -532,8 +617,11 @@ def path_generation_with_timing(
             # Limit pairs to avoid excessive computation
             dyad_pairs = select_compatible_dyads(curves, max_pairs=30)
 
+            coupler_pt: Point2D = precision_points[0]
             for dyad_left, dyad_right in dyad_pairs:
-                solution = _dyads_to_fourbar(dyad_left, dyad_right)
+                solution = _dyads_to_fourbar(
+                    dyad_left, dyad_right, coupler_point_world=coupler_pt
+                )
                 if solution is not None:
                     raw_solutions.append(solution)
 

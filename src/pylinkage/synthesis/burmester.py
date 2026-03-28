@@ -3,18 +3,21 @@
 Burmester theory provides a geometric method for synthesizing planar
 linkages that pass through a set of precision positions. The key concepts:
 
-- **Poles (Instant Centers)**: Points that remain stationary during
-  infinitesimal rotation between two positions.
+- **Circle Points**: Points on the moving body whose world-frame positions
+  at all precision poses lie on a single circle.
 
-- **Circle Points**: Points on the moving body that trace circular arcs
-  centered on fixed pivots during motion through precision positions.
-
-- **Center Points**: The fixed pivot locations corresponding to circle points.
+- **Center Points**: The centers of those circles — these become the
+  fixed pivots (ground joints) of the linkage.
 
 For exact synthesis:
-- 3 positions: Continuous curve of solutions (circular cubic)
-- 4 positions: Up to 6 discrete solutions (Ball's points)
-- 5 positions: Typically 0-2 solutions (over-constrained)
+- 3 positions: Every body-frame point is a valid circle point (∞ solutions)
+- 4 positions: Circle points form a curve (circular cubic); we find points
+  where all 4 world positions are concyclic
+- 5 positions: Typically 0–6 discrete solutions (highly constrained)
+
+Two compatible dyads (circle point + center point pairs) define a four-bar
+linkage: the circle points are coupler attachment joints, the center points
+are ground pivots.
 
 References:
     - Sandor & Erdman, "Advanced Mechanism Design: Analysis and Synthesis"
@@ -49,6 +52,72 @@ def point_to_complex(p: Point2D) -> ComplexPoint:
 def complex_to_point(z: ComplexPoint) -> Point2D:
     """Convert complex number to Cartesian point."""
     return (z.real, z.imag)
+
+
+def _body_point_world_positions(
+    q: ComplexPoint,
+    poses: list[Pose],
+) -> list[ComplexPoint]:
+    """Compute world positions of a body-frame point at each pose.
+
+    A point with body-fixed coordinates ``q`` (relative to the body
+    reference frame at pose 1) has world position at pose j:
+
+        w_j = z_j + q * exp(i * θ_j)
+
+    where z_j and θ_j are the pose origin and orientation.
+
+    For pose 1 the body reference is at z_1 with orientation θ_1,
+    so w_1 = z_1 + q * exp(i * θ_1).
+
+    Args:
+        q: Body-frame coordinates of the point (complex number).
+        poses: List of Pose objects defining body positions.
+
+    Returns:
+        List of world-frame positions (complex numbers).
+    """
+    return [
+        pose.to_complex() + q * cmath.exp(1j * pose.angle)
+        for pose in poses
+    ]
+
+
+def _circumcenter(z1: ComplexPoint, z2: ComplexPoint, z3: ComplexPoint) -> ComplexPoint:
+    """Compute the circumcenter of three points in the complex plane.
+
+    The circumcenter is equidistant from all three points. Returns
+    complex infinity if the points are collinear.
+
+    Uses the formula:
+        m0 = |z1|²(z2-z3) + |z2|²(z3-z1) + |z3|²(z1-z2)
+             -----------------------------------------------
+             2 * Im[(z1-z3)(conj(z2)-conj(z3))] * i    ... (cross product denom)
+
+    Equivalently, using the determinant formula.
+    """
+    ax, ay = z1.real, z1.imag
+    bx, by = z2.real, z2.imag
+    cx, cy = z3.real, z3.imag
+
+    D = 2.0 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+
+    if abs(D) < _EPS:
+        return complex(float("inf"), float("inf"))
+
+    a2 = ax * ax + ay * ay
+    b2 = bx * bx + by * by
+    c2 = cx * cx + cy * cy
+
+    ux = (a2 * (by - cy) + b2 * (cy - ay) + c2 * (ay - by)) / D
+    uy = (a2 * (cx - bx) + b2 * (ax - cx) + c2 * (bx - ax)) / D
+
+    return complex(ux, uy)
+
+
+def _circumradius(center: ComplexPoint, point: ComplexPoint) -> float:
+    """Distance from circumcenter to a point on the circle."""
+    return abs(point - center)
 
 
 def compute_pole(pos1: Pose, pos2: Pose) -> ComplexPoint:
@@ -131,57 +200,6 @@ def compute_all_poles(poses: list[Pose]) -> NDArray[np.complex128]:
     return np.array(poles, dtype=np.complex128)
 
 
-def compute_relative_pole(
-    p12: ComplexPoint,
-    p13: ComplexPoint,
-    theta12: float,
-    theta13: float,
-) -> ComplexPoint:
-    """Compute relative pole P23 from P12, P13 and rotation angles.
-
-    Uses the theorem of three poles: P12, P23, P13 are collinear
-    (on the "pole triangle" for three positions).
-
-    Args:
-        p12: Pole between positions 1 and 2.
-        p13: Pole between positions 1 and 3.
-        theta12: Rotation angle from position 1 to 2.
-        theta13: Rotation angle from position 1 to 3.
-
-    Returns:
-        Pole P23 between positions 2 and 3.
-    """
-    # Check for infinite poles (pure translations)
-    if not (np.isfinite(p12) and np.isfinite(p13)):
-        return complex(float("nan"), float("nan"))
-
-    # Rotation angles for the three displacements
-    theta23 = theta13 - theta12
-
-    if abs(theta23) < _EPS:
-        return complex(float("inf"), float("inf"))
-
-    # Use collinearity and rotation properties
-    # P23 divides P12P13 in ratio related to angles
-    t12 = math.tan(theta12 / 2) if abs(theta12) > _EPS else float("inf")
-    t13 = math.tan(theta13 / 2) if abs(theta13) > _EPS else float("inf")
-    t23 = math.tan(theta23 / 2) if abs(theta23) > _EPS else float("inf")
-
-    if not (np.isfinite(t12) and np.isfinite(t13) and np.isfinite(t23)):
-        return (p12 + p13) / 2.0
-
-    # Compute P23 using the pole triangle formula
-    # This is derived from the constraint that P23 must be consistent
-    # with both P12 and P13
-    if abs(t12 - t13) < _EPS:
-        return p12  # Degenerate case
-
-    weight = t23 / (t12 + t13) if abs(t12 + t13) > _EPS else 0.5
-    p23 = p12 + weight * (p13 - p12)
-
-    return p23
-
-
 def _compute_curves_3_positions(
     poses: list[Pose],
     poles: NDArray[np.complex128],
@@ -189,13 +207,13 @@ def _compute_curves_3_positions(
 ) -> BurmesterCurves:
     """Compute Burmester curves for 3 precision positions.
 
-    With 3 positions, we have 3 poles: P12, P13, P23.
-    The circle point curve is a circular cubic, and the center
-    point curve is also a circular cubic.
+    With 3 positions, every point on the moving body is a valid circle
+    point — its 3 world positions always define a unique circumcircle.
+    The center point is the circumcenter of those 3 positions.
 
-    The parametric form is derived using image pole theory:
-    For each parameter value, we get a circle point M on the
-    moving body and corresponding center point M0 on the frame.
+    We sample body-frame points on concentric rings around the body
+    reference (the coupler point / precision point location) and compute
+    the corresponding center points.
 
     Args:
         poses: List of 3 Pose objects.
@@ -205,83 +223,59 @@ def _compute_curves_3_positions(
     Returns:
         BurmesterCurves containing sampled circle and center curves.
     """
-    P12, P13, P23 = poles[0], poles[1], poles[2]
+    # Compute characteristic scale from the poses
+    pose_positions = [p.to_complex() for p in poses]
+    dists = [abs(pose_positions[i] - pose_positions[j])
+             for i in range(3) for j in range(i + 1, 3)]
+    char_scale = max(dists) if dists else 1.0
+    if char_scale < _EPS:
+        char_scale = 1.0
 
-    # Rotation angles
-    theta12 = poses[1].angle - poses[0].angle
-    theta13 = poses[2].angle - poses[0].angle
-    # theta23 computed but not used in 3-position case
+    # Sample body-frame points q on multiple rings
+    # Use several radii to get a diverse set of candidates
+    n_angles = max(12, n_samples // 4)
+    radii = [0.3, 0.7, 1.2, 2.0]
+    angles = np.linspace(0, 2 * np.pi, n_angles, endpoint=False)
 
-    # Reference position origin (position 1)
-    z1 = poses[0].to_complex()
+    circle_points: list[ComplexPoint] = []
+    center_points: list[ComplexPoint] = []
 
-    # Handle degenerate cases with infinite poles
-    finite_poles = [p for p in [P12, P13, P23] if np.isfinite(p)]
+    for r_factor in radii:
+        r = r_factor * char_scale
+        for angle in angles:
+            q = r * cmath.exp(1j * angle)
 
-    if len(finite_poles) < 2:
-        # Mostly translations - return empty curves
-        return BurmesterCurves(
-            circle_curve=np.array([], dtype=np.complex128),
-            center_curve=np.array([], dtype=np.complex128),
-            parameter=np.array([], dtype=np.float64),
-            is_discrete=True,
-        )
+            # World positions of this body-frame point
+            w = _body_point_world_positions(q, poses)
 
-    # Compute the center of the pole triangle
-    if len(finite_poles) == 3:
-        pole_center = (P12 + P13 + P23) / 3.0
-    else:
-        pole_center = sum(finite_poles) / len(finite_poles)
+            # Circumcenter = center point (ground pivot)
+            m0 = _circumcenter(w[0], w[1], w[2])
 
-    # Characteristic circle radius (scale for parameterization)
-    char_radius = max(
-        abs(p - pole_center) for p in finite_poles if np.isfinite(p)
-    )
-    if char_radius < _EPS:
-        char_radius = 1.0
+            if not np.isfinite(m0):
+                continue
 
-    # Parameterize circle points along a curve
-    # Using the parametric form from Burmester theory
-    t = np.linspace(0, 2 * np.pi, n_samples, endpoint=False)
+            # The circle point in world frame at position 1
+            circle_pt = w[0]
 
-    circle_curve = np.zeros(n_samples, dtype=np.complex128)
-    center_curve = np.zeros(n_samples, dtype=np.complex128)
+            # Sanity: link length should be reasonable
+            link_len = abs(circle_pt - m0)
+            if link_len < _EPS or link_len > 100.0 * char_scale:
+                continue
 
-    for i, param in enumerate(t):
-        # Circle point in the moving frame (relative to position 1)
-        # Parameterized on the circle point curve
-        u = cmath.exp(1j * param)
+            circle_points.append(circle_pt)
+            center_points.append(m0)
 
-        # The circle point M in position 1 coordinates
-        # Using the cubic curve parameterization
-        if np.isfinite(P12) and np.isfinite(P13):
-            # General case: M lies on circle through P12 and P13
-            # scaled and rotated by parameter
-            M = pole_center + char_radius * 1.5 * u
-        else:
-            M = z1 + char_radius * u
-
-        # The center point M0 is found by applying the inverse
-        # of the first rotation to find where M was in the fixed frame
-        # M0 = P12 + (M - P12) * exp(-i * theta12)
-
-        if np.isfinite(P12) and abs(theta12) > _EPS:
-            rotation_factor = cmath.exp(-1j * theta12)
-            M0 = P12 + (M - P12) * rotation_factor
-        elif np.isfinite(P13) and abs(theta13) > _EPS:
-            rotation_factor = cmath.exp(-1j * theta13)
-            M0 = P13 + (M - P13) * rotation_factor
-        else:
-            # Fallback for degenerate cases
-            M0 = M - (z1 - poles[0] if np.isfinite(poles[0]) else 0)
-
-        circle_curve[i] = M
-        center_curve[i] = M0
+    # Pad to n_samples if we have fewer (or trim if more)
+    if len(circle_points) > n_samples:
+        step = len(circle_points) / n_samples
+        indices = [int(i * step) for i in range(n_samples)]
+        circle_points = [circle_points[i] for i in indices]
+        center_points = [center_points[i] for i in indices]
 
     return BurmesterCurves(
-        circle_curve=circle_curve,
-        center_curve=center_curve,
-        parameter=t,
+        circle_curve=np.array(circle_points, dtype=np.complex128),
+        center_curve=np.array(center_points, dtype=np.complex128),
+        parameter=np.arange(len(circle_points), dtype=np.float64),
         is_discrete=False,
     )
 
@@ -293,100 +287,65 @@ def _compute_curves_4_positions(
 ) -> BurmesterCurves:
     """Compute Burmester curves for 4 precision positions.
 
-    With 4 positions, the circle point curve degenerates to at most
-    6 discrete points called Ball's points or Burmester points.
-    These are the intersections of two circular cubics from
-    3-position subproblems.
+    With 4 positions, a body-frame point is a valid circle point only if
+    all 4 of its world positions lie on a single circle (are concyclic).
+    We sample candidate body-frame points and check the concyclicity
+    condition: compute circumcircle of the first 3 world positions, then
+    check whether the 4th lies on that circle.
 
     Args:
         poses: List of 4 Pose objects.
         poles: Array of 6 poles [P12, P13, P14, P23, P24, P34].
-        n_samples: Ignored for discrete solutions.
+        n_samples: Number of samples for candidate search.
 
     Returns:
         BurmesterCurves containing discrete circle and center points.
     """
-    # For 4 positions, we solve for intersection of two cubics
-    # Poles: P12, P13, P14, P23, P24, P34 (indices 0-5)
-    P12, P13, P14 = poles[0], poles[1], poles[2]
-    # P23, P24, P34 available in poles[3:6] if needed for extended algorithms
-
-    # Rotation angles
-    theta12 = poses[1].angle - poses[0].angle
-    theta13 = poses[2].angle - poses[0].angle
-    theta14 = poses[3].angle - poses[0].angle
-
-    # Get finite poles for reference
-    finite_poles = [p for p in poles[:6] if np.isfinite(p)]
-    if len(finite_poles) < 3:
-        return BurmesterCurves(
-            circle_curve=np.array([], dtype=np.complex128),
-            center_curve=np.array([], dtype=np.complex128),
-            parameter=np.array([], dtype=np.float64),
-            is_discrete=True,
-        )
-
-    # For 4 positions, we solve compatibility equations
-    # The circle points satisfy cubic equations that must
-    # be consistent across all 4 positions
-
-    # Compute coefficients for the compatibility cubic
-    # This is derived from the requirement that M moved to all 4 positions
-    # must have its center point M0 be fixed
-
-    circle_points = []
-    center_points = []
-
-    # Method: Sample candidate points and verify compatibility
-    # A full analytical solution would solve a system of polynomial equations
-
-    # Reference pole center
-    pole_center = np.mean([p for p in finite_poles if np.isfinite(p)])
-
     # Characteristic scale
-    char_scale = max(abs(p - pole_center) for p in finite_poles)
+    pose_positions = [p.to_complex() for p in poses]
+    dists = [abs(pose_positions[i] - pose_positions[j])
+             for i in range(4) for j in range(i + 1, 4)]
+    char_scale = max(dists) if dists else 1.0
     if char_scale < _EPS:
         char_scale = 1.0
 
-    # Grid search for compatible circle points
-    # In production, this would use polynomial root finding
-    n_grid = max(36, n_samples // 10)
+    circle_points: list[ComplexPoint] = []
+    center_points: list[ComplexPoint] = []
+
+    # Dense grid search over body-frame points
+    n_grid = max(48, n_samples)
     theta_grid = np.linspace(0, 2 * np.pi, n_grid, endpoint=False)
-    r_grid = np.linspace(0.5, 2.0, 4) * char_scale
+    r_factors = np.linspace(0.2, 3.0, 12)
 
-    for r in r_grid:
+    for r_factor in r_factors:
+        r = r_factor * char_scale
         for theta in theta_grid:
-            M = pole_center + r * cmath.exp(1j * theta)
+            q = r * cmath.exp(1j * theta)
 
-            # Compute center points from each pair of positions
-            M0_candidates = []
+            # World positions
+            w = _body_point_world_positions(q, poses)
 
-            for pole, angle in [
-                (P12, theta12),
-                (P13, theta13),
-                (P14, theta14),
-            ]:
-                if np.isfinite(pole) and abs(angle) > _EPS:
-                    rot = cmath.exp(-1j * angle)
-                    M0 = pole + (M - pole) * rot
-                    M0_candidates.append(M0)
-
-            if len(M0_candidates) < 2:
+            # Circumcircle of first 3 positions
+            m0 = _circumcenter(w[0], w[1], w[2])
+            if not np.isfinite(m0):
                 continue
 
-            # Check if all M0 estimates agree (within tolerance)
-            M0_mean = np.mean(M0_candidates)
-            max_dev = max(abs(m - M0_mean) for m in M0_candidates)
+            circumradius = _circumradius(m0, w[0])
+            if circumradius < _EPS:
+                continue
 
-            # Accept if deviation is small relative to scale
-            if max_dev < 0.05 * char_scale:
-                circle_points.append(M)
-                center_points.append(M0_mean)
+            # Check if 4th point lies on the same circle
+            r4 = _circumradius(m0, w[3])
+            relative_error = abs(r4 - circumradius) / circumradius
+
+            if relative_error < 0.02:  # 2% tolerance
+                circle_points.append(w[0])
+                center_points.append(m0)
 
     # Remove duplicates
     if circle_points:
         circle_points, center_points = _remove_duplicate_solutions(
-            circle_points, center_points, tol=0.1 * char_scale
+            circle_points, center_points, tol=0.05 * char_scale
         )
 
     return BurmesterCurves(
@@ -404,11 +363,9 @@ def _compute_curves_5_positions(
 ) -> BurmesterCurves:
     """Compute Burmester curves for 5 precision positions.
 
-    With 5 positions, the problem is over-constrained.
-    Typically there are 0-2 solutions, rarely more.
-
-    This uses a least-squares approach to find circle points
-    that best satisfy all 5 position constraints.
+    With 5 positions, the problem is highly constrained. A body-frame
+    point is valid only if all 5 world positions are concyclic. We use
+    a fine grid search with tight tolerance.
 
     Args:
         poses: List of 5 Pose objects.
@@ -418,68 +375,55 @@ def _compute_curves_5_positions(
     Returns:
         BurmesterCurves containing discrete solutions (possibly empty).
     """
-    # For 5 positions, we have 10 poles
-    # The circle point must satisfy compatibility with all of them
-
-    # Get rotation angles
-    thetas = [p.angle - poses[0].angle for p in poses[1:]]
-
-    # Get finite poles
-    finite_poles = [(i, p) for i, p in enumerate(poles) if np.isfinite(p)]
-    if len(finite_poles) < 4:
-        return BurmesterCurves(
-            circle_curve=np.array([], dtype=np.complex128),
-            center_curve=np.array([], dtype=np.complex128),
-            parameter=np.array([], dtype=np.float64),
-            is_discrete=True,
-        )
-
-    pole_center = np.mean([p for _, p in finite_poles])
-    char_scale = max(abs(p - pole_center) for _, p in finite_poles)
+    # Characteristic scale
+    pose_positions = [p.to_complex() for p in poses]
+    dists = [abs(pose_positions[i] - pose_positions[j])
+             for i in range(5) for j in range(i + 1, 5)]
+    char_scale = max(dists) if dists else 1.0
     if char_scale < _EPS:
         char_scale = 1.0
 
-    circle_points = []
-    center_points = []
+    # Collect candidates with their residuals for ranking
+    candidates: list[tuple[float, ComplexPoint, ComplexPoint]] = []
 
-    # Fine grid search with compatibility checking
-    n_grid = max(72, n_samples // 5)
+    # Fine grid search
+    n_grid = max(72, n_samples)
     theta_grid = np.linspace(0, 2 * np.pi, n_grid, endpoint=False)
-    r_grid = np.linspace(0.3, 2.5, 8) * char_scale
+    r_factors = np.linspace(0.2, 3.0, 16)
 
-    best_solutions = []
-
-    for r in r_grid:
+    for r_factor in r_factors:
+        r = r_factor * char_scale
         for theta in theta_grid:
-            M = pole_center + r * cmath.exp(1j * theta)
+            q = r * cmath.exp(1j * theta)
 
-            # Compute center point estimates from each displacement
-            M0_estimates = []
-            main_poles = [poles[0], poles[1], poles[2], poles[3]]  # P12, P13, P14, P15
+            # World positions
+            w = _body_point_world_positions(q, poses)
 
-            for pole, angle in zip(main_poles, thetas, strict=False):
-                if np.isfinite(pole) and abs(angle) > _EPS:
-                    rot = cmath.exp(-1j * angle)
-                    M0 = pole + (M - pole) * rot
-                    M0_estimates.append(M0)
-
-            if len(M0_estimates) < 3:
+            # Circumcircle of first 3 positions
+            m0 = _circumcenter(w[0], w[1], w[2])
+            if not np.isfinite(m0):
                 continue
 
-            M0_mean = np.mean(M0_estimates)
-            residual = sum(abs(m - M0_mean) ** 2 for m in M0_estimates)
-            normalized_residual = residual / (char_scale ** 2 * len(M0_estimates))
+            circumradius = _circumradius(m0, w[0])
+            if circumradius < _EPS:
+                continue
 
-            # Very tight tolerance for 5 positions
-            if normalized_residual < 0.001:
-                best_solutions.append((normalized_residual, M, M0_mean))
+            # Check positions 4 and 5
+            errors = []
+            for k in range(3, 5):
+                rk = _circumradius(m0, w[k])
+                errors.append(abs(rk - circumradius) / circumradius)
 
-    # Sort by residual and take best solutions
-    best_solutions.sort(key=lambda x: x[0])
+            max_error = max(errors)
 
-    for _, M, M0 in best_solutions[:6]:  # Max 6 solutions
-        circle_points.append(M)
-        center_points.append(M0)
+            if max_error < 0.01:  # 1% tolerance
+                candidates.append((max_error, w[0], m0))
+
+    # Sort by residual and take best
+    candidates.sort(key=lambda x: x[0])
+
+    circle_points = [c[1] for c in candidates[:6]]
+    center_points = [c[2] for c in candidates[:6]]
 
     # Remove duplicates
     if circle_points:
@@ -672,3 +616,52 @@ def select_compatible_dyads(
             dyad_pairs.append((dyad_left, dyad_right))
 
     return dyad_pairs
+
+
+def compute_relative_pole(
+    p12: ComplexPoint,
+    p13: ComplexPoint,
+    theta12: float,
+    theta13: float,
+) -> ComplexPoint:
+    """Compute relative pole P23 from P12, P13 and rotation angles.
+
+    Uses the theorem of three poles: P12, P23, P13 are collinear
+    (on the "pole triangle" for three positions).
+
+    Args:
+        p12: Pole between positions 1 and 2.
+        p13: Pole between positions 1 and 3.
+        theta12: Rotation angle from position 1 to 2.
+        theta13: Rotation angle from position 1 to 3.
+
+    Returns:
+        Pole P23 between positions 2 and 3.
+    """
+    # Check for infinite poles (pure translations)
+    if not (np.isfinite(p12) and np.isfinite(p13)):
+        return complex(float("nan"), float("nan"))
+
+    # Rotation angles for the three displacements
+    theta23 = theta13 - theta12
+
+    if abs(theta23) < _EPS:
+        return complex(float("inf"), float("inf"))
+
+    # Use collinearity and rotation properties
+    # P23 divides P12P13 in ratio related to angles
+    t12 = math.tan(theta12 / 2) if abs(theta12) > _EPS else float("inf")
+    t13 = math.tan(theta13 / 2) if abs(theta13) > _EPS else float("inf")
+    t23 = math.tan(theta23 / 2) if abs(theta23) > _EPS else float("inf")
+
+    if not (np.isfinite(t12) and np.isfinite(t13) and np.isfinite(t23)):
+        return (p12 + p13) / 2.0
+
+    # Compute P23 using the pole triangle formula
+    if abs(t12 - t13) < _EPS:
+        return p12  # Degenerate case
+
+    weight = t23 / (t12 + t13) if abs(t12 + t13) > _EPS else 0.5
+    p23 = p12 + weight * (p13 - p12)
+
+    return p23

@@ -142,6 +142,7 @@ __all__ = [
     "verify_function_generation",
     "path_generation",
     "path_generation_with_timing",
+    "verify_path_generation",
     "motion_generation",
     "motion_generation_3_poses",
     # Burmester theory functions
@@ -205,7 +206,7 @@ from .core import (
 # Synthesis functions
 from .function_generation import function_generation, verify_function_generation
 from .motion_generation import motion_generation, motion_generation_3_poses
-from .path_generation import path_generation, path_generation_with_timing
+from .path_generation import path_generation, path_generation_with_timing, verify_path_generation
 
 # Utility functions
 from .utils import (

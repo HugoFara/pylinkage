@@ -80,6 +80,9 @@ def _dyads_to_motion_fourbar(
     if any(link < min_length for link in [crank, coupler, rocker, ground]):
         return None
 
+    # The coupler point is the body reference (pose origin) at position 1
+    coupler_pt: Point2D = (reference_pose.x, reference_pose.y)
+
     return FourBarSolution(
         ground_pivot_a=A,
         ground_pivot_d=D,
@@ -89,6 +92,7 @@ def _dyads_to_motion_fourbar(
         coupler_length=coupler,
         rocker_length=rocker,
         ground_length=ground,
+        coupler_point=coupler_pt,
     )
 
 
