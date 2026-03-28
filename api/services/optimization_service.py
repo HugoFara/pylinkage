@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import logging
 import math
-from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
@@ -20,15 +19,13 @@ from pylinkage.mechanism.conversion import mechanism_from_linkage, mechanism_to_
 from pylinkage.mechanism.serialization import mechanism_from_dict, mechanism_to_dict
 from pylinkage.optimization import (
     differential_evolution_optimization,
-    generate_bounds,
     particle_swarm_optimization,
     trials_and_errors_optimization,
 )
-from pylinkage.optimization.scipy_optimize import minimize_linkage
 from pylinkage.optimization.collections import Agent, MutableAgent
+from pylinkage.optimization.scipy_optimize import minimize_linkage
 
 from ..models.optimization_schemas import (
-    AlgorithmParams,
     DifferentialEvolutionParams,
     GridSearchParams,
     NelderMeadParams,
@@ -117,7 +114,6 @@ def _build_eval_func(
     error_penalty = float("inf") if minimize else -float("inf")
 
     def eval_func(linkage: Any, params: Any, init_pos: Any) -> float:
-        from pylinkage.linkage.linkage import Linkage
 
         if init_pos is not None:
             linkage.set_coords(init_pos)

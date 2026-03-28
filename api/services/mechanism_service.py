@@ -57,15 +57,13 @@ def run_simulation(
     mechanism.reset()
 
     frames: list[list[tuple[float, float]]] = []
-    step_count = 0
-    for positions in mechanism.step(dt=dt):
+    for step_count, positions in enumerate(mechanism.step(dt=dt)):
         frame = [
             (pos[0] if pos[0] is not None else 0.0, pos[1] if pos[1] is not None else 0.0)
             for pos in positions
         ]
         frames.append(frame)
-        step_count += 1
-        if step_count >= iterations:
+        if step_count + 1 >= iterations:
             break
     return frames
 

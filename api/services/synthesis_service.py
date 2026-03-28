@@ -9,6 +9,8 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from pylinkage.mechanism.conversion import mechanism_from_linkage
+from pylinkage.mechanism.serialization import mechanism_to_dict
 from pylinkage.synthesis import (
     FourBarSolution,
     Pose,
@@ -19,8 +21,6 @@ from pylinkage.synthesis import (
     path_generation,
     solution_to_linkage,
 )
-from pylinkage.mechanism.conversion import mechanism_from_linkage
-from pylinkage.mechanism.serialization import mechanism_to_dict
 
 from ..models.synthesis_schemas import (
     FourBarSolutionDTO,

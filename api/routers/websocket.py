@@ -6,9 +6,9 @@ from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from pylinkage.exceptions import UnbuildableError
 from pylinkage.mechanism import Mechanism
 from pylinkage.mechanism.serialization import mechanism_from_dict
-from pylinkage.exceptions import UnbuildableError
 
 from ..services import mechanism_service
 from ..storage.memory import storage
@@ -210,8 +210,7 @@ async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> 
                 frames: list[list[list[float]]] = []
                 progress_interval = max(1, iterations // 10)  # Report ~10 progress updates
 
-                step = 0
-                for positions in mechanism.step(dt=1.0):
+                for step, positions in enumerate(mechanism.step(dt=1.0), 1):
                     frame = [
                         [
                             pos[0] if pos[0] is not None else 0.0,
@@ -220,7 +219,6 @@ async def simulation_fast_websocket(websocket: WebSocket, mechanism_id: str) -> 
                         for pos in positions
                     ]
                     frames.append(frame)
-                    step += 1
 
                     # Send progress updates periodically
                     if step % progress_interval == 0:
