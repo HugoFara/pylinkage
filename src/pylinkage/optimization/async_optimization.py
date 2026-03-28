@@ -18,9 +18,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from .collections import Agent, MutableAgent
-from .grid_search import trials_and_errors_optimization
-from .particle_swarm import particle_swarm_optimization
-from .scipy_optimize import differential_evolution_optimization, minimize_linkage
 
 if TYPE_CHECKING:
     from .._types import JointPositions
@@ -133,6 +130,8 @@ async def particle_swarm_optimization_async(
             )
         )
 
+    from .particle_swarm import particle_swarm_optimization
+
     def run_optimization() -> list[Agent]:
         return particle_swarm_optimization(
             eval_func=eval_func,
@@ -243,6 +242,8 @@ async def trials_and_errors_optimization_async(
             )
         )
 
+    from .grid_search import trials_and_errors_optimization
+
     def run_optimization() -> list[MutableAgent]:
         return trials_and_errors_optimization(
             eval_func=eval_func,
@@ -331,6 +332,8 @@ async def differential_evolution_optimization_async(
                 is_complete=False,
             )
         )
+
+    from .scipy_optimize import differential_evolution_optimization
 
     def run_optimization() -> list[Agent]:
         return differential_evolution_optimization(
@@ -424,6 +427,8 @@ async def minimize_linkage_async(
                 is_complete=False,
             )
         )
+
+    from .scipy_optimize import minimize_linkage
 
     def run_optimization() -> list[Agent]:
         return minimize_linkage(

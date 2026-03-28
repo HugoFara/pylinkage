@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
-from pyswarms.single.local_best import LocalBestPSO
 
 from ..exceptions import OptimizationError
 from .collections import Agent
@@ -102,6 +101,8 @@ def particle_swarm_optimization(
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
         j.coord() for j in linkage.joints
     )
+    from pyswarms.single.local_best import LocalBestPSO
+
     optimizer = LocalBestPSO(
         n_particles=n_particles,
         dimensions=dimensions,

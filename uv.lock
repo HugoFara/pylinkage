@@ -2562,16 +2562,8 @@ name = "pylinkage"
 version = "0.7.0"
 source = { editable = "." }
 dependencies = [
-    { name = "drawsvg" },
-    { name = "matplotlib" },
-    { name = "numba" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "plotly" },
-    { name = "pyswarms" },
-    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-    { name = "sympy" },
     { name = "tqdm" },
 ]
 
@@ -2604,67 +2596,121 @@ docs = [
     { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "sphinx-rtd-theme" },
 ]
+full = [
+    { name = "drawsvg" },
+    { name = "matplotlib" },
+    { name = "numba" },
+    { name = "plotly" },
+    { name = "pyswarms" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "sympy" },
+]
 moo = [
     { name = "pymoo" },
+]
+numba = [
+    { name = "numba" },
+]
+plotly = [
+    { name = "plotly" },
+]
+pso = [
+    { name = "pyswarms" },
+]
+scipy = [
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+]
+svg = [
+    { name = "drawsvg" },
+]
+symbolic = [
+    { name = "sympy" },
+]
+viz = [
+    { name = "matplotlib" },
 ]
 
 [package.dev-dependencies]
 dev = [
     { name = "bump-my-version" },
+    { name = "drawsvg" },
     { name = "hypothesis" },
+    { name = "matplotlib" },
     { name = "mypy" },
     { name = "myst-parser", version = "4.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "myst-parser", version = "5.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+    { name = "numba" },
+    { name = "plotly" },
+    { name = "pyswarms" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
+    { name = "scipy", version = "1.15.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "scipy", version = "1.17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sphinx", version = "8.1.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "sphinx", version = "9.0.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "sphinx", version = "9.1.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "sphinx-rtd-theme" },
+    { name = "sympy" },
     { name = "taskipy" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "build123d", marker = "extra == 'cad'", specifier = ">=0.7.0" },
-    { name = "drawsvg", specifier = ">=2.4.0" },
+    { name = "drawsvg", marker = "extra == 'full'", specifier = ">=2.4.0" },
+    { name = "drawsvg", marker = "extra == 'svg'", specifier = ">=2.4.0" },
     { name = "ezdxf", marker = "extra == 'cad'", specifier = ">=1.0.0" },
     { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.109.0" },
     { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.0.0" },
-    { name = "matplotlib", specifier = ">=3.3.4" },
+    { name = "matplotlib", marker = "extra == 'full'", specifier = ">=3.3.4" },
+    { name = "matplotlib", marker = "extra == 'viz'", specifier = ">=3.3.4" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "myst-parser", marker = "extra == 'docs'", specifier = ">=3.0.1" },
-    { name = "numba", specifier = ">=0.60.0" },
+    { name = "numba", marker = "extra == 'full'", specifier = ">=0.60.0" },
+    { name = "numba", marker = "extra == 'numba'", specifier = ">=0.60.0" },
     { name = "numpy", specifier = ">=1.20.2" },
     { name = "pandas", marker = "extra == 'analysis'", specifier = ">=2.0.0" },
-    { name = "plotly", specifier = ">=6.5.0" },
+    { name = "plotly", marker = "extra == 'full'", specifier = ">=6.5.0" },
+    { name = "plotly", marker = "extra == 'plotly'", specifier = ">=6.5.0" },
     { name = "pydantic-settings", marker = "extra == 'api'", specifier = ">=2.1.0" },
     { name = "pymoo", marker = "extra == 'moo'", specifier = ">=0.6.0" },
-    { name = "pyswarms", specifier = ">=1.3.0" },
+    { name = "pyswarms", marker = "extra == 'full'", specifier = ">=1.3.0" },
+    { name = "pyswarms", marker = "extra == 'pso'", specifier = ">=1.3.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.4.0" },
-    { name = "scipy", specifier = ">=1.10.0" },
+    { name = "scipy", marker = "extra == 'full'", specifier = ">=1.10.0" },
+    { name = "scipy", marker = "extra == 'scipy'", specifier = ">=1.10.0" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = ">=7.4.2" },
     { name = "sphinx-rtd-theme", marker = "extra == 'docs'", specifier = ">=2.0.0" },
-    { name = "sympy", specifier = ">=1.12" },
+    { name = "sympy", marker = "extra == 'full'", specifier = ">=1.12" },
+    { name = "sympy", marker = "extra == 'symbolic'", specifier = ">=1.12" },
     { name = "tqdm", specifier = ">=4.40.0" },
     { name = "uvicorn", extras = ["standard"], marker = "extra == 'api'", specifier = ">=0.27.0" },
 ]
-provides-extras = ["dev", "docs", "api", "cad", "analysis", "moo"]
+provides-extras = ["numba", "scipy", "symbolic", "pso", "viz", "plotly", "svg", "full", "dev", "docs", "api", "cad", "analysis", "moo"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "bump-my-version", specifier = ">=1.2.5" },
+    { name = "drawsvg", specifier = ">=2.4.0" },
     { name = "hypothesis", specifier = ">=6.0.0" },
+    { name = "matplotlib", specifier = ">=3.3.4" },
     { name = "mypy", specifier = ">=1.0.0" },
     { name = "myst-parser", specifier = ">=3.0.1" },
+    { name = "numba", specifier = ">=0.60.0" },
+    { name = "plotly", specifier = ">=6.5.0" },
+    { name = "pyswarms", specifier = ">=1.3.0" },
     { name = "pytest", specifier = ">=7.0.0" },
     { name = "pytest-cov", specifier = ">=4.0.0" },
     { name = "ruff", specifier = ">=0.4.0" },
+    { name = "scipy", specifier = ">=1.10.0" },
     { name = "sphinx", specifier = ">=7.4.2" },
     { name = "sphinx-rtd-theme", specifier = ">=2.0.0" },
+    { name = "sympy", specifier = ">=1.12" },
     { name = "taskipy", specifier = ">=1.12.0" },
 ]
 

@@ -14,7 +14,6 @@ from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 import numpy as np
-from scipy.optimize import differential_evolution, minimize
 
 from ..exceptions import OptimizationError
 from .collections import Agent
@@ -140,6 +139,8 @@ def differential_evolution_optimization(
         if order_relation is max:
             return -score
         return score
+
+    from scipy.optimize import differential_evolution
 
     # Run differential evolution
     result = differential_evolution(
@@ -279,6 +280,8 @@ def minimize_linkage(
         options["maxiter"] = maxiter
     if verbose:
         options["disp"] = True
+
+    from scipy.optimize import minimize
 
     # Run minimize
     result = minimize(

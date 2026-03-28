@@ -50,59 +50,57 @@ __all__ = [
     "SymbolType",
 ]
 
-# Matplotlib backend
-from .animated import (
-    plot_kinematic_linkage as plot_kinematic_linkage,
-)
-from .animated import (
-    show_linkage as show_linkage,
-)
-from .animated import (
-    swarm_tiled_repr as swarm_tiled_repr,
-)
-from .core import COLOR_SWITCHER as COLOR_SWITCHER
+import importlib as _importlib
 
-# drawsvg backend
-from .drawsvg_viz import plot_linkage_svg as plot_linkage_svg
-from .drawsvg_viz import (
-    plot_linkage_svg_with_velocity as plot_linkage_svg_with_velocity,
-)
-from .drawsvg_viz import save_linkage_svg as save_linkage_svg
-from .drawsvg_viz import (
-    save_linkage_svg_with_velocity as save_linkage_svg_with_velocity,
-)
+# Mapping from public name to (module, attribute) within this package.
+_LAZY_ATTRS: dict[str, tuple[str, str]] = {
+    # Matplotlib backend
+    "plot_kinematic_linkage": (".animated", "plot_kinematic_linkage"),
+    "show_linkage": (".animated", "show_linkage"),
+    "swarm_tiled_repr": (".animated", "swarm_tiled_repr"),
+    "COLOR_SWITCHER": (".core", "COLOR_SWITCHER"),
+    "plot_static_linkage": (".static", "plot_static_linkage"),
+    # PSO plots (matplotlib)
+    "animate_dashboard": (".pso_plots", "animate_dashboard"),
+    "animate_parallel_coordinates": (".pso_plots", "animate_parallel_coordinates"),
+    "dashboard_layout": (".pso_plots", "dashboard_layout"),
+    "parallel_coordinates_plot": (".pso_plots", "parallel_coordinates_plot"),
+    # Kinematics visualization
+    "animate_kinematics": (".kinematics", "animate_kinematics"),
+    "plot_acceleration_vectors": (".kinematics", "plot_acceleration_vectors"),
+    "plot_kinematics_frame": (".kinematics", "plot_kinematics_frame"),
+    "plot_velocity_vectors": (".kinematics", "plot_velocity_vectors"),
+    "show_kinematics": (".kinematics", "show_kinematics"),
+    # Plotly backend
+    "animate_linkage_plotly": (".plotly_viz", "animate_linkage_plotly"),
+    "plot_linkage_plotly": (".plotly_viz", "plot_linkage_plotly"),
+    "plot_linkage_plotly_with_velocity": (".plotly_viz", "plot_linkage_plotly_with_velocity"),
+    # drawsvg backend
+    "plot_linkage_svg": (".drawsvg_viz", "plot_linkage_svg"),
+    "plot_linkage_svg_with_velocity": (".drawsvg_viz", "plot_linkage_svg_with_velocity"),
+    "save_linkage_svg": (".drawsvg_viz", "save_linkage_svg"),
+    "save_linkage_svg_with_velocity": (".drawsvg_viz", "save_linkage_svg_with_velocity"),
+    # DXF export
+    "plot_linkage_dxf": (".dxf_export", "plot_linkage_dxf"),
+    "save_linkage_dxf": (".dxf_export", "save_linkage_dxf"),
+    # STEP export
+    "build_linkage_3d": (".step_export", "build_linkage_3d"),
+    "save_linkage_step": (".step_export", "save_linkage_step"),
+    "LinkProfile": (".step_export", "LinkProfile"),
+    "JointProfile": (".step_export", "JointProfile"),
+    # Symbol definitions
+    "LINK_COLORS": (".symbols", "LINK_COLORS"),
+    "SYMBOL_SPECS": (".symbols", "SYMBOL_SPECS"),
+    "LinkStyle": (".symbols", "LinkStyle"),
+    "SymbolType": (".symbols", "SymbolType"),
+}
 
-# DXF export (lazy import to avoid loading ezdxf when not needed)
-from .dxf_export import plot_linkage_dxf as plot_linkage_dxf
-from .dxf_export import save_linkage_dxf as save_linkage_dxf
 
-# Kinematics visualization
-from .kinematics import animate_kinematics as animate_kinematics
-from .kinematics import plot_acceleration_vectors as plot_acceleration_vectors
-from .kinematics import plot_kinematics_frame as plot_kinematics_frame
-from .kinematics import plot_velocity_vectors as plot_velocity_vectors
-from .kinematics import show_kinematics as show_kinematics
-
-# Plotly backend
-from .plotly_viz import animate_linkage_plotly as animate_linkage_plotly
-from .plotly_viz import plot_linkage_plotly as plot_linkage_plotly
-from .plotly_viz import (
-    plot_linkage_plotly_with_velocity as plot_linkage_plotly_with_velocity,
-)
-from .pso_plots import animate_dashboard as animate_dashboard
-from .pso_plots import animate_parallel_coordinates as animate_parallel_coordinates
-from .pso_plots import dashboard_layout as dashboard_layout
-from .pso_plots import parallel_coordinates_plot as parallel_coordinates_plot
-from .static import plot_static_linkage as plot_static_linkage
-
-# STEP export (lazy import to avoid loading build123d when not needed)
-from .step_export import JointProfile as JointProfile
-from .step_export import LinkProfile as LinkProfile
-from .step_export import build_linkage_3d as build_linkage_3d
-from .step_export import save_linkage_step as save_linkage_step
-
-# Symbol definitions
-from .symbols import LINK_COLORS as LINK_COLORS
-from .symbols import SYMBOL_SPECS as SYMBOL_SPECS
-from .symbols import LinkStyle as LinkStyle
-from .symbols import SymbolType as SymbolType
+def __getattr__(name: str) -> object:
+    if name in _LAZY_ATTRS:
+        module_path, attr_name = _LAZY_ATTRS[name]
+        mod = _importlib.import_module(module_path, __name__)
+        val = getattr(mod, attr_name)
+        globals()[name] = val
+        return val
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

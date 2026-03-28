@@ -5,7 +5,7 @@ numeric arrays, avoiding Python object overhead for maximum performance.
 """
 
 import numpy as np
-from numba import njit
+from .._numba_compat import njit
 
 from .acceleration import (
     solve_crank_acceleration,

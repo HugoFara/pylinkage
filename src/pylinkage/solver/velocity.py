@@ -10,7 +10,7 @@ equations, using implicit differentiation for constraint-based joints.
 
 import math
 
-from numba import njit
+from .._numba_compat import njit
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]

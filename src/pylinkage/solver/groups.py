@@ -14,7 +14,6 @@ import math
 from typing import TYPE_CHECKING
 
 import numpy as np
-from scipy.optimize import fsolve
 
 from .joints import solve_line_line, solve_linear, solve_revolute
 
@@ -231,6 +230,8 @@ def solve_triad(
     Raises:
         ValueError: If the system cannot be solved (unbuildable).
     """
+    from scipy.optimize import fsolve
+
     id0, id1 = internal_ids
 
     # Build initial guess from hints or anchor centroid

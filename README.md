@@ -24,29 +24,44 @@ Pylinkage is a comprehensive Python library for planar linkage mechanisms. It pr
 ## Installation
 
 ```shell
-pip install pylinkage
+pip install pylinkage            # Core only (~35 MB): define, simulate, and build linkages
+pip install pylinkage[full]      # Everything (~400 MB): all optional backends included
 ```
+
+Install only what you need:
+
+| Extra | What it adds |
+|-------|-------------|
+| `numba` | JIT-compiled solvers (1.5-2.5M steps/sec) |
+| `scipy` | Differential evolution optimizer, synthesis solvers |
+| `pso` | Particle Swarm Optimization via pyswarms |
+| `symbolic` | SymPy-based closed-form expressions and gradient optimization |
+| `viz` | Matplotlib visualization and animation |
+| `plotly` | Interactive HTML visualization |
+| `svg` | Publication-quality SVG export via drawsvg |
+
+Extras can be combined: `pip install pylinkage[viz,scipy,pso]`
 
 For development:
 
 ```shell
 git clone https://github.com/HugoFara/pylinkage.git
 cd pylinkage
-uv sync  # or pip install -e ".[dev]"
+uv sync  # or pip install -e ".[full,dev]"
 ```
 
 ## Quick Start
 
 ### Define and Visualize a Four-Bar Linkage
 
-Using the component-based API (recommended):
+Using the component-based API (recommended). Visualization requires `pip install pylinkage[viz]`.
 
 ```python
 from pylinkage.components import Ground
 from pylinkage.actuators import Crank
 from pylinkage.dyads import RRRDyad
 from pylinkage.simulation import Linkage
-from pylinkage.visualizer import show_linkage
+from pylinkage.visualizer import show_linkage  # requires viz extra
 
 # Define ground pivots
 O1 = Ground(0, 0, name="O1")
@@ -97,7 +112,7 @@ for positions in mechanism.step():
 
 ### Synthesize a Linkage from Requirements
 
-Design a four-bar where the coupler passes through specific points:
+Requires `pip install pylinkage[scipy]`. Design a four-bar where the coupler passes through specific points:
 
 ```python
 from pylinkage.synthesis import path_generation
@@ -111,6 +126,8 @@ for linkage in result.solutions:
 ```
 
 ### Optimize with PSO
+
+Requires `pip install pylinkage[pso]`.
 
 ```python
 @pl.kinematic_minimization
@@ -127,7 +144,7 @@ score, position, coords = pl.particle_swarm_optimization(
 
 ### Symbolic Analysis
 
-Get closed-form trajectory expressions:
+Requires `pip install pylinkage[symbolic]`. Get closed-form trajectory expressions:
 
 ```python
 from pylinkage.symbolic import fourbar_symbolic, compute_trajectory_numeric
@@ -140,38 +157,39 @@ trajectories = compute_trajectory_numeric(linkage, params, np.linspace(0, 2*np.p
 
 ## Features Overview
 
-| Module | Purpose |
-|--------|---------|
-| `pylinkage.components` | Base components: `Ground`, `Component` |
-| `pylinkage.actuators` | Motor drivers: `Crank`, `LinearActuator` |
-| `pylinkage.dyads` | Assur groups: `RRRDyad`, `RRPDyad`, `FixedDyad` |
-| `pylinkage.simulation` | `Linkage` class for simulation via `step()` / `step_fast()` |
-| `pylinkage.mechanism` | Low-level Links+Joints model and `MechanismBuilder` |
-| `pylinkage.optimization` | PSO and grid search optimization |
-| `pylinkage.synthesis` | Classical synthesis: function/path/motion generation |
-| `pylinkage.symbolic` | SymPy-based symbolic computation and gradient optimization |
-| `pylinkage.visualizer` | Matplotlib, Plotly, and SVG visualization backends |
-| `pylinkage.assur` | Assur group decomposition and graph representation |
-| `pylinkage.hypergraph` | Hierarchical component-based linkage definition |
-| `pylinkage.solver` | High-performance numba-compiled simulation backend |
+| Module | Purpose | Extras needed |
+|--------|---------|---------------|
+| `pylinkage.components` | Base components: `Ground`, `Component` | — |
+| `pylinkage.actuators` | Motor drivers: `Crank`, `LinearActuator` | — |
+| `pylinkage.dyads` | Assur groups: `RRRDyad`, `RRPDyad`, `FixedDyad` | — |
+| `pylinkage.simulation` | `Linkage` class for simulation via `step()` / `step_fast()` | — |
+| `pylinkage.mechanism` | Low-level Links+Joints model and `MechanismBuilder` | — |
+| `pylinkage.assur` | Assur group decomposition and graph representation | — |
+| `pylinkage.hypergraph` | Hierarchical component-based linkage definition | — |
+| `pylinkage.solver` | High-performance numba-compiled simulation backend | `numba` |
+| `pylinkage.optimization` | PSO, differential evolution, grid search | `pso`, `scipy` |
+| `pylinkage.synthesis` | Classical synthesis: function/path/motion generation | `scipy` |
+| `pylinkage.symbolic` | SymPy-based symbolic computation and gradient optimization | `symbolic` |
+| `pylinkage.visualizer` | Matplotlib, Plotly, and SVG visualization backends | `viz`, `plotly`, `svg` |
 
 ## Architecture
 
 ```text
-Level 0: Geometry       → Pure numba math primitives
-Level 1: Solver         → Numba-compiled Assur group solvers
+Level 0: Geometry       → Pure math primitives (numba-accelerated when installed)
+Level 1: Solver         → Assur group solvers (numba-accelerated when installed)
 Level 2: Hypergraph     → Abstract graph structures for linkage topology
 Level 3: Assur          → Formal kinematic theory (DyadRRR, DyadRRP)
 Level 4: User API       → Joint classes + Linkage orchestration
 Level 5: Applications   → Optimization, Synthesis, Symbolic, Visualization
 ```
 
-**Performance**: `step_fast()` achieves 1.5-2.5M steps/sec (4-7x faster than `step()`).
+**Performance**: With the `numba` extra, `step_fast()` achieves 1.5-2.5M steps/sec (4-7x faster than `step()`). Without numba, the same code runs in pure Python/NumPy.
 
 ## Requirements
 
 - Python ≥ 3.10
-- Core: numpy, numba, matplotlib, pyswarms, sympy, plotly, drawsvg, tqdm
+- Core: numpy, tqdm
+- Optional (via extras): numba, scipy, sympy, pyswarms, matplotlib, plotly, drawsvg
 
 ## Contributing
 

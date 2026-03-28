@@ -10,7 +10,7 @@ including centripetal and Coriolis terms where applicable.
 
 import math
 
-from numba import njit
+from .._numba_compat import njit
 
 
 @njit(cache=True)  # type: ignore[untyped-decorator]

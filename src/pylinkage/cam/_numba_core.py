@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 
 import numpy as np
-from numba import njit
+from .._numba_compat import njit
 
 # Profile type codes for dispatcher
 PROFILE_HARMONIC = 0

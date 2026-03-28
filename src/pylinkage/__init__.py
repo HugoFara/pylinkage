@@ -18,9 +18,9 @@ __all__ = [
     "dyads",
     # Mechanism module (new Links + Joints model)
     "mechanism",
-    # Symbolic computation module
+    # Symbolic computation module (lazy, requires sympy)
     "symbolic",
-    # Synthesis module
+    # Synthesis module (lazy, requires scipy)
     "synthesis",
     # Canonical types (from _types.py)
     "JointType",
@@ -42,7 +42,7 @@ __all__ = [
     "intersection",
     "norm",
     "sqr_dist",
-    # Joints
+    # Joints (legacy, lazy)
     "Crank",
     "Fixed",
     "Linear",  # Deprecated alias for Prismatic
@@ -55,20 +55,23 @@ __all__ = [
     "Simulation",
     "bounding_box",
     "kinematic_default_test",
-    # Optimization
+    # Optimization (lazy, requires pyswarms/scipy)
     "collections",
     "generate_bounds",
     "kinematic_maximization",
     "kinematic_minimization",
     "particle_swarm_optimization",
     "trials_and_errors_optimization",
-    # Visualizer
+    # Visualizer (lazy, requires matplotlib/plotly/drawsvg)
     "plot_kinematic_linkage",
     "plot_static_linkage",
     "show_linkage",
     "swarm_tiled_repr",
 ]
 
+import importlib as _importlib
+
+# --- Eager imports (lightweight, always available) ---
 # Assur group module for graph-based linkage representation
 from . import assur as assur
 
@@ -77,12 +80,6 @@ from . import dyads as dyads
 
 # Mechanism module - new Links + Joints model
 from . import mechanism as mechanism
-
-# Symbolic computation module using SymPy
-from . import symbolic as symbolic
-
-# Classical mechanism synthesis module
-from . import synthesis as synthesis
 
 # Canonical types (single source of truth for kinematic types)
 from ._types import (
@@ -136,25 +133,6 @@ from .geometry import (
 from .geometry import (
     sqr_dist as sqr_dist,
 )
-from .joints import (
-    Crank as Crank,
-)
-from .joints import (
-    Fixed as Fixed,
-)
-from .joints import (
-    Linear as Linear,  # Deprecated alias for Prismatic
-)
-from .joints import (
-    Prismatic as Prismatic,
-)
-from .joints import (
-    Revolute as Revolute,
-)
-from .joints import (
-    Static as Static,
-)
-from .joints.revolute import Pivot as Pivot
 from .linkage import (
     Linkage as Linkage,
 )
@@ -167,35 +145,49 @@ from .linkage import (
 from .linkage import (
     kinematic_default_test as kinematic_default_test,
 )
-from .optimization import (
-    collections as collections,
-)
-from .optimization import (
-    generate_bounds as generate_bounds,
-)
-from .optimization import (
-    kinematic_maximization as kinematic_maximization,
-)
-from .optimization import (
-    kinematic_minimization as kinematic_minimization,
-)
-from .optimization import (
-    particle_swarm_optimization as particle_swarm_optimization,
-)
-from .optimization import (
-    trials_and_errors_optimization as trials_and_errors_optimization,
-)
-from .visualizer import (
-    plot_kinematic_linkage as plot_kinematic_linkage,
-)
-from .visualizer import (
-    plot_static_linkage as plot_static_linkage,
-)
-from .visualizer import (
-    show_linkage as show_linkage,
-)
-from .visualizer import (
-    swarm_tiled_repr as swarm_tiled_repr,
-)
+
+# --- Lazy imports (heavy optional dependencies) ---
+
+_LAZY_SUBMODULES = {
+    "symbolic",
+    "synthesis",
+}
+
+_LAZY_ATTRS: dict[str, str] = {
+    # From .joints (legacy, deprecated)
+    "Crank": ".joints",
+    "Fixed": ".joints",
+    "Linear": ".joints",
+    "Prismatic": ".joints",
+    "Revolute": ".joints",
+    "Static": ".joints",
+    "Pivot": ".joints.revolute",
+    # From .optimization
+    "collections": ".optimization",
+    "generate_bounds": ".optimization",
+    "kinematic_maximization": ".optimization",
+    "kinematic_minimization": ".optimization",
+    "particle_swarm_optimization": ".optimization",
+    "trials_and_errors_optimization": ".optimization",
+    # From .visualizer
+    "plot_kinematic_linkage": ".visualizer",
+    "plot_static_linkage": ".visualizer",
+    "show_linkage": ".visualizer",
+    "swarm_tiled_repr": ".visualizer",
+}
+
+
+def __getattr__(name: str) -> object:
+    if name in _LAZY_SUBMODULES:
+        mod = _importlib.import_module(f".{name}", __name__)
+        globals()[name] = mod
+        return mod
+    if name in _LAZY_ATTRS:
+        mod = _importlib.import_module(_LAZY_ATTRS[name], __name__)
+        val = getattr(mod, name)
+        globals()[name] = val
+        return val
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
 
 __version__ = "0.7.0"

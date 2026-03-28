@@ -6,7 +6,7 @@ and constraints. All functions are numba-compiled for maximum performance.
 
 import math
 
-from numba import njit
+from .._numba_compat import njit
 
 from ..geometry.core import cyl_to_cart, get_nearest_point
 from ..geometry.secants import (

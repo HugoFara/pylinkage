@@ -5,7 +5,7 @@ Basic geometry features with numba optimization.
 import math
 from typing import TYPE_CHECKING
 
-from numba import njit
+from .._numba_compat import njit
 
 if TYPE_CHECKING:
     pass
