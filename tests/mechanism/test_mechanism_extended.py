@@ -239,3 +239,155 @@ class TestMechanismWithTracker:
         # Tracker should be at midpoint between O1 and A (distance=0.5, angle=0)
         assert tracker.position[0] is not None
         assert tracker.position[1] is not None
+
+
+class TestSolveJointPrismatic:
+    """Tests for _solve_joint with prismatic joints."""
+
+    def _make_slider_crank(self):
+        """Create a slider-crank mechanism with a PrismaticJoint."""
+        from pylinkage.mechanism.joint import PrismaticJoint
+
+        O = GroundJoint("O", position=(0.0, 0.0))
+        ground = GroundLink("ground", joints=[O])
+
+        A = RevoluteJoint("A", position=(1.0, 0.0))
+        crank = DriverLink(
+            "crank",
+            joints=[O, A],
+            motor_joint=O,
+            angular_velocity=0.1,
+        )
+
+        S = PrismaticJoint(
+            "S",
+            position=(3.0, 0.0),
+            axis=(1.0, 0.0),
+            line_point=(0.0, 0.0),
+        )
+        rod = Link("rod", joints=[A, S])
+
+        mech = Mechanism(
+            name="SliderCrank",
+            joints=[O, A, S],
+            links=[ground, crank, rod],
+        )
+        return mech, S
+
+    def test_prismatic_solve_basic(self):
+        """Prismatic joint is solved in slider-crank."""
+        mech, S = self._make_slider_crank()
+        mech._step_once(dt=1.0)
+        assert S.is_defined()
+
+    def test_prismatic_undefined_current_position(self):
+        """Prismatic with None position uses fallback when solving.
+
+        We test the code path in _solve_joint where curr_x/curr_y is None
+        by setting the position to None after mechanism construction (so
+        distance caching works), then calling _solve_joint directly.
+        """
+        from pylinkage.mechanism.joint import PrismaticJoint
+
+        O = GroundJoint("O", position=(0.0, 0.0))
+        ground = GroundLink("ground", joints=[O])
+
+        A = RevoluteJoint("A", position=(1.0, 0.0))
+        crank = DriverLink(
+            "crank",
+            joints=[O, A],
+            motor_joint=O,
+            angular_velocity=0.1,
+        )
+
+        S = PrismaticJoint(
+            "S",
+            position=(3.0, 0.0),
+            axis=(1.0, 0.0),
+            line_point=(0.0, 0.0),
+        )
+        rod = Link("rod", joints=[A, S])
+
+        mech = Mechanism(
+            name="SliderCrank",
+            joints=[O, A, S],
+            links=[ground, crank, rod],
+        )
+        # Now set S to undefined to trigger the fallback path
+        S.set_coord(None, None)
+        mech._solve_joint(S)
+        assert S.is_defined()
+
+    def test_prismatic_insufficient_anchors_skipped(self):
+        """Prismatic with 0 anchors is silently skipped."""
+        from pylinkage.mechanism.joint import PrismaticJoint
+
+        S = PrismaticJoint(
+            "S",
+            position=(1.0, 0.0),
+            axis=(1.0, 0.0),
+            line_point=(0.0, 0.0),
+        )
+        mech = Mechanism(name="Isolated", joints=[S], links=[])
+        old_pos = S.position
+        mech._step_once(dt=1.0)
+        assert S.position == old_pos
+
+    def test_revolute_insufficient_anchors_skipped(self):
+        """Revolute with < 2 anchors is silently skipped."""
+        O1 = GroundJoint("O1", position=(0.0, 0.0))
+        ground = GroundLink("ground", joints=[O1])
+
+        B = RevoluteJoint("B", position=(1.0, 1.0))
+        link = Link("link", joints=[O1, B])
+
+        mech = Mechanism(name="Under", joints=[O1, B], links=[ground, link])
+        old_pos = B.position
+        mech._step_once(dt=1.0)
+        # Only 1 anchor, not enough for revolute
+        assert B.position == old_pos
+
+
+class TestSetConstraintsDriverEdgeCases:
+    """Test set_constraints edge cases for driver links."""
+
+    def test_driver_no_motor_joint(self):
+        """Driver with motor_joint=None is skipped."""
+        O = GroundJoint("O", position=(0.0, 0.0))
+        A = RevoluteJoint("A", position=(1.0, 0.0))
+        ground = GroundLink("ground", joints=[O])
+        crank = DriverLink(
+            "crank",
+            joints=[O, A],
+            motor_joint=None,
+            angular_velocity=0.1,
+        )
+        mech = Mechanism(joints=[O, A], links=[ground, crank])
+        mech.set_constraints([2.0])
+
+    def test_driver_no_output_joint(self):
+        """Driver with no output_joint is skipped."""
+        O = GroundJoint("O", position=(0.0, 0.0))
+        ground = GroundLink("ground", joints=[O])
+        crank = DriverLink(
+            "crank",
+            joints=[O],
+            motor_joint=O,
+            angular_velocity=0.1,
+        )
+        mech = Mechanism(joints=[O], links=[ground, crank])
+        mech.set_constraints([2.0])
+
+    def test_driver_motor_position_none(self):
+        """Driver with motor having None position is skipped."""
+        O = GroundJoint("O", position=(None, None))
+        A = RevoluteJoint("A", position=(1.0, 0.0))
+        ground = GroundLink("ground", joints=[O])
+        crank = DriverLink(
+            "crank",
+            joints=[O, A],
+            motor_joint=O,
+            angular_velocity=0.1,
+        )
+        mech = Mechanism(joints=[O, A], links=[ground, crank])
+        mech.set_constraints([2.0])

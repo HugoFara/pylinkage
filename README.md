@@ -2,7 +2,7 @@
 
 [![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
 [![Downloads](https://static.pepy.tech/personalized-badge/pylinkage?period=total&units=international_system&left_color=grey&right_color=green&left_text=Downloads)](https://pepy.tech/project/pylinkage)
-[![Coverage](https://img.shields.io/badge/coverage-72%25-yellow)](https://codecov.io/gh/HugoFara/pylinkage)
+[![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)](https://codecov.io/gh/HugoFara/pylinkage)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst)
 
 Pylinkage is a comprehensive Python library for planar linkage mechanisms. It provides tools to:
