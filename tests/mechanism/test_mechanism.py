@@ -74,35 +74,35 @@ class TestLinks:
 
     def test_ground_link_creation(self):
         """Test creating a ground link."""
-        O1 = GroundJoint(id="O1", position=(0.0, 0.0))
-        O2 = GroundJoint(id="O2", position=(2.0, 0.0))
-        ground = GroundLink(id="ground", joints=[O1, O2])
+        origin1 = GroundJoint(id="O1", position=(0.0, 0.0))
+        origin2 = GroundJoint(id="O2", position=(2.0, 0.0))
+        ground = GroundLink(id="ground", joints=[origin1, origin2])
         assert ground.is_ground is True
         assert ground.length == 2.0
 
     def test_driver_link_creation(self):
         """Test creating a driver link."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
+        origin = GroundJoint(id="O", position=(0.0, 0.0))
         A = RevoluteJoint(id="A", position=(1.0, 0.0))
         driver = DriverLink(
             id="crank",
-            joints=[O, A],
-            motor_joint=O,
+            joints=[origin, A],
+            motor_joint=origin,
             angular_velocity=0.1,
         )
-        assert driver.motor_joint == O
+        assert driver.motor_joint == origin
         assert driver.angular_velocity == 0.1
         assert driver.radius == 1.0
         assert driver.output_joint == A
 
     def test_driver_link_step(self):
         """Test that driver link rotates correctly."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
+        origin = GroundJoint(id="O", position=(0.0, 0.0))
         A = RevoluteJoint(id="A", position=(1.0, 0.0))
         driver = DriverLink(
             id="crank",
-            joints=[O, A],
-            motor_joint=O,
+            joints=[origin, A],
+            motor_joint=origin,
             angular_velocity=math.pi / 2,  # 90 degrees per step
             initial_angle=0.0,
         )
@@ -118,13 +118,13 @@ class TestMechanism:
 
     def test_simple_mechanism_creation(self):
         """Test creating a simple mechanism."""
-        O1 = GroundJoint(id="O1", position=(0.0, 0.0))
-        O2 = GroundJoint(id="O2", position=(2.0, 0.0))
-        ground = GroundLink(id="ground", joints=[O1, O2])
+        origin1 = GroundJoint(id="O1", position=(0.0, 0.0))
+        origin2 = GroundJoint(id="O2", position=(2.0, 0.0))
+        ground = GroundLink(id="ground", joints=[origin1, origin2])
 
         mechanism = Mechanism(
             name="Test",
-            joints=[O1, O2],
+            joints=[origin1, origin2],
             links=[ground],
             ground=ground,
         )
@@ -137,27 +137,27 @@ class TestMechanism:
     def test_four_bar_creation(self):
         """Test creating a four-bar linkage with low-level API."""
         # Ground joints
-        O1 = GroundJoint(id="O1", position=(0.0, 0.0))
-        O2 = GroundJoint(id="O2", position=(2.0, 0.0))
-        ground = GroundLink(id="ground", joints=[O1, O2])
+        origin1 = GroundJoint(id="O1", position=(0.0, 0.0))
+        origin2 = GroundJoint(id="O2", position=(2.0, 0.0))
+        ground = GroundLink(id="ground", joints=[origin1, origin2])
 
         # Create crank manually
         A = RevoluteJoint(id="A", position=(1.0, 0.0))
         crank = DriverLink(
             id="crank",
-            joints=[O1, A],
-            motor_joint=O1,
+            joints=[origin1, A],
+            motor_joint=origin1,
             angular_velocity=0.1,
         )
 
         # Create coupler joint and links manually
         B = RevoluteJoint(id="B", position=(2.5, 1.0))  # Approximate position
         link1 = Link(id="link1", joints=[A, B])
-        link2 = Link(id="link2", joints=[O2, B])
+        link2 = Link(id="link2", joints=[origin2, B])
 
         mechanism = Mechanism(
             name="Four-Bar",
-            joints=[O1, O2, A, B],
+            joints=[origin1, origin2, A, B],
             links=[ground, crank, link1, link2],
         )
 
@@ -166,10 +166,10 @@ class TestMechanism:
 
     def test_get_joint_positions(self):
         """Test getting joint positions."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
+        origin = GroundJoint(id="O", position=(0.0, 0.0))
         A = RevoluteJoint(id="A", position=(1.0, 2.0))
 
-        mechanism = Mechanism(joints=[O, A], links=[])
+        mechanism = Mechanism(joints=[origin, A], links=[])
 
         positions = mechanism.get_joint_positions()
         assert positions == [(0.0, 0.0), (1.0, 2.0)]
@@ -180,14 +180,14 @@ class TestSerialization:
 
     def test_mechanism_to_dict(self):
         """Test serializing a mechanism."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
+        origin = GroundJoint(id="O", position=(0.0, 0.0))
         A = RevoluteJoint(id="A", position=(1.0, 0.0))
-        ground = GroundLink(id="ground", joints=[O])
-        link = Link(id="OA", joints=[O, A])
+        ground = GroundLink(id="ground", joints=[origin])
+        link = Link(id="OA", joints=[origin, A])
 
         mechanism = Mechanism(
             name="Test",
-            joints=[O, A],
+            joints=[origin, A],
             links=[ground, link],
             ground=ground,
         )
@@ -222,14 +222,14 @@ class TestSerialization:
 
     def test_roundtrip_serialization(self):
         """Test that serialization round-trips correctly."""
-        O = GroundJoint(id="O", position=(0.0, 0.0))
+        origin = GroundJoint(id="O", position=(0.0, 0.0))
         A = RevoluteJoint(id="A", position=(1.0, 0.0))
-        ground = GroundLink(id="ground", joints=[O])
-        link = Link(id="OA", joints=[O, A])
+        ground = GroundLink(id="ground", joints=[origin])
+        link = Link(id="OA", joints=[origin, A])
 
         original = Mechanism(
             name="Test",
-            joints=[O, A],
+            joints=[origin, A],
             links=[ground, link],
             ground=ground,
         )

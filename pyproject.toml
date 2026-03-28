@@ -105,9 +105,6 @@ select = [
     "B",      # flake8-bugbear
     "SIM",    # flake8-simplify
 ]
-ignore = [
-    "E741",   # ambiguous variable name (l, I, O common in geometry/kinematics)
-]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pylinkage"]

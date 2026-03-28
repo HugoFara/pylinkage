@@ -50,10 +50,10 @@ class TestCrank:
 
     def test_crank_creation(self):
         """Test creating a crank."""
-        O = Ground(0.0, 0.0, name="O")
-        crank = Crank(anchor=O, radius=2.0, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        crank = Crank(anchor=origin, radius=2.0, angular_velocity=0.1)
 
-        assert crank.anchor == O
+        assert crank.anchor == origin
         assert crank.radius == 2.0
         assert crank.angular_velocity == 0.1
         # Initial position at angle 0 should be (2, 0)
@@ -62,8 +62,8 @@ class TestCrank:
 
     def test_crank_with_initial_angle(self):
         """Test creating a crank with initial angle."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=1.0, initial_angle=math.pi / 2)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=1.0, initial_angle=math.pi / 2)
 
         # Initial position at 90 degrees should be (0, 1)
         assert crank.x == pytest.approx(0.0)
@@ -71,8 +71,8 @@ class TestCrank:
 
     def test_crank_output(self):
         """Test crank output proxy."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=1.0)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=1.0)
 
         assert crank.output.position == crank.position
         assert crank.output.x == crank.x
@@ -80,8 +80,8 @@ class TestCrank:
 
     def test_crank_constraints(self):
         """Test crank constraints (radius)."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=2.0)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=2.0)
 
         assert crank.get_constraints() == (2.0,)
 
@@ -91,8 +91,8 @@ class TestCrank:
 
     def test_crank_reload(self):
         """Test that crank rotates on reload."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=1.0, angular_velocity=math.pi / 2)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=1.0, angular_velocity=math.pi / 2)
 
         # Initial position
         assert crank.x == pytest.approx(1.0)
@@ -109,10 +109,10 @@ class TestLinearActuator:
 
     def test_linear_actuator_creation(self):
         """Test creating a linear actuator."""
-        O = Ground(0.0, 0.0, name="O")
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, name="actuator")
+        origin = Ground(0.0, 0.0, name="O")
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1, name="actuator")
 
-        assert actuator.anchor == O
+        assert actuator.anchor == origin
         assert actuator.angle == 0.0
         assert actuator.stroke == 2.0
         assert actuator.speed == 0.1
@@ -122,9 +122,9 @@ class TestLinearActuator:
 
     def test_linear_actuator_with_angle(self):
         """Test creating a linear actuator with non-zero angle."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
         actuator = LinearActuator(
-            anchor=O,
+            anchor=origin,
             angle=math.pi / 2,  # 90 degrees (vertical)
             stroke=2.0,
             speed=0.1,
@@ -137,8 +137,8 @@ class TestLinearActuator:
 
     def test_linear_actuator_output(self):
         """Test linear actuator output proxy."""
-        O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0)
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0)
 
         assert actuator.output.position == actuator.position
         assert actuator.output.x == actuator.x
@@ -146,8 +146,8 @@ class TestLinearActuator:
 
     def test_linear_actuator_constraints(self):
         """Test linear actuator constraints (stroke, speed)."""
-        O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1)
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1)
 
         assert actuator.get_constraints() == (2.0, 0.1)
 
@@ -158,8 +158,8 @@ class TestLinearActuator:
 
     def test_linear_actuator_reload(self):
         """Test that linear actuator moves on reload."""
-        O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.5)
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.5)
 
         # Initial position at anchor
         assert actuator.x == pytest.approx(0.0)
@@ -174,8 +174,10 @@ class TestLinearActuator:
 
     def test_linear_actuator_oscillation(self):
         """Test that linear actuator oscillates at stroke limits."""
-        O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.6, initial_extension=0.0)
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(
+            anchor=origin, angle=0.0, stroke=1.0, speed=0.6, initial_extension=0.0
+        )
 
         # Move forward: 0 -> 0.6
         actuator.reload(dt=1.0)
@@ -192,8 +194,10 @@ class TestLinearActuator:
 
     def test_linear_actuator_with_initial_extension(self):
         """Test creating actuator with initial extension."""
-        O = Ground(1.0, 1.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=3.0, speed=0.1, initial_extension=1.5)
+        origin = Ground(1.0, 1.0)
+        actuator = LinearActuator(
+            anchor=origin, angle=0.0, stroke=3.0, speed=0.1, initial_extension=1.5
+        )
 
         # Initial position should be anchor + (1.5, 0)
         assert actuator.x == pytest.approx(2.5)
@@ -202,23 +206,23 @@ class TestLinearActuator:
 
     def test_linear_actuator_invalid_stroke(self):
         """Test that invalid stroke raises error."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="Stroke must be positive"):
-            LinearActuator(anchor=O, angle=0.0, stroke=0.0, speed=0.1)
+            LinearActuator(anchor=origin, angle=0.0, stroke=0.0, speed=0.1)
 
         with pytest.raises(ValueError, match="Stroke must be positive"):
-            LinearActuator(anchor=O, angle=0.0, stroke=-1.0, speed=0.1)
+            LinearActuator(anchor=origin, angle=0.0, stroke=-1.0, speed=0.1)
 
     def test_linear_actuator_invalid_initial_extension(self):
         """Test that invalid initial extension raises error."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="Initial extension"):
-            LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=3.0)
+            LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1, initial_extension=3.0)
 
         with pytest.raises(ValueError, match="Initial extension"):
-            LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1, initial_extension=-0.5)
+            LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1, initial_extension=-0.5)
 
 
 class TestRRRDyad:
@@ -226,12 +230,12 @@ class TestRRRDyad:
 
     def test_rrr_creation(self):
         """Test creating an RRR dyad."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(4.0, 0.0, name="O2")
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(4.0, 0.0, name="O2")
 
         dyad = RRRDyad(
-            anchor1=O1,
-            anchor2=O2,
+            anchor1=origin1,
+            anchor2=origin2,
             distance1=3.0,
             distance2=3.0,
             name="dyad",
@@ -245,13 +249,13 @@ class TestRRRDyad:
 
     def test_rrr_with_crank_output(self):
         """Test RRR dyad connected to crank output."""
-        O1 = Ground(0.0, 0.0)
-        O2 = Ground(4.0, 0.0)
-        crank = Crank(anchor=O1, radius=1.0)
+        origin1 = Ground(0.0, 0.0)
+        origin2 = Ground(4.0, 0.0)
+        crank = Crank(anchor=origin1, radius=1.0)
 
         dyad = RRRDyad(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=3.0,
             distance2=2.0,
         )
@@ -261,10 +265,10 @@ class TestRRRDyad:
 
     def test_rrr_constraints(self):
         """Test RRR dyad constraints (two distances)."""
-        O1 = Ground(0.0, 0.0)
-        O2 = Ground(4.0, 0.0)
+        origin1 = Ground(0.0, 0.0)
+        origin2 = Ground(4.0, 0.0)
 
-        dyad = RRRDyad(anchor1=O1, anchor2=O2, distance1=3.0, distance2=3.0)
+        dyad = RRRDyad(anchor1=origin1, anchor2=origin2, distance1=3.0, distance2=3.0)
 
         assert dyad.get_constraints() == (3.0, 3.0)
 
@@ -274,11 +278,11 @@ class TestRRRDyad:
 
     def test_rrr_unbuildable(self):
         """Test that unbuildable RRR raises error."""
-        O1 = Ground(0.0, 0.0)
-        O2 = Ground(10.0, 0.0)
+        origin1 = Ground(0.0, 0.0)
+        origin2 = Ground(10.0, 0.0)
 
         # Circles too far apart
-        dyad = RRRDyad(anchor1=O1, anchor2=O2, distance1=1.0, distance2=1.0)
+        dyad = RRRDyad(anchor1=origin1, anchor2=origin2, distance1=1.0, distance2=1.0)
 
         with pytest.raises(UnbuildableError):
             dyad.reload()
@@ -289,12 +293,12 @@ class TestRRPDyad:
 
     def test_rrp_creation(self):
         """Test creating an RRP dyad."""
-        O = Ground(0.0, 1.0, name="O")
+        origin = Ground(0.0, 1.0, name="O")
         L1 = Ground(0.0, 0.0, name="L1")
         L2 = Ground(4.0, 0.0, name="L2")
 
         dyad = RRPDyad(
-            revolute_anchor=O,
+            revolute_anchor=origin,
             line_anchor1=L1,
             line_anchor2=L2,
             distance=1.0,
@@ -308,12 +312,12 @@ class TestRRPDyad:
 
     def test_rrp_constraints(self):
         """Test RRP dyad constraints (distance)."""
-        O = Ground(0.0, 1.0)
+        origin = Ground(0.0, 1.0)
         L1 = Ground(0.0, 0.0)
         L2 = Ground(4.0, 0.0)
 
         dyad = RRPDyad(
-            revolute_anchor=O,
+            revolute_anchor=origin,
             line_anchor1=L1,
             line_anchor2=L2,
             distance=1.0,
@@ -364,11 +368,11 @@ class TestLinkage:
 
     def test_linkage_creation(self):
         """Test creating a linkage."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(2.0, 0.0, name="O2")
-        crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1)
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=origin1, radius=1.0, angular_velocity=0.1)
 
-        linkage = Linkage([O1, O2, crank], name="Test")
+        linkage = Linkage([origin1, origin2, crank], name="Test")
 
         assert linkage.name == "Test"
         assert len(linkage.dyads) == 3
@@ -376,18 +380,18 @@ class TestLinkage:
 
     def test_four_bar_simulation(self):
         """Test simulating a four-bar linkage."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(2.0, 0.0, name="O2")
-        crank = Crank(anchor=O1, radius=0.5, angular_velocity=0.1)
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=origin1, radius=0.5, angular_velocity=0.1)
         rocker = RRRDyad(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=1.5,
             distance2=1.0,
             name="rocker",
         )
 
-        linkage = Linkage([O1, O2, crank, rocker], name="Four-Bar")
+        linkage = Linkage([origin1, origin2, crank, rocker], name="Four-Bar")
 
         # Run a few steps
         positions_list = list(linkage.step(iterations=5))
@@ -401,27 +405,27 @@ class TestLinkage:
 
     def test_linkage_get_coords(self):
         """Test getting linkage coordinates."""
-        O1 = Ground(0.0, 0.0)
-        O2 = Ground(2.0, 0.0)
+        origin1 = Ground(0.0, 0.0)
+        origin2 = Ground(2.0, 0.0)
 
-        linkage = Linkage([O1, O2])
+        linkage = Linkage([origin1, origin2])
 
         coords = linkage.get_coords()
         assert coords == [(0.0, 0.0), (2.0, 0.0)]
 
     def test_linkage_constraints(self):
         """Test getting/setting linkage constraints."""
-        O1 = Ground(0.0, 0.0)
-        O2 = Ground(2.0, 0.0)
-        crank = Crank(anchor=O1, radius=1.0)
+        origin1 = Ground(0.0, 0.0)
+        origin2 = Ground(2.0, 0.0)
+        crank = Crank(anchor=origin1, radius=1.0)
         rocker = RRRDyad(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=2.0,
             distance2=1.5,
         )
 
-        linkage = Linkage([O1, O2, crank, rocker])
+        linkage = Linkage([origin1, origin2, crank, rocker])
 
         # Get constraints (crank radius + rocker distances)
         constraints = linkage.get_num_constraints()
@@ -436,10 +440,10 @@ class TestLinkage:
 
     def test_linkage_rotation_period(self):
         """Test computing rotation period."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=1.0, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=1.0, angular_velocity=0.1)
 
-        linkage = Linkage([O, crank])
+        linkage = Linkage([origin, crank])
 
         # tau / 0.1 = ~63 steps per rotation
         period = linkage.get_rotation_period()
@@ -447,20 +451,20 @@ class TestLinkage:
 
     def test_linkage_with_linear_actuator(self):
         """Test creating a linkage with linear actuator."""
-        O = Ground(0.0, 0.0, name="O")
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=2.0, speed=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1)
 
-        linkage = Linkage([O, actuator], name="Test")
+        linkage = Linkage([origin, actuator], name="Test")
 
         assert len(linkage.dyads) == 2
         assert len(linkage._linear_actuators) == 1
 
     def test_linkage_linear_actuator_period(self):
         """Test computing period for linear actuator."""
-        O = Ground(0.0, 0.0)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.1)
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=1.0, speed=0.1)
 
-        linkage = Linkage([O, actuator])
+        linkage = Linkage([origin, actuator])
 
         # Full cycle = 2 * stroke / speed = 2 * 1.0 / 0.1 = 20
         period = linkage.get_rotation_period()
@@ -468,11 +472,11 @@ class TestLinkage:
 
     def test_linkage_mixed_actuators_period(self):
         """Test period with both crank and linear actuator."""
-        O = Ground(0.0, 0.0)
-        crank = Crank(anchor=O, radius=1.0, angular_velocity=math.pi / 5)
-        actuator = LinearActuator(anchor=O, angle=0.0, stroke=1.0, speed=0.2)
+        origin = Ground(0.0, 0.0)
+        crank = Crank(anchor=origin, radius=1.0, angular_velocity=math.pi / 5)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=1.0, speed=0.2)
 
-        linkage = Linkage([O, crank, actuator])
+        linkage = Linkage([origin, crank, actuator])
 
         # Crank period: tau / (pi/5) = 10 steps
         # Actuator period: 2 * 1.0 / 0.2 = 10 steps
@@ -486,12 +490,12 @@ class TestIntegration:
 
     def test_slider_crank_mechanism(self):
         """Test a slider-crank mechanism."""
-        O = Ground(0.0, 0.0, name="O")
+        origin = Ground(0.0, 0.0, name="O")
         L1 = Ground(-3.0, 0.0, name="L1")  # Horizontal line through origin
         L2 = Ground(3.0, 0.0, name="L2")
 
         # Small crank with connecting rod longer than crank
-        crank = Crank(anchor=O, radius=0.5, angular_velocity=0.2)
+        crank = Crank(anchor=origin, radius=0.5, angular_velocity=0.2)
         slider = RRPDyad(
             revolute_anchor=crank.output,
             line_anchor1=L1,
@@ -500,7 +504,7 @@ class TestIntegration:
             name="slider",
         )
 
-        linkage = Linkage([O, L1, L2, crank, slider], name="Slider-Crank")
+        linkage = Linkage([origin, L1, L2, crank, slider], name="Slider-Crank")
 
         # Should simulate without error
         positions = list(linkage.step(iterations=10))
@@ -508,13 +512,13 @@ class TestIntegration:
 
     def test_complex_linkage(self):
         """Test a more complex linkage with multiple dyads."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(3.0, 0.0, name="O2")
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(3.0, 0.0, name="O2")
 
-        crank = Crank(anchor=O1, radius=0.8, angular_velocity=0.1)
+        crank = Crank(anchor=origin1, radius=0.8, angular_velocity=0.1)
         coupler = RRRDyad(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=2.0,
             distance2=1.5,
             name="coupler",
@@ -528,7 +532,7 @@ class TestIntegration:
             name="tracer",
         )
 
-        linkage = Linkage([O1, O2, crank, coupler, tracer], name="Complex")
+        linkage = Linkage([origin1, origin2, crank, coupler, tracer], name="Complex")
 
         # Should simulate without error
         positions = list(linkage.step(iterations=5))
@@ -536,12 +540,12 @@ class TestIntegration:
 
     def test_linear_actuator_driven_mechanism(self):
         """Test mechanism driven by linear actuator."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(3.0, 0.0, name="O2")
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(3.0, 0.0, name="O2")
 
         # Linear actuator driving a four-bar-like mechanism
         actuator = LinearActuator(
-            anchor=O1,
+            anchor=origin1,
             angle=math.pi / 4,  # 45 degrees
             stroke=1.5,
             speed=0.1,
@@ -551,13 +555,13 @@ class TestIntegration:
         # Connect a rocker to the actuator output
         rocker = RRRDyad(
             anchor1=actuator.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=2.0,
             distance2=1.5,
             name="rocker",
         )
 
-        linkage = Linkage([O1, O2, actuator, rocker], name="Actuator-Driven")
+        linkage = Linkage([origin1, origin2, actuator, rocker], name="Actuator-Driven")
 
         # Should simulate without error
         positions = list(linkage.step(iterations=10))
@@ -572,16 +576,16 @@ class TestArcCrank:
 
     def test_arc_crank_creation(self):
         """Test creating an arc crank."""
-        O = Ground(0.0, 0.0, name="O")
+        origin = Ground(0.0, 0.0, name="O")
         arc_crank = ArcCrank(
-            anchor=O,
+            anchor=origin,
             radius=2.0,
             angular_velocity=0.1,
             arc_start=0.0,
             arc_end=math.pi / 2,
         )
 
-        assert arc_crank.anchor == O
+        assert arc_crank.anchor == origin
         assert arc_crank.radius == 2.0
         assert arc_crank.angular_velocity == 0.1
         assert arc_crank.arc_start == 0.0
@@ -592,9 +596,9 @@ class TestArcCrank:
 
     def test_arc_crank_with_initial_angle(self):
         """Test creating an arc crank with custom initial angle."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
         arc_crank = ArcCrank(
-            anchor=O,
+            anchor=origin,
             radius=1.0,
             arc_start=0.0,
             arc_end=math.pi,
@@ -608,8 +612,8 @@ class TestArcCrank:
 
     def test_arc_crank_output(self):
         """Test arc crank output proxy."""
-        O = Ground(0.0, 0.0)
-        arc_crank = ArcCrank(anchor=O, radius=1.0, arc_start=0, arc_end=math.pi)
+        origin = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(anchor=origin, radius=1.0, arc_start=0, arc_end=math.pi)
 
         assert arc_crank.output.position == arc_crank.position
         assert arc_crank.output.x == arc_crank.x
@@ -617,8 +621,8 @@ class TestArcCrank:
 
     def test_arc_crank_constraints(self):
         """Test arc crank constraints (radius, arc_start, arc_end)."""
-        O = Ground(0.0, 0.0)
-        arc_crank = ArcCrank(anchor=O, radius=2.0, arc_start=0.0, arc_end=math.pi / 2)
+        origin = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(anchor=origin, radius=2.0, arc_start=0.0, arc_end=math.pi / 2)
 
         assert arc_crank.get_constraints() == (2.0, 0.0, math.pi / 2)
 
@@ -629,9 +633,9 @@ class TestArcCrank:
 
     def test_arc_crank_reload(self):
         """Test that arc crank rotates on reload."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
         arc_crank = ArcCrank(
-            anchor=O,
+            anchor=origin,
             radius=1.0,
             angular_velocity=math.pi / 4,  # 45 degrees per step
             arc_start=0.0,
@@ -651,9 +655,9 @@ class TestArcCrank:
 
     def test_arc_crank_bounce_at_end(self):
         """Test that arc crank bounces at arc_end."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
         arc_crank = ArcCrank(
-            anchor=O,
+            anchor=origin,
             radius=1.0,
             angular_velocity=0.6,  # More than half of arc range
             arc_start=0.0,
@@ -674,9 +678,9 @@ class TestArcCrank:
 
     def test_arc_crank_bounce_at_start(self):
         """Test that arc crank bounces at arc_start."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
         arc_crank = ArcCrank(
-            anchor=O,
+            anchor=origin,
             radius=1.0,
             angular_velocity=0.6,
             arc_start=0.0,
@@ -694,11 +698,11 @@ class TestArcCrank:
 
     def test_arc_crank_invalid_arc_bounds(self):
         """Test that invalid arc bounds raise ValueError."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="arc_end must be greater than arc_start"):
             ArcCrank(
-                anchor=O,
+                anchor=origin,
                 radius=1.0,
                 arc_start=math.pi,  # arc_start > arc_end
                 arc_end=0.0,
@@ -706,11 +710,11 @@ class TestArcCrank:
 
     def test_arc_crank_invalid_initial_angle(self):
         """Test that initial_angle out of range raises ValueError."""
-        O = Ground(0.0, 0.0)
+        origin = Ground(0.0, 0.0)
 
         with pytest.raises(ValueError, match="initial_angle must be between"):
             ArcCrank(
-                anchor=O,
+                anchor=origin,
                 radius=1.0,
                 arc_start=0.0,
                 arc_end=math.pi / 2,
@@ -719,10 +723,10 @@ class TestArcCrank:
 
     def test_arc_crank_in_linkage(self):
         """Test arc crank in a linkage simulation."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(2.0, 0.0, name="O2")
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(2.0, 0.0, name="O2")
         arc_crank = ArcCrank(
-            anchor=O1,
+            anchor=origin1,
             radius=0.5,
             angular_velocity=0.1,
             arc_start=0.0,
@@ -730,13 +734,15 @@ class TestArcCrank:
         )
         rocker = RRRDyad(
             anchor1=arc_crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=1.5,
             distance2=1.0,
             name="rocker",
         )
 
-        linkage = Linkage([O1, O2, arc_crank, rocker], name="ArcCrank-Four-Bar")
+        linkage = Linkage(
+            [origin1, origin2, arc_crank, rocker], name="ArcCrank-Four-Bar"
+        )
 
         # Check that arc crank is properly tracked
         assert len(linkage._arc_cranks) == 1
@@ -789,13 +795,13 @@ class TestPointTracker:
 
     def test_point_tracker_with_crank_output(self):
         """Test point tracker connected to crank output."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(2.0, 0.0, name="O2")
-        crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1)
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=origin1, radius=1.0, angular_velocity=0.1)
 
         tracker = PointTracker(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance=0.5,
             angle=math.pi / 4,
             name="tracker",
@@ -807,12 +813,12 @@ class TestPointTracker:
 
     def test_point_tracker_in_linkage(self):
         """Test point tracker in a linkage simulation."""
-        O1 = Ground(0.0, 0.0, name="O1")
-        O2 = Ground(2.0, 0.0, name="O2")
-        crank = Crank(anchor=O1, radius=0.5, angular_velocity=0.1)
+        origin1 = Ground(0.0, 0.0, name="O1")
+        origin2 = Ground(2.0, 0.0, name="O2")
+        crank = Crank(anchor=origin1, radius=0.5, angular_velocity=0.1)
         coupler = RRRDyad(
             anchor1=crank.output,
-            anchor2=O2,
+            anchor2=origin2,
             distance1=1.5,
             distance2=1.0,
             name="coupler",
@@ -825,7 +831,9 @@ class TestPointTracker:
             name="tracker",
         )
 
-        linkage = Linkage([O1, O2, crank, coupler, tracker], name="Tracked-Four-Bar")
+        linkage = Linkage(
+            [origin1, origin2, crank, coupler, tracker], name="Tracked-Four-Bar"
+        )
 
         # Tracker should not contribute to constraints
         constraints = linkage.get_num_constraints()

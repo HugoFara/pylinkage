@@ -238,8 +238,8 @@ class TestTranslatingCamFollower:
 
     def test_creation(self) -> None:
         """Test creating a translating cam follower."""
-        O = Ground(0.0, 0.0, name="O")
-        cam = Crank(anchor=O, radius=0.1, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        cam = Crank(anchor=origin, radius=0.1, angular_velocity=0.1)
         profile = FunctionProfile(base_radius=1.0, total_lift=0.5)
         guide = Ground(0.0, 0.0, name="guide")
 
@@ -256,8 +256,8 @@ class TestTranslatingCamFollower:
 
     def test_knife_edge_vs_roller(self) -> None:
         """Test knife-edge vs roller follower."""
-        O = Ground(0.0, 0.0, name="O")
-        cam = Crank(anchor=O, radius=0.1, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        cam = Crank(anchor=origin, radius=0.1, angular_velocity=0.1)
         profile = FunctionProfile(base_radius=1.0, total_lift=0.5)
         guide = Ground(0.0, 0.0, name="guide")
 
@@ -284,8 +284,8 @@ class TestTranslatingCamFollower:
 
     def test_simulation(self) -> None:
         """Test simulating a translating cam mechanism."""
-        O = Ground(0.0, 0.0, name="O")
-        cam = Crank(anchor=O, radius=0.1, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        cam = Crank(anchor=origin, radius=0.1, angular_velocity=0.1)
         profile = FunctionProfile(
             motion_law=HarmonicMotionLaw(),
             base_radius=1.0,
@@ -304,7 +304,7 @@ class TestTranslatingCamFollower:
             guide_angle=math.pi / 2,
         )
 
-        linkage = Linkage([O, guide, cam, follower], name="Cam-Follower")
+        linkage = Linkage([origin, guide, cam, follower], name="Cam-Follower")
 
         # Run for a few steps
         positions = list(linkage.step(iterations=10))
@@ -317,8 +317,8 @@ class TestTranslatingCamFollower:
 
     def test_constraints(self) -> None:
         """Test get/set constraints."""
-        O = Ground(0.0, 0.0, name="O")
-        cam = Crank(anchor=O, radius=0.1, angular_velocity=0.1)
+        origin = Ground(0.0, 0.0, name="O")
+        cam = Crank(anchor=origin, radius=0.1, angular_velocity=0.1)
         profile = FunctionProfile(base_radius=1.0, total_lift=0.5)
         guide = Ground(0.0, 0.0, name="guide")
 
