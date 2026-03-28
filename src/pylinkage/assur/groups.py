@@ -249,10 +249,11 @@ def _check_dyad_signature(
             for anchor_id in anchor_node_ids:
                 anchor = graph.nodes.get(anchor_id)
                 if (
-                    anchor and anchor.joint_type == JointType.REVOLUTE
+                    anchor
+                    and anchor.joint_type == JointType.REVOLUTE
                     and graph.get_edge_between(internal_id, anchor_id) is not None
                 ):
-                        return True
+                    return True
             return False
         elif signature == "PRR":
             # Internal is revolute, need prismatic + revolute anchors

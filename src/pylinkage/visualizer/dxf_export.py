@@ -7,14 +7,12 @@ and other CAD applications that support the DXF format.
 
 import math
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from .symbols import SymbolType, get_symbol_spec
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-
-    import ezdxf
 
     from .._types import Coord
     from ..linkage.linkage import Linkage
@@ -23,7 +21,7 @@ if TYPE_CHECKING:
 try:
     import ezdxf as _ezdxf
 except ImportError:
-    _ezdxf = None
+    _ezdxf = None  # type: ignore[assignment]
 
 
 # DXF layer configuration
@@ -35,21 +33,21 @@ DXF_LAYERS = {
 }
 
 
-def _check_ezdxf() -> "ezdxf":
+def _check_ezdxf() -> Any:
     """Check that ezdxf is available, raise ImportError if not."""
     if _ezdxf is None:
         raise ImportError("DXF export requires ezdxf. Install with: pip install pylinkage[cad]")
     return _ezdxf
 
 
-def _setup_layers(doc: "ezdxf.drawing.Drawing") -> None:
+def _setup_layers(doc: Any) -> None:
     """Create DXF layers for the linkage diagram."""
     for name, props in DXF_LAYERS.items():
         doc.layers.add(name, color=props["color"])
 
 
 def _draw_dxf_link(
-    msp: "ezdxf.layouts.Modelspace",
+    msp: Any,
     x1: float,
     y1: float,
     x2: float,
@@ -97,7 +95,7 @@ def _draw_dxf_link(
 
 
 def _draw_dxf_revolute(
-    msp: "ezdxf.layouts.Modelspace",
+    msp: Any,
     x: float,
     y: float,
     radius: float,
@@ -118,7 +116,7 @@ def _draw_dxf_revolute(
 
 
 def _draw_dxf_ground(
-    msp: "ezdxf.layouts.Modelspace",
+    msp: Any,
     x: float,
     y: float,
     size: float,
@@ -154,7 +152,7 @@ def _draw_dxf_ground(
 
 
 def _draw_dxf_crank(
-    msp: "ezdxf.layouts.Modelspace",
+    msp: Any,
     x: float,
     y: float,
     radius: float,
@@ -206,7 +204,7 @@ def _draw_dxf_crank(
 
 
 def _draw_dxf_slider(
-    msp: "ezdxf.layouts.Modelspace",
+    msp: Any,
     x: float,
     y: float,
     size: float,
@@ -259,7 +257,7 @@ def plot_linkage_dxf(
     frame_index: int = 0,
     link_width: float | None = None,
     joint_radius: float | None = None,
-) -> "ezdxf.drawing.Drawing":
+) -> Any:
     """Create a DXF drawing of the linkage.
 
     Args:

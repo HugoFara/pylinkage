@@ -8,7 +8,6 @@ It is used extensively, so each function is optimized with numba.
 import math
 
 from .._numba_compat import njit
-
 from .._types import Circle, Coord
 from .core import dist
 

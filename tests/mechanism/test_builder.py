@@ -316,11 +316,12 @@ class TestBranchSelection:
                 d_x, d_y = pos_default[joint_id]
                 a_x, a_y = pos_alt[joint_id]
                 if (
-                    d_x is not None and a_x is not None
+                    d_x is not None
+                    and a_x is not None
                     and (abs(d_x - a_x) > 0.01 or abs(d_y - a_y) > 0.01)
                 ):
-                        positions_differ = True
-                        break
+                    positions_differ = True
+                    break
 
         assert positions_differ, "Branch selection should produce different configurations"
 

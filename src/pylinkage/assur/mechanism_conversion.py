@@ -302,10 +302,11 @@ def mechanism_to_graph(mechanism: Mechanism) -> tuple[LinkageGraph, Dimensions]:
             for link in mechanism.links:
                 if (
                     isinstance(link, DriverLink)
-                    and link.output_joint and link.output_joint.id == joint.id
+                    and link.output_joint
+                    and link.output_joint.id == joint.id
                 ):
-                        is_driver_output = True
-                        break
+                    is_driver_output = True
+                    break
 
             role = NodeRole.DRIVER if is_driver_output else NodeRole.DRIVEN
             joint_type = JointType.REVOLUTE
@@ -327,13 +328,14 @@ def mechanism_to_graph(mechanism: Mechanism) -> tuple[LinkageGraph, Dimensions]:
             for link in mechanism.links:
                 if (
                     isinstance(link, DriverLink)
-                    and link.output_joint and link.output_joint.id == joint.id
+                    and link.output_joint
+                    and link.output_joint.id == joint.id
                 ):
-                        driver_angles[node_id] = DriverAngle(
-                            angular_velocity=link.angular_velocity,
-                            initial_angle=link.initial_angle,
-                        )
-                        break
+                    driver_angles[node_id] = DriverAngle(
+                        angular_velocity=link.angular_velocity,
+                        initial_angle=link.initial_angle,
+                    )
+                    break
 
         graph.add_node(node)
         joint_to_node[joint.id] = node_id

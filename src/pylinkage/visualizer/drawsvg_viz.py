@@ -598,25 +598,26 @@ def plot_linkage_svg(
 
         # Draw link to joint1 (second parent) for joints that have it
         if (
-            hasattr(joint, "joint1") and joint.joint1 is not None
+            hasattr(joint, "joint1")
+            and joint.joint1 is not None
             and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
         ):
-                parent_pos = get_position(joint.joint1)
-                px, py = w2c(parent_pos[0], parent_pos[1])
+            parent_pos = get_position(joint.joint1)
+            px, py = w2c(parent_pos[0], parent_pos[1])
 
-                joint_ids = (id(joint), id(joint.joint1))
-                rev_ids = (id(joint.joint1), id(joint))
-                if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                    color = get_link_color(link_index)
-                    _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
-                    drawn_links.add(joint_ids)
-                    link_index += 1
+            joint_ids = (id(joint), id(joint.joint1))
+            rev_ids = (id(joint.joint1), id(joint))
+            if joint_ids not in drawn_links and rev_ids not in drawn_links:
+                color = get_link_color(link_index)
+                _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
+                drawn_links.add(joint_ids)
+                link_index += 1
 
-                    if show_dimensions:
-                        length = math.sqrt(
-                            (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                        )
-                        _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
+                if show_dimensions:
+                    length = math.sqrt(
+                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
+                    )
+                    _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
 
         # Handle Prismatic joints differently
         if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:

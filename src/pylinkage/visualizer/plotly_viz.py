@@ -172,46 +172,47 @@ def plot_linkage_plotly(
 
         # Link to joint1
         if (
-            hasattr(joint, "joint1") and joint.joint1 is not None
+            hasattr(joint, "joint1")
+            and joint.joint1 is not None
             and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
         ):
-                parent_pos = get_position(joint.joint1)
+            parent_pos = get_position(joint.joint1)
 
-                joint_ids = (id(joint), id(joint.joint1))
-                rev_ids = (id(joint.joint1), id(joint))
-                if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                    color = get_link_color(link_index)
-                    fig.add_trace(
-                        go.Scatter(
-                            x=[parent_pos[0], pos[0]],
-                            y=[parent_pos[1], pos[1]],
-                            mode="lines",
-                            line={"color": color, "width": 8},
-                            name=f"Link {link_index + 1}",
-                            hoverinfo="name",
-                        )
+            joint_ids = (id(joint), id(joint.joint1))
+            rev_ids = (id(joint.joint1), id(joint))
+            if joint_ids not in drawn_links and rev_ids not in drawn_links:
+                color = get_link_color(link_index)
+                fig.add_trace(
+                    go.Scatter(
+                        x=[parent_pos[0], pos[0]],
+                        y=[parent_pos[1], pos[1]],
+                        mode="lines",
+                        line={"color": color, "width": 8},
+                        name=f"Link {link_index + 1}",
+                        hoverinfo="name",
                     )
-                    drawn_links.add(joint_ids)
+                )
+                drawn_links.add(joint_ids)
 
-                    if show_dimensions:
-                        import math
+                if show_dimensions:
+                    import math
 
-                        length = math.sqrt(
-                            (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                        )
-                        mid_x = (pos[0] + parent_pos[0]) / 2
-                        mid_y = (pos[1] + parent_pos[1]) / 2
-                        fig.add_annotation(
-                            x=mid_x,
-                            y=mid_y,
-                            text=f"{length:.2f}",
-                            showarrow=False,
-                            font={"size": 10, "color": color},
-                            bgcolor="white",
-                            opacity=0.8,
-                        )
+                    length = math.sqrt(
+                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
+                    )
+                    mid_x = (pos[0] + parent_pos[0]) / 2
+                    mid_y = (pos[1] + parent_pos[1]) / 2
+                    fig.add_annotation(
+                        x=mid_x,
+                        y=mid_y,
+                        text=f"{length:.2f}",
+                        showarrow=False,
+                        font={"size": 10, "color": color},
+                        bgcolor="white",
+                        opacity=0.8,
+                    )
 
-                    link_index += 1
+                link_index += 1
 
         # Handle Prismatic joints
         if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
@@ -369,7 +370,8 @@ def animate_linkage_plotly(
                 drawn_links.add(joint_ids)
 
         if (
-            hasattr(joint, "joint1") and joint.joint1 is not None
+            hasattr(joint, "joint1")
+            and joint.joint1 is not None
             and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
         ):
             joint_ids = (id(joint), id(joint.joint1))

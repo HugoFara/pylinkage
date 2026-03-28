@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 try:
     import build123d as _bd
 except ImportError:
-    _bd = None
+    _bd = None  # type: ignore[assignment]
 
 
 @dataclass

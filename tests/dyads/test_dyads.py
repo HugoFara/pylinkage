@@ -740,9 +740,7 @@ class TestArcCrank:
             name="rocker",
         )
 
-        linkage = Linkage(
-            [origin1, origin2, arc_crank, rocker], name="ArcCrank-Four-Bar"
-        )
+        linkage = Linkage([origin1, origin2, arc_crank, rocker], name="ArcCrank-Four-Bar")
 
         # Check that arc crank is properly tracked
         assert len(linkage._arc_cranks) == 1
@@ -831,9 +829,7 @@ class TestPointTracker:
             name="tracker",
         )
 
-        linkage = Linkage(
-            [origin1, origin2, crank, coupler, tracker], name="Tracked-Four-Bar"
-        )
+        linkage = Linkage([origin1, origin2, crank, coupler, tracker], name="Tracked-Four-Bar")
 
         # Tracker should not contribute to constraints
         constraints = linkage.get_num_constraints()

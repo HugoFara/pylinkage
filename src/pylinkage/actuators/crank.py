@@ -33,7 +33,15 @@ class Crank(ConnectedComponent):
         (1.0, 0.0)
     """
 
-    __slots__ = ("anchor", "radius", "angular_velocity", "initial_angle", "_output")
+    __slots__ = (
+        "anchor",
+        "radius",
+        "angular_velocity",
+        "initial_angle",
+        "_output",
+        "_omega",
+        "_alpha",
+    )
 
     anchor: Ground
     radius: float
