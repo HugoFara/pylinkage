@@ -485,10 +485,7 @@ def plot_linkage_svg(
     link_style_enum = style_map.get(link_style, LinkStyle.BAR)
 
     # Run simulation if no loci provided
-    if loci is None:
-        loci = list(linkage.step())  # type: ignore[arg-type]
-    else:
-        loci = list(loci)
+    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

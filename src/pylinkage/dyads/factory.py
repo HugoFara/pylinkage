@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._base import BinaryDyad, Dyad, _AnchorProxy
+from ._base import Dyad, _AnchorProxy
 from .pp import PPDyad
 from .rrp import RRPDyad
 from .rrr import RRRDyad
@@ -283,14 +283,11 @@ def get_required_anchors(signature: str) -> list[str]:
     """
     _, geometry = _parse_isomer_signature(signature)
 
-    if geometry == "circle_circle":
-        return ["anchor1", "anchor2"]
-    elif geometry == "circle_line":
-        return ["revolute", "line1", "line2"]
-    elif geometry == "line_line":
-        return ["line1_p1", "line1_p2", "line2_p1", "line2_p2"]
-    else:
-        return []
+    return {
+        "circle_circle": ["anchor1", "anchor2"],
+        "circle_line": ["revolute", "line1", "line2"],
+        "line_line": ["line1_p1", "line1_p2", "line2_p1", "line2_p2"],
+    }.get(geometry, [])
 
 
 def get_required_constraints(signature: str) -> list[str]:
@@ -307,11 +304,8 @@ def get_required_constraints(signature: str) -> list[str]:
     """
     _, geometry = _parse_isomer_signature(signature)
 
-    if geometry == "circle_circle":
-        return ["distance1", "distance2"]
-    elif geometry == "circle_line":
-        return ["distance"]
-    elif geometry == "line_line":
-        return []  # No constraints
-    else:
-        return []
+    return {
+        "circle_circle": ["distance1", "distance2"],
+        "circle_line": ["distance"],
+        "line_line": [],
+    }.get(geometry, [])

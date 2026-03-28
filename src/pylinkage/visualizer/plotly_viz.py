@@ -82,10 +82,7 @@ def plot_linkage_plotly(
         A plotly Figure object.
     """
     # Run simulation if no loci provided
-    if loci is None:
-        loci = list(linkage.step())  # type: ignore[arg-type]
-    else:
-        loci = list(loci)
+    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")
@@ -353,10 +350,7 @@ def animate_linkage_plotly(
         A plotly Figure object with animation.
     """
     # Run simulation if no loci provided
-    if loci is None:
-        loci = list(linkage.step())  # type: ignore[arg-type]
-    else:
-        loci = list(loci)
+    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

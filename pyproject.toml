@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 name = "pylinkage"
 version = "0.7.0"
 authors = [
-    {name = "Hugo Farajallah", email = "pylinkage@hugofara.net"},
+    {name = "Hugo Farajallah", email = "contact@hugofara.net"},
 ]
-description = "Build and optimize planar linkages using PSO"
+description = " Create and optimize kinematic planar linkages in Python "
 readme = "README.md"
 requires-python = ">=3.10"
 keywords = [
@@ -109,8 +109,6 @@ ignore = [
     "E501",   # line too long (handled by formatter)
     "E741",   # ambiguous variable name (l, I, O common in geometry/kinematics)
     "SIM102", # collapsible if — often less readable when collapsed
-    "SIM108", # ternary operator — multi-line if/else is clearer for type narrowing
-    "SIM116", # dict instead of if/elif — not always clearer
 ]
 
 [tool.ruff.lint.isort]
