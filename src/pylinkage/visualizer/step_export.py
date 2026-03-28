@@ -241,7 +241,7 @@ def build_linkage_3d(
     Example:
         >>> from pylinkage.visualizer import build_linkage_3d, save_linkage_step
         >>> model = build_linkage_3d(linkage)
-        >>> model.export_step("linkage.step")
+        >>> save_linkage_step(linkage, "linkage.step")
     """
     bd = _check_build123d()
 
@@ -437,5 +437,7 @@ def save_linkage_step(
         >>> from pylinkage.visualizer import save_linkage_step
         >>> save_linkage_step(linkage, "output.step")
     """
+    from build123d import export_step
+
     model = build_linkage_3d(linkage, loci, **kwargs)  # type: ignore[arg-type]
-    model.export_step(str(path))
+    export_step(model, str(path))
