@@ -5,6 +5,19 @@ All notable changes to pylinkage are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **PSO is now pure NumPy:** `particle_swarm_optimization()` no longer depends on
+  pyswarms (unmaintained since 2021). Replaced with a built-in local-best
+  ring-topology PSO. The `pso` optional extra is kept but empty for backwards
+  compatibility. The API is unchanged.
+
+### Removed
+
+- **pyswarms dependency** removed from all extras (`pso`, `full`, dev group).
+
 ## [0.8.0] - 2026-03-28
 
 ### Added

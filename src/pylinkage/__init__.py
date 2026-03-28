@@ -55,7 +55,7 @@ __all__ = [
     "Simulation",
     "bounding_box",
     "kinematic_default_test",
-    # Optimization (lazy, requires pyswarms/scipy)
+    # Optimization (lazy, some require scipy)
     "collections",
     "generate_bounds",
     "kinematic_maximization",
