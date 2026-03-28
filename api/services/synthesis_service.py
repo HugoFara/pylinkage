@@ -14,6 +14,7 @@ from pylinkage.synthesis import (
     Pose,
     SynthesisResult,
     function_generation,
+    grashof_check,
     motion_generation,
     path_generation,
     solution_to_linkage,
@@ -34,6 +35,10 @@ logger = logging.getLogger(__name__)
 
 def _solution_to_dto(sol: FourBarSolution) -> FourBarSolutionDTO:
     """Convert a FourBarSolution to a DTO."""
+    gt = grashof_check(
+        sol.crank_length, sol.coupler_length,
+        sol.rocker_length, sol.ground_length,
+    )
     return FourBarSolutionDTO(
         ground_pivot_a=list(sol.ground_pivot_a),
         ground_pivot_d=list(sol.ground_pivot_d),
@@ -44,6 +49,7 @@ def _solution_to_dto(sol: FourBarSolution) -> FourBarSolutionDTO:
         rocker_length=sol.rocker_length,
         ground_length=sol.ground_length,
         coupler_point=list(sol.coupler_point) if sol.coupler_point else None,
+        grashof_type=gt.name,
     )
 
 

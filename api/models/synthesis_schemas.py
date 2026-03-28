@@ -76,6 +76,7 @@ class FourBarSolutionDTO(BaseModel):
     rocker_length: float
     ground_length: float
     coupler_point: list[float] | None = None
+    grashof_type: str | None = None
 
 
 class SynthesisResponse(BaseModel):
