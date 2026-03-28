@@ -1,0 +1,86 @@
+"""Pydantic schemas for synthesis endpoints."""
+
+from __future__ import annotations
+
+from typing import Any
+
+from pydantic import BaseModel, Field
+
+
+class PointInput(BaseModel):
+    """A 2D point."""
+
+    x: float
+    y: float
+
+
+class AnglePairInput(BaseModel):
+    """Input/output angle pair for function generation (radians)."""
+
+    theta_in: float
+    theta_out: float
+
+
+class PoseInput(BaseModel):
+    """Pose for motion generation: position + orientation angle (radians)."""
+
+    x: float
+    y: float
+    angle: float
+
+
+# --- Requests ---
+
+
+class PathGenerationRequest(BaseModel):
+    """Request for path generation synthesis."""
+
+    precision_points: list[PointInput] = Field(
+        ..., min_length=3, max_length=10
+    )
+    max_solutions: int = Field(default=10, ge=1, le=50)
+    require_grashof: bool = True
+    require_crank_rocker: bool = False
+
+
+class FunctionGenerationRequest(BaseModel):
+    """Request for function generation synthesis."""
+
+    angle_pairs: list[AnglePairInput] = Field(..., min_length=3, max_length=10)
+    ground_length: float = Field(default=100.0, gt=0)
+    require_grashof: bool = True
+    require_crank_rocker: bool = False
+
+
+class MotionGenerationRequest(BaseModel):
+    """Request for motion generation synthesis."""
+
+    poses: list[PoseInput] = Field(..., min_length=3, max_length=5)
+    max_solutions: int = Field(default=10, ge=1, le=50)
+    require_grashof: bool = True
+    require_crank_rocker: bool = False
+
+
+# --- Responses ---
+
+
+class FourBarSolutionDTO(BaseModel):
+    """Serialized four-bar solution geometry."""
+
+    ground_pivot_a: list[float]
+    ground_pivot_d: list[float]
+    crank_pivot_b: list[float]
+    coupler_pivot_c: list[float]
+    crank_length: float
+    coupler_length: float
+    rocker_length: float
+    ground_length: float
+
+
+class SynthesisResponse(BaseModel):
+    """Response from any synthesis endpoint."""
+
+    solutions: list[FourBarSolutionDTO]
+    mechanism_dicts: list[dict[str, Any]]
+    warnings: list[str]
+    solution_count: int

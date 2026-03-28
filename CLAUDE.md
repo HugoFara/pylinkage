@@ -53,18 +53,31 @@ uv run task docs-clean               # Clean documentation artifacts
   - `Component`: Abstract base class for all kinematic elements
   - `ConnectedComponent`: Base for elements with parent connections
   - `Ground`: Fixed point on the frame (ground link)
+  - `PointTracker`: Sensor component that tracks a point on a moving link
   - `_AnchorProxy`: Proxy for actuator output connections
 
 - **src/pylinkage/actuators/**: Motor-driven input drivers
   - `Crank`: Motor-driven rotary input (rotating around ground)
+  - `ArcCrank`: Crank with limited angular range (oscillating arc motion)
   - `LinearActuator`: Motor-driven linear input (oscillating piston/cylinder)
 
 - **src/pylinkage/dyads/**: Pure Assur groups (0 DOF structural units)
   - `RRRDyad`: Circle-circle intersection (two links meeting at one joint)
   - `RRPDyad`: Circle-line intersection (slider mechanism)
+  - `PPDyad`: Line-line intersection (double slider mechanism)
   - `FixedDyad`: Deterministic polar projection
   - `BinaryDyad`: Base class for binary Assur groups
+  - `TranslatingCamFollower`: Translating follower driven by cam profile
+  - `OscillatingCamFollower`: Oscillating (rocker) follower driven by cam profile
+  - `create_dyad()`: Factory function to create dyads from isomer signatures
   - Note: Re-exports Ground, Crank, LinearActuator, Linkage for backwards compatibility
+
+- **src/pylinkage/cam/**: Cam profile definitions for cam-follower mechanisms
+  - `CamProfile`: Base class for cam profiles
+  - `FunctionProfile`: Profile from motion law + timing parameters
+  - `PointArrayProfile`: Profile from discrete points with spline interpolation
+  - Motion laws: `HarmonicMotionLaw`, `CycloidalMotionLaw`, `ModifiedTrapezoidalMotionLaw`, `PolynomialMotionLaw`
+  - Factory functions: `polynomial_345()`, `polynomial_4567()`
 
 - **src/pylinkage/simulation/**: Simulation containers
   - `Linkage`: Container orchestrating components into a mechanism
@@ -90,10 +103,16 @@ uv run task docs-clean               # Clean documentation artifacts
     via `step()` method
   - `Simulation`: Container for simulation results (loci, steps)
   - `analysis.py`: Helper functions like `bounding_box()` and `kinematic_default_test()`
+  - `sensitivity.py`: Sensitivity analysis (`sensitivity_analysis()`) and tolerance
+    analysis (`tolerance_analysis()`) for manufacturing/dimensional variation
 
 - **src/pylinkage/optimization/**: Optimization algorithms
   - `grid_search.py`: `trials_and_errors_optimization()` - exhaustive search
   - `particle_swarm.py`: `particle_swarm_optimization()` - PSO using PySwarms
+  - `scipy_optimize.py`: `differential_evolution_optimization()`, `minimize_linkage()` - scipy-based
+  - `multi_objective.py`: `multi_objective_optimization()` - Pareto-optimal solutions using NSGA-II/III (requires `pymoo`)
+  - `async_optimization.py`: Async variants of all optimizers with progress tracking (`OptimizationProgress`)
+  - `collections/pareto.py`: `ParetoFront`, `ParetoSolution` for multi-objective results
   - `utils.py`: `@kinematic_minimization`/`@kinematic_maximization` decorators
     and `generate_bounds()`
 
@@ -211,6 +230,20 @@ Note: For backwards compatibility, all classes can still be imported from `pylin
 - `UnderconstrainedError`: Raised when a linkage is underconstrained (too few constraints)
 - `NotCompletelyDefinedError`: Raised when joint parameters are incomplete
 
+**Multi-Objective Optimization Flow:**
+
+1. Define multiple objective functions decorated with `@kinematic_minimization`
+2. Call `multi_objective_optimization()` with list of objectives (requires `pymoo`: `pip install pylinkage[moo]`)
+3. Get `ParetoFront` containing non-dominated `ParetoSolution` objects
+4. Iterate solutions to explore trade-offs between competing objectives
+
+**Sensitivity/Tolerance Analysis Flow:**
+
+1. Define linkage with named joints for interpretable results
+2. Call `sensitivity_analysis(linkage)` to compute sensitivity indices per constraint
+3. Call `tolerance_analysis(linkage, tolerances, n_samples)` for Monte Carlo simulation
+4. Results include mean/std deviation of output paths and statistical distributions
+
 **API Migration (joints → components/actuators/dyads):**
 
 The `pylinkage.joints` module is deprecated. Use the new modular structure:
@@ -221,6 +254,8 @@ The `pylinkage.joints` module is deprecated. Use the new modular structure:
 - `Linear(...)` → `RRPDyad(...)` from `pylinkage.dyads`
 - `Fixed(...)` → `FixedDyad(...)` from `pylinkage.dyads`
 - New: `LinearActuator(anchor=A, angle=θ, stroke=s, velocity=v)` from `pylinkage.actuators`
+- New: `ArcCrank(anchor=A, radius=r, start_angle=θ₀, end_angle=θ₁, angular_velocity=ω)` from `pylinkage.actuators`
+- New: `TranslatingCamFollower`, `OscillatingCamFollower` from `pylinkage.dyads`
 
 All classes are also re-exported from `pylinkage.dyads` for backwards compatibility.
 
@@ -229,5 +264,11 @@ All classes are also re-exported from `pylinkage.dyads` for backwards compatibil
 Requires Python >= 3.10
 
 Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
+
+Optional extras:
+- `moo`: pymoo (for multi-objective optimization)
+- `cad`: ezdxf, build123d (for CAD export)
+- `api`: fastapi, uvicorn (for REST API)
+- `analysis`: pandas (for data analysis)
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser, taskipy

@@ -136,7 +136,6 @@ lint-fix = "ruff check . --fix"
 format = "ruff format ."
 typecheck = "mypy src/pylinkage"
 api = "python -m uvicorn api.main:app --reload --port 8000"
-frontend = "npm run dev --prefix frontend"
 
 [tool.bumpversion]
 current_version = "0.7.0"

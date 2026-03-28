@@ -1,14 +1,11 @@
 """FastAPI application entry point for pylinkage web API."""
 
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-
 from .config import settings
-from .routers import examples, mechanisms, simulation, websocket
+from .routers import examples, mechanisms, simulation, synthesis, websocket
 
 
 @asynccontextmanager
@@ -39,6 +36,7 @@ app.add_middleware(
 app.include_router(mechanisms.router, prefix="/api")
 app.include_router(simulation.router, prefix="/api")
 app.include_router(examples.router, prefix="/api")
+app.include_router(synthesis.router, prefix="/api")
 app.include_router(websocket.router, prefix="/api")
 
 
@@ -65,9 +63,3 @@ def api_info() -> dict[str, str | list[str]]:
             "/api/ws/simulation-fast/{id}",
         ],
     }
-
-
-# Serve frontend static files if the frontend directory exists
-frontend_dir = Path(__file__).parent.parent / "frontend" / "dist"
-if frontend_dir.exists():
-    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
