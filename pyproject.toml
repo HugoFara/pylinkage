@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pylinkage"
-version = "0.7.0"
+version = "0.8.0"
 authors = [
     {name = "Hugo Farajallah", email = "contact@hugofara.net"},
 ]
@@ -152,7 +152,7 @@ typecheck = "mypy src/pylinkage"
 api = "python -m uvicorn api.main:app --reload --port 8000"
 
 [tool.bumpversion]
-current_version = "0.7.0"
+current_version = "0.8.0"
 commit = true
 tag = true
 tag_name = "v{new_version}"
