@@ -5,7 +5,6 @@ RRP dyad creation path, triad path, validate_decomposition edge cases,
 and complex multi-group mechanisms.
 """
 
-import pytest
 
 from pylinkage.assur import (
     DecompositionResult,
@@ -16,9 +15,7 @@ from pylinkage.assur import (
     decompose_assur_groups,
     validate_decomposition,
 )
-from pylinkage.assur._types import JointType
 from pylinkage.assur.groups import Dyad
-
 
 # ---------------------------------------------------------------------------
 # DecompositionResult methods

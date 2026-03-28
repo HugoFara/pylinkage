@@ -64,8 +64,8 @@ class TestSymbolicCircleLineIntersect:
         """Branch +1 and -1 should give different intersection points."""
         x1, y1 = symbolic_circle_line_intersect(0, 0, 2, 1, -5, 1, 5, branch=1)
         x2, y2 = symbolic_circle_line_intersect(0, 0, 2, 1, -5, 1, 5, branch=-1)
-        x1_val, y1_val = float(x1), float(y1)
-        x2_val, y2_val = float(x2), float(y2)
+        _x1_val, y1_val = float(x1), float(y1)
+        _x2_val, y2_val = float(x2), float(y2)
         # y values should differ
         assert y1_val != pytest.approx(y2_val, abs=1e-8)
 

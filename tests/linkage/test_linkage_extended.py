@@ -14,7 +14,7 @@ import pytest
 
 import pylinkage as pl
 from pylinkage.exceptions import UnderconstrainedError
-from pylinkage.linkage.linkage import Linkage, Simulation
+from pylinkage.linkage.linkage import Simulation
 
 
 def _make_fourbar():
@@ -72,10 +72,9 @@ class TestFindSolvingOrder:
             rev2 = pl.Revolute(2, 0, joint0=None, joint1=None, distance0=1, distance1=1, name="R2")
             linkage = pl.Linkage(joints=[rev1, rev2], name="Bad")
 
-        with pytest.raises(UnderconstrainedError):
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                linkage.__find_solving_order__()
+        with pytest.raises(UnderconstrainedError), warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            linkage.__find_solving_order__()
 
 
 class TestRebuild:
@@ -153,8 +152,8 @@ class TestSetNumConstraints:
         linkage.set_num_constraints(original, flat=False)
         new = linkage.get_num_constraints(flat=False)
         # The constraints should be the same
-        for orig, new_ in zip(original, new):
-            for o, n in zip(orig, new_):
+        for orig, new_ in zip(original, new, strict=False):
+            for o, n in zip(orig, new_, strict=False):
                 if o is not None and n is not None:
                     assert abs(o - n) < 1e-10
 
@@ -168,11 +167,11 @@ class TestSimulation:
         initial_coords = linkage.get_coords()
 
         with linkage.simulation(iterations=5) as sim:
-            for step, coords in sim:
+            for _step, _coords in sim:
                 pass  # just run through
 
         restored = linkage.get_coords()
-        for init, rest in zip(initial_coords, restored):
+        for init, rest in zip(initial_coords, restored, strict=False):
             assert init[0] == rest[0]
             assert init[1] == rest[1]
 

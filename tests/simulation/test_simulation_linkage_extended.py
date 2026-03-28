@@ -13,16 +13,12 @@ Covers missing lines in linkage.py:
 from __future__ import annotations
 
 import math
-from unittest.mock import MagicMock, PropertyMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from pylinkage.actuators import ArcCrank, Crank, LinearActuator
 from pylinkage.components import Ground
 from pylinkage.dyads import FixedDyad, RRPDyad, RRRDyad
-from pylinkage.exceptions import UnderconstrainedError
 from pylinkage.simulation import Linkage
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -142,7 +138,6 @@ class TestStepWithDerivativesNonePositions:
         linkage._find_solve_order()
 
         # Patch the crank class's reload to produce None positions
-        from unittest.mock import patch
 
         original_reload = type(crank).reload
 
@@ -156,7 +151,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.y = None
 
         with patch.object(type(crank), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Crank velocity should be None since position is None
                 assert vel[2] is None
                 # Crank acceleration should also be None
@@ -168,7 +163,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         original_reload = type(rocker).reload
 
@@ -178,7 +172,7 @@ class TestStepWithDerivativesNonePositions:
             self_rocker.y = None
 
         with patch.object(type(rocker), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[3] is None
                 assert acc[3] is None
 
@@ -192,7 +186,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         original_reload = type(crank).reload
 
@@ -202,7 +195,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.y = None
 
         with patch.object(type(crank), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Rocker's anchor (crank output) has None position
                 # This triggers lines 440-442
                 assert vel[3] is None
@@ -213,7 +206,7 @@ class TestStepWithDerivativesNonePositions:
         O1, L1, L2, crank, slider, linkage = _slider_crank()
         linkage.set_input_velocity(crank, omega=5.0)
 
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=2):
+        for _pos, vel, _acc in linkage.step_with_derivatives(iterations=2):
             assert vel[4] is not None or vel[4] is None  # May or may not compute
 
     def test_rrp_dyad_none_position_gives_none_velocity(self):
@@ -222,7 +215,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=5.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         original_reload = type(slider).reload
 
@@ -232,7 +224,7 @@ class TestStepWithDerivativesNonePositions:
             self_slider.y = None
 
         with patch.object(type(slider), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[4] is None
                 assert acc[4] is None
 
@@ -242,7 +234,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=5.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         original_reload = type(crank).reload
 
@@ -252,7 +243,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.y = None
 
         with patch.object(type(crank), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Slider's revolute anchor (crank output) has None position
                 assert vel[4] is None
                 assert acc[4] is None
@@ -262,7 +253,7 @@ class TestStepWithDerivativesNonePositions:
         O1, O2, crank, rocker, coupler, linkage = _four_bar_with_coupler()
         linkage.set_input_velocity(crank, omega=10.0)
 
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+        for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
             coupler_vel = vel[4]
             coupler_acc = acc[4]
             # Should be computed (not None) for a well-defined mechanism
@@ -275,7 +266,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         original_reload = type(coupler).reload
 
@@ -285,7 +275,7 @@ class TestStepWithDerivativesNonePositions:
             self_coupler.y = None
 
         with patch.object(type(coupler), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[4] is None
                 assert acc[4] is None
 
@@ -295,7 +285,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-        from unittest.mock import patch
 
         # Patch the crank reload to set None positions, which cascades
         original_reload = type(crank).reload
@@ -306,7 +295,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.y = None
 
         with patch.object(type(crank), 'reload', patched_reload):
-            for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+            for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Coupler's anchor1 (crank output) has None position
                 assert vel[4] is None
                 assert acc[4] is None
@@ -342,7 +331,7 @@ class TestUnknownComponentDerivatives:
         custom = CustomComponent()
         linkage = Linkage([O1, custom], order=[O1, custom], name="custom_test")
 
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+        for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
             # Custom component should get None for velocity and acceleration
             assert vel[1] is None
             assert acc[1] is None
@@ -425,7 +414,7 @@ class TestAccelerationComputation:
         """RRRDyad acceleration should be computed (lines 575-609)."""
         O1, O2, crank, rocker, linkage = _four_bar()
         linkage.set_input_velocity(crank, omega=10.0, alpha=2.0)
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+        for _pos, _vel, acc in linkage.step_with_derivatives(iterations=1):
             rocker_acc = acc[3]
             assert rocker_acc is not None
 
@@ -433,7 +422,7 @@ class TestAccelerationComputation:
         """RRPDyad acceleration should be computed (lines 611-662)."""
         O1, L1, L2, crank, slider, linkage = _slider_crank()
         linkage.set_input_velocity(crank, omega=5.0, alpha=1.0)
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+        for _pos, _vel, acc in linkage.step_with_derivatives(iterations=1):
             slider_acc = acc[4]
             assert slider_acc is not None
 
@@ -441,7 +430,7 @@ class TestAccelerationComputation:
         """FixedDyad acceleration should be computed (lines 664-700)."""
         O1, O2, crank, rocker, coupler, linkage = _four_bar_with_coupler()
         linkage.set_input_velocity(crank, omega=10.0, alpha=3.0)
-        for pos, vel, acc in linkage.step_with_derivatives(iterations=1):
+        for _pos, _vel, acc in linkage.step_with_derivatives(iterations=1):
             coupler_acc = acc[4]
             assert coupler_acc is not None
 
@@ -466,6 +455,6 @@ class TestEmptyLinkageDerivatives:
         linkage = Linkage([O1])
         results = list(linkage.step_with_derivatives(iterations=2))
         assert len(results) == 2
-        for pos, vel, acc in results:
+        for _pos, vel, acc in results:
             assert vel[0] == (0.0, 0.0)
             assert acc[0] == (0.0, 0.0)

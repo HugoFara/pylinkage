@@ -11,16 +11,15 @@ from pylinkage._types import JointType
 from pylinkage.assur import Triad
 from pylinkage.assur.groups import DyadPP
 from pylinkage.assur.signature import (
+    _JOINTS_PER_CLASS,
     AssurGroupClass,
     AssurSignature,
-    _JOINTS_PER_CLASS,
     isomer_to_canonical,
     parse_isomer_signature,
     parse_signature,
     signature_to_group_class,
     signature_to_hypergraph,
 )
-
 
 # ---------------------------------------------------------------------------
 # AssurSignature validation

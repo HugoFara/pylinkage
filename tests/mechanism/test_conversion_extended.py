@@ -11,16 +11,14 @@ Covers:
 
 import math
 
-import pytest
-
+from pylinkage.mechanism import Mechanism
 from pylinkage.mechanism.conversion import (
     _compute_initial_angle,
     mechanism_from_linkage,
     mechanism_to_linkage,
 )
 from pylinkage.mechanism.joint import GroundJoint, PrismaticJoint, RevoluteJoint
-from pylinkage.mechanism.link import DriverLink, GroundLink, Link
-from pylinkage.mechanism import Mechanism
+from pylinkage.mechanism.link import DriverLink, GroundLink
 
 
 def _build_linkage_with_fixed_joint():

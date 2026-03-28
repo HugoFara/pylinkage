@@ -1,9 +1,9 @@
 """Tests for the plotly visualization module."""
 
-import pytest
 import plotly.graph_objects as go
+import pytest
 
-from pylinkage.joints import Static, Crank
+from pylinkage.joints import Crank, Static
 from pylinkage.joints.revolute import Pivot
 from pylinkage.linkage import Linkage
 from pylinkage.visualizer.plotly_viz import (
@@ -12,7 +12,6 @@ from pylinkage.visualizer.plotly_viz import (
     plot_linkage_plotly,
 )
 from pylinkage.visualizer.symbols import SymbolType
-
 
 # --------------- fixtures ---------------
 

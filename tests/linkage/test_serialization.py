@@ -1,9 +1,6 @@
 """Tests for linkage serialization module."""
 
-import json
-import tempfile
 import warnings
-from pathlib import Path
 
 import pytest
 
@@ -20,7 +17,6 @@ from pylinkage.linkage.serialization import (
     load_from_json,
     save_to_json,
 )
-
 
 # ---------------------------------------------------------------------------
 # _serialize_joint_ref
@@ -103,7 +99,10 @@ class TestJointToDict:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(1, 0, joint0=(0, 0), distance=1, angle=0.1, name="B")
-            rev = pl.Revolute(2, 1, joint0=crank, joint1=(3, 0), distance0=2.0, distance1=1.5, name="C")
+            rev = pl.Revolute(
+                2, 1, joint0=crank, joint1=(3, 0),
+                distance0=2.0, distance1=1.5, name="C",
+            )
         d = joint_to_dict(rev, linkage_joints=(crank, rev))
         assert d["distance0"] == 2.0
         assert d["distance1"] == 1.5
@@ -288,7 +287,9 @@ class TestLinkageRoundTrip:
         restored = linkage_from_dict(d)
         assert restored.name == fourbar_linkage.name
         assert len(restored.joints) == len(fourbar_linkage.joints)
-        for j_orig, j_new in zip(fourbar_linkage.joints, restored.joints):
+        for j_orig, j_new in zip(
+            fourbar_linkage.joints, restored.joints, strict=False
+        ):
             assert j_orig.name == j_new.name
 
     def test_json_file_round_trip(self, fourbar_linkage, tmp_path):

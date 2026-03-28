@@ -4,10 +4,8 @@ Covers: DriverAngle, Dimensions construction, copy, validate_against,
 get_node_position, get_edge_distance, get_driver_angle, get_hyperedge_distance.
 """
 
-import pytest
 
 from pylinkage.dimensions import Dimensions, DriverAngle
-
 
 # ---------------------------------------------------------------------------
 # DriverAngle

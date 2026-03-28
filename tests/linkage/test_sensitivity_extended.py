@@ -1,5 +1,6 @@
 """Extended tests for sensitivity analysis -- targeting uncovered lines."""
 
+import contextlib
 import warnings
 
 import numpy as np
@@ -121,7 +122,10 @@ class TestSimulateOutputPath:
 
 
 class TestAnalyzeSensitivityExtended:
-    """Additional sensitivity analysis tests (lines 174-175, 231, 281, 294-296, 307-310, 327-330, 341-342)."""
+    """Additional sensitivity analysis tests.
+
+    Covers lines 174-175, 231, 281, 294-296, 307-310, 327-330, 341-342.
+    """
 
     @pytest.fixture
     def fourbar_linkage(self):
@@ -253,10 +257,8 @@ class TestToleranceAnalysisToDataframe:
             std_deviation=0.05,
             position_std=np.array([0.1]),
         )
-        try:
+        with contextlib.suppress(ImportError):
             analysis.to_dataframe()
-        except ImportError:
-            pass  # Expected if pandas not installed
 
 
 class TestSensitivityAnalysisToDataframeExtended:

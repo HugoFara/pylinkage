@@ -30,7 +30,6 @@ from pylinkage.solver import (
 )
 from pylinkage.solver.simulation import first_nan_step, has_nan_positions
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------

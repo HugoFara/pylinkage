@@ -23,7 +23,6 @@ from pylinkage.mechanism import (
     RevoluteJoint,
 )
 
-
 # ---------------------------------------------------------------------------
 # graph_to_mechanism: RRP group path
 # ---------------------------------------------------------------------------
@@ -128,9 +127,8 @@ class TestUnsupportedGroupType:
         with patch(
             "pylinkage.assur.mechanism_conversion.decompose_assur_groups",
             return_value=fake_result,
-        ):
-            with pytest.raises(NotImplementedError, match="not implemented"):
-                graph_to_mechanism(g, dims)
+        ), pytest.raises(NotImplementedError, match="not implemented"):
+            graph_to_mechanism(g, dims)
 
 
 # ---------------------------------------------------------------------------

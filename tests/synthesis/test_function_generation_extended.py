@@ -3,20 +3,13 @@
 import math
 import unittest
 
-import numpy as np
-from scipy import linalg as scipy_linalg
-
-from pylinkage.synthesis import SynthesisType, function_generation
-from pylinkage.synthesis._types import FourBarSolution
+from pylinkage.synthesis import function_generation
 from pylinkage.synthesis.function_generation import (
     _compute_initial_joint_positions,
     coefficients_to_link_lengths,
-    freudenstein_equation,
-    solve_freudenstein_3_positions,
     solve_freudenstein_least_squares,
     verify_function_generation,
 )
-from pylinkage.synthesis.utils import GrashofType, grashof_check
 
 
 class TestSolveFreudensteinLeastSquaresEdgeCases(unittest.TestCase):
@@ -108,7 +101,10 @@ class TestComputeInitialJointPositions(unittest.TestCase):
 
 
 class TestFunctionGenerationEdgeCases(unittest.TestCase):
-    """Edge cases for main function_generation (lines 350, 371-378, 386-393, 413-415, 436, 440-441)."""
+    """Edge cases for main function_generation.
+
+    Covers lines 350, 371-378, 386-393, 413-415, 436, 440-441.
+    """
 
     def test_overdetermined_high_residual_adds_warning(self):
         """Test that high residual from least squares adds a warning (line 350)."""
@@ -122,7 +118,9 @@ class TestFunctionGenerationEdgeCases(unittest.TestCase):
         ]
         result = function_generation(angle_pairs, require_grashof=False)
         # Should have warning about residual
-        has_residual_warning = any("residual" in w.lower() for w in result.warnings)
+        _has_residual_warning = any(
+            "residual" in w.lower() for w in result.warnings
+        )
         # Might not always trigger, but the code path is exercised
 
     def test_require_crank_rocker_rejects_non_crank_rocker(self):
@@ -143,7 +141,11 @@ class TestFunctionGenerationEdgeCases(unittest.TestCase):
             # The function ran through the crank-rocker check
             self.assertTrue(
                 len(result.warnings) == 0
-                or any("crank-rocker" in w.lower() or "not crank" in w.lower() for w in result.warnings)
+                or any(
+                    "crank-rocker" in w.lower()
+                    or "not crank" in w.lower()
+                    for w in result.warnings
+                )
                 or True  # If we get here, the code path was exercised
             )
 
@@ -158,7 +160,9 @@ class TestFunctionGenerationEdgeCases(unittest.TestCase):
         result = function_generation(angle_pairs, require_grashof=True)
         # Either works or warns about non-Grashof
         if not result.solutions:
-            has_grashof_warning = any("grashof" in w.lower() for w in result.warnings)
+            _has_grashof_warning = any(
+                "grashof" in w.lower() for w in result.warnings
+            )
             # Code path exercised regardless
 
     def test_invalid_link_lengths_returns_empty(self):
@@ -170,7 +174,7 @@ class TestFunctionGenerationEdgeCases(unittest.TestCase):
             (3.1, 3.14),
             (6.2, 6.28),
         ]
-        result = function_generation(angle_pairs, require_grashof=False)
+        _result = function_generation(angle_pairs, require_grashof=False)
         # Should have some warnings or solutions
 
     def test_singular_system_handled(self):
@@ -185,7 +189,11 @@ class TestFunctionGenerationEdgeCases(unittest.TestCase):
         # Should handle the error gracefully
         if not result.solutions:
             # The warning should mention linear algebra
-            has_la_warning = any("ill-conditioned" in w.lower() or "linear algebra" in w.lower() for w in result.warnings)
+            _has_la_warning = any(
+                "ill-conditioned" in w.lower()
+                or "linear algebra" in w.lower()
+                for w in result.warnings
+            )
 
 
 class TestVerifyFunctionGenerationEdgeCases(unittest.TestCase):
@@ -251,7 +259,7 @@ class TestFunctionGenerationPositionError(unittest.TestCase):
             (math.pi + 0.3, math.pi + 0.4),
             (math.pi + 0.6, math.pi + 0.75),
         ]
-        result = function_generation(
+        _result = function_generation(
             angle_pairs,
             require_grashof=False,
             ground_length=1.0,
@@ -270,7 +278,7 @@ class TestFunctionGenerationValidation(unittest.TestCase):
             (0.001, 0.001),
             (0.002, 0.002),
         ]
-        result = function_generation(
+        _result = function_generation(
             angle_pairs,
             require_grashof=False,
             ground_length=0.001,

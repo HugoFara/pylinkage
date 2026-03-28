@@ -18,7 +18,6 @@ import math
 
 import pytest
 
-from pylinkage.exceptions import UnbuildableError, UnderconstrainedError
 from pylinkage.mechanism import Mechanism, MechanismBuilder
 from pylinkage.mechanism.builder import PendingLink, Port, SlideAxis
 from pylinkage.mechanism.joint import PrismaticJoint, TrackerJoint
@@ -143,7 +142,7 @@ class TestArcDriverLink:
         assert isinstance(mechanism, Mechanism)
         # Should have ArcDriverLink in links
         from pylinkage.mechanism.link import ArcDriverLink
-        arc_links = [l for l in mechanism.links if isinstance(l, ArcDriverLink)]
+        arc_links = [lnk for lnk in mechanism.links if isinstance(lnk, ArcDriverLink)]
         assert len(arc_links) == 1
 
 
@@ -303,7 +302,7 @@ class TestDriverLinkFallback:
         )
         # Verify the driver link is present
         from pylinkage.mechanism.link import DriverLink
-        drivers = [l for l in mechanism.links if isinstance(l, DriverLink)]
+        drivers = [lnk for lnk in mechanism.links if isinstance(lnk, DriverLink)]
         assert len(drivers) == 1
 
 

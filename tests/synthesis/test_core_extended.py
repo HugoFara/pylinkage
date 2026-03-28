@@ -4,7 +4,7 @@ import unittest
 
 import numpy as np
 
-from pylinkage.synthesis._types import DyadSolution, FourBarSolution, SynthesisType
+from pylinkage.synthesis._types import DyadSolution, SynthesisType
 from pylinkage.synthesis.core import (
     BurmesterCurves,
     Dyad,

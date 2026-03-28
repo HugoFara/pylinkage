@@ -5,7 +5,6 @@ _check_dyad_signature branches, identify_group_type, identify_dyad_type,
 backwards-compatible aliases (DyadRRR, DyadRRP, etc.), and DYAD_TYPES registry.
 """
 
-import pytest
 
 from pylinkage.assur import (
     DYAD_TYPES,
@@ -21,7 +20,6 @@ from pylinkage.assur import (
 from pylinkage.assur._types import JointType, NodeRole
 from pylinkage.assur.graph import Edge, LinkageGraph, Node
 from pylinkage.assur.groups import DyadPP, _count_prismatic
-
 
 # ---------------------------------------------------------------------------
 # _count_prismatic

@@ -1,14 +1,14 @@
 """Tests for the drawsvg visualization module."""
 
 import math
-import tempfile
 import os
+import tempfile
 
 import drawsvg as draw
 import numpy as np
 import pytest
 
-from pylinkage.joints import Static, Crank
+from pylinkage.joints import Crank, Static
 from pylinkage.joints.revolute import Pivot
 from pylinkage.linkage import Linkage
 from pylinkage.visualizer.drawsvg_viz import (
@@ -25,11 +25,8 @@ from pylinkage.visualizer.drawsvg_viz import (
     plot_linkage_svg_with_velocity,
     save_linkage_svg,
     save_linkage_svg_with_velocity,
-    DEFAULT_SCALE,
-    DEFAULT_PADDING,
 )
 from pylinkage.visualizer.symbols import LinkStyle
-
 
 # --------------- fixtures ---------------
 
@@ -276,7 +273,6 @@ class TestSaveLinkageSvg:
 class TestPlotLinkageSvgWithVelocity:
     def _make_positions_velocities(self, fourbar):
         linkage, _ = fourbar
-        n = len(list(linkage.joints))
         positions = np.array([[0, 0], [0.95, 0.31], [2, 0], [1.2, 1.8]], dtype=np.float64)
         velocities = np.array([[0, 0], [3.1, 9.5], [0, 0], [-2.0, 1.5]], dtype=np.float64)
         return linkage, positions, velocities
@@ -334,7 +330,6 @@ class TestPlotLinkageSvgWithVelocity:
 class TestSaveLinkageSvgWithVelocity:
     def test_save_to_file(self, fourbar):
         linkage, _ = fourbar
-        n = len(list(linkage.joints))
         positions = np.array([[0, 0], [0.95, 0.31], [2, 0], [1.2, 1.8]], dtype=np.float64)
         velocities = np.array([[0, 0], [3.1, 9.5], [0, 0], [-2.0, 1.5]], dtype=np.float64)
         with tempfile.NamedTemporaryFile(suffix=".svg", delete=False) as f:

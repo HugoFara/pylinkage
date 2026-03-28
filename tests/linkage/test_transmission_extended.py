@@ -13,9 +13,7 @@ import pytest
 import pylinkage as pl
 from pylinkage.linkage.transmission import (
     _auto_detect_fourbar_joints,
-    _auto_detect_prismatic_joint,
     _get_joint_coord,
-    compute_transmission_angle,
     stroke_at_position,
     transmission_angle_at_position,
 )
@@ -66,6 +64,7 @@ class TestWorstAngle:
     def test_worst_angle_min_closer_to_90(self):
         """When min_angle is farther from 90 than max_angle, return min_angle."""
         import numpy as np
+
         from pylinkage.linkage.transmission import TransmissionAngleAnalysis
 
         # min=20 (70 from 90), max=130 (40 from 90) -> worst is min=20
@@ -85,6 +84,7 @@ class TestWorstAngle:
     def test_worst_angle_max_farther(self):
         """When max_angle is farther from 90, return max_angle."""
         import numpy as np
+
         from pylinkage.linkage.transmission import TransmissionAngleAnalysis
 
         analysis = TransmissionAngleAnalysis(
@@ -110,7 +110,10 @@ class TestAutoDetectFourBarMissingRockerPivot:
             warnings.simplefilter("ignore", DeprecationWarning)
             crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0, name="B")
             # Create a Revolute without joint1 set
-            rev = pl.Revolute(2, 1, joint0=crank, joint1=None, distance0=2.0, distance1=1.5, name="C")
+            rev = pl.Revolute(
+                2, 1, joint0=crank, joint1=None,
+                distance0=2.0, distance1=1.5, name="C",
+            )
             # joint1 is None
             rev.joint1 = None
             linkage = pl.Linkage(joints=[crank, rev], order=[crank, rev])

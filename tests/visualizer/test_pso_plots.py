@@ -4,9 +4,9 @@ import matplotlib
 
 matplotlib.use("Agg")
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import matplotlib.pyplot as plt
 
 import pylinkage as pl
 from pylinkage.joints import Crank, Revolute

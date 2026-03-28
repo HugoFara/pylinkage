@@ -11,12 +11,9 @@ Covers edge cases and missing lines in joint.py:
 
 import math
 
-import pytest
-
 from pylinkage._types import JointType
 from pylinkage.mechanism.joint import (
     GroundJoint,
-    Joint,
     PrismaticJoint,
     RevoluteJoint,
     TrackerJoint,

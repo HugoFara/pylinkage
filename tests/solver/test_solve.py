@@ -12,7 +12,6 @@ from pylinkage.dimensions import Dimensions
 from pylinkage.exceptions import UnbuildableError
 from pylinkage.solver.solve import solve_decomposition, solve_group
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
@@ -529,8 +528,8 @@ class TestSolveDecomposition:
 
     def test_ground_only(self):
         """Decomposition with only ground nodes returns their positions."""
-        from pylinkage.assur.graph import LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))
@@ -551,8 +550,8 @@ class TestSolveDecomposition:
 
     def test_ground_missing_position_raises(self):
         """Ground node without position raises ValueError."""
-        from pylinkage.assur.graph import LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))
@@ -569,8 +568,8 @@ class TestSolveDecomposition:
 
     def test_driver_missing_position_raises(self):
         """Driver node without position raises ValueError."""
-        from pylinkage.assur.graph import LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))
@@ -588,8 +587,8 @@ class TestSolveDecomposition:
 
     def test_initial_positions_override(self):
         """initial_positions should override dimensions positions."""
-        from pylinkage.assur.graph import LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))
@@ -608,8 +607,8 @@ class TestSolveDecomposition:
 
     def test_driver_from_initial_positions(self):
         """Driver position taken from initial_positions when provided."""
-        from pylinkage.assur.graph import LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))
@@ -629,8 +628,8 @@ class TestSolveDecomposition:
 
     def test_with_rrr_group(self):
         """Full decomposition with a ground + driver + one RRR dyad."""
-        from pylinkage.assur.graph import Edge, LinkageGraph, Node
         from pylinkage.assur._types import NodeRole
+        from pylinkage.assur.graph import LinkageGraph, Node
 
         graph = LinkageGraph()
         graph.add_node(Node("G1", role=NodeRole.GROUND))

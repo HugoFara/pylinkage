@@ -7,8 +7,6 @@ analyze(), validate(), is_valid(), graph property, and delegation methods.
 
 import math
 
-import pytest
-
 from pylinkage._types import NodeRole
 from pylinkage.assur.assur_mechanism import AssurMechanism
 from pylinkage.assur.graph import Edge, LinkageGraph, Node

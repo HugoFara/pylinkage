@@ -1,11 +1,9 @@
 """Extended tests for revolute and prismatic joints -- targeting uncovered lines."""
 
-import math
 import unittest
 import warnings
 
 from pylinkage import UnbuildableError
-from pylinkage.exceptions import NotCompletelyDefinedError
 from pylinkage.joints import Prismatic, Revolute, Static
 
 
@@ -62,7 +60,11 @@ class TestRevoluteReloadEdgeCases(unittest.TestCase):
             # Should warn about missing constraints
             messages = [str(warning.message) for warning in w]
             self.assertTrue(
-                any("missing distance" in msg.lower() or "constraint" in msg.lower() for msg in messages)
+                any(
+                    "missing distance" in msg.lower()
+                    or "constraint" in msg.lower()
+                    for msg in messages
+                )
             )
 
     def test_reload_with_none_xy_initializes(self):
