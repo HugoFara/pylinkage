@@ -16,6 +16,11 @@ Pylinkage is a comprehensive Python library for planar linkage mechanisms. It pr
 
 📚 **[Full Documentation](https://hugofara.github.io/pylinkage/)** — Complete tutorials, API reference, and examples.
 
+### Related Projects
+
+- **[pylinkage-editor](https://github.com/HugoFara/pylinkage-editor)** — Visual linkage design tool with an easy-to-use interface. Draw mechanisms interactively, run synthesis from the GUI, and export results.
+- **[leggedsnake](https://github.com/HugoFara/leggedsnake)** — Dynamic walking simulation built on pylinkage. Adds pymunk physics, genetic algorithm optimization, and walking-specific fitness evaluation.
+
 ## Installation
 
 ```shell
