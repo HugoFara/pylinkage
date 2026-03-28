@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from .._types import Coord
 from ._types import JointType, NodeId, NodeRole
 from .graph import LinkageGraph
-from .groups import AssurGroup, Dyad
+from .groups import AssurGroup, Dyad, Triad
 
 
 @dataclass
@@ -159,6 +159,12 @@ def decompose_assur_groups(graph: LinkageGraph) -> DecompositionResult:
                     found_group = True
                     break
 
+        # Try to form a triad from pairs of remaining nodes
+        if not found_group:
+            found_group = _try_find_triad(
+                graph, remaining, known, result,
+            )
+
         if not found_group:
             # Could not find any solvable group
             raise ValueError(
@@ -258,6 +264,137 @@ def _try_create_rrp_dyad(
         internal_edges=(revolute_edge_id,) if revolute_edge_id else (),
         line_node1=line_nodes[0],
         line_node2=line_nodes[1],
+    )
+
+
+def _try_find_triad(
+    graph: LinkageGraph,
+    remaining: set[NodeId],
+    known: set[NodeId],
+    result: DecompositionResult,
+) -> bool:
+    """Try to find a triad among remaining nodes.
+
+    A triad has 2 internal nodes and 3 anchor nodes (all known).
+    We search all pairs of remaining nodes and check if they form
+    a valid triad with the known set.
+
+    Args:
+        graph: The linkage graph.
+        remaining: Set of unsolved node IDs (modified in place on success).
+        known: Set of solved node IDs (modified in place on success).
+        result: DecompositionResult to append to (modified in place).
+
+    Returns:
+        True if a triad was found and added, False otherwise.
+    """
+    remaining_list = list(remaining)
+    for i, node_a in enumerate(remaining_list):
+        for node_b in remaining_list[i + 1:]:
+            triad = _try_create_triad(graph, node_a, node_b, known)
+            if triad is not None:
+                result.groups.append(triad)
+                known.add(node_a)
+                known.add(node_b)
+                remaining.discard(node_a)
+                remaining.discard(node_b)
+                return True
+    return False
+
+
+def _try_create_triad(
+    graph: LinkageGraph,
+    internal_a: NodeId,
+    internal_b: NodeId,
+    known: set[NodeId],
+) -> Triad | None:
+    """Try to create a triad from two internal nodes.
+
+    A valid triad requires:
+    - The two internal nodes are connected by an edge (or share anchors)
+    - Together they have at least 3 distinct known anchor neighbors
+    - Total of 4 edges connecting internals to anchors + each other
+
+    Args:
+        graph: The linkage graph.
+        internal_a: First candidate internal node.
+        internal_b: Second candidate internal node.
+        known: Set of currently known node IDs.
+
+    Returns:
+        A Triad instance if valid, None otherwise.
+    """
+    neighbors_a = set(graph.neighbors(internal_a))
+    neighbors_b = set(graph.neighbors(internal_b))
+
+    # Known anchors reachable from each internal node
+    known_anchors_a = neighbors_a & known
+    known_anchors_b = neighbors_b & known
+
+    # All distinct known anchors
+    all_known_anchors = known_anchors_a | known_anchors_b
+
+    # A triad needs at least 3 known anchor nodes
+    if len(all_known_anchors) < 3:
+        return None
+
+    # Collect edges: internal↔anchor and internal↔internal
+    edge_ids: list[str] = []
+    anchor_ids: list[NodeId] = []
+
+    # Edges from internal_a to known anchors
+    for anchor_id in known_anchors_a:
+        edge = graph.get_edge_between(internal_a, anchor_id)
+        if edge is not None:
+            edge_ids.append(edge.id)
+            if anchor_id not in anchor_ids:
+                anchor_ids.append(anchor_id)
+
+    # Edges from internal_b to known anchors
+    for anchor_id in known_anchors_b:
+        edge = graph.get_edge_between(internal_b, anchor_id)
+        if edge is not None:
+            edge_ids.append(edge.id)
+            if anchor_id not in anchor_ids:
+                anchor_ids.append(anchor_id)
+
+    # Edge between the two internals (if any)
+    internal_edge = graph.get_edge_between(internal_a, internal_b)
+    if internal_edge is not None:
+        edge_ids.append(internal_edge.id)
+
+    # Need at least 4 edges total for a valid triad
+    if len(edge_ids) < 4:
+        return None
+
+    # Need at least 3 anchor nodes
+    if len(anchor_ids) < 3:
+        return None
+
+    # Build the signature from joint types
+    # Convention: anchors first (3), then internals (2), then inter-internal
+    sig_chars = []
+    joint_char = {JointType.REVOLUTE: "R", JointType.PRISMATIC: "P"}
+    for aid in anchor_ids[:3]:
+        node = graph.nodes[aid]
+        sig_chars.append(joint_char.get(node.joint_type, "R"))
+    for nid in (internal_a, internal_b):
+        node = graph.nodes[nid]
+        sig_chars.append(joint_char.get(node.joint_type, "R"))
+    # 6th character: constraint type between internals
+    if internal_edge is not None:
+        # Edge exists → revolute connection between them
+        sig_chars.append("R")
+    else:
+        # No direct edge ��� infer from shared anchor pattern
+        sig_chars.append("R")
+    signature = "".join(sig_chars)
+
+    return Triad(
+        _signature=signature,
+        internal_nodes=(internal_a, internal_b),
+        anchor_nodes=tuple(anchor_ids[:3]),
+        internal_edges=tuple(edge_ids),
     )
 
 
