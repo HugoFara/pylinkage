@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.optimization package &mdash; pylinkage 0.6.0 documentation</title>
+  <title>pylinkage.optimization package &mdash; pylinkage 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -237,14 +237,14 @@ Its size is {n_results}.</p>
 <section id="module-pylinkage.optimization.particle_swarm">
 <span id="pylinkage-optimization-particle-swarm-module"></span><h2>pylinkage.optimization.particle_swarm module<a class="headerlink" href="#module-pylinkage.optimization.particle_swarm" title="Link to this heading"></a></h2>
 <p>Implementation of a particle swarm optimization.</p>
+<p>Pure NumPy local-best PSO — no external dependencies beyond numpy.</p>
 <p>Created on Fri Mar 8, 13:51:45 2019.</p>
 <p>&#64;author: HugoFara</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pylinkage.optimization.particle_swarm.particle_swarm_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.particle_swarm.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">center:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">dimensions:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">n_particles:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">leader:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0,</span> <span class="pre">follower:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1,</span> <span class="pre">inertia:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">neighbors:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">17,</span> <span class="pre">iters:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.particle_swarm.particle_swarm_optimization" title="Link to this definition"></a></dt>
-<dd><p>Particle Swarm Optimization wrapper for pyswarms.</p>
-<p>This function is a simple wrapper to optimize a linkage using PSO. It will
-mainly call the LocalBestPSO function from pyswarms.single.</p>
+<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.particle_swarm.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">center:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">dimensions:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">n_particles:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">leader:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0,</span> <span class="pre">follower:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1,</span> <span class="pre">inertia:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">neighbors:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">17,</span> <span class="pre">iters:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.particle_swarm.particle_swarm_optimization" title="Link to this definition"></a></dt>
+<dd><p>Particle Swarm Optimization for linkage parameters.</p>
+<p>Uses a local-best ring-topology PSO implemented in pure NumPy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -260,12 +260,11 @@ randomly between bounds. The default is None.</p></li>
 If None, it takes the value len(tuple(linkage.get_num_constraints())).
 The default is None.</p></li>
 <li><p><strong>n_particles</strong> – Number of particles in the swarm. The default is 100.</p></li>
-<li><p><strong>inertia</strong> – Inertia of each particle, w in pyswarms. The default is .3.</p></li>
-<li><p><strong>leader</strong> – Learning coefficient of each particle, c1 in pyswarms.
-The default is .2.</p></li>
-<li><p><strong>follower</strong> – Social coefficient, c2 in pyswarms. The default is .5.</p></li>
-<li><p><strong>neighbors</strong> – Number of neighbors to consider. The default is 17.</p></li>
-<li><p><strong>iters</strong> – Number of iterations to describe. The default is 200.</p></li>
+<li><p><strong>inertia</strong> – Inertia of each particle. The default is 0.6.</p></li>
+<li><p><strong>leader</strong> – Cognitive acceleration coefficient (c1). The default is 3.0.</p></li>
+<li><p><strong>follower</strong> – Social acceleration coefficient (c2). The default is 0.1.</p></li>
+<li><p><strong>neighbors</strong> – Number of neighbors in ring topology. The default is 17.</p></li>
+<li><p><strong>iters</strong> – Number of iterations. The default is 200.</p></li>
 <li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).
 (Default value = None).</p></li>
 <li><p><strong>order_relation</strong> – How to compare scores.
@@ -274,7 +273,6 @@ max and min functions.
 The default is max.</p></li>
 <li><p><strong>verbose</strong> – The optimization state will be printed in the console if True.
 (Default value = True).</p></li>
-<li><p><strong>kwargs</strong> – keyword arguments to pass to pyswarm.local.single.LocalBestPSO.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -345,146 +343,154 @@ decorated function. In case of error, the penalty value is float(‘inf’).</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pylinkage.optimization" title="Link to this heading"></a></h2>
 <p>Optimization package.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">OptimizationProgress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_iterations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">best_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_complete</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">ParetoFront</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">solutions:</span> <span class="pre">list[~pylinkage.optimization.collections.pareto.ParetoSolution],</span> <span class="pre">objective_names:</span> <span class="pre">tuple[str,</span> <span class="pre">...]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.ParetoFront" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Progress information for async optimization.</p>
+<p>Collection of non-dominated solutions from multi-objective optimization.</p>
 <dl class="simple">
-<dt>Attributes:</dt><dd><p>current_iteration: Current iteration number.
-total_iterations: Total number of iterations.
-best_score: Best score found so far (may be None if not yet available).
-is_complete: Whether the optimization has completed.</p>
+<dt>Attributes:</dt><dd><p>solutions: List of Pareto-optimal solutions.
+objective_names: Names for each objective (for plotting).</p>
 </dd>
 </dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress.best_score">
-<span class="sig-name descname"><span class="pre">best_score</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress.best_score" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.best_compromise">
+<span class="sig-name descname"><span class="pre">best_compromise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.optimization.ParetoSolution" title="pylinkage.optimization.collections.pareto.ParetoSolution"><span class="pre">ParetoSolution</span></a></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.best_compromise" title="Link to this definition"></a></dt>
+<dd><p>Select the best compromise solution.</p>
+<p>Uses weighted sum of normalized objectives to find a balanced solution.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>weights: Weight for each objective. If None, uses equal weights.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The solution with the lowest weighted sum.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the front is empty.</p>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress.current_iteration">
-<span class="sig-name descname"><span class="pre">current_iteration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress.current_iteration" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_solutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.optimization.ParetoFront" title="pylinkage.optimization.collections.pareto.ParetoFront"><span class="pre">ParetoFront</span></a></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.filter" title="Link to this definition"></a></dt>
+<dd><p>Filter to a subset of well-distributed solutions.</p>
+<p>Uses crowding distance to select diverse solutions.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>max_solutions: Maximum number of solutions to keep.</p>
+</dd>
+<dt>Returns:</dt><dd><p>New ParetoFront with at most max_solutions solutions.</p>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress.is_complete">
-<span class="sig-name descname"><span class="pre">is_complete</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress.is_complete" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.hypervolume">
+<span class="sig-name descname"><span class="pre">hypervolume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reference_point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.hypervolume" title="Link to this definition"></a></dt>
+<dd><p>Compute the hypervolume indicator.</p>
+<p>The hypervolume is the volume of the objective space dominated by
+the Pareto front and bounded by a reference point. Higher is better.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>reference_point: Upper bound for each objective. Should be</dt><dd><p>worse than any solution in the front.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>The hypervolume indicator value.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ImportError: If pymoo is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress.progress_fraction">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">progress_fraction</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress.progress_fraction" title="Link to this definition"></a></dt>
-<dd><p>Return progress as a fraction between 0.0 and 1.0.</p>
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.n_objectives">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">n_objectives</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.n_objectives" title="Link to this definition"></a></dt>
+<dd><p>Return the number of objectives.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pylinkage.optimization.OptimizationProgress.total_iterations">
-<span class="sig-name descname"><span class="pre">total_iterations</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#pylinkage.optimization.OptimizationProgress.total_iterations" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.objective_names">
+<span class="sig-name descname"><span class="pre">objective_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.objective_names" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Axes</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">objective_indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Figure</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.plot" title="Link to this definition"></a></dt>
+<dd><p>Plot the Pareto front.</p>
+<p>For 2 objectives: Creates a 2D scatter plot.
+For 3 objectives: Creates a 3D scatter plot.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ax: Matplotlib axes to plot on. If None, creates new figure.
+objective_indices: Which objectives to plot (indices).
+<a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs: Additional arguments passed to scatter().</p>
+</dd>
+<dt>Returns:</dt><dd><p>The matplotlib Figure containing the plot.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If the front is empty or indices are invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.scores_array">
+<span class="sig-name descname"><span class="pre">scores_array</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">floating</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.scores_array" title="Link to this definition"></a></dt>
+<dd><p>Return all scores as a 2D numpy array.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Array of shape (n_solutions, n_objectives).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoFront.solutions">
+<span class="sig-name descname"><span class="pre">solutions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.optimization.ParetoSolution" title="pylinkage.optimization.collections.pareto.ParetoSolution"><span class="pre">ParetoSolution</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoFront.solutions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.differential_evolution_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">differential_evolution_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">strategy:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'best1bin',</span> <span class="pre">maxiter:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000,</span> <span class="pre">popsize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15,</span> <span class="pre">tol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">mutation:</span> <span class="pre">tuple[float,</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">(0.5,</span> <span class="pre">1.0),</span> <span class="pre">recombination:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.7,</span> <span class="pre">seed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">workers:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.differential_evolution_optimization" title="Link to this definition"></a></dt>
-<dd><p>Differential Evolution optimization wrapper for scipy.</p>
-<p>This function is a wrapper to optimize a linkage using Differential
-Evolution, a global optimization algorithm that does not require
-gradient information. It is generally faster than grid search and
-can handle multimodal objective functions.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).
-The optimizer will look for the score based on order_relation.</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).
-If None, bounds will be generated from linkage constraints using
-generate_bounds().</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores (max or min). Default is max.</p></li>
-<li><p><strong>strategy</strong> – Differential evolution strategy. Options include:
-‘best1bin’, ‘best1exp’, ‘rand1exp’, ‘randtobest1exp’, ‘best2exp’,
-‘rand2exp’, ‘randtobest1bin’, ‘best2bin’, ‘rand2bin’, ‘rand1bin’.
-Default is “best1bin”.</p></li>
-<li><p><strong>maxiter</strong> – Maximum number of generations. Default is 1000.</p></li>
-<li><p><strong>popsize</strong> – Population size multiplier. The total population will be
-popsize * dimensions. Default is 15.</p></li>
-<li><p><strong>tol</strong> – Relative tolerance for convergence. Default is 0.01.</p></li>
-<li><p><strong>mutation</strong> – Mutation constant (dithering). Can be a float in [0, 2]
-or a tuple (min, max). Default is (0.5, 1.0).</p></li>
-<li><p><strong>recombination</strong> – Recombination constant in [0, 1]. Default is 0.7.</p></li>
-<li><p><strong>seed</strong> – Random seed for reproducibility.</p></li>
-<li><p><strong>workers</strong> – Number of parallel workers. Use -1 for all CPUs. Default is 1.</p></li>
-<li><p><strong>verbose</strong> – Print progress if True. Default is True.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments passed to differential_evolution.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List containing single Agent with best score, dimensions, and positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">ParetoSolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.floating</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">JointPositions</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">JointPositions</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A single solution on the Pareto front.</p>
+<dl class="simple">
+<dt>Attributes:</dt><dd><p>scores: Objective values, one per objective (all minimized).
+dimensions: Constraint values that produced this solution.
+initial_positions: Initial joint positions used during optimization.</p>
 </dd>
 </dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">differential_evolution_optimization</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">kinematic_minimization</span>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution.dimensions">
+<span class="sig-name descname"><span class="pre">dimensions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="pre">np.floating</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution.dimensions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
-<span class="nd">@kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">some_metric</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span>
-
-<span class="n">results</span> <span class="o">=</span> <span class="n">differential_evolution_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span>
-    <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-    <span class="n">maxiter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">best_score</span><span class="p">,</span> <span class="n">best_dims</span><span class="p">,</span> <span class="n">init_pos</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution.dominates">
+<span class="sig-name descname"><span class="pre">dominates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.optimization.ParetoSolution" title="pylinkage.optimization.collections.pareto.ParetoSolution"><span class="pre">ParetoSolution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution.dominates" title="Link to this definition"></a></dt>
+<dd><p>Check if this solution dominates another.</p>
+<p>A solution dominates another if it is at least as good in all
+objectives and strictly better in at least one.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>other: Another Pareto solution to compare against.</p>
+</dd>
+<dt>Returns:</dt><dd><p>True if this solution dominates the other.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.differential_evolution_optimization_async">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">differential_evolution_optimization_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">strategy:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'best1bin',</span> <span class="pre">maxiter:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000,</span> <span class="pre">popsize:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">15,</span> <span class="pre">tol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.01,</span> <span class="pre">mutation:</span> <span class="pre">tuple[float,</span> <span class="pre">float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">(0.5,</span> <span class="pre">1.0),</span> <span class="pre">recombination:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.7,</span> <span class="pre">seed:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">on_progress:</span> <span class="pre">~collections.abc.Callable[[~pylinkage.optimization.async_optimization.OptimizationProgress],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">executor:</span> <span class="pre">~concurrent.futures.thread.ThreadPoolExecutor</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.differential_evolution_optimization_async" title="Link to this definition"></a></dt>
-<dd><p>Async version of differential_evolution_optimization.</p>
-<p>This function runs the differential evolution optimization in a thread pool
-executor to avoid blocking the event loop, while providing progress callbacks
-and cancellation support.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores (max or min). Default is max.</p></li>
-<li><p><strong>strategy</strong> – Differential evolution strategy. Default is “best1bin”.</p></li>
-<li><p><strong>maxiter</strong> – Maximum number of generations. Default is 1000.</p></li>
-<li><p><strong>popsize</strong> – Population size multiplier. Default is 15.</p></li>
-<li><p><strong>tol</strong> – Relative tolerance for convergence. Default is 0.01.</p></li>
-<li><p><strong>mutation</strong> – Mutation constant. Default is (0.5, 1.0).</p></li>
-<li><p><strong>recombination</strong> – Recombination constant. Default is 0.7.</p></li>
-<li><p><strong>seed</strong> – Random seed for reproducibility.</p></li>
-<li><p><strong>on_progress</strong> – Optional callback function called with progress updates.</p></li>
-<li><p><strong>executor</strong> – Optional ThreadPoolExecutor to use.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments passed to differential_evolution.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List containing single Agent with best score, dimensions, and positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asyncio.CancelledError</strong> – If the optimization is cancelled.</p></li>
-<li><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution.init_positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">init_positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">JointPositions</span></span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution.init_positions" title="Link to this definition"></a></dt>
+<dd><p>Backwards-compatible alias for <code class="docutils literal notranslate"><span class="pre">initial_positions</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution.initial_positions">
+<span class="sig-name descname"><span class="pre">initial_positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">JointPositions</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution.initial_positions" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.optimization.ParetoSolution.scores">
+<span class="sig-name descname"><span class="pre">scores</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.optimization.ParetoSolution.scores" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -533,319 +539,6 @@ decorated function. In case of error, the penalty value is float(‘inf’).</p>
 <dd class="field-odd"><p><strong>func</strong> – Fitness function to be decorated.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.minimize_linkage">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">minimize_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">x0:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">method:</span> <span class="pre">~typing.Literal['Nelder-Mead',</span> <span class="pre">'Powell',</span> <span class="pre">'COBYLA',</span> <span class="pre">'L-BFGS-B',</span> <span class="pre">'SLSQP',</span> <span class="pre">'TNC']</span> <span class="pre">=</span> <span class="pre">'Nelder-Mead',</span> <span class="pre">maxiter:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">tol:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.minimize_linkage" title="Link to this definition"></a></dt>
-<dd><p>Local optimization using scipy.optimize.minimize.</p>
-<p>This function is a wrapper for local optimization of a linkage using
-scipy’s minimize function. It supports various gradient-free methods
-suitable for linkage optimization.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).
-The optimizer will look for the score based on order_relation.</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized.</p></li>
-<li><p><strong>x0</strong> – Initial guess for the parameters. If None, uses current
-linkage constraints.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).
-If None and method supports bounds, bounds will be generated from
-linkage constraints.</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores (max or min). Default is max.</p></li>
-<li><p><strong>method</strong> – Optimization method. Options:
-- “Nelder-Mead”: Simplex method, no bounds (default)
-- “Powell”: Powell’s method, no bounds
-- “COBYLA”: Constrained optimization by linear approximation
-- “L-BFGS-B”: Limited-memory BFGS with bounds
-- “SLSQP”: Sequential Least Squares Programming
-- “TNC”: Truncated Newton with bounds</p></li>
-<li><p><strong>maxiter</strong> – Maximum number of iterations. If None, uses scipy default.</p></li>
-<li><p><strong>tol</strong> – Tolerance for termination. If None, uses scipy default.</p></li>
-<li><p><strong>verbose</strong> – Print progress if True. Default is True.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments passed to minimize.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List containing single Agent with best score, dimensions, and positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize_linkage</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">kinematic_minimization</span>
-
-<span class="nd">@kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">some_metric</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span>
-
-<span class="c1"># Refine a solution from global optimization</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">minimize_linkage</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span>
-    <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-    <span class="n">x0</span><span class="o">=</span><span class="n">initial_guess</span><span class="p">,</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;Nelder-Mead&quot;</span><span class="p">,</span>
-    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">best_score</span><span class="p">,</span> <span class="n">best_dims</span><span class="p">,</span> <span class="n">init_pos</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.minimize_linkage_async">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">minimize_linkage_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">x0:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">method:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'Nelder-Mead',</span> <span class="pre">maxiter:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">tol:</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">on_progress:</span> <span class="pre">~collections.abc.Callable[[~pylinkage.optimization.async_optimization.OptimizationProgress],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">executor:</span> <span class="pre">~concurrent.futures.thread.ThreadPoolExecutor</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.minimize_linkage_async" title="Link to this definition"></a></dt>
-<dd><p>Async version of minimize_linkage.</p>
-<p>This function runs the local optimization in a thread pool executor to avoid
-blocking the event loop, while providing progress callbacks and cancellation
-support.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized.</p></li>
-<li><p><strong>x0</strong> – Initial guess for the parameters.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores (max or min). Default is max.</p></li>
-<li><p><strong>method</strong> – Optimization method. Default is “Nelder-Mead”.</p></li>
-<li><p><strong>maxiter</strong> – Maximum number of iterations.</p></li>
-<li><p><strong>tol</strong> – Tolerance for termination.</p></li>
-<li><p><strong>on_progress</strong> – Optional callback function called with progress updates.</p></li>
-<li><p><strong>executor</strong> – Optional ThreadPoolExecutor to use.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments passed to minimize.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List containing single Agent with best score, dimensions, and positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asyncio.CancelledError</strong> – If the optimization is cancelled.</p></li>
-<li><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.particle_swarm_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">center:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">dimensions:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">n_particles:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">leader:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0,</span> <span class="pre">follower:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1,</span> <span class="pre">inertia:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">neighbors:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">17,</span> <span class="pre">iters:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">verbose:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.particle_swarm_optimization" title="Link to this definition"></a></dt>
-<dd><p>Particle Swarm Optimization wrapper for pyswarms.</p>
-<p>This function is a simple wrapper to optimize a linkage using PSO. It will
-mainly call the LocalBestPSO function from pyswarms.single.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).
-The swarm will look for the HIGHEST score.</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized. Make sure to give an optimized linkage for
-better results.</p></li>
-<li><p><strong>center</strong> – A list of initial dimensions. If None, dimensions will be generated
-randomly between bounds. The default is None.</p></li>
-<li><p><strong>dimensions</strong> – Number of dimensions of the swarm space, number of parameters.
-If None, it takes the value len(tuple(linkage.get_num_constraints())).
-The default is None.</p></li>
-<li><p><strong>n_particles</strong> – Number of particles in the swarm. The default is 100.</p></li>
-<li><p><strong>inertia</strong> – Inertia of each particle, w in pyswarms. The default is .3.</p></li>
-<li><p><strong>leader</strong> – Learning coefficient of each particle, c1 in pyswarms.
-The default is .2.</p></li>
-<li><p><strong>follower</strong> – Social coefficient, c2 in pyswarms. The default is .5.</p></li>
-<li><p><strong>neighbors</strong> – Number of neighbors to consider. The default is 17.</p></li>
-<li><p><strong>iters</strong> – Number of iterations to describe. The default is 200.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).
-(Default value = None).</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores.
-There should not be anything else than the built-in
-max and min functions.
-The default is max.</p></li>
-<li><p><strong>verbose</strong> – The optimization state will be printed in the console if True.
-(Default value = True).</p></li>
-<li><p><strong>kwargs</strong> – keyword arguments to pass to pyswarm.local.single.LocalBestPSO.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of Agents: best score, best dimensions and initial positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.particle_swarm_optimization_async">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">particle_swarm_optimization_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">eval_func:</span> <span class="pre">Callable[[Linkage,</span> <span class="pre">Sequence[float],</span> <span class="pre">JointPositions],</span> <span class="pre">float],</span> <span class="pre">linkage:</span> <span class="pre">Linkage,</span> <span class="pre">center:</span> <span class="pre">~collections.abc.Sequence[float]</span> <span class="pre">|</span> <span class="pre">float</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">dimensions:</span> <span class="pre">int</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">n_particles:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">leader:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0,</span> <span class="pre">follower:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.1,</span> <span class="pre">inertia:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.6,</span> <span class="pre">neighbors:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">17,</span> <span class="pre">iters:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">bounds:</span> <span class="pre">tuple[~collections.abc.Sequence[float],</span> <span class="pre">~collections.abc.Sequence[float]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">order_relation:</span> <span class="pre">~collections.abc.Callable[[float,</span> <span class="pre">float],</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">max&gt;,</span> <span class="pre">on_progress:</span> <span class="pre">~collections.abc.Callable[[~pylinkage.optimization.async_optimization.OptimizationProgress],</span> <span class="pre">None]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">executor:</span> <span class="pre">~concurrent.futures.thread.ThreadPoolExecutor</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">**kwargs:</span> <span class="pre">~typing.Any</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.Agent" title="pylinkage.optimization.collections.agent.Agent"><span class="pre">Agent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.particle_swarm_optimization_async" title="Link to this definition"></a></dt>
-<dd><p>Async version of particle_swarm_optimization.</p>
-<p>This function runs the PSO optimization in a thread pool executor to avoid
-blocking the event loop, while providing progress callbacks and cancellation
-support.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – The evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).
-The swarm will look for the HIGHEST score.</p></li>
-<li><p><strong>linkage</strong> – Linkage to be optimized.</p></li>
-<li><p><strong>center</strong> – A list of initial dimensions. If None, dimensions will be
-generated randomly between bounds. The default is None.</p></li>
-<li><p><strong>dimensions</strong> – Number of dimensions of the swarm space.
-If None, it takes len(tuple(linkage.get_num_constraints())).</p></li>
-<li><p><strong>n_particles</strong> – Number of particles in the swarm. The default is 100.</p></li>
-<li><p><strong>inertia</strong> – Inertia of each particle. The default is 0.6.</p></li>
-<li><p><strong>leader</strong> – Learning coefficient of each particle. The default is 3.0.</p></li>
-<li><p><strong>follower</strong> – Social coefficient. The default is 0.1.</p></li>
-<li><p><strong>neighbors</strong> – Number of neighbors to consider. The default is 17.</p></li>
-<li><p><strong>iters</strong> – Number of iterations. The default is 200.</p></li>
-<li><p><strong>bounds</strong> – Bounds to the space, in format (lower_bound, upper_bound).</p></li>
-<li><p><strong>order_relation</strong> – How to compare scores (max or min). Default is max.</p></li>
-<li><p><strong>on_progress</strong> – Optional callback function called with progress updates.
-The callback receives an OptimizationProgress object.</p></li>
-<li><p><strong>executor</strong> – Optional ThreadPoolExecutor to use. If None, a default
-executor will be created.</p></li>
-<li><p><strong>kwargs</strong> – Additional keyword arguments passed to LocalBestPSO.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of Agents: best score, best dimensions and initial positions.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asyncio.CancelledError</strong> – If the optimization is cancelled.</p></li>
-<li><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or optimization fails.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_optimization</span><span class="p">():</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">progress_handler</span><span class="p">(</span><span class="n">progress</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Progress: </span><span class="si">{</span><span class="n">progress</span><span class="o">.</span><span class="n">progress_fraction</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">particle_swarm_optimization_async</span><span class="p">(</span>
-        <span class="n">eval_func</span><span class="o">=</span><span class="n">my_fitness</span><span class="p">,</span>
-        <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-        <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-        <span class="n">on_progress</span><span class="o">=</span><span class="n">progress_handler</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">results</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.trials_and_errors_optimization">
-<span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">JointPositions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.MutableAgent" title="pylinkage.optimization.collections.mutable_agent.MutableAgent"><span class="pre">MutableAgent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.trials_and_errors_optimization" title="Link to this definition"></a></dt>
-<dd><p>Return the list of dimensions optimizing eval_func.</p>
-<p>Each dimension set has a score, which is added in an array of n_results
-results, contains the linkages with the best scores in a maximization problem
-by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – Evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).</p></li>
-<li><p><strong>linkage</strong> – Linkage to evaluate.</p></li>
-<li><p><strong>parameters</strong> – Parameters that will be modified. Geometric constraints.
-If not, it will be assigned tuple(linkage.get_num_constraints()).
-The default is None.</p></li>
-<li><p><strong>n_results</strong> – Number of the best candidates to return. The default is 10.</p></li>
-<li><p><strong>divisions</strong> – Number of subdivisions between bounds. The default is 5.</p></li>
-<li><p><strong>kwargs</strong> – <ul>
-<li><p>Extra arguments for the optimization.</p></li>
-<li><dl class="simple">
-<dt>bounds<span class="classifier">A 2-uple (tuple of two elements), containing the minimal and maximal bounds.</span></dt><dd><p>If None, we will use parameters as a center.
-(Default value = None).</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>order_relation<span class="classifier">A function of two arguments, should return the best score of two</span></dt><dd><p>scores. Common examples are <cite>min</cite>, <cite>max</cite>, <cite>abs</cite>.
-(Default value = <code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code>).</p>
-</dd>
-</dl>
-</li>
-<li><dl>
-<dt>verbose<span class="classifier">The number of combinations will be printed in console if <cite>True</cite>.</span></dt><dd><p>(Default value = True).</p>
-</dd>
-</dl>
-</li>
-<li><p>sequential : If True, two consecutive linkages will have a small variation.</p></li>
-</ul>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>3-uplet of score, dimensions and initial position for each Linkage to
-return.
-Its size is {n_results}.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or no valid solution is found.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pylinkage.optimization.trials_and_errors_optimization_async">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pylinkage.optimization.</span></span><span class="sig-name descname"><span class="pre">trials_and_errors_optimization_async</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eval_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">JointPositions</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage" title="pylinkage.Linkage"><span class="pre">Linkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">divisions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_progress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.optimization.OptimizationProgress" title="pylinkage.optimization.async_optimization.OptimizationProgress"><span class="pre">OptimizationProgress</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ThreadPoolExecutor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.collections.html#pylinkage.collections.MutableAgent" title="pylinkage.optimization.collections.mutable_agent.MutableAgent"><span class="pre">MutableAgent</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.optimization.trials_and_errors_optimization_async" title="Link to this definition"></a></dt>
-<dd><p>Async version of trials_and_errors_optimization.</p>
-<p>This function runs the grid search optimization in a thread pool executor
-to avoid blocking the event loop, while providing progress callbacks and
-cancellation support.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>eval_func</strong> – Evaluation function.
-Input: (linkage, num_constraints, initial_coordinates).
-Output: score (float).</p></li>
-<li><p><strong>linkage</strong> – Linkage to evaluate.</p></li>
-<li><p><strong>parameters</strong> – Parameters that will be modified. If None, uses
-tuple(linkage.get_num_constraints()).</p></li>
-<li><p><strong>n_results</strong> – Number of best candidates to return. The default is 10.</p></li>
-<li><p><strong>divisions</strong> – Number of subdivisions between bounds. The default is 5.</p></li>
-<li><p><strong>on_progress</strong> – Optional callback function called with progress updates.</p></li>
-<li><p><strong>executor</strong> – Optional ThreadPoolExecutor to use. If None, a default
-executor will be created.</p></li>
-<li><p><strong>kwargs</strong> – Additional arguments for the optimization:
-- bounds: A 2-tuple containing minimal and maximal bounds.
-- order_relation: Function to compare scores (max, min, abs).
-- sequential: If True, consecutive linkages have small variation.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List of (score, dimensions, initial_position) tuples.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>asyncio.CancelledError</strong> – If the optimization is cancelled.</p></li>
-<li><p><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError" title="pylinkage.exceptions.OptimizationError"><strong>OptimizationError</strong></a> – If parameters are invalid or no valid solution found.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_optimization</span><span class="p">():</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">progress_handler</span><span class="p">(</span><span class="n">progress</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Progress: </span><span class="si">{</span><span class="n">progress</span><span class="o">.</span><span class="n">progress_fraction</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">trials_and_errors_optimization_async</span><span class="p">(</span>
-        <span class="n">eval_func</span><span class="o">=</span><span class="n">my_fitness</span><span class="p">,</span>
-        <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span>
-        <span class="n">divisions</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">on_progress</span><span class="o">=</span><span class="n">progress_handler</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="n">results</span>
-</pre></div>
-</div>
 </dd></dl>
 
 </section>

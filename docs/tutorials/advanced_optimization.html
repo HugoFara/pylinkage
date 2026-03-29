@@ -6,21 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Optimization Techniques &mdash; pylinkage 0.6.0 documentation</title>
+  <title>Advanced Optimization Techniques &mdash; pylinkage 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pylinkage" href="../api/modules.html" />
-    <link rel="prev" title="Custom Joint Creation" href="custom_joints.html" /> 
+    <link rel="next" title="Multi-Objective Optimization" href="multi_objective.html" />
+    <link rel="prev" title="Cam-Follower Mechanisms" href="cam_follower.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,28 +50,33 @@
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Advanced Optimization Techniques</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview-of-optimization">Overview of Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#defining-a-fitness-function">Defining a Fitness Function</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#basic-fitness-function">Basic Fitness Function</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#working-with-loci-data">Working with Loci Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-features">Core Features</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cam_follower.html">Cam-Follower Mechanisms</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced Optimization Techniques</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#overview-of-optimization">Overview of Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#defining-a-fitness-function">Defining a Fitness Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-optimizing-for-path-shape">Example: Optimizing for Path Shape</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#particle-swarm-optimization-parameters">Particle Swarm Optimization Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generating-bounds">Generating Bounds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grid-search-optimization">Grid Search Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-objective-optimization">Multi-Objective Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constraint-preservation">Constraint Preservation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optimizing-initial-positions">Optimizing Initial Positions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#visualizing-optimization-progress">Visualizing Optimization Progress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#async-optimization">Async Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#example-optimizing-for-path-shape">Example: Optimizing for Path Shape</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#particle-swarm-optimization-parameters">Particle Swarm Optimization Parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generating-bounds">Generating Bounds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#grid-search-optimization">Grid Search Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multi-objective-optimization">Multi-Objective Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#constraint-preservation">Constraint Preservation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#optimizing-initial-positions">Optimizing Initial Positions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#visualizing-optimization-progress">Visualizing Optimization Progress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#async-optimization">Async Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_objective.html">Multi-Objective Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity_analysis.html">Sensitivity &amp; Tolerance Analysis</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -321,12 +326,12 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 </section>
 <section id="multi-objective-optimization">
 <h2>Multi-Objective Optimization<a class="headerlink" href="#multi-objective-optimization" title="Link to this heading"></a></h2>
-<p>Combine multiple objectives in your fitness function:</p>
+<p>For true multi-objective optimization with Pareto fronts, see <a class="reference internal" href="multi_objective.html"><span class="doc">Multi-Objective Optimization</span></a>.</p>
+<p>For simple cases where objectives can be combined with weights:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">multi_objective_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize for both path shape and mechanism size.&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">weighted_objectives</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine objectives with weights (simple approach).&quot;&quot;&quot;</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
-    <span class="n">crank_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
 
     <span class="c1"># Objective 1: Match target bounding box</span>
     <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
@@ -338,10 +343,12 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
     <span class="n">mech_bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">all_points</span><span class="p">)</span>
     <span class="n">mechanism_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">mech_bbox</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">mech_bbox</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">mech_bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">mech_bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="c1"># Weighted combination</span>
+    <span class="c1"># Weighted combination (requires choosing weights upfront)</span>
     <span class="k">return</span> <span class="n">shape_error</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">mechanism_size</span>
 </pre></div>
 </div>
+<p>For exploring trade-offs without committing to weights, use
+<code class="docutils literal notranslate"><span class="pre">multi_objective_optimization()</span></code> which returns the full Pareto front.</p>
 </section>
 <section id="constraint-preservation">
 <h2>Constraint Preservation<a class="headerlink" href="#constraint-preservation" title="Link to this heading"></a></h2>
@@ -467,8 +474,8 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="custom_joints.html" class="btn btn-neutral float-left" title="Custom Joint Creation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../api/modules.html" class="btn btn-neutral float-right" title="pylinkage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cam_follower.html" class="btn btn-neutral float-left" title="Cam-Follower Mechanisms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multi_objective.html" class="btn btn-neutral float-right" title="Multi-Objective Optimization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

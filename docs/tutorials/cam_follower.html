@@ -1,0 +1,506 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cam-Follower Mechanisms &mdash; pylinkage 0.8.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced Optimization Techniques" href="advanced_optimization.html" />
+    <link rel="prev" title="Visualization Backends" href="visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#getting-started">Getting Started</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#core-features">Core Features</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cam-Follower Mechanisms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#motion-laws">Motion Laws</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cam-profiles">Cam Profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#translating-cam-follower">Translating Cam Follower</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#oscillating-cam-follower">Oscillating Cam Follower</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#connecting-to-downstream-linkages">Connecting to Downstream Linkages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#profile-analysis">Profile Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optimization">Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_objective.html">Multi-Objective Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensitivity_analysis.html">Sensitivity &amp; Tolerance Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#advanced-topics">Advanced Topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Cam-Follower Mechanisms</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/cam_follower.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cam-follower-mechanisms">
+<h1>Cam-Follower Mechanisms<a class="headerlink" href="#cam-follower-mechanisms" title="Link to this heading"></a></h1>
+<p>This tutorial covers the cam-follower module in pylinkage, which allows you to
+create mechanisms with disk/plate cams driving translating or oscillating followers.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>A cam-follower mechanism converts rotary motion into reciprocating or oscillating
+motion. The cam is a rotating disk with a specially shaped profile, and the follower
+is a component that traces this profile, producing the desired output motion.</p>
+<p>Pylinkage supports:</p>
+<ul class="simple">
+<li><p><strong>Translating followers</strong>: Move along a fixed linear guide</p></li>
+<li><p><strong>Oscillating followers</strong>: Pivot about a fixed point (rocker arm)</p></li>
+<li><p><strong>Knife-edge followers</strong>: Direct contact with cam surface (roller_radius=0)</p></li>
+<li><p><strong>Roller followers</strong>: Rolling contact via a roller (roller_radius&gt;0)</p></li>
+</ul>
+</section>
+<section id="motion-laws">
+<h2>Motion Laws<a class="headerlink" href="#motion-laws" title="Link to this heading"></a></h2>
+<p>Motion laws define the dimensionless displacement function that shapes the cam profile.
+All motion laws produce normalized displacement s(u) where u is in [0,1] and s is in [0,1].</p>
+<section id="available-motion-laws">
+<h3>Available Motion Laws<a class="headerlink" href="#available-motion-laws" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HarmonicMotionLaw</span><span class="p">,</span>
+    <span class="n">CycloidalMotionLaw</span><span class="p">,</span>
+    <span class="n">ModifiedTrapezoidalMotionLaw</span><span class="p">,</span>
+    <span class="n">PolynomialMotionLaw</span><span class="p">,</span>
+    <span class="n">polynomial_345</span><span class="p">,</span>
+    <span class="n">polynomial_4567</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Harmonic Motion Law</strong></p>
+<p>Simple cosine-based motion. Has non-zero acceleration at boundaries.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">law</span> <span class="o">=</span> <span class="n">HarmonicMotionLaw</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">law</span><span class="o">.</span><span class="n">displacement</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>  <span class="c1"># 0.0 (start)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">law</span><span class="o">.</span><span class="n">displacement</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>  <span class="c1"># 0.5 (midpoint)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">law</span><span class="o">.</span><span class="n">displacement</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>  <span class="c1"># 1.0 (end)</span>
+</pre></div>
+</div>
+<p><strong>Cycloidal Motion Law</strong></p>
+<p>Zero velocity and acceleration at boundaries (smooth start/stop).
+Higher peak acceleration than harmonic.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">law</span> <span class="o">=</span> <span class="n">CycloidalMotionLaw</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">law</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>  <span class="c1"># 0.0 (starts smoothly)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">law</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>  <span class="c1"># 2.0 (maximum velocity at midpoint)</span>
+</pre></div>
+</div>
+<p><strong>Modified Trapezoidal Motion Law</strong></p>
+<p>Lower peak acceleration, good for high-load applications.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">law</span> <span class="o">=</span> <span class="n">ModifiedTrapezoidalMotionLaw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Polynomial Motion Laws</strong></p>
+<p>Polynomial motion with custom coefficients. The 3-4-5 and 4-5-6-7 polynomials
+are common choices with zero velocity/acceleration at boundaries.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 3-4-5 polynomial (zero velocity and acceleration at ends)</span>
+<span class="n">law</span> <span class="o">=</span> <span class="n">polynomial_345</span><span class="p">()</span>
+
+<span class="c1"># 4-5-6-7 polynomial (also zero jerk at ends)</span>
+<span class="n">law</span> <span class="o">=</span> <span class="n">polynomial_4567</span><span class="p">()</span>
+
+<span class="c1"># Custom polynomial coefficients</span>
+<span class="n">law</span> <span class="o">=</span> <span class="n">PolynomialMotionLaw</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cam-profiles">
+<h2>Cam Profiles<a class="headerlink" href="#cam-profiles" title="Link to this heading"></a></h2>
+<p>Cam profiles define how the cam radius varies with rotation angle.</p>
+<section id="functionprofile">
+<h3>FunctionProfile<a class="headerlink" href="#functionprofile" title="Link to this heading"></a></h3>
+<p>Creates a profile from a motion law with rise-dwell-fall-dwell timing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">CycloidalMotionLaw</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">FunctionProfile</span><span class="p">(</span>
+    <span class="n">motion_law</span><span class="o">=</span><span class="n">CycloidalMotionLaw</span><span class="p">(),</span>
+    <span class="n">base_radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>      <span class="c1"># Minimum radius</span>
+    <span class="n">total_lift</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>       <span class="c1"># Maximum displacement</span>
+    <span class="n">rise_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>       <span class="c1"># Angle where rise begins</span>
+    <span class="n">rise_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>   <span class="c1"># Angle where rise ends (dwell-high starts)</span>
+    <span class="n">dwell_high_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>  <span class="c1"># Angle where dwell-high ends (fall starts)</span>
+    <span class="n">fall_end</span><span class="o">=</span><span class="mi">3</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="c1"># Angle where fall ends (dwell-low starts)</span>
+<span class="p">)</span>
+
+<span class="c1"># Evaluate the profile</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="mf">0.0</span><span class="p">))</span>         <span class="c1"># 1.0 (base radius)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span>   <span class="c1"># Rising...</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>     <span class="c1"># 1.5 (base + lift, at peak)</span>
+</pre></div>
+</div>
+</section>
+<section id="pointarrayprofile">
+<h3>PointArrayProfile<a class="headerlink" href="#pointarrayprofile" title="Link to this heading"></a></h3>
+<p>Creates a profile from discrete (angle, radius) points using spline interpolation.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">PointArrayProfile</span>
+
+<span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">]</span>
+<span class="n">radii</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">PointArrayProfile</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="p">,</span> <span class="n">radii</span><span class="o">=</span><span class="n">radii</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Evaluate at any angle (spline interpolation)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span>  <span class="c1"># 1.2</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="translating-cam-follower">
+<h2>Translating Cam Follower<a class="headerlink" href="#translating-cam-follower" title="Link to this heading"></a></h2>
+<p>A translating follower moves linearly along a fixed guide axis based on the cam rotation.</p>
+<section id="basic-example">
+<h3>Basic Example<a class="headerlink" href="#basic-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslatingCamFollower</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">HarmonicMotionLaw</span>
+
+<span class="c1"># Fixed cam center</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
+
+<span class="c1"># Cam driver (rotating crank)</span>
+<span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
+    <span class="n">anchor</span><span class="o">=</span><span class="n">cam_center</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>           <span class="c1"># Small radius (just for visualization)</span>
+    <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1"># Rotation speed</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Cam profile</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">FunctionProfile</span><span class="p">(</span>
+    <span class="n">motion_law</span><span class="o">=</span><span class="n">HarmonicMotionLaw</span><span class="p">(),</span>
+    <span class="n">base_radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">total_lift</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">rise_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">rise_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">dwell_high_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">fall_end</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Guide point (defines direction of follower motion)</span>
+<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;guide&quot;</span><span class="p">)</span>
+
+<span class="c1"># Translating follower</span>
+<span class="n">follower</span> <span class="o">=</span> <span class="n">TranslatingCamFollower</span><span class="p">(</span>
+    <span class="n">cam_driver</span><span class="o">=</span><span class="n">cam_crank</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+    <span class="n">guide</span><span class="o">=</span><span class="n">guide</span><span class="p">,</span>
+    <span class="n">guide_angle</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># Vertical motion</span>
+    <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>      <span class="c1"># Knife-edge follower</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;follower&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Create linkage</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">guide</span><span class="p">,</span> <span class="n">cam_crank</span><span class="p">,</span> <span class="n">follower</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cam mechanism&quot;</span>
+<span class="p">)</span>
+
+<span class="c1"># Simulate</span>
+<span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
+    <span class="n">follower_pos</span> <span class="o">=</span> <span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Follower at: </span><span class="si">{</span><span class="n">follower_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="roller-follower">
+<h3>Roller Follower<a class="headerlink" href="#roller-follower" title="Link to this heading"></a></h3>
+<p>For a roller follower, set <code class="docutils literal notranslate"><span class="pre">roller_radius</span></code> to a positive value:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">follower</span> <span class="o">=</span> <span class="n">TranslatingCamFollower</span><span class="p">(</span>
+    <span class="n">cam_driver</span><span class="o">=</span><span class="n">cam_crank</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+    <span class="n">guide</span><span class="o">=</span><span class="n">guide</span><span class="p">,</span>
+    <span class="n">guide_angle</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>  <span class="c1"># Roller with 0.1 unit radius</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="oscillating-cam-follower">
+<h2>Oscillating Cam Follower<a class="headerlink" href="#oscillating-cam-follower" title="Link to this heading"></a></h2>
+<p>An oscillating follower pivots about a fixed point, with an arm that traces the cam profile.</p>
+<section id="id1">
+<h3>Basic Example<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">OscillatingCamFollower</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">CycloidalMotionLaw</span>
+
+<span class="c1"># Fixed points</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
+<span class="n">pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pivot&quot;</span><span class="p">)</span>
+
+<span class="c1"># Cam driver</span>
+<span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
+    <span class="n">anchor</span><span class="o">=</span><span class="n">cam_center</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Profile that maps cam angle to angular displacement of the arm</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">FunctionProfile</span><span class="p">(</span>
+    <span class="n">motion_law</span><span class="o">=</span><span class="n">CycloidalMotionLaw</span><span class="p">(),</span>
+    <span class="n">base_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>          <span class="c1"># Base angle offset (radians)</span>
+    <span class="n">total_lift</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span>     <span class="c1"># Maximum angular swing (45 degrees)</span>
+    <span class="n">rise_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">rise_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">dwell_high_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">fall_end</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Oscillating follower</span>
+<span class="n">follower</span> <span class="o">=</span> <span class="n">OscillatingCamFollower</span><span class="p">(</span>
+    <span class="n">cam_driver</span><span class="o">=</span><span class="n">cam_crank</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+    <span class="n">pivot_anchor</span><span class="o">=</span><span class="n">pivot</span><span class="p">,</span>
+    <span class="n">arm_length</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">initial_angle</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># Arm points upward at rest</span>
+    <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">cam_crank</span><span class="p">,</span> <span class="n">follower</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
+    <span class="n">output_pos</span> <span class="o">=</span> <span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arm end at: </span><span class="si">{</span><span class="n">output_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="connecting-to-downstream-linkages">
+<h2>Connecting to Downstream Linkages<a class="headerlink" href="#connecting-to-downstream-linkages" title="Link to this heading"></a></h2>
+<p>Cam followers can drive downstream linkages. The <code class="docutils literal notranslate"><span class="pre">output</span></code> property provides
+an anchor point that other dyads can connect to.</p>
+<section id="example-cam-driven-four-bar">
+<h3>Example: Cam-Driven Four-Bar<a class="headerlink" href="#example-cam-driven-four-bar" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslatingCamFollower</span><span class="p">,</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">HarmonicMotionLaw</span>
+
+<span class="c1"># Ground points</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
+<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;guide&quot;</span><span class="p">)</span>
+<span class="n">rocker_pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rocker_pivot&quot;</span><span class="p">)</span>
+
+<span class="c1"># Cam mechanism</span>
+<span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="n">profile</span> <span class="o">=</span> <span class="n">FunctionProfile</span><span class="p">(</span>
+    <span class="n">motion_law</span><span class="o">=</span><span class="n">HarmonicMotionLaw</span><span class="p">(),</span>
+    <span class="n">base_radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">total_lift</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">rise_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">rise_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">dwell_high_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+    <span class="n">fall_end</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">follower</span> <span class="o">=</span> <span class="n">TranslatingCamFollower</span><span class="p">(</span>
+    <span class="n">cam_driver</span><span class="o">=</span><span class="n">cam_crank</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
+    <span class="n">guide</span><span class="o">=</span><span class="n">guide</span><span class="p">,</span>
+    <span class="n">guide_angle</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Connect downstream rocker via RRRDyad</span>
+<span class="n">rocker</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>  <span class="c1"># Connects to follower output</span>
+    <span class="n">anchor2</span><span class="o">=</span><span class="n">rocker_pivot</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+    <span class="n">distance2</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
+    <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">guide</span><span class="p">,</span> <span class="n">rocker_pivot</span><span class="p">,</span> <span class="n">cam_crank</span><span class="p">,</span> <span class="n">follower</span><span class="p">,</span> <span class="n">rocker</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Simulate the complete mechanism</span>
+<span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
+    <span class="n">rocker_pos</span> <span class="o">=</span> <span class="n">rocker</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rocker output at: </span><span class="si">{</span><span class="n">rocker_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="profile-analysis">
+<h2>Profile Analysis<a class="headerlink" href="#profile-analysis" title="Link to this heading"></a></h2>
+<p>Cam profiles provide methods for mechanical analysis.</p>
+<section id="pressure-angle">
+<h3>Pressure Angle<a class="headerlink" href="#pressure-angle" title="Link to this heading"></a></h3>
+<p>The pressure angle indicates the efficiency of force transmission.
+High pressure angles (&gt;30 degrees) can cause binding.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="c1"># Check pressure angle at various cam positions</span>
+<span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">]:</span>
+    <span class="n">pressure</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">pressure_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;At </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: pressure angle = </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> deg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pitch-radius">
+<h3>Pitch Radius<a class="headerlink" href="#pitch-radius" title="Link to this heading"></a></h3>
+<p>For roller followers, the pitch curve is the path traced by the roller center.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">roller_radius</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]:</span>
+    <span class="n">pitch</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">pitch_radius</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">roller_radius</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pitch radius at </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: </span><span class="si">{</span><span class="n">pitch</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="optimization">
+<h2>Optimization<a class="headerlink" href="#optimization" title="Link to this heading"></a></h2>
+<p>Profile parameters can be optimized using pylinkage’s constraint system.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get optimizable constraints</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>  <span class="c1"># (base_radius, total_lift)</span>
+
+<span class="c1"># Modify constraints</span>
+<span class="n">profile</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="n">base_radius</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">total_lift</span><span class="o">=</span><span class="mf">0.6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For cam followers in a linkage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all constraints from the follower</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">follower</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">())</span>
+<span class="c1"># Returns: roller_radius + profile constraints</span>
+
+<span class="c1"># These can be used with PSO optimization</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">particle_swarm_optimization</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize cam profile parameters with PSO</p></li>
+<li><p><a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a> - Analyze velocities and accelerations</p></li>
+<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Joint Creation</span></a> - Create custom dyad types</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="Visualization Backends" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced_optimization.html" class="btn btn-neutral float-right" title="Advanced Optimization Techniques" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
