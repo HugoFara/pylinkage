@@ -13,22 +13,33 @@ class MutableAgent:
 
     score: float | None
     dimensions: Sequence[float] | None
-    init_positions: Sequence[tuple[float | None, float | None]] | None
+    initial_positions: Sequence[tuple[float | None, float | None]] | None
 
     def __init__(
         self,
         score: float | None = None,
         dimensions: Sequence[float] | None = None,
+        initial_positions: Sequence[tuple[float | None, float | None]] | None = None,
+        # Backwards-compatible keyword
         init_position: Sequence[tuple[float | None, float | None]] | None = None,
     ) -> None:
         self.score = score
         self.dimensions = dimensions
-        self.init_positions = init_position
+        self.initial_positions = initial_positions if initial_positions is not None else init_position
+
+    @property
+    def init_positions(self) -> Sequence[tuple[float | None, float | None]] | None:
+        """Backwards-compatible alias for ``initial_positions``."""
+        return self.initial_positions
+
+    @init_positions.setter
+    def init_positions(self, value: Sequence[tuple[float | None, float | None]] | None) -> None:
+        self.initial_positions = value
 
     def __iter__(self) -> Iterator[Any]:
         yield self.score
         yield self.dimensions
-        yield self.init_positions
+        yield self.initial_positions
 
     def __setitem__(self, key: int | slice, value: Any) -> None:
         """Allow index assignment."""
@@ -38,7 +49,7 @@ class MutableAgent:
         elif key == 1:
             self.dimensions = value
         elif key == 2:
-            self.init_positions = value
+            self.initial_positions = value
         elif isinstance(key, slice):
             for i, val in zip([0, 1, 2][key], value, strict=False):
                 self[i] = val
@@ -53,7 +64,7 @@ class MutableAgent:
         if key == 1:
             return self.dimensions
         if key == 2:
-            return self.init_positions
+            return self.initial_positions
         if isinstance(key, slice):
             return list(self)[key]
         raise IndexError()
@@ -61,5 +72,5 @@ class MutableAgent:
     def __repr__(self) -> str:
         return (
             f"Agent(score={self.score}, dimensions={self.dimensions}, "
-            f"init_positions={self.init_positions})"
+            f"initial_positions={self.initial_positions})"
         )

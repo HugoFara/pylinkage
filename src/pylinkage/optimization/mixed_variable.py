@@ -278,7 +278,7 @@ def co_optimize(
             pareto_solutions.append(ParetoSolution(
                 scores=scores,
                 dimensions=x[1:].copy(),
-                init_positions=(),
+                initial_positions=(),
             ))
 
     if objective_names is None:

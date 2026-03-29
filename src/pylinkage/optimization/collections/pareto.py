@@ -23,12 +23,29 @@ class ParetoSolution:
     Attributes:
         scores: Objective values, one per objective (all minimized).
         dimensions: Constraint values that produced this solution.
-        init_positions: Initial joint positions used during optimization.
+        initial_positions: Initial joint positions used during optimization.
     """
 
     scores: tuple[float, ...]
     dimensions: NDArray[np.floating[Any]]
-    init_positions: JointPositions
+    initial_positions: JointPositions = ()
+
+    def __init__(
+        self,
+        scores: tuple[float, ...],
+        dimensions: NDArray[np.floating[Any]],
+        initial_positions: JointPositions = (),
+        *,
+        init_positions: JointPositions | None = None,
+    ) -> None:
+        self.scores = scores
+        self.dimensions = dimensions
+        self.initial_positions = init_positions if init_positions is not None else initial_positions
+
+    @property
+    def init_positions(self) -> JointPositions:
+        """Backwards-compatible alias for ``initial_positions``."""
+        return self.initial_positions
 
     def dominates(self, other: ParetoSolution) -> bool:
         """Check if this solution dominates another.

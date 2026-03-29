@@ -263,7 +263,7 @@ def multi_objective_optimization(
         sol = ParetoSolution(
             scores=tuple(result.F[i]),
             dimensions=result.X[i],
-            init_positions=joint_pos,
+            initial_positions=joint_pos,
         )
         solutions.append(sol)
 
