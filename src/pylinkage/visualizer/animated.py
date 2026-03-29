@@ -56,22 +56,26 @@ def update_animated_plot(
     for j, pos in enumerate(locus):
         joint = linkage.joints[j]
         # Draw a link to the first parent if it exists
-        if joint.joint0 is None:
+        joint0 = getattr(joint, "joint0", None)
+        if joint0 is None:
             continue
         # Use _StaticBase to match both user-created Static and internal _StaticBase
-        if isinstance(joint.joint0, _StaticBase):
-            par_locus = joint.joint0.coord()
+        if isinstance(joint0, _StaticBase):
+            par_locus = joint0.coord()
         else:
-            par_locus = locus[linkage.joints.index(joint.joint0)]
+            par_locus = locus[linkage.joints.index(joint0)]
         im = next(image)
         im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
         # Then second parent
         if isinstance(joint, (Crank, _StaticBase)):
             continue
-        if isinstance(joint.joint1, _StaticBase):
-            par_locus = joint.joint1.coord()
+        joint1 = getattr(joint, "joint1", None)
+        if isinstance(joint1, _StaticBase):
+            par_locus = joint1.coord()
+        elif joint1 is not None:
+            par_locus = locus[linkage.joints.index(joint1)]
         else:
-            par_locus = locus[linkage.joints.index(joint.joint1)]
+            continue
         im = next(image)
         im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
     return images
@@ -103,7 +107,7 @@ def plot_kinematic_linkage(
 
     images: list[Line2D] = []
     for joint in linkage.joints:
-        for parent in (joint.joint0, joint.joint1):
+        for parent in (getattr(joint, "joint0", None), getattr(joint, "joint1", None)):
             if parent is not None:
                 images.append(
                     axis.plot([], [], c=_get_color(joint), animated=isinstance(joint, _StaticBase))[

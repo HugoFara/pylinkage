@@ -18,6 +18,7 @@ import warnings
 
 from .. import exceptions as pl_exceptions
 from .._types import Coord
+from ..components._base import Component
 from ..solver.joints import solve_linear
 from . import joint as pl_joint
 
@@ -82,7 +83,7 @@ class Prismatic(pl_joint.Joint):
         self.joint2 = pl_joint.joint_syntax_parser(joint2)
 
     @property
-    def anchors(self) -> tuple["pl_joint.Joint | pl_joint._StaticBase", ...]:
+    def anchors(self) -> tuple["Component", ...]:
         """Return all three parent joints (revolute anchor + line endpoints)."""
         result = list(super().anchors)
         if self.joint2 is not None:

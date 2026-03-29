@@ -10,7 +10,7 @@ from enum import Enum, auto
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..joints.joint import Joint
+    from ..components._base import Component
 
 
 class SymbolType(Enum):
@@ -67,7 +67,7 @@ LINK_COLORS: list[str] = [
 ]
 
 
-def get_symbol_spec(joint: "Joint") -> SymbolSpec:
+def get_symbol_spec(joint: "Component") -> SymbolSpec:
     """Get the symbol specification for a joint.
 
     Args:
@@ -95,7 +95,7 @@ def get_link_color(index: int) -> str:
     return LINK_COLORS[index % len(LINK_COLORS)]
 
 
-def is_ground_joint(joint: "Joint") -> bool:
+def is_ground_joint(joint: "Component") -> bool:
     """Check if a joint should be rendered as a ground/fixed support.
 
     Args:
@@ -104,4 +104,4 @@ def is_ground_joint(joint: "Joint") -> bool:
     Returns:
         True if the joint is a ground joint (Static with no parents).
     """
-    return type(joint).__name__ == "Static" and joint.joint0 is None
+    return type(joint).__name__ == "Static" and getattr(joint, "joint0", None) is None

@@ -5,6 +5,7 @@ This module provides shared utilities for matplotlib-based visualization.
 For symbol definitions used by other backends (Plotly, drawsvg), see symbols.py.
 """
 
+from ..components._base import Component
 from ..joints.crank import Crank
 from ..joints.fixed import Fixed
 from ..joints.joint import Joint
@@ -25,7 +26,7 @@ COLOR_SWITCHER: dict[type[Joint], str] = {
 # Re-export symbol utilities for convenience
 
 
-def _get_color(joint: Joint) -> str:
+def _get_color(joint: "Joint | Component") -> str:
     """Search in COLOR_SWITCHER for the corresponding color.
 
     Args:

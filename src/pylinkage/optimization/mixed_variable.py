@@ -128,7 +128,7 @@ def co_optimize(
     n_dim = topo_context.n_dim
 
     # Define the pymoo problem
-    class _CoProblem(ElementwiseProblem):
+    class _CoProblem(ElementwiseProblem):  # type: ignore[misc]
         def __init__(self) -> None:
             super().__init__(
                 n_var=n_dim,
@@ -187,11 +187,11 @@ def co_optimize(
         dimension_sigma=config.dimension_mutation_sigma,
     )
 
-    class _Sampling(Sampling):
+    class _Sampling(Sampling):  # type: ignore[misc]
         def _do(self, problem: Any, n_samples: int, **kwargs: Any) -> NDArray[np.floating[Any]]:
             return X0[:n_samples]
 
-    class _Crossover(Crossover):
+    class _Crossover(Crossover):  # type: ignore[misc]
         def __init__(self) -> None:
             super().__init__(n_parents=2, n_offsprings=2)
 
@@ -208,7 +208,7 @@ def co_optimize(
                 )
             return Y
 
-    class _Mutation(Mutation):
+    class _Mutation(Mutation):  # type: ignore[misc]
         def _do(
             self, problem: Any, X: NDArray[np.floating[Any]], **kwargs: Any
         ) -> NDArray[np.floating[Any]]:
@@ -267,13 +267,13 @@ def co_optimize(
 
             # Build linkage for the solution
             linkage = _build_linkage_from_chromosome(x, topo_context)
-            entry = topo_context.idx_to_entry.get(int(round(x[0])))
+            topo_entry = topo_context.idx_to_entry.get(int(round(x[0])))
 
             solutions.append(CoOptSolution(
                 chromosome=chromosome,
                 scores=scores,
                 linkage=linkage,
-                topology_entry=entry,
+                topology_entry=topo_entry,
             ))
             pareto_solutions.append(ParetoSolution(
                 scores=scores,
@@ -521,23 +521,23 @@ def _place_joints_from_vedges(
         if i == 0:
             positions[node_id] = (0.0, 0.0)
         else:
-            dist = _find_dist_to_placed(node_id, positions, adjacency)
-            if dist is None:
-                dist = 4.0
-            positions[node_id] = (x_pos + dist, 0.0)
-            x_pos += dist
+            ground_dist = _find_dist_to_placed(node_id, positions, adjacency)
+            if ground_dist is None:
+                ground_dist = 4.0
+            positions[node_id] = (x_pos + ground_dist, 0.0)
+            x_pos += ground_dist
 
     # Place driver nodes (cranks)
     for node_id in driver_nodes:
-        dist = _find_dist_to_placed(node_id, positions, adjacency)
-        if dist is None:
-            dist = 1.0
+        driver_dist = _find_dist_to_placed(node_id, positions, adjacency)
+        if driver_dist is None:
+            driver_dist = 1.0
         anchor_id = _find_placed_neighbor(node_id, positions, adjacency)
         if anchor_id is not None:
             ax, ay = positions[anchor_id]
-            positions[node_id] = (ax + dist * 0.707, ay + dist * 0.707)
+            positions[node_id] = (ax + driver_dist * 0.707, ay + driver_dist * 0.707)
         else:
-            positions[node_id] = (dist * 0.707, dist * 0.707)
+            positions[node_id] = (driver_dist * 0.707, driver_dist * 0.707)
 
     # Place driven nodes by circle-circle intersection (multi-pass)
     for _ in range(5):
@@ -580,11 +580,12 @@ def _place_joints_from_vedges(
     if unplaced:
         # Sequential placement stalled (e.g., triad circular dependency).
         # Try simultaneous placement of remaining nodes via optimization.
-        positions = _solve_remaining_simultaneously(
+        solved = _solve_remaining_simultaneously(
             unplaced, positions, adjacency
         )
-        if positions is None or not all(n in positions for n in all_nodes):
+        if solved is None or not all(n in solved for n in all_nodes):
             return None
+        positions = solved
 
     return positions
 

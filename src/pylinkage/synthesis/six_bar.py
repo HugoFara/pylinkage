@@ -455,7 +455,7 @@ def _find_coupler_positions_at_targets(
         for positions in linkage.step():
             bx, by = positions[b_idx]
             cx, cy = positions[c_idx]
-            if any(v is None for v in (bx, by, cx, cy)):
+            if bx is None or by is None or cx is None or cy is None:
                 continue
             b_trajectory.append((bx, by))
             c_trajectory.append((cx, cy))

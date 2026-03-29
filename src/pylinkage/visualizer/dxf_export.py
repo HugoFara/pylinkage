@@ -340,11 +340,12 @@ def plot_linkage_dxf(
         pos = get_position(joint)
 
         # Draw link to joint0 (first parent)
-        if joint.joint0 is not None:
-            parent_pos = get_position(joint.joint0)
+        joint0 = getattr(joint, "joint0", None)
+        if joint0 is not None:
+            parent_pos = get_position(joint0)
 
-            joint_ids = (id(joint), id(joint.joint0))
-            rev_ids = (id(joint.joint0), id(joint))
+            joint_ids = (id(joint), id(joint0))
+            rev_ids = (id(joint0), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 _draw_dxf_link(
                     msp,
@@ -357,13 +358,13 @@ def plot_linkage_dxf(
                 drawn_links.add(joint_ids)
 
         # Draw link to joint1 (second parent) for joints that have it
-        has_joint1 = hasattr(joint, "joint1") and joint.joint1 is not None
+        joint1 = getattr(joint, "joint1", None)
         is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
-        if has_joint1 and is_revolute_type:
-            parent_pos = get_position(joint.joint1)
+        if joint1 is not None and is_revolute_type:
+            parent_pos = get_position(joint1)
 
-            joint_ids = (id(joint), id(joint.joint1))
-            rev_ids = (id(joint.joint1), id(joint))
+            joint_ids = (id(joint), id(joint1))
+            rev_ids = (id(joint1), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 _draw_dxf_link(
                     msp,

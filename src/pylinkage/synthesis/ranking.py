@@ -156,7 +156,7 @@ def compute_transmission_angle(linkage: Linkage) -> float:
             cx, cy = positions[rev_idx]
             dx, dy = positions[d_idx]
 
-            if any(v is None for v in (bx, by, cx, cy, dx, dy)):
+            if bx is None or by is None or cx is None or cy is None or dx is None or dy is None:
                 continue
 
             # Coupler vector B→C
@@ -353,7 +353,7 @@ def _check_grashof_driver(linkage: Linkage) -> bool:
     coupler_len = getattr(revolute, "r0", None)
     rocker_len = getattr(revolute, "r1", None)
 
-    if any(v is None for v in (crank_len, coupler_len, rocker_len)):
+    if crank_len is None or coupler_len is None or rocker_len is None:
         return False
 
     # Ground length between statics[0] and statics[1]

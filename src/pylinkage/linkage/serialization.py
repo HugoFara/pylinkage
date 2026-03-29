@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from ..components._base import Component
 from ..joints.crank import Crank
 from ..joints.fixed import Fixed
 from ..joints.joint import Joint, _StaticBase
@@ -32,7 +33,7 @@ JOINT_TYPES: dict[str, type[Joint]] = {
 
 
 def _serialize_joint_ref(
-    joint_ref: Joint | None, linkage_joints: tuple[Joint, ...]
+    joint_ref: Component | None, linkage_joints: tuple[Component, ...]
 ) -> dict[str, Any] | None:
     """Serialize a joint reference.
 
@@ -69,7 +70,9 @@ def _serialize_joint_ref(
     return {"ref": joint_ref.name}
 
 
-def joint_to_dict(joint: Joint, linkage_joints: tuple[Joint, ...] | None = None) -> dict[str, Any]:
+def joint_to_dict(
+    joint: Component, linkage_joints: tuple[Component, ...] | None = None
+) -> dict[str, Any]:
     """Convert a joint to a dictionary representation.
 
     Args:

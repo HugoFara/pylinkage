@@ -290,7 +290,7 @@ def _synthesize_chain(
         assigned_indices = partition[group_idx]
         assigned_points = [precision_points[i] for i in assigned_indices]
 
-        next_partial = []
+        next_partial: list[tuple[dict[str, Point2D], list[GroupSynthesisResult], object]] = []
         for positions, group_results, prev_fourbar in partial:
             if len(next_partial) >= max_candidates_per_group * 3:
                 break
@@ -366,7 +366,7 @@ def _synthesize_dyad_group(
         return []
 
     dyad_pairs = select_compatible_dyads(curves, max_pairs=max_pairs * 3)
-    results = []
+    results: list[tuple[GroupSynthesisResult, dict[str, Point2D], object]] = []
 
     for dyad_left, dyad_right in dyad_pairs:
         fb = _dyads_to_fourbar(dyad_left, dyad_right, coupler_point_world=assigned_points[0])
@@ -413,7 +413,7 @@ def _synthesize_triad_group(
     assigned_points: list[PrecisionPoint],
     known_positions: dict[str, Point2D],
     max_solutions: int = 3,
-) -> list[tuple[GroupSynthesisResult, dict[str, Point2D], None]]:
+) -> list[tuple[GroupSynthesisResult, dict[str, Point2D], object]]:
     """Synthesize a triad group via optimization.
 
     Uses scipy least_squares to find internal node positions that

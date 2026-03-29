@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from ..components._base import Component
 from ..joints.joint import Joint
 from ..solver.types import (
     JOINT_CRANK,
@@ -50,7 +51,7 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
 
     # Build index map from joint identity to array index
     # First, collect all joints including implicit Static joints
-    all_joints: list[Joint] = list(linkage.joints)
+    all_joints: list[Component] = list(linkage.joints)
     joint_to_idx: dict[int, int] = {}
     for i, joint in enumerate(linkage.joints):
         joint_to_idx[id(joint)] = i

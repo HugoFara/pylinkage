@@ -399,7 +399,7 @@ def animate_kinematics(
     # Initialize artists for animation
     link_lines = []
     for joint in linkage.joints:
-        for parent in (joint.joint0, joint.joint1):
+        for parent in (getattr(joint, "joint0", None), getattr(joint, "joint1", None)):
             if parent is not None:
                 (line,) = ax2.plot([], [], c=_get_color(joint), linewidth=2)
                 link_lines.append((joint, parent, line))

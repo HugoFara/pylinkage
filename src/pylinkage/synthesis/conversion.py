@@ -564,7 +564,7 @@ def _generic_nbar_to_linkage(
     pos = solution.joint_positions
 
     # Build joints for ground nodes
-    joint_map: dict[str, Static] = {}
+    joint_map: dict[str, Static | Crank | Revolute | Fixed] = {}
     ground_nodes = [n.id for n in graph.nodes.values() if n.role.name == "GROUND"]
     driver_nodes = [n.id for n in graph.nodes.values() if n.role.name == "DRIVER"]
 
@@ -575,7 +575,7 @@ def _generic_nbar_to_linkage(
 
     # Build crank for driver nodes
     angle_step = 2 * math.pi / iterations
-    order = []
+    order: list[Static | Crank | Revolute | Fixed] = []
     for node_id in driver_nodes:
         if node_id in pos and node_id in joint_map:
             continue
@@ -617,7 +617,7 @@ def _generic_nbar_to_linkage(
         p = pos[node_id]
 
         # Find two connected anchors (parents)
-        parents = []
+        parents: list[tuple[str, float]] = []
         for edge in graph.edges.values():
             other = None
             if edge.source == node_id and edge.target in joint_map:

@@ -303,11 +303,12 @@ def build_linkage_3d(
         pos = get_position(joint)
 
         # Link to joint0
-        if joint.joint0 is not None:
-            parent_pos = get_position(joint.joint0)
+        joint0 = getattr(joint, "joint0", None)
+        if joint0 is not None:
+            parent_pos = get_position(joint0)
 
-            joint_ids = (id(joint), id(joint.joint0))
-            rev_ids = (id(joint.joint0), id(joint))
+            joint_ids = (id(joint), id(joint0))
+            rev_ids = (id(joint0), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 # Calculate z-offset for this link to avoid intersection
                 link_z = z_offset + link_index * link_profile.thickness * 0.1
@@ -328,13 +329,13 @@ def build_linkage_3d(
                     link_index += 1
 
         # Link to joint1 for applicable joint types
-        has_joint1 = hasattr(joint, "joint1") and joint.joint1 is not None
+        joint1 = getattr(joint, "joint1", None)
         is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
-        if has_joint1 and is_revolute_type:
-            parent_pos = get_position(joint.joint1)
+        if joint1 is not None and is_revolute_type:
+            parent_pos = get_position(joint1)
 
-            joint_ids = (id(joint), id(joint.joint1))
-            rev_ids = (id(joint.joint1), id(joint))
+            joint_ids = (id(joint), id(joint1))
+            rev_ids = (id(joint1), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 link_z = z_offset + link_index * link_profile.thickness * 0.1
 

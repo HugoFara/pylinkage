@@ -131,11 +131,12 @@ def plot_linkage_plotly(
         pos = get_position(joint)
 
         # Link to joint0
-        if joint.joint0 is not None:
-            parent_pos = get_position(joint.joint0)
+        joint0 = getattr(joint, "joint0", None)
+        if joint0 is not None:
+            parent_pos = get_position(joint0)
 
-            joint_ids = (id(joint), id(joint.joint0))
-            rev_ids = (id(joint.joint0), id(joint))
+            joint_ids = (id(joint), id(joint0))
+            rev_ids = (id(joint0), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 color = get_link_color(link_index)
                 fig.add_trace(
@@ -363,22 +364,23 @@ def animate_linkage_plotly(
     drawn_links: set[tuple[int, int]] = set()
 
     for joint in linkage.joints:
-        if joint.joint0 is not None:
-            joint_ids = (id(joint), id(joint.joint0))
-            rev_ids = (id(joint.joint0), id(joint))
+        joint0 = getattr(joint, "joint0", None)
+        if joint0 is not None:
+            joint_ids = (id(joint), id(joint0))
+            rev_ids = (id(joint0), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_pairs.append((joint, joint.joint0))
+                link_pairs.append((joint, joint0))
                 drawn_links.add(joint_ids)
 
+        joint1 = getattr(joint, "joint1", None)
         if (
-            hasattr(joint, "joint1")
-            and joint.joint1 is not None
+            joint1 is not None
             and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
         ):
-            joint_ids = (id(joint), id(joint.joint1))
-            rev_ids = (id(joint.joint1), id(joint))
+            joint_ids = (id(joint), id(joint1))
+            rev_ids = (id(joint1), id(joint))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_pairs.append((joint, joint.joint1))
+                link_pairs.append((joint, joint1))
                 drawn_links.add(joint_ids)
 
     # Create frames
