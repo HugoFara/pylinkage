@@ -7,6 +7,8 @@ from ..models.synthesis_schemas import (
     MotionGenerationRequest,
     PathGenerationRequest,
     SynthesisResponse,
+    TopologyGenerationRequest,
+    TopologySynthesisResponse,
 )
 from ..services import synthesis_service
 
@@ -38,5 +40,16 @@ def motion_generation(request: MotionGenerationRequest) -> SynthesisResponse:
     """Generate four-bar linkages guiding a body through specified poses."""
     try:
         return synthesis_service.run_motion_generation(request)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+@router.post("/topology-generation", response_model=TopologySynthesisResponse)
+def topology_generation(
+    request: TopologyGenerationRequest,
+) -> TopologySynthesisResponse:
+    """Generate linkages across multiple topologies (4-bar through 8-bar)."""
+    try:
+        return synthesis_service.run_topology_generation(request)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e

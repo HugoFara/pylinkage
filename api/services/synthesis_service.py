@@ -18,6 +18,7 @@ from pylinkage.synthesis import (
     function_generation,
     grashof_check,
     motion_generation,
+    multi_topology_synthesize,
     path_generation,
     solution_to_linkage,
 )
@@ -27,7 +28,11 @@ from ..models.synthesis_schemas import (
     FunctionGenerationRequest,
     MotionGenerationRequest,
     PathGenerationRequest,
+    QualityMetricsDTO,
     SynthesisResponse,
+    TopologyGenerationRequest,
+    TopologySolutionDTO,
+    TopologySynthesisResponse,
 )
 
 logger = logging.getLogger(__name__)
@@ -108,6 +113,61 @@ def _build_response(result: SynthesisResult) -> SynthesisResponse:
         solutions=solution_dtos,
         mechanism_dicts=mechanism_dicts,
         warnings=result.warnings,
+        solution_count=len(solution_dtos),
+    )
+
+
+def run_topology_generation(
+    request: TopologyGenerationRequest,
+) -> TopologySynthesisResponse:
+    """Run multi-topology synthesis across 4-bar through 8-bar topologies."""
+    points = [(p.x, p.y) for p in request.precision_points]
+
+    topology_solutions = multi_topology_synthesize(
+        precision_points=points,
+        max_links=request.max_links,
+        max_total_solutions=request.max_solutions,
+        max_solutions_per_topology=request.max_solutions_per_topology,
+    )
+
+    solution_dtos: list[TopologySolutionDTO] = []
+    warnings: list[str] = []
+
+    for i, tsol in enumerate(topology_solutions):
+        try:
+            mechanism = mechanism_from_linkage(tsol.linkage)
+            mech_dict = mechanism_to_dict(mechanism)
+        except Exception:
+            logger.warning("Failed to convert topology solution %d to mechanism dict", i)
+            continue
+
+        metrics_dto = QualityMetricsDTO(
+            path_accuracy=tsol.metrics.path_accuracy,
+            min_transmission_angle=tsol.metrics.min_transmission_angle,
+            link_ratio=tsol.metrics.link_ratio,
+            compactness=tsol.metrics.compactness,
+            num_links=tsol.metrics.num_links,
+            is_grashof=tsol.metrics.is_grashof,
+            overall_score=tsol.metrics.overall_score,
+        )
+
+        solution_dtos.append(
+            TopologySolutionDTO(
+                topology_id=tsol.topology_entry.id,
+                topology_name=tsol.topology_entry.name,
+                family=tsol.topology_entry.family,
+                num_links=tsol.topology_entry.num_links,
+                metrics=metrics_dto,
+                mechanism_dict=mech_dict,
+            )
+        )
+
+    if not solution_dtos and topology_solutions:
+        warnings.append("All solutions failed mechanism conversion.")
+
+    return TopologySynthesisResponse(
+        solutions=solution_dtos,
+        warnings=warnings,
         solution_count=len(solution_dtos),
     )
 

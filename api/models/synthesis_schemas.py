@@ -84,3 +84,46 @@ class SynthesisResponse(BaseModel):
     mechanism_dicts: list[dict[str, Any]]
     warnings: list[str]
     solution_count: int
+
+
+# --- Topology-aware synthesis ---
+
+
+class TopologyGenerationRequest(BaseModel):
+    """Request for multi-topology synthesis (4-bar through 8-bar)."""
+
+    precision_points: list[PointInput] = Field(..., min_length=3, max_length=10)
+    max_links: int = Field(default=6, ge=4, le=8)
+    max_solutions: int = Field(default=20, ge=1, le=50)
+    max_solutions_per_topology: int = Field(default=5, ge=1, le=20)
+
+
+class QualityMetricsDTO(BaseModel):
+    """Quality metrics for a topology synthesis solution."""
+
+    path_accuracy: float
+    min_transmission_angle: float
+    link_ratio: float
+    compactness: float
+    num_links: int
+    is_grashof: bool
+    overall_score: float
+
+
+class TopologySolutionDTO(BaseModel):
+    """A single solution from multi-topology synthesis."""
+
+    topology_id: str
+    topology_name: str
+    family: str
+    num_links: int
+    metrics: QualityMetricsDTO
+    mechanism_dict: dict[str, Any]
+
+
+class TopologySynthesisResponse(BaseModel):
+    """Response from topology-aware synthesis."""
+
+    solutions: list[TopologySolutionDTO]
+    warnings: list[str]
+    solution_count: int
