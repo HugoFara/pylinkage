@@ -145,6 +145,16 @@ __all__ = [
     "verify_path_generation",
     "motion_generation",
     "motion_generation_3_poses",
+    # Topology-aware synthesis (Phase 3)
+    "NBarSolution",
+    "GroupSynthesisResult",
+    "QualityMetrics",
+    "TopologySolution",
+    "six_bar_path_generation",
+    "generalized_synthesis",
+    "multi_topology_synthesize",
+    "nbar_solution_to_linkage",
+    "compute_metrics",
     # Burmester theory functions
     "compute_pole",
     "compute_all_poles",
@@ -191,6 +201,7 @@ from .burmester import (
 from .conversion import (
     fourbar_from_lengths,
     linkage_to_synthesis_params,
+    nbar_solution_to_linkage,
     solution_to_linkage,
     solutions_to_linkages,
 )
@@ -205,8 +216,20 @@ from .core import (
 
 # Synthesis functions
 from .function_generation import function_generation, verify_function_generation
+from .generalized import generalized_synthesis
 from .motion_generation import motion_generation, motion_generation_3_poses
+from .multi_topology import synthesize as multi_topology_synthesize
 from .path_generation import path_generation, path_generation_with_timing, verify_path_generation
+from .ranking import compute_metrics
+from .six_bar import six_bar_path_generation
+
+# Topology-aware synthesis (Phase 3)
+from .topology_types import (
+    GroupSynthesisResult,
+    NBarSolution,
+    QualityMetrics,
+    TopologySolution,
+)
 
 # Utility functions
 from .utils import (

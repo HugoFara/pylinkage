@@ -14,6 +14,7 @@ from ._types import FourBarSolution, Point2D, SynthesisType
 
 if TYPE_CHECKING:
     from ..linkage import Linkage
+    from .topology_types import NBarSolution
 
 
 def _compute_coupler_point_params(
@@ -469,3 +470,217 @@ def fourbar_from_lengths(
         order=[joint_B, joint_C],
         name=name,
     )
+
+
+def nbar_solution_to_linkage(
+    solution: NBarSolution,
+    name: str = "synthesized",
+    iterations: int = 100,
+) -> Linkage:
+    """Convert an NBarSolution to a Linkage object.
+
+    Loads the topology from the catalog, decomposes it to determine
+    solving order, and maps joint positions from the solution onto
+    Static, Crank, and Revolute joints.
+
+    For six-bars, delegates to the specialized six-bar converter
+    in :mod:`~pylinkage.synthesis.six_bar`.
+
+    Args:
+        solution: NBarSolution with topology_id and joint_positions.
+        name: Name for the linkage.
+        iterations: Number of simulation steps per rotation.
+
+    Returns:
+        Linkage object ready for simulation.
+
+    Raises:
+        ValueError: If topology_id is not found in the catalog.
+    """
+    from .six_bar import _nbar_to_six_bar_linkage
+
+    # Six-bar topologies use the specialized converter
+    if solution.topology_id in ("watt", "stephenson"):
+        linkage = _nbar_to_six_bar_linkage(solution, iterations=iterations)
+        if linkage is None:
+            raise ValueError(
+                f"Failed to convert {solution.topology_id} NBarSolution to Linkage. "
+                "Joint positions may be invalid."
+            )
+        linkage.name = name
+        return linkage
+
+    # For four-bar, convert via FourBarSolution if possible
+    if solution.topology_id == "four-bar":
+        pos = solution.joint_positions
+        lengths = solution.link_lengths
+
+        # Try to extract four-bar parameters
+        fb = FourBarSolution(
+            ground_pivot_a=pos.get("A", (0, 0)),
+            ground_pivot_d=pos.get("D", (0, 0)),
+            crank_pivot_b=pos.get("B", (0, 0)),
+            coupler_pivot_c=pos.get("C", (0, 0)),
+            crank_length=lengths.get("crank_AB", 1.0),
+            coupler_length=lengths.get("coupler_BC", 1.0),
+            rocker_length=lengths.get("rocker_DC", 1.0),
+            ground_length=lengths.get("ground_AD", 1.0),
+            coupler_point=solution.coupler_point,
+        )
+        return solution_to_linkage(fb, name=name, iterations=iterations)
+
+    # General case: build linkage from joint positions and topology
+    # For eight-bars and beyond, use a generic construction approach
+    return _generic_nbar_to_linkage(solution, name=name, iterations=iterations)
+
+
+def _generic_nbar_to_linkage(
+    solution: NBarSolution,
+    name: str = "synthesized",
+    iterations: int = 100,
+) -> Linkage:
+    """Generic converter for N-bar solutions of any topology.
+
+    Uses the topology catalog to get the graph structure, decomposes
+    into Assur groups, and builds joints in solving order.
+
+    The first ground node becomes the crank anchor. The first driver
+    node becomes the crank. All subsequent driven nodes become
+    Revolute joints connecting to their Assur group anchors.
+    """
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
+    from ..linkage import Linkage
+    from ..topology.catalog import load_catalog
+
+    catalog = load_catalog()
+    entry = catalog.get(solution.topology_id)
+    if entry is None:
+        raise ValueError(f"Topology '{solution.topology_id}' not found in catalog.")
+
+    graph = entry.to_graph()
+    pos = solution.joint_positions
+
+    # Build joints for ground nodes
+    joint_map: dict[str, Static] = {}
+    ground_nodes = [n.id for n in graph.nodes.values() if n.role.name == "GROUND"]
+    driver_nodes = [n.id for n in graph.nodes.values() if n.role.name == "DRIVER"]
+
+    for node_id in ground_nodes:
+        if node_id in pos:
+            p = pos[node_id]
+            joint_map[node_id] = Static(x=p[0], y=p[1], name=node_id)
+
+    # Build crank for driver nodes
+    angle_step = 2 * math.pi / iterations
+    order = []
+    for node_id in driver_nodes:
+        if node_id in pos and node_id in joint_map:
+            continue
+        p = pos.get(node_id, (0, 0))
+        # Find the ground node this driver connects to
+        anchor = None
+        for edge in graph.edges.values():
+            if edge.source == node_id and edge.target in joint_map:
+                anchor = joint_map[edge.target]
+                break
+            if edge.target == node_id and edge.source in joint_map:
+                anchor = joint_map[edge.source]
+                break
+
+        if anchor is None and ground_nodes:
+            anchor = joint_map.get(ground_nodes[0])
+
+        if anchor is not None:
+            dist = _point_dist(p, (anchor.x or 0, anchor.y or 0))
+            crank = Crank(
+                x=p[0], y=p[1],
+                joint0=anchor,
+                distance=dist,
+                angle=angle_step,
+                name=node_id,
+            )
+            joint_map[node_id] = crank
+            order.append(crank)
+
+    # Build revolute joints for driven nodes (in topology order)
+    driven_nodes = [
+        n.id for n in graph.nodes.values()
+        if n.role.name == "DRIVEN" and n.id not in joint_map
+    ]
+
+    for node_id in driven_nodes:
+        if node_id not in pos:
+            continue
+        p = pos[node_id]
+
+        # Find two connected anchors (parents)
+        parents = []
+        for edge in graph.edges.values():
+            other = None
+            if edge.source == node_id and edge.target in joint_map:
+                other = edge.target
+            elif edge.target == node_id and edge.source in joint_map:
+                other = edge.source
+            if other is not None and other not in [pid for pid, _ in parents]:
+                parent_joint = joint_map[other]
+                dist = _point_dist(p, (parent_joint.x or 0, parent_joint.y or 0))
+                parents.append((other, dist))
+
+        if len(parents) >= 2:
+            rev = Revolute(
+                x=p[0], y=p[1],
+                joint0=joint_map[parents[0][0]],
+                joint1=joint_map[parents[1][0]],
+                distance0=parents[0][1],
+                distance1=parents[1][1],
+                name=node_id,
+            )
+            joint_map[node_id] = rev
+            order.append(rev)
+
+    # Add coupler point tracker
+    all_joints = list(joint_map.values())
+    if solution.coupler_point is not None and solution.coupler_node is not None:
+        cn = solution.coupler_node
+        if cn in joint_map:
+            # Find another joint connected to the coupler node
+            parent2 = None
+            for edge in graph.edges.values():
+                other = None
+                if edge.source == cn and edge.target in joint_map:
+                    other = edge.target
+                elif edge.target == cn and edge.source in joint_map:
+                    other = edge.source
+                if other is not None and other != cn:
+                    parent2 = joint_map[other]
+                    break
+
+            if parent2 is not None:
+                cp = solution.coupler_point
+                cn_pos = pos[cn]
+                p2_pos = (parent2.x or 0, parent2.y or 0)
+                dist_cp, angle_cp = _compute_coupler_point_params(cn_pos, p2_pos, cp)
+                joint_P = Fixed(
+                    x=cp[0], y=cp[1],
+                    joint0=joint_map[cn],
+                    joint1=parent2,
+                    distance=dist_cp,
+                    angle=angle_cp,
+                    name="P",
+                )
+                all_joints.append(joint_P)
+                order.append(joint_P)
+
+    return Linkage(
+        joints=all_joints,
+        order=order,
+        name=name,
+    )
+
+
+def _point_dist(a: Point2D, b: Point2D) -> float:
+    """Euclidean distance between two points."""
+    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
