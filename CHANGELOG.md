@@ -16,7 +16,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   automatically feeding each result as the starting point for the next stage.
   Common pattern: global search (DE/PSO) → local refinement (Nelder-Mead).
 
-- **Topology enumeration (Phase 2 — Roadmap):**
+- **Co-optimization of topology + dimensions:**
+  - Mixed-variable evolutionary optimizer (`co_optimize()`) jointly searching
+    discrete topology space and continuous dimensional space using NSGA-II/III
+    via pymoo with custom genetic operators.
+  - Topology neighborhood graph (`build_neighborhood_graph()`,
+    `topology_neighbors()`, `topology_distance()`) defining adjacency between
+    all 19 catalog topologies via add_dyad, remove_dyad, swap_variant, and
+    restructure operations.
+  - Custom pymoo operators: `MixedCrossover` (BLX-alpha blend + topology swap),
+    `MixedMutation` (Gaussian perturbation + topology neighbor mutation),
+    `warm_start_sampling()` (seed population from Phase 3 synthesis results).
+  - Virtual edge encoding: expands hyperedges (ternary links) into pairwise
+    distances and adds implicit ground-link virtual edges for chromosome
+    representation.
+  - Simultaneous triad placement via `scipy.optimize.least_squares` for
+    topologies with circular dependencies (e.g., Stephenson six-bar).
+  - Warm-start pipeline: `warm_start_co_optimization()` converts Phase 3
+    `TopologySolution` results to `MixedChromosome` seeds for NSGA-II.
+  - New types: `MixedChromosome`, `CoOptimizationConfig`, `CoOptSolution`,
+    `CoOptimizationResult`.
+  - `TopologyCatalog.topology_index()` and `topology_by_index()` for
+    integer-indexed topology lookup.
+
+- **Topology enumeration:**
   - Graph isomorphism detection via WL-1 color refinement + backtracking
     verification: `canonical_form()`, `canonical_hash()`, `are_isomorphic()`.
   - Systematic enumeration of all non-isomorphic 1-DOF planar linkage
