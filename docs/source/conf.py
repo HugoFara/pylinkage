@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from importlib.metadata import version as pkg_version
 
 sys.path.insert(0, os.path.abspath("../../src"))
 
@@ -23,7 +24,7 @@ copyright = "2021, Hugo Farajallah"
 author = "Hugo Farajallah"
 
 # The full version, including alpha/beta/rc tags
-release = "0.6.0"
+release = pkg_version("pylinkage")
 
 
 # -- General configuration ---------------------------------------------------
