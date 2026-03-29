@@ -14,7 +14,9 @@ Assur groups are pure topology. For solving kinematics, use
 pylinkage.solver.solve.solve_decomposition() with a Dimensions object.
 """
 
+from collections import deque
 from dataclasses import dataclass, field
+from itertools import combinations
 
 from ._types import JointType, NodeId, NodeRole
 from .graph import LinkageGraph
@@ -157,6 +159,15 @@ def decompose_assur_groups(graph: LinkageGraph) -> DecompositionResult:
         # Try to form a triad from pairs of remaining nodes
         if not found_group:
             found_group = _try_find_triad(
+                graph,
+                remaining,
+                known,
+                result,
+            )
+
+        # Try to form a general solvable group (3+ internal nodes)
+        if not found_group:
+            found_group = _try_find_general_group(
                 graph,
                 remaining,
                 known,
@@ -400,6 +411,133 @@ def _try_create_triad(
         internal_edges=tuple(edge_ids),
         edge_map=edge_map,
     )
+
+
+def _try_find_general_group(
+    graph: LinkageGraph,
+    remaining: set[NodeId],
+    known: set[NodeId],
+    result: DecompositionResult,
+) -> bool:
+    """Try to find a solvable group of 2+ remaining nodes.
+
+    A group of k internal nodes is solvable when the number of distance
+    constraints (edges to known anchors + edges between internal nodes)
+    is at least 2*k (the number of unknowns: x,y per node).
+
+    This generalizes the triad check (which requires exactly 2 internal
+    nodes and 3 known anchors) to handle larger groups like tetrads
+    that appear in Stephenson-type topologies.
+
+    Searches from smallest to largest group size, returning the first
+    solvable group found.
+
+    Args:
+        graph: The linkage graph.
+        remaining: Set of unsolved node IDs (modified in place on success).
+        known: Set of solved node IDs (modified in place on success).
+        result: DecompositionResult to append to (modified in place).
+
+    Returns:
+        True if a group was found and added, False otherwise.
+    """
+    remaining_list = list(remaining)
+    n = len(remaining_list)
+
+    # Try group sizes from 2 (relaxed triad) up to all remaining
+    for size in range(2, n + 1):
+        for subset in combinations(remaining_list, size):
+            subset_set = set(subset)
+
+            # Check connectivity: subset must be connected in the graph
+            if not _is_connected_subset(graph, subset_set):
+                continue
+
+            # Count constraints
+            anchor_edges = 0  # edges from internal to known nodes
+            internal_edges = 0  # edges between internal nodes
+            edge_ids: list[str] = []
+            edge_map: dict[str, tuple[NodeId, NodeId]] = {}
+            anchor_ids: set[NodeId] = set()
+
+            for node_id in subset:
+                for neighbor_id in graph.neighbors(node_id):
+                    edge = graph.get_edge_between(node_id, neighbor_id)
+                    if edge is None:
+                        continue
+                    if neighbor_id in known:
+                        anchor_edges += 1
+                        anchor_ids.add(neighbor_id)
+                        if edge.id not in edge_map:
+                            edge_ids.append(edge.id)
+                            edge_map[edge.id] = (node_id, neighbor_id)
+                    elif neighbor_id in subset_set:
+                        # Count each internal edge once (will be seen from both sides)
+                        pair_key = (min(node_id, neighbor_id), max(node_id, neighbor_id))
+                        edge_key = f"_internal_{pair_key[0]}_{pair_key[1]}"
+                        if edge_key not in edge_map:
+                            internal_edges += 1
+                            edge_ids.append(edge.id)
+                            edge_map[edge.id] = (node_id, neighbor_id)
+                            # Use stable key to avoid double-counting
+                            edge_map[edge_key] = (node_id, neighbor_id)
+
+            total_constraints = anchor_edges + internal_edges
+            required = 2 * size
+
+            if total_constraints >= required:
+                # Build signature from joint types
+                joint_char = {JointType.REVOLUTE: "R", JointType.PRISMATIC: "P"}
+                sig_chars = []
+                for aid in sorted(anchor_ids):
+                    sig_chars.append(
+                        joint_char.get(graph.nodes[aid].joint_type, "R")
+                    )
+                for nid in subset:
+                    sig_chars.append(
+                        joint_char.get(graph.nodes[nid].joint_type, "R")
+                    )
+                signature = "".join(sig_chars)
+
+                # Clean edge_map: remove internal tracking keys
+                clean_map = {
+                    k: v for k, v in edge_map.items() if not k.startswith("_internal_")
+                }
+
+                group = Triad(
+                    _signature=signature,
+                    internal_nodes=tuple(subset),
+                    anchor_nodes=tuple(sorted(anchor_ids)),
+                    internal_edges=tuple(edge_ids),
+                    edge_map=clean_map,
+                )
+                result.groups.append(group)
+                for node_id in subset:
+                    known.add(node_id)
+                    remaining.discard(node_id)
+                return True
+
+    return False
+
+
+def _is_connected_subset(graph: LinkageGraph, subset: set[NodeId]) -> bool:
+    """Check if a subset of nodes is connected within the graph."""
+    if len(subset) <= 1:
+        return True
+
+    start = next(iter(subset))
+    visited: set[NodeId] = set()
+    queue = deque([start])
+    visited.add(start)
+
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph.neighbors(node):
+            if neighbor in subset and neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    return visited == subset
 
 
 def validate_decomposition(result: DecompositionResult) -> list[str]:

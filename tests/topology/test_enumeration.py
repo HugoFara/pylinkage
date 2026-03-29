@@ -88,6 +88,16 @@ class TestEnumerateTopologies:
         assert len(result.groups) == 1
         assert result.groups[0].joint_signature == "RRR"
 
+    def test_six_bars_decompose(self):
+        """Both six-bar topologies can be Assur-decomposed."""
+        from pylinkage.assur.decomposition import decompose_assur_groups
+        from pylinkage.assur.hypergraph_conversion import from_hypergraph
+
+        for g in enumerate_topologies(6):
+            ag = from_hypergraph(g)
+            result = decompose_assur_groups(ag)
+            assert len(result.groups) >= 1
+
     def test_four_bar_has_correct_roles(self):
         """The four-bar has 2 GROUND nodes, 1 DRIVER, 1 DRIVEN."""
         from pylinkage.hypergraph import NodeRole

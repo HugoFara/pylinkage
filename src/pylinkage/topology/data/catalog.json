@@ -185,7 +185,9 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRRRR"
+      ],
       "family": "six-bar",
       "graph": {
         "name": "",
@@ -429,7 +431,13 @@
         4,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -706,7 +714,13 @@
         3,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -842,7 +856,13 @@
         3,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -978,7 +998,13 @@
         3,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1114,7 +1140,12 @@
         3,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRRRRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1397,7 +1428,12 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRRRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1536,7 +1572,9 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRRRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1675,7 +1713,9 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRRRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1814,7 +1854,9 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRRRRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -1953,7 +1995,12 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -2092,7 +2139,12 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -2231,7 +2283,10 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRRRRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
@@ -2370,7 +2425,10 @@
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRRRRRRRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",

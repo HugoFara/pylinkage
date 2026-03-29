@@ -87,7 +87,8 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
     # as a neighbor, even though they're on the same rigid link.
     seen_edges: set[tuple[NodeId, NodeId]] = set()
     for existing_edge in assur_graph.edges.values():
-        pair = (min(existing_edge.source, existing_edge.target), max(existing_edge.source, existing_edge.target))
+        src, tgt = existing_edge.source, existing_edge.target
+        pair = (min(src, tgt), max(src, tgt))
         seen_edges.add(pair)
 
     for he in hypergraph.hyperedges.values():
