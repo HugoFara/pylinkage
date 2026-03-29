@@ -16,6 +16,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   automatically feeding each result as the starting point for the next stage.
   Common pattern: global search (DE/PSO) → local refinement (Nelder-Mead).
 
+- **Topology enumeration (Phase 2 — Roadmap):**
+  - Graph isomorphism detection via WL-1 color refinement + backtracking
+    verification: `canonical_form()`, `canonical_hash()`, `are_isomorphic()`.
+  - Systematic enumeration of all non-isomorphic 1-DOF planar linkage
+    topologies up to 8 links: `enumerate_topologies()`, `enumerate_all()`.
+    Validated against Mruthyunjaya 1984: 1 four-bar + 2 six-bars + 16 eight-bars = 19.
+  - Built-in topology catalog (`TopologyCatalog`, `CatalogEntry`, `load_catalog()`)
+    with JSON-serialized `HypergraphLinkage` graphs and metadata (link assortment,
+    family, joint count).
+  - All new symbols exported from `pylinkage.topology`.
+
+### Fixed
+
+- **`compute_dof` hyperedge counting:** `compute_mobility()` counted each hyperedge
+  with k nodes as (k−1) links instead of 1 rigid body, giving wrong DOF for any
+  mechanism with ternary or higher links (all six-bars and eight-bars).
+
 ### Changed
 
 - **PSO is now pure NumPy:** `particle_swarm_optimization()` no longer depends on

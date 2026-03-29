@@ -41,8 +41,8 @@ def compute_dof(graph: HypergraphLinkage) -> int:
     - j2 = number of 2-DOF joints (higher pairs)
 
     Links are counted from edges and hyperedges. Each edge is one binary
-    link. Each hyperedge with k nodes represents a rigid body contributing
-    (k-1) binary link equivalents. The ground link is always counted as 1.
+    link. Each hyperedge is one rigid body (one link regardless of how
+    many joints it has). The ground link is always counted as 1.
 
     All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.
 
@@ -83,14 +83,13 @@ def compute_mobility(graph: HypergraphLinkage) -> MobilityInfo:
     Returns:
         MobilityInfo with DOF, link count, and joint counts.
     """
-    # Count links:
+    # Count links (rigid bodies):
     # - 1 ground link (always present)
-    # - Each edge is one binary link
-    # - Each hyperedge with k nodes contributes (k-1) equivalent binary links
+    # - Each edge is one binary link (connects 2 joints)
+    # - Each hyperedge is one rigid body (connects 3+ joints)
     n_links = 1  # ground
     n_links += len(graph.edges)
-    for he in graph.hyperedges.values():
-        n_links += len(he.nodes) - 1
+    n_links += len(graph.hyperedges)
 
     # Count joints:
     # Each node is a joint. All current types (REVOLUTE, PRISMATIC) are 1-DOF.

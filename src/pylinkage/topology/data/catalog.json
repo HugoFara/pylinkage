@@ -1,0 +1,2466 @@
+{
+  "version": "1.0",
+  "topologies": [
+    {
+      "id": "four-bar",
+      "name": "Four-bar linkage",
+      "num_links": 4,
+      "num_joints": 4,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "assur_groups": [],
+      "family": "four-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_2",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_2"
+          },
+          {
+            "id": "J1_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_3"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_3"
+          },
+          {
+            "id": "L2",
+            "source": "J0_2",
+            "target": "J2_3"
+          },
+          {
+            "id": "L3",
+            "source": "J1_3",
+            "target": "J2_3"
+          }
+        ],
+        "hyperedges": []
+      }
+    },
+    {
+      "id": "watt",
+      "name": "Watt six-bar",
+      "num_links": 6,
+      "num_joints": 7,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "six-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J3_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_5"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_4"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_5"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J2_4",
+              "J4_5"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J3_5",
+              "J4_5"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "stephenson",
+      "name": "Stephenson six-bar",
+      "num_links": 6,
+      "num_joints": 7,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "six-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J2_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_5"
+          },
+          {
+            "id": "J3_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_4"
+          },
+          {
+            "id": "J3_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_5"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_4",
+            "target": "J2_5"
+          },
+          {
+            "id": "L3",
+            "source": "J3_4",
+            "target": "J3_5"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J2_4",
+              "J3_4"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J2_5",
+              "J3_5"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-01",
+      "name": "Eight-bar type 1",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        4,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_6",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_6"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_5",
+            "target": "J4_6"
+          },
+          {
+            "id": "L5",
+            "source": "J4_5",
+            "target": "J5_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L6",
+            "nodes": [
+              "J0_6",
+              "J2_6",
+              "J4_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J3_7",
+              "J5_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-02",
+      "name": "Eight-bar type 2",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        4,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_6",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_6"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_6",
+            "target": "J4_7"
+          },
+          {
+            "id": "L5",
+            "source": "J5_6",
+            "target": "J5_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L6",
+            "nodes": [
+              "J0_6",
+              "J2_6",
+              "J4_6",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J3_7",
+              "J4_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-03",
+      "name": "Eight-bar type 3",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_5",
+            "target": "J4_6"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J4_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J4_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J3_7",
+              "J5_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-04",
+      "name": "Eight-bar type 4",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_5",
+            "target": "J4_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J4_5",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J5_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J3_7",
+              "J4_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-05",
+      "name": "Eight-bar type 5",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_5"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_5",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_6",
+            "target": "J4_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J2_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J3_6",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J3_7",
+              "J4_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-06",
+      "name": "Eight-bar type 6",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_5"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_5",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_6",
+            "target": "J4_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J2_5",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J3_6",
+              "J4_6",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J2_7",
+              "J3_7",
+              "J4_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-07",
+      "name": "Eight-bar type 7",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        4
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_5",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J0_6",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_6"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J1_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_7"
+          },
+          {
+            "id": "J2_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_5"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J1_5",
+            "target": "J1_7"
+          },
+          {
+            "id": "L2",
+            "source": "J2_5",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          },
+          {
+            "id": "L4",
+            "source": "J4_6",
+            "target": "J4_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J1_5",
+              "J2_5"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J0_6",
+              "J3_6",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J1_7",
+              "J2_7",
+              "J3_7",
+              "J4_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-08",
+      "name": "Eight-bar type 8",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J4_5",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J4_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J4_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J3_7",
+              "J5_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-09",
+      "name": "Eight-bar type 9",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_3",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_3"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_3",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J2_3",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J4_6",
+              "J4_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J5_6",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J4_6",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J3_7",
+              "J4_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-10",
+      "name": "Eight-bar type 10",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_5"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_4",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J3_5",
+            "target": "J3_6"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J2_4",
+              "J4_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J3_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J3_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J4_7",
+              "J5_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-11",
+      "name": "Eight-bar type 11",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_5"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_4",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J3_5",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J2_4",
+              "J4_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J3_5",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J5_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J3_7",
+              "J4_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-12",
+      "name": "Eight-bar type 12",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_4",
+            "target": "J2_6"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J2_4",
+              "J4_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J5_6",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J3_6",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J3_7",
+              "J4_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-13",
+      "name": "Eight-bar type 13",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_1",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_1"
+          },
+          {
+            "id": "J0_4",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_5"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J0_1",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_6",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J4_5",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J1_5",
+              "J4_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J3_6",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J2_7",
+              "J3_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-14",
+      "name": "Eight-bar type 14",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_4",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_4"
+          },
+          {
+            "id": "J1_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_5"
+          },
+          {
+            "id": "J2_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_6"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J1_4",
+            "target": "J1_5"
+          },
+          {
+            "id": "L2",
+            "source": "J2_6",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J1_4",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J1_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J2_6",
+              "J3_6",
+              "J4_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J2_7",
+              "J3_7",
+              "J5_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-15",
+      "name": "Eight-bar type 15",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_4",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_4"
+          },
+          {
+            "id": "J1_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_6"
+          },
+          {
+            "id": "J2_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_4"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_5"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J5_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_7"
+          },
+          {
+            "id": "J6_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J6_7"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J1_4",
+            "target": "J1_6"
+          },
+          {
+            "id": "L2",
+            "source": "J2_4",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_5",
+            "target": "J3_6"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J1_4",
+              "J2_4"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J3_5",
+              "J5_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J1_6",
+              "J3_6",
+              "J6_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J2_7",
+              "J5_7",
+              "J6_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "eight-bar-16",
+      "name": "Eight-bar type 16",
+      "num_links": 8,
+      "num_joints": 10,
+      "dof": 1,
+      "link_assortment": [
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3
+      ],
+      "assur_groups": [],
+      "family": "eight-bar",
+      "graph": {
+        "name": "",
+        "nodes": [
+          {
+            "id": "J0_4",
+            "role": "DRIVER",
+            "joint_type": "REVOLUTE",
+            "name": "J0_4"
+          },
+          {
+            "id": "J0_5",
+            "role": "GROUND",
+            "joint_type": "REVOLUTE",
+            "name": "J0_5"
+          },
+          {
+            "id": "J1_4",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_4"
+          },
+          {
+            "id": "J1_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J1_6"
+          },
+          {
+            "id": "J2_5",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_5"
+          },
+          {
+            "id": "J2_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J2_7"
+          },
+          {
+            "id": "J3_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_6"
+          },
+          {
+            "id": "J3_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J3_7"
+          },
+          {
+            "id": "J4_7",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J4_7"
+          },
+          {
+            "id": "J5_6",
+            "role": "DRIVEN",
+            "joint_type": "REVOLUTE",
+            "name": "J5_6"
+          }
+        ],
+        "edges": [
+          {
+            "id": "L1",
+            "source": "J1_4",
+            "target": "J1_6"
+          },
+          {
+            "id": "L2",
+            "source": "J2_5",
+            "target": "J2_7"
+          },
+          {
+            "id": "L3",
+            "source": "J3_6",
+            "target": "J3_7"
+          }
+        ],
+        "hyperedges": [
+          {
+            "id": "L4",
+            "nodes": [
+              "J0_4",
+              "J1_4",
+              "J4_7"
+            ],
+            "name": null
+          },
+          {
+            "id": "L5",
+            "nodes": [
+              "J0_5",
+              "J2_5",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L6",
+            "nodes": [
+              "J1_6",
+              "J3_6",
+              "J5_6"
+            ],
+            "name": null
+          },
+          {
+            "id": "L7",
+            "nodes": [
+              "J2_7",
+              "J3_7",
+              "J4_7"
+            ],
+            "name": null
+          }
+        ]
+      }
+    }
+  ]
+}

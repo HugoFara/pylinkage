@@ -1,6 +1,6 @@
 """Tests for the topology analysis module (DOF calculator)."""
 
-from pylinkage.hypergraph import Edge, HypergraphLinkage, Node, NodeRole
+from pylinkage.hypergraph import Edge, Hyperedge, HypergraphLinkage, Node, NodeRole
 from pylinkage.topology import compute_dof, compute_mobility
 
 
@@ -25,46 +25,35 @@ def _make_four_bar() -> HypergraphLinkage:
 
 
 def _make_six_bar_watt() -> HypergraphLinkage:
-    """Create a Watt I six-bar linkage topology (DOF=1).
+    """Create a Watt-I six-bar linkage topology (DOF=1).
 
-    6 joints, 7 links (6 edges + ground).
-    DOF = 3*(7-1) - 2*7 = 18 - 14 = ... wait, let me count properly.
+    6 links, 7 revolute joints. Two four-bar loops sharing a ternary link.
 
-    Actually a Watt six-bar has 6 links and 7 joints:
-    DOF = 3*(6-1) - 2*7 = 15 - 14 = 1
+    Link-adjacency (links as vertices, joints as edges):
+        L0(ground) -- L1(crank) -- L2(ternary coupler) -- L3 -- L0
+                                    L2 -- L4 -- L5 -- L0
 
-    Topology: two four-bars sharing a coupler link.
-        A(G) -- B(D) -- C(d) -- D(G)
-                        |
-                        E(d) -- F(d)
-    7 joints, 5 edges + ground = 6 links
-    Hmm, let me use the standard: 6 links, 7 revolute joints.
+    Joint-first (HypergraphLinkage) representation:
+        7 nodes (joints), 4 binary-link edges + 1 ternary-link hyperedge + ground
+        = 6 links total.
+        DOF = 3*(6-1) - 2*7 = 15 - 14 = 1
     """
     hg = HypergraphLinkage(name="Watt-I six-bar")
-    # 7 joints
-    hg.add_node(Node("A", role=NodeRole.GROUND))
-    hg.add_node(Node("B", role=NodeRole.DRIVER))
-    hg.add_node(Node("C", role=NodeRole.DRIVEN))
-    hg.add_node(Node("D", role=NodeRole.DRIVEN))
-    hg.add_node(Node("E", role=NodeRole.DRIVEN))
-    hg.add_node(Node("F", role=NodeRole.GROUND))
-    hg.add_node(Node("G", role=NodeRole.GROUND))
-    # 6 edges (+ ground = 7 links with the ground link shared by A, F, G)
-    # Actually ground counts as 1 link regardless of how many ground joints.
-    # Binary links: AB, BC, CD, DE, EF, and one more connecting back.
-    # Standard Watt I: A-B (crank), B-C (coupler), C-D, C-E, E-F, D-G
-    hg.add_edge(Edge("AB", "A", "B"))
-    hg.add_edge(Edge("BC", "B", "C"))
-    hg.add_edge(Edge("CD", "C", "D"))
-    hg.add_edge(Edge("CE", "C", "E"))
-    hg.add_edge(Edge("EF", "E", "F"))
-    hg.add_edge(Edge("DG", "D", "G"))
-    # 7 nodes (joints), 6 edges + 1 ground = 7 links
-    # DOF = 3*(7-1) - 2*7 = 18 - 14 = 4  ... that's wrong for a Watt six-bar
-    # The issue: C has 3 connections (ternary link), not just binary.
-    # In a proper link count, C connects to B, D, and E — that's a ternary link,
-    # which counts as 1 link, not 2.
-    # Let me just verify with the formula.
+    # 7 joints: 3 on ground link (A, D, G), 1 driver (B), 3 driven (C, E, F)
+    hg.add_node(Node("A", role=NodeRole.GROUND))   # L0-L1
+    hg.add_node(Node("B", role=NodeRole.DRIVER))    # L1-L2
+    hg.add_node(Node("C", role=NodeRole.DRIVEN))    # L2-L3
+    hg.add_node(Node("D", role=NodeRole.GROUND))    # L3-L0
+    hg.add_node(Node("E", role=NodeRole.DRIVEN))    # L2-L4
+    hg.add_node(Node("F", role=NodeRole.DRIVEN))    # L4-L5
+    hg.add_node(Node("G", role=NodeRole.GROUND))    # L5-L0
+    # 4 binary links (edges)
+    hg.add_edge(Edge("L1", "A", "B"))   # crank
+    hg.add_edge(Edge("L3", "C", "D"))   # connecting rod 1
+    hg.add_edge(Edge("L4", "E", "F"))   # connecting rod 2
+    hg.add_edge(Edge("L5", "F", "G"))   # rocker
+    # 1 ternary link (hyperedge): coupler connecting joints B, C, E
+    hg.add_hyperedge(Hyperedge("L2", nodes=("B", "C", "E")))
     return hg
 
 
@@ -106,6 +95,11 @@ class TestComputeDof:
         # DOF = 3*(1-1) - 0 = 0
         assert compute_dof(hg) == 0
 
+    def test_watt_six_bar_dof_is_1(self):
+        """A Watt-I six-bar (6 links, 7 joints, ternary coupler) has DOF=1."""
+        hg = _make_six_bar_watt()
+        assert compute_dof(hg) == 1
+
     def test_slider_crank_dof_is_1(self):
         """A slider-crank mechanism has DOF=1.
 
@@ -141,6 +135,14 @@ class TestComputeMobility:
         assert info.num_links == 4  # 3 edges + 1 ground
         assert info.num_full_joints == 4
         assert info.num_half_joints == 0
+
+    def test_watt_six_bar_counts(self):
+        """Check link and joint counts for a Watt-I six-bar."""
+        hg = _make_six_bar_watt()
+        info = compute_mobility(hg)
+        assert info.dof == 1
+        assert info.num_links == 6  # 4 edges + 1 hyperedge + 1 ground
+        assert info.num_full_joints == 7
 
     def test_triangle_is_rigid(self):
         """A triangle (3 links, 3 joints) has DOF=0.
