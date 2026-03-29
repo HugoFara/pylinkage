@@ -147,6 +147,42 @@ class TopologyCatalog:
     def __contains__(self, topology_id: str) -> bool:
         return topology_id in self.entries
 
+    def topology_index(self, topology_id: str) -> int:
+        """Return the integer index of a topology (stable within a catalog instance).
+
+        Args:
+            topology_id: ID to look up.
+
+        Returns:
+            Integer index (0-based).
+
+        Raises:
+            KeyError: If topology_id is not in the catalog.
+        """
+        for i, entry_id in enumerate(self.entries):
+            if entry_id == topology_id:
+                return i
+        raise KeyError(f"Topology '{topology_id}' not in catalog")
+
+    def topology_by_index(self, index: int) -> CatalogEntry:
+        """Look up a topology by integer index.
+
+        Args:
+            index: Integer index (0-based).
+
+        Returns:
+            The CatalogEntry at that index.
+
+        Raises:
+            IndexError: If index is out of range.
+        """
+        entries_list = list(self.entries.values())
+        if index < 0 or index >= len(entries_list):
+            raise IndexError(
+                f"Topology index {index} out of range (catalog has {len(entries_list)} entries)"
+            )
+        return entries_list[index]
+
 
 def load_catalog() -> TopologyCatalog:
     """Load the built-in topology catalog.

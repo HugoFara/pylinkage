@@ -2,6 +2,10 @@
 
 __all__ = [
     "chain_optimizers",
+    "co_optimize",
+    "CoOptimizationConfig",
+    "CoOptimizationResult",
+    "CoOptSolution",
     "collections",
     "differential_evolution_optimization",
     "differential_evolution_optimization_async",
@@ -9,6 +13,7 @@ __all__ = [
     "generate_bounds",
     "kinematic_maximization",
     "kinematic_minimization",
+    "MixedChromosome",
     "minimize_linkage",
     "minimize_linkage_async",
     "multi_objective_optimization",
@@ -17,8 +22,11 @@ __all__ = [
     "ParetoSolution",
     "particle_swarm_optimization",
     "particle_swarm_optimization_async",
+    "TopologyNeighbor",
+    "topology_neighbors",
     "trials_and_errors_optimization",
     "trials_and_errors_optimization_async",
+    "warm_start_co_optimization",
 ]
 
 import importlib as _importlib
@@ -61,6 +69,14 @@ _LAZY_ATTRS: dict[str, tuple[str, str]] = {
         ".grid_search",
         "trials_and_errors_optimization",
     ),
+    "MixedChromosome": (".co_optimization_types", "MixedChromosome"),
+    "CoOptimizationConfig": (".co_optimization_types", "CoOptimizationConfig"),
+    "CoOptimizationResult": (".co_optimization_types", "CoOptimizationResult"),
+    "CoOptSolution": (".co_optimization_types", "CoOptSolution"),
+    "co_optimize": (".mixed_variable", "co_optimize"),
+    "TopologyNeighbor": (".topology_neighborhood", "TopologyNeighbor"),
+    "topology_neighbors": (".topology_neighborhood", "topology_neighbors"),
+    "warm_start_co_optimization": (".warm_start", "warm_start_co_optimization"),
     "multi_objective_optimization": (
         ".multi_objective",
         "multi_objective_optimization",
