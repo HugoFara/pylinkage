@@ -206,7 +206,7 @@ def particle_swarm_optimization(
         bounds = ([-10.0] * dimensions, [10.0] * dimensions)
 
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        j.coord() for j in linkage.joints
+        linkage.get_coords()
     )
 
     np_bounds = (np.asarray(bounds[0], dtype=float), np.asarray(bounds[1], dtype=float))

@@ -167,7 +167,7 @@ def trials_and_errors_optimization(
     # Results to output: scores, dimensions and initial positions
     # scores will be in decreasing order
     results: list[MutableAgent] = [MutableAgent() for _ in range(n_results)]
-    prev: list[tuple[float | None, float | None]] = [i.coord() for i in linkage.joints]
+    prev: list[tuple[float | None, float | None]] = list(linkage.get_coords())
     # We start by a "fall": we do not want to break the system by modifying
     # dimensions, so we assess it is normally behaving, and we change
     # dimensions progressively to minimal dimensions.

@@ -130,7 +130,7 @@ def differential_evolution_optimization(
 
     # Store initial joint positions
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        j.coord() for j in linkage.joints
+        linkage.get_coords()
     )
 
     def objective(x: np.ndarray) -> float:
@@ -257,7 +257,7 @@ def dual_annealing_optimization(
     scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
 
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        j.coord() for j in linkage.joints
+        linkage.get_coords()
     )
 
     def objective(x: np.ndarray) -> float:
@@ -399,7 +399,7 @@ def minimize_linkage(
 
     # Store initial joint positions
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        j.coord() for j in linkage.joints
+        linkage.get_coords()
     )
 
     def objective(x: np.ndarray) -> float:

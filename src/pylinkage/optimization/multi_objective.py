@@ -218,7 +218,7 @@ def multi_objective_optimization(
 
     # Store initial joint positions
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        j.coord() for j in linkage.joints
+        linkage.get_coords()
     )
 
     # Create the optimization problem
