@@ -47,10 +47,7 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
     from ..hypergraph._types import JointType as HyperJointType
     from ..hypergraph._types import NodeRole as HyperNodeRole
 
-    # First convert to simple graph (expand hyperedges)
-    simple = hypergraph.to_simple_graph()
-
-    assur_graph = LinkageGraph(name=simple.name)
+    assur_graph = LinkageGraph(name=hypergraph.name)
 
     # Map hypergraph types to assur types (they're the same enums now)
     role_map = {
@@ -64,7 +61,7 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
     }
 
     # Convert nodes (topology only)
-    for node in simple.nodes.values():
+    for node in hypergraph.nodes.values():
         assur_node = AssurNode(
             id=node.id,
             joint_type=joint_type_map[node.joint_type],
@@ -74,13 +71,40 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
         assur_graph.add_node(assur_node)
 
     # Convert edges (topology only)
-    for edge in simple.edges.values():
+    for edge in hypergraph.edges.values():
         assur_edge = AssurEdge(
             id=edge.id,
             source=edge.source,
             target=edge.target,
         )
         assur_graph.add_edge(assur_edge)
+
+    # Expand hyperedges as cliques (all pairwise edges).
+    # A hyperedge represents a rigid body connecting 3+ joints.
+    # For Assur decomposition, all joints on the same rigid body must
+    # be mutual neighbors — chain expansion is insufficient because a
+    # joint at one end of the chain won't see a joint at the other end
+    # as a neighbor, even though they're on the same rigid link.
+    seen_edges: set[tuple[NodeId, NodeId]] = set()
+    for existing_edge in assur_graph.edges.values():
+        pair = (min(existing_edge.source, existing_edge.target), max(existing_edge.source, existing_edge.target))
+        seen_edges.add(pair)
+
+    for he in hypergraph.hyperedges.values():
+        nodes_list = list(he.nodes)
+        for i in range(len(nodes_list)):
+            for j in range(i + 1, len(nodes_list)):
+                n1, n2 = nodes_list[i], nodes_list[j]
+                pair = (min(n1, n2), max(n1, n2))
+                if pair not in seen_edges:
+                    seen_edges.add(pair)
+                    edge_id = f"{he.id}_{n1}_{n2}"
+                    assur_graph.add_edge(AssurEdge(
+                        id=edge_id,
+                        source=n1,
+                        target=n2,
+                        body_id=he.id,
+                    ))
 
     return assur_graph
 

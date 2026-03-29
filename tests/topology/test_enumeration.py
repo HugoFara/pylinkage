@@ -77,6 +77,28 @@ class TestEnumerateTopologies:
             enumerate_topologies(3)
 
 
+    def test_four_bar_decomposes_to_rrr_dyad(self):
+        """The four-bar topology can be Assur-decomposed into 1 RRR dyad."""
+        from pylinkage.assur.decomposition import decompose_assur_groups
+        from pylinkage.assur.hypergraph_conversion import from_hypergraph
+
+        g = enumerate_topologies(4)[0]
+        ag = from_hypergraph(g)
+        result = decompose_assur_groups(ag)
+        assert len(result.groups) == 1
+        assert result.groups[0].joint_signature == "RRR"
+
+    def test_four_bar_has_correct_roles(self):
+        """The four-bar has 2 GROUND nodes, 1 DRIVER, 1 DRIVEN."""
+        from pylinkage.hypergraph import NodeRole
+
+        g = enumerate_topologies(4)[0]
+        roles = [n.role for n in g.nodes.values()]
+        assert roles.count(NodeRole.GROUND) == 2
+        assert roles.count(NodeRole.DRIVER) == 1
+        assert roles.count(NodeRole.DRIVEN) == 1
+
+
 class TestEnumerateAll:
     """Tests for enumerate_all."""
 

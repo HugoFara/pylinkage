@@ -11,16 +11,18 @@
         2,
         2,
         2,
-        2
+        3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR"
+      ],
       "family": "four-bar",
       "graph": {
         "name": "",
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -32,7 +34,7 @@
           },
           {
             "id": "J1_3",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_3"
           },
@@ -73,18 +75,23 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "six-bar",
       "graph": {
         "name": "",
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -96,7 +103,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -174,7 +181,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3
       ],
@@ -185,7 +192,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -197,7 +204,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -277,18 +284,26 @@
         2,
         2,
         2,
-        2,
+        3,
         4,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -300,7 +315,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -410,7 +425,7 @@
         2,
         2,
         2,
-        2,
+        3,
         4,
         4
       ],
@@ -421,7 +436,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -433,7 +448,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -542,19 +557,27 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         4
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -566,7 +589,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -678,7 +701,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         4
@@ -690,7 +713,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -702,7 +725,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -814,7 +837,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         4
@@ -826,7 +849,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -838,7 +861,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -950,7 +973,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         4
@@ -962,7 +985,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -974,7 +997,7 @@
           },
           {
             "id": "J1_7",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_7"
           },
@@ -1086,7 +1109,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         4
@@ -1098,7 +1121,7 @@
         "nodes": [
           {
             "id": "J0_5",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_5"
           },
@@ -1110,7 +1133,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1221,20 +1244,28 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
         3
       ],
-      "assur_groups": [],
+      "assur_groups": [
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR",
+        "RRR"
+      ],
       "family": "eight-bar",
       "graph": {
         "name": "",
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1246,7 +1277,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1360,7 +1391,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -1373,7 +1404,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1385,7 +1416,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1499,7 +1530,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -1512,7 +1543,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1524,7 +1555,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1638,7 +1669,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -1651,7 +1682,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1663,7 +1694,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1777,7 +1808,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -1790,7 +1821,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1802,7 +1833,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -1916,7 +1947,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -1929,7 +1960,7 @@
         "nodes": [
           {
             "id": "J0_1",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_1"
           },
@@ -1941,7 +1972,7 @@
           },
           {
             "id": "J1_5",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_5"
           },
@@ -2055,7 +2086,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -2068,7 +2099,7 @@
         "nodes": [
           {
             "id": "J0_4",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_4"
           },
@@ -2080,7 +2111,7 @@
           },
           {
             "id": "J1_4",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_4"
           },
@@ -2194,7 +2225,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -2207,7 +2238,7 @@
         "nodes": [
           {
             "id": "J0_4",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_4"
           },
@@ -2219,7 +2250,7 @@
           },
           {
             "id": "J1_4",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_4"
           },
@@ -2333,7 +2364,7 @@
         2,
         2,
         2,
-        2,
+        3,
         3,
         3,
         3,
@@ -2346,7 +2377,7 @@
         "nodes": [
           {
             "id": "J0_4",
-            "role": "DRIVER",
+            "role": "GROUND",
             "joint_type": "REVOLUTE",
             "name": "J0_4"
           },
@@ -2358,7 +2389,7 @@
           },
           {
             "id": "J1_4",
-            "role": "DRIVEN",
+            "role": "DRIVER",
             "joint_type": "REVOLUTE",
             "name": "J1_4"
           },

@@ -388,25 +388,34 @@ def _link_adjacency_to_hypergraph(
     n = len(adj)
     hg = HypergraphLinkage()
 
+    # Identify the crank link (first non-ground link adjacent to ground)
+    ground_neighbors = [
+        k for k in range(n) if k != ground_link and adj[ground_link][k]
+    ]
+    crank_link = min(ground_neighbors) if ground_neighbors else -1
+
+    # Find the driver joint: the joint on the crank link that is NOT
+    # connected to the ground link. This is the crank output (moving point),
+    # not the ground pivot (fixed point).
+    driver_joint: tuple[int, int] | None = None
+    if crank_link >= 0:
+        for k in range(n):
+            if k != ground_link and k != crank_link and adj[crank_link][k]:
+                # Joint between crank_link and k (not ground)
+                pair = (min(crank_link, k), max(crank_link, k))
+                driver_joint = pair
+                break
+
     # Create a joint node for each pair of adjacent links
     joint_map: dict[tuple[int, int], str] = {}  # (link_i, link_j) -> node_id
     for i in range(n):
         for j in range(i + 1, n):
             if adj[i][j]:
                 node_id = f"J{i}_{j}"
+                pair = (i, j)
                 is_ground = (i == ground_link or j == ground_link)
-                # Find the driver: first non-ground link adjacent to ground
-                is_driver = False
-                if is_ground:
-                    other = j if i == ground_link else i
-                    # Check if this is the first ground joint (smallest other link index)
-                    ground_neighbors = [
-                        k for k in range(n) if k != ground_link and adj[ground_link][k]
-                    ]
-                    if ground_neighbors and other == min(ground_neighbors):
-                        is_driver = True
 
-                if is_driver:
+                if pair == driver_joint:
                     role = NodeRole.DRIVER
                 elif is_ground:
                     role = NodeRole.GROUND
