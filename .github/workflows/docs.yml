@@ -1,8 +1,8 @@
 name: Documentation
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
   pull_request:
     branches: [main]
 
@@ -25,7 +25,7 @@ jobs:
       - name: Build documentation
         run: uv run sphinx-build -b html docs/source docs/
       - name: Deploy documentation
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name == 'release'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
