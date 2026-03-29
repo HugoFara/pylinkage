@@ -31,7 +31,7 @@ def _local_best_pso(
     c1: float = 3.0,
     c2: float = 0.1,
     neighbors: int = 17,
-    iters: int = 200,
+    iterations: int = 200,
     center: NDArray[np.floating] | float | None = None,
     verbose: bool = True,
 ) -> tuple[float, NDArray[np.floating]]:
@@ -50,7 +50,7 @@ def _local_best_pso(
     :param c1: Cognitive (personal-best) acceleration coefficient.
     :param c2: Social (neighborhood-best) acceleration coefficient.
     :param neighbors: Ring-topology neighborhood size *k*.
-    :param iters: Number of iterations.
+    :param iterations: Number of iterations.
     :param center: Center for initial position sampling. If ``None``, particles
         are sampled uniformly within *bounds*; if a float, positions are sampled
         from ``U(lower, upper) * center``.
@@ -89,7 +89,7 @@ def _local_best_pso(
         ]
     )
 
-    for iteration in range(iters):
+    for iteration in range(iterations):
         # Find neighborhood best for each particle
         nbr_costs = personal_best_cost[neighbor_indices]  # (n_particles, k)
         best_nbr_local = np.argmin(nbr_costs, axis=1)  # index within neighborhood
@@ -124,7 +124,7 @@ def _local_best_pso(
 
         if verbose:
             print(
-                f"PSO iter {iteration + 1}/{iters}  best cost: {global_best_cost:.6f}",
+                f"PSO iter {iteration + 1}/{iterations}  best cost: {global_best_cost:.6f}",
                 end="\r",
             )
 
@@ -144,10 +144,11 @@ def particle_swarm_optimization(
     follower: float = 0.1,
     inertia: float = 0.6,
     neighbors: int = 17,
-    iters: int = 200,
+    iterations: int = 200,
     bounds: tuple[Sequence[float], Sequence[float]] | None = None,
     order_relation: Callable[[float, float], float] = max,
     verbose: bool = True,
+    **kwargs: int,
 ) -> list[Agent]:
     """Particle Swarm Optimization for linkage parameters.
 
@@ -169,7 +170,7 @@ def particle_swarm_optimization(
     :param leader: Cognitive acceleration coefficient (c1). The default is 3.0.
     :param follower: Social acceleration coefficient (c2). The default is 0.1.
     :param neighbors: Number of neighbors in ring topology. The default is 17.
-    :param iters: Number of iterations. The default is 200.
+    :param iterations: Number of iterations. The default is 200.
     :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
         (Default value = None).
     :param order_relation: How to compare scores.
@@ -183,14 +184,17 @@ def particle_swarm_optimization(
 
     :raises OptimizationError: If parameters are invalid or optimization fails.
     """
+    # Backwards-compatible alias
+    if "iters" in kwargs:
+        iterations = kwargs.pop("iters")
     if dimensions is None:
         dimensions = len(tuple(linkage.get_num_constraints()))
     if dimensions <= 0:
         raise OptimizationError(f"Dimensions must be positive, got {dimensions}")
     if n_particles <= 0:
         raise OptimizationError(f"Number of particles must be positive, got {n_particles}")
-    if iters <= 0:
-        raise OptimizationError(f"Number of iterations must be positive, got {iters}")
+    if iterations <= 0:
+        raise OptimizationError(f"Number of iterations must be positive, got {iterations}")
     if bounds is not None:
         if len(bounds) != 2:
             raise OptimizationError(
@@ -234,7 +238,7 @@ def particle_swarm_optimization(
         c1=leader,
         c2=follower,
         neighbors=neighbors,
-        iters=iters,
+        iterations=iterations,
         center=center_val,
         verbose=verbose,
     )

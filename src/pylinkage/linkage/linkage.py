@@ -147,22 +147,31 @@ class Linkage:
         self._solve_order = tuple(solvable)
         return self._solve_order
 
-    def rebuild(self, pos: JointPositions | None = None) -> None:
+    def rebuild(
+        self,
+        initial_positions: JointPositions | None = None,
+        *,
+        pos: JointPositions | None = None,
+    ) -> None:
         """Redefine linkage joints and given initial positions to joints.
 
-        :param pos: Initial positions for each joint in self.joints.
+        :param initial_positions: Initial positions for each joint in self.joints.
             Coordinates do not need to be precise, they will allow us the best
             fitting position between all possible positions satisfying
             constraints. (Default value = None).
+        :param pos: Deprecated alias for ``initial_positions``.
         """
+        if pos is not None:
+            initial_positions = pos
+
         if not hasattr(self, "_solve_order"):
             self.__find_solving_order__()
 
         # Links parenting in descending order solely.
         # Parents joint do not have children.
-        if pos is not None:
+        if initial_positions is not None:
             # Definition of initial coordinates
-            self.set_coords(pos)
+            self.set_coords(initial_positions)
 
     def get_coords(self) -> list[tuple[float | None, float | None]]:
         """Return the positions of each element in the system."""

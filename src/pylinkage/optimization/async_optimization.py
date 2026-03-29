@@ -62,7 +62,7 @@ async def particle_swarm_optimization_async(
     follower: float = 0.1,
     inertia: float = 0.6,
     neighbors: int = 17,
-    iters: int = 200,
+    iterations: int = 200,
     bounds: tuple[Sequence[float], Sequence[float]] | None = None,
     order_relation: Callable[[float, float], float] = max,
     on_progress: ProgressCallback | None = None,
@@ -89,7 +89,7 @@ async def particle_swarm_optimization_async(
     :param leader: Learning coefficient of each particle. The default is 3.0.
     :param follower: Social coefficient. The default is 0.1.
     :param neighbors: Number of neighbors to consider. The default is 17.
-    :param iters: Number of iterations. The default is 200.
+    :param iterations: Number of iterations. The default is 200.
     :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
     :param order_relation: How to compare scores (max or min). Default is max.
     :param on_progress: Optional callback function called with progress updates.
@@ -112,11 +112,15 @@ async def particle_swarm_optimization_async(
             results = await particle_swarm_optimization_async(
                 eval_func=my_fitness,
                 linkage=my_linkage,
-                iters=100,
+                iterations=100,
                 on_progress=progress_handler,
             )
             return results
     """
+    # Backwards-compatible alias
+    if "iters" in kwargs:
+        iterations = kwargs.pop("iters")
+
     loop = asyncio.get_running_loop()
 
     # Signal progress at start
@@ -124,7 +128,7 @@ async def particle_swarm_optimization_async(
         on_progress(
             OptimizationProgress(
                 current_iteration=0,
-                total_iterations=iters,
+                total_iterations=iterations,
                 best_score=None,
                 is_complete=False,
             )
@@ -143,7 +147,7 @@ async def particle_swarm_optimization_async(
             follower=follower,
             inertia=inertia,
             neighbors=neighbors,
-            iters=iters,
+            iterations=iterations,
             bounds=bounds,
             order_relation=order_relation,
             verbose=False,  # Disable verbose output in async mode
@@ -161,8 +165,8 @@ async def particle_swarm_optimization_async(
         best_score = result[0].score if result else None
         on_progress(
             OptimizationProgress(
-                current_iteration=iters,
-                total_iterations=iters,
+                current_iteration=iterations,
+                total_iterations=iterations,
                 best_score=best_score,
                 is_complete=True,
             )
