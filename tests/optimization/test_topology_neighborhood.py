@@ -65,7 +65,7 @@ class TestBuildNeighborhoodGraph:
         """All neighbor objects should have required fields."""
         catalog = load_catalog()
         graph = build_neighborhood_graph(catalog)
-        for topo_id, neighbors in graph.items():
+        for _topo_id, neighbors in graph.items():
             for n in neighbors:
                 assert isinstance(n, TopologyNeighbor)
                 assert n.target_id in catalog

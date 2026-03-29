@@ -13,15 +13,15 @@ from pylinkage.synthesis._types import PrecisionPoint
 # Skip all tests if pymoo is not installed
 pymoo = pytest.importorskip("pymoo")
 
-import numpy as np
+import numpy as np  # noqa: E402
 
-from pylinkage.optimization.mixed_variable import co_optimize
-from pylinkage.optimization.warm_start import (
+from pylinkage.optimization.mixed_variable import co_optimize  # noqa: E402
+from pylinkage.optimization.warm_start import (  # noqa: E402
     synthesis_to_chromosomes,
     warm_start_co_optimization,
 )
-from pylinkage.synthesis.ranking import compute_compactness, compute_path_accuracy
-from pylinkage.topology.catalog import load_catalog
+from pylinkage.synthesis.ranking import compute_compactness, compute_path_accuracy  # noqa: E402
+from pylinkage.topology.catalog import load_catalog  # noqa: E402
 
 
 @pytest.fixture()

@@ -7,7 +7,6 @@ import pytest
 
 from pylinkage.optimization.co_optimization_types import (
     CoOptimizationConfig,
-    CoOptSolution,
     MixedChromosome,
 )
 from pylinkage.optimization.operators import (
@@ -15,7 +14,6 @@ from pylinkage.optimization.operators import (
     MixedMutation,
     warm_start_sampling,
 )
-from pylinkage.synthesis._types import PrecisionPoint
 from pylinkage.topology.catalog import load_catalog
 
 
@@ -126,7 +124,9 @@ class TestWarmStartSampling:
         xl = np.array([0.0, 0.1, 0.1])
         xu = np.array([5.0, 10.0, 10.0])
 
-        pop = warm_start_sampling(seeds, pop_size=10, n_dim=3, xl=xl, xu=xu, n_topologies=6, rng=rng)
+        pop = warm_start_sampling(
+            seeds, pop_size=10, n_dim=3, xl=xl, xu=xu, n_topologies=6, rng=rng
+        )
         assert pop.shape == (10, 3)
         # First two rows should match seeds
         assert pop[0, 0] == 0.0

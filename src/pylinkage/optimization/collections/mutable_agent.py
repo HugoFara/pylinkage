@@ -25,7 +25,9 @@ class MutableAgent:
     ) -> None:
         self.score = score
         self.dimensions = dimensions
-        self.initial_positions = initial_positions if initial_positions is not None else init_position
+        self.initial_positions = (
+            initial_positions if initial_positions is not None else init_position
+        )
 
     @property
     def init_positions(self) -> Sequence[tuple[float | None, float | None]] | None:

@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import math
-
 import pytest
 
+from pylinkage.synthesis._types import FourBarSolution, PrecisionPoint
 from pylinkage.synthesis.six_bar import (
     _combine_to_six_bar,
     _find_coupler_positions_at_targets,
@@ -15,7 +14,6 @@ from pylinkage.synthesis.six_bar import (
     _validate_six_bar,
     six_bar_path_generation,
 )
-from pylinkage.synthesis._types import FourBarSolution, PrecisionPoint
 from pylinkage.synthesis.topology_types import NBarSolution
 
 
