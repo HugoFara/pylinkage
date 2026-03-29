@@ -13,7 +13,7 @@ import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 
 from ..exceptions import UnbuildableError
-from ..joints import Crank
+from ..joints.crank import Crank
 from ..joints.joint import _StaticBase
 from ..linkage.analysis import movement_bounding_box
 from .core import _get_color

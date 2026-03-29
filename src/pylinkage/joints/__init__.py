@@ -30,18 +30,32 @@ import warnings
 
 __all__ = ["Crank", "Fixed", "Linear", "Prismatic", "Revolute", "Static"]
 
-# Emit deprecation warning on import
-warnings.warn(
-    "The pylinkage.joints module is deprecated. "
-    "Use pylinkage.dyads for the new Assur group API. "
-    "See module docstring for migration guide.",
-    DeprecationWarning,
-    stacklevel=2,
-)
+# Lazy imports: emit deprecation warning only when accessing package-level names.
+# Internal submodule imports (from .joint, .crank, etc.) bypass this entirely.
+_LAZY_MAP = {
+    "Crank": (".crank", "Crank"),
+    "Fixed": (".fixed", "Fixed"),
+    "Linear": (".prismatic", "Linear"),
+    "Prismatic": (".prismatic", "Prismatic"),
+    "Revolute": (".revolute", "Revolute"),
+    "Static": (".joint", "Static"),
+}
 
-from .crank import Crank as Crank  # noqa: E402
-from .fixed import Fixed as Fixed  # noqa: E402
-from .joint import Static as Static  # noqa: E402
-from .prismatic import Linear as Linear  # noqa: E402 - Deprecated alias
-from .prismatic import Prismatic as Prismatic  # noqa: E402
-from .revolute import Revolute as Revolute  # noqa: E402
+
+def __getattr__(name: str) -> object:
+    if name in _LAZY_MAP:
+        warnings.warn(
+            "The pylinkage.joints module is deprecated. "
+            "Use pylinkage.dyads for the new Assur group API. "
+            "See module docstring for migration guide.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        import importlib
+
+        module_path, attr_name = _LAZY_MAP[name]
+        mod = importlib.import_module(module_path, __name__)
+        val = getattr(mod, attr_name)
+        globals()[name] = val
+        return val
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

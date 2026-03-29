@@ -9,8 +9,11 @@ matplotlib.use("Agg")  # Non-interactive backend for CI
 import matplotlib.pyplot as plt
 
 import pylinkage as pl
-from pylinkage.joints import Crank, Fixed, Prismatic, Revolute, Static
-from pylinkage.joints.revolute import Pivot
+from pylinkage.joints.crank import Crank
+from pylinkage.joints.fixed import Fixed
+from pylinkage.joints.joint import Static, _StaticBase
+from pylinkage.joints.prismatic import Prismatic
+from pylinkage.joints.revolute import Pivot, Revolute
 from pylinkage.visualizer.animated import (
     plot_kinematic_linkage,
     show_linkage,
@@ -59,7 +62,7 @@ class TestGetColor(unittest.TestCase):
 
     def test_color_switcher_has_all_types(self):
         """Test that COLOR_SWITCHER has colors for all joint types."""
-        expected_types = {Static, Crank, Fixed, Pivot, Revolute, Prismatic}
+        expected_types = {_StaticBase, Crank, Fixed, Pivot, Revolute, Prismatic}
         self.assertEqual(set(COLOR_SWITCHER.keys()), expected_types)
 
 

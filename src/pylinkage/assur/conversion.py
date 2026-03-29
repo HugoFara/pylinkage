@@ -17,7 +17,7 @@ import warnings
 from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions, DriverAngle
-from ..joints import Prismatic
+from ..joints.prismatic import Prismatic
 from ._types import JointType, NodeId, NodeRole
 from .decomposition import decompose_assur_groups
 from .graph import Edge, LinkageGraph, Node
@@ -47,8 +47,11 @@ def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
         >>> graph, dims = linkage_to_graph(linkage)
         >>> print(f"Nodes: {list(graph.nodes.keys())}")
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
     from ..joints.joint import _StaticBase
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
 
     graph = LinkageGraph(name=linkage.name)
 
@@ -324,8 +327,9 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
         DeprecationWarning,
         stacklevel=2,
     )
-    from ..joints import Crank, Revolute
+    from ..joints.crank import Crank
     from ..joints.joint import Joint, _StaticBase
+    from ..joints.revolute import Revolute
     from ..linkage.linkage import Linkage as LinkageClass
 
     # Decompose to get solving order

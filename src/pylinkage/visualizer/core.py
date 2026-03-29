@@ -5,15 +5,12 @@ This module provides shared utilities for matplotlib-based visualization.
 For symbol definitions used by other backends (Plotly, drawsvg), see symbols.py.
 """
 
-from ..joints import (
-    Crank,
-    Fixed,
-    Prismatic,
-    Revolute,
-    Static,
-)
+from ..joints.crank import Crank
+from ..joints.fixed import Fixed
 from ..joints.joint import Joint
-from ..joints.revolute import Pivot
+from ..joints.joint import _StaticBase as Static
+from ..joints.prismatic import Prismatic
+from ..joints.revolute import Pivot, Revolute
 
 # Colors to use for matplotlib plotting (backwards compatible)
 COLOR_SWITCHER: dict[type[Joint], str] = {

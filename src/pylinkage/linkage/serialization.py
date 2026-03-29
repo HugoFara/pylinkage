@@ -8,8 +8,11 @@ import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+from ..joints.crank import Crank
+from ..joints.fixed import Fixed
 from ..joints.joint import Joint, _StaticBase
+from ..joints.prismatic import Prismatic
+from ..joints.revolute import Revolute
 
 if TYPE_CHECKING:
     from .linkage import Linkage
@@ -125,7 +128,7 @@ def _resolve_joint_ref(
 
     # If it's an inline joint definition, create it
     if ref_data.get("inline"):
-        return Static(
+        return _StaticBase(
             x=ref_data.get("x", 0),
             y=ref_data.get("y", 0),
             name=ref_data.get("name"),
@@ -167,7 +170,7 @@ def joint_from_dict(
 
     result: Joint
     # Use _StaticBase for Static to avoid triggering deprecation warnings
-    if cls in (_StaticBase, Static):
+    if cls is _StaticBase:
         result = _StaticBase(
             x=data.get("x", 0),
             y=data.get("y", 0),

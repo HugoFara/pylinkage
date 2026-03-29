@@ -4,8 +4,9 @@ Static (not animated) visualization.
 
 from typing import TYPE_CHECKING
 
-from ..joints import Fixed, Prismatic, Revolute
-from ..joints.revolute import Pivot
+from ..joints.fixed import Fixed
+from ..joints.prismatic import Prismatic
+from ..joints.revolute import Pivot, Revolute
 from .core import _get_color
 
 if TYPE_CHECKING:

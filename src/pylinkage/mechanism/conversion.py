@@ -39,7 +39,11 @@ def mechanism_from_linkage(linkage: Linkage) -> Mechanism:
         - Fixed -> RevoluteJoint + 2 Links (fixed dyad)
         - Prismatic -> PrismaticJoint + Links (RRP dyad)
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.joint import Static
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
 
     joints: list[Joint] = []
     links: list[Link] = []
@@ -212,8 +216,10 @@ def mechanism_to_linkage(mechanism: Mechanism) -> Linkage:
     Returns:
         A legacy Linkage with equivalent behavior.
     """
-    from ..joints import Crank, Revolute, Static
+    from ..joints.crank import Crank
     from ..joints.joint import Joint as OldJoint
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
     from ..linkage import Linkage
 
     old_joints: list[OldJoint] = []

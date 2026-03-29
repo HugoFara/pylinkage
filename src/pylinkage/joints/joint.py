@@ -6,6 +6,7 @@ import abc
 import warnings
 
 from .._types import Constraints, Coord, MaybeCoord
+from ..components._base import Component
 
 
 def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | _StaticBase | None":
@@ -18,28 +19,26 @@ def joint_syntax_parser(joint: "Joint | Coord | None") -> "Joint | _StaticBase |
     :return: New static joint definition if possible, or None.
     :rtype: Joint | _StaticBase | None
     """
-    if joint is None or isinstance(joint, Joint):
+    if joint is None or isinstance(joint, (Joint, Component)):
         return joint
     # Use _StaticBase internally to avoid deprecation warnings
     return _StaticBase(*joint)
 
 
-class Joint(abc.ABC):
-    """
-    Geometric constraint expressed by two joints.
+class Joint(Component):
+    """Geometric constraint expressed by two joints.
 
     Abstract class should always be inherited.
+
+    .. deprecated:: 0.8.0
+        Legacy base class. New code should use
+        :class:`~pylinkage.components.Component` and its subclasses directly.
     """
 
-    __slots__ = "x", "y", "joint0", "joint1", "name", "_velocity", "_acceleration"
+    __slots__ = ("joint0", "joint1")
 
-    x: float | None
-    y: float | None
-    joint0: "Joint | _StaticBase | None"
-    joint1: "Joint | _StaticBase | None"
-    name: str
-    _velocity: tuple[float, float] | None
-    _acceleration: tuple[float, float] | None
+    joint0: "Joint | _StaticBase | Component | None"
+    joint1: "Joint | _StaticBase | Component | None"
 
     def __init__(
         self,
@@ -58,52 +57,27 @@ class Joint(abc.ABC):
         :param joint0: First linked joint (geometric constraints). The default is None.
         :param joint1: Other revolute joint linked. The default is None.
         """
-        self.x, self.y = x, y
+        super().__init__(x, y, name)
         self.joint0 = joint_syntax_parser(joint0)
         self.joint1 = joint_syntax_parser(joint1)
-        self.name = name if name is not None else str(id(self))
-        self._velocity = None
-        self._acceleration = None
 
     def __repr__(self) -> str:
         """Represent an object with class name, coordinates, name and state."""
         return f"{self.__class__.__name__}(x={self.x}, y={self.y}, name={self.name})"
 
-    def __get_joints__(self) -> "tuple[Joint | _StaticBase | None, Joint | _StaticBase | None]":
+    def __get_joints__(self) -> "tuple[Component | None, Component | None]":
         """Return constraint joints as a tuple."""
         return self.joint0, self.joint1
 
-    def coord(self) -> tuple[float | None, float | None]:
-        """Return cartesian coordinates."""
-        return self.x, self.y
-
     @property
-    def velocity(self) -> tuple[float, float] | None:
-        """Return linear velocity (vx, vy) in units/s.
-
-        Returns None if velocity has not been computed.
-        To compute velocities, use linkage.step_fast_with_kinematics()
-        or set omega on crank joints and call linkage.compute_velocities().
-        """
-        return self._velocity
-
-    @velocity.setter
-    def velocity(self, value: tuple[float, float] | None) -> None:
-        """Set the velocity of this joint."""
-        self._velocity = value
-
-    @property
-    def acceleration(self) -> tuple[float, float] | None:
-        """Return linear acceleration (ax, ay) in units/s².
-
-        Returns None if acceleration has not been computed.
-        """
-        return self._acceleration
-
-    @acceleration.setter
-    def acceleration(self, value: tuple[float, float] | None) -> None:
-        """Set the acceleration of this joint."""
-        self._acceleration = value
+    def anchors(self) -> "tuple[Component, ...]":
+        """Return parent joints as a tuple (Component interface compatibility)."""
+        result: list[Component] = []
+        if self.joint0 is not None:
+            result.append(self.joint0)
+        if self.joint1 is not None:
+            result.append(self.joint1)
+        return tuple(result)
 
     def set_coord(
         self,

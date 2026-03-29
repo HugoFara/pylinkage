@@ -329,7 +329,8 @@ def plot_linkage_dxf(
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Import joint types for isinstance checks
-    from ..joints import Fixed, Prismatic
+    from ..joints.fixed import Fixed
+    from ..joints.prismatic import Prismatic
     from ..joints.revolute import Pivot
 
     # Draw links

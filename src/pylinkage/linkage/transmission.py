@@ -152,7 +152,8 @@ def _auto_detect_fourbar_joints(
         ValueError: If joints cannot be auto-detected.
     """
     # Import here to avoid circular imports
-    from ..joints import Crank, Revolute
+    from ..joints.crank import Crank
+    from ..joints.revolute import Revolute
 
     crank = None
     revolute = None
@@ -387,7 +388,7 @@ def _auto_detect_prismatic_joint(linkage: Linkage) -> object:
     Raises:
         ValueError: If no Prismatic joint is found.
     """
-    from ..joints import Prismatic
+    from ..joints.prismatic import Prismatic
 
     for joint in linkage.joints:
         if isinstance(joint, Prismatic):

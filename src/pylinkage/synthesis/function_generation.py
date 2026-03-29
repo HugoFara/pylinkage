@@ -472,7 +472,9 @@ def verify_function_generation(
         Tuple of (all_satisfied, list of actual errors for each pair).
     """
     from ..geometry.secants import circle_intersect
-    from ..joints import Crank, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
 
     errors: list[float] = []
 

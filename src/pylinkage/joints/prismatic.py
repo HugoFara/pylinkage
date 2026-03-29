@@ -81,6 +81,14 @@ class Prismatic(pl_joint.Joint):
         self.revolute_radius = revolute_radius
         self.joint2 = pl_joint.joint_syntax_parser(joint2)
 
+    @property
+    def anchors(self) -> tuple["pl_joint.Joint | pl_joint._StaticBase", ...]:
+        """Return all three parent joints (revolute anchor + line endpoints)."""
+        result = list(super().anchors)
+        if self.joint2 is not None:
+            result.append(self.joint2)
+        return tuple(result)
+
     def reload(self, dt: float = 1) -> None:
         """Compute position using solver (RRP dyad - circle-line).
 

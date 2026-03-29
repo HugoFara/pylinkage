@@ -65,7 +65,10 @@ def to_linkage(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Linkag
         DeprecationWarning,
         stacklevel=2,
     )
-    from ..joints import Crank, Prismatic, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.joint import Static
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
     from ..linkage.linkage import Linkage as LinkageClass
 
     # First expand hyperedges to simple graph
@@ -233,7 +236,11 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
         >>> linkage = Linkage(joints=[...], order=[...])
         >>> hg, dims = from_linkage(linkage)
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.joint import Static
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
 
     hypergraph = HypergraphLinkage(name=linkage.name)
 

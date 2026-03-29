@@ -10,7 +10,8 @@ from typing import TYPE_CHECKING
 import numpy as np
 import plotly.graph_objects as go
 
-from ..joints import Fixed, Prismatic
+from ..joints.fixed import Fixed
+from ..joints.prismatic import Prismatic
 from ..joints.revolute import Pivot
 from .symbols import (
     SymbolType,
@@ -598,7 +599,8 @@ def plot_linkage_plotly_with_velocity(
         >>> fig = plot_linkage_plotly_with_velocity(linkage, frame_index=25)
         >>> fig.show()
     """
-    from ..joints import Crank, Static
+    from ..joints.crank import Crank
+    from ..joints.joint import _StaticBase as Static
 
     # Check that omega is set
     has_omega = any(

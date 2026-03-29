@@ -42,8 +42,11 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
         ValueError: If joint references cannot be resolved.
     """
     # Import here to avoid circular imports
-    from ..joints import Crank, Fixed, Prismatic, Revolute
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
     from ..joints.joint import Static
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
 
     # Build index map from joint identity to array index
     # First, collect all joints including implicit Static joints
@@ -214,7 +217,10 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
         data: SolverData to update.
         linkage: Linkage containing updated constraints.
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.prismatic import Prismatic
+    from ..joints.revolute import Revolute
 
     for i, joint in enumerate(linkage.joints):
         offset = data.constraint_offsets[i]

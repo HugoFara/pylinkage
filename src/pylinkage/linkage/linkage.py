@@ -17,14 +17,40 @@ import numpy as np
 from numpy.typing import NDArray
 
 from .._types import JointPositions
+from ..components._base import Component
 from ..exceptions import UnderconstrainedError
-from ..joints import Crank, Fixed, Revolute
-from ..joints.joint import Joint, _StaticBase
 
 if TYPE_CHECKING:
     from ..solver import SolverData
     from .sensitivity import SensitivityAnalysis, ToleranceAnalysis
     from .transmission import StrokeAnalysis, TransmissionAngleAnalysis
+
+
+def _is_ground(j: Component) -> bool:
+    """Check if a component is a ground/anchor (no constraints, not a driver)."""
+    return len(j.get_constraints()) == 0
+
+
+def _is_driver(j: Component) -> bool:
+    """Check if a component is a motor-driven driver (crank or linear actuator)."""
+    # New actuators expose angular_velocity
+    if hasattr(j, "angular_velocity"):
+        return True
+    # Legacy Crank: has 'angle' attr, single constraint, single anchor
+    # (Fixed also has 'angle' but has 2 constraints and 2 anchors)
+    return (
+        hasattr(j, "angle")
+        and len(j.get_constraints()) == 1
+        and len(getattr(j, "anchors", ())) <= 1
+    )
+
+
+def _get_anchors(j: Component) -> tuple[Component, ...]:
+    """Get parent components of a joint/component."""
+    anchors = getattr(j, "anchors", None)
+    if anchors is not None:
+        return anchors  # type: ignore[no-any-return]
+    return ()
 
 
 class Linkage:
@@ -37,21 +63,21 @@ class Linkage:
     __slots__ = "name", "joints", "_cranks", "_solve_order", "_solver_data"
 
     name: str
-    joints: tuple[Joint, ...]
-    _cranks: tuple[Crank, ...]
-    _solve_order: tuple[Joint, ...]
+    joints: tuple[Component, ...]
+    _cranks: tuple[Component, ...]
+    _solve_order: tuple[Component, ...]
     _solver_data: "SolverData | None"
 
     def __init__(
         self,
-        joints: Iterable[Joint],
-        order: Iterable[Joint] | None = None,
+        joints: Iterable[Component],
+        order: Iterable[Component] | None = None,
         name: str | None = None,
     ) -> None:
         """
         Define a linkage, a set of joints.
 
-        :param joints: All Joint to be part of the linkage.
+        :param joints: All Component/Joint to be part of the linkage.
         :param order: Sequence to manually define resolution order for each step.
             It should be a subset of joints.
             Automatic computed order is experimental!
@@ -62,26 +88,26 @@ class Linkage:
         """
         self.name = name if name is not None else str(id(self))
         self.joints = tuple(joints)
-        self._cranks = tuple(j for j in self.joints if isinstance(j, Crank))
+        self._cranks = tuple(j for j in self.joints if _is_driver(j))
         self._solver_data = None
         if order:
             self._solve_order = tuple(order)
 
-    def __set_solve_order__(self, order: Iterable[Joint]) -> None:
+    def __set_solve_order__(self, order: Iterable[Component]) -> None:
         """Set constraints resolution order."""
         self._solve_order = tuple(order)
 
-    def __find_solving_order__(self) -> tuple[Joint, ...]:
+    def __find_solving_order__(self) -> tuple[Component, ...]:
         """Find solving order automatically (experimental).
 
         This method attempts to determine the order in which joints should be solved
-        by finding joints whose parent joints are already in the solvable list.
+        by finding joints whose parent anchors are already in the solvable list.
 
-        Anchor joints (Static instances) are automatically detected from parent
+        Ground components (zero constraints) are automatically detected from parent
         references, so tuple shortcuts like ``joint0=(0, 0)`` work correctly.
 
         Returns:
-            Tuple of joints in solvable order.
+            Tuple of components in solvable order.
 
         Raises:
             UnderconstrainedError: If the linkage cannot be automatically solved.
@@ -90,26 +116,25 @@ class Linkage:
             "Automatic solving order is still in experimental stage!",
             stacklevel=2,
         )
-        # Collect all Static joints: both explicit ones in self.joints
-        # and implicit ones created from tuple shortcuts in parent references
-        # Use _StaticBase to match both user-created Static and internal _StaticBase
-        solvable: list[Joint] = [j for j in self.joints if isinstance(j, _StaticBase)]
+        # Collect all ground components (zero constraints = no solving needed)
+        solvable: list[Component] = [j for j in self.joints if _is_ground(j)]
+        # Also discover implicit grounds referenced as anchors but not in self.joints
         for j in self.joints:
-            if isinstance(j.joint0, _StaticBase) and j.joint0 not in solvable:
-                solvable.append(j.joint0)
-            if isinstance(j.joint1, _StaticBase) and j.joint1 not in solvable:
-                solvable.append(j.joint1)
+            for anchor in _get_anchors(j):
+                if _is_ground(anchor) and anchor not in solvable:
+                    solvable.append(anchor)
         # Track which joints from self.joints have been solved
-        # (solvable may contain implicit Statics not in self.joints)
+        # (solvable may contain implicit grounds not in self.joints)
         joints_solved = sum(1 for j in self.joints if j in solvable)
         # True if new joints were added in the current pass
         solved_in_pass = True
         while joints_solved < len(self.joints) and solved_in_pass:
             solved_in_pass = False
             for j in self.joints:
-                if isinstance(j, _StaticBase) or j in solvable:
+                if _is_ground(j) or j in solvable:
                     continue
-                if j.joint0 in solvable and (isinstance(j, Crank) or j.joint1 in solvable):
+                anchors = _get_anchors(j)
+                if anchors and all(anchor in solvable for anchor in anchors):
                     solvable.append(j)
                     joints_solved += 1
                     solved_in_pass = True
@@ -149,7 +174,7 @@ class Linkage:
         :param coords: Joint coordinates.
         """
         for joint, coord in zip(self.joints, coords, strict=False):
-            joint.set_coord(coord)
+            joint.set_coord(*coord)
 
     def indeterminacy(self) -> int:
         """Return the static indeterminacy degree of the linkage in 2D.
@@ -183,16 +208,20 @@ class Linkage:
         mobilities = 1
         kinematic_undetermined = 0
         for j in self.joints:
-            if isinstance(j, (_StaticBase, Fixed)):
+            n_constraints = len(j.get_constraints())
+            if n_constraints == 0:
+                # Ground/Static - no contribution
                 pass
-            elif isinstance(j, Crank):
+            elif _is_driver(j):
+                # Crank/actuator - one body, one revolute pair
                 solids += 1
                 kinematic_undetermined += 2
-            elif isinstance(j, Revolute):
+            elif n_constraints == 2:
+                n_anchors = len(_get_anchors(j))
                 solids += 1
-                # A Revolute Joint creates at least two revolute joints
+                # RRR dyad / Revolute: 2 links + 3 revolute joints
                 kinematic_undetermined += 4
-                if not hasattr(j, "joint1") or j.joint1 is None:
+                if n_anchors < 2:
                     mobilities += 1
                 else:
                     solids += 1
@@ -222,10 +251,7 @@ class Linkage:
             iterations = self.get_rotation_period()
         for _ in range(iterations):
             for j in self._solve_order:
-                if isinstance(j, Crank):
-                    j.reload(dt)
-                else:
-                    j.reload()
+                j.reload(dt)
             yield tuple(j.coord() for j in self.joints)
 
     def compile(self) -> None:
@@ -374,14 +400,16 @@ class Linkage:
         if self._solver_data.crank_indices is None:
             crank_indices = []
             for i, j in enumerate(self.joints):
-                if isinstance(j, Crank):
+                if _is_driver(j):
                     crank_indices.append(i)
             self._solver_data.crank_indices = np.array(crank_indices, dtype=np.int32)
 
         # Sync omega and alpha values from cranks
         for i, crank in enumerate(self._cranks):
-            self._solver_data.omega_values[i] = crank.omega if crank.omega else 0.0
-            self._solver_data.alpha_values[i] = crank.alpha if crank.alpha else 0.0
+            omega = getattr(crank, "omega", None) or 0.0
+            alpha = getattr(crank, "alpha", None) or 0.0
+            self._solver_data.omega_values[i] = omega
+            self._solver_data.alpha_values[i] = alpha
 
         # Run numba simulation with kinematics
         pos_trajectory, vel_trajectory, acc_trajectory = simulate_with_kinematics(
@@ -407,7 +435,7 @@ class Linkage:
 
     def set_input_velocity(
         self,
-        crank: Crank,
+        crank: Component,
         omega: float,
         alpha: float = 0.0,
     ) -> None:
@@ -429,8 +457,8 @@ class Linkage:
         """
         if crank not in self._cranks:
             raise ValueError(f"{crank} is not a crank in this linkage")
-        crank.omega = omega
-        crank.alpha = alpha
+        crank.omega = omega  # type: ignore[attr-defined]
+        crank.alpha = alpha  # type: ignore[attr-defined]
 
     def get_velocities(self) -> list[tuple[float, float] | None]:
         """Return velocities for all joints.
@@ -492,15 +520,13 @@ class Linkage:
         self._solver_data = None
 
         if flat:
-            # Is in charge of redistributing constraints
+            # Distribute constraints based on each joint's constraint count
             dispatcher = iter(constraints)
             for joint in self.joints:
-                if isinstance(joint, _StaticBase):
-                    pass
-                elif isinstance(joint, Crank):
-                    joint.set_constraints(next(dispatcher))  # type: ignore[arg-type]
-                elif isinstance(joint, (Fixed, Revolute)):
-                    joint.set_constraints(next(dispatcher), next(dispatcher))  # type: ignore[arg-type]
+                n = len(joint.get_constraints())
+                if n > 0:
+                    args = [next(dispatcher) for _ in range(n)]
+                    joint.set_constraints(*args)  # type: ignore[arg-type]
         else:
             for joint, constraint in zip(self.joints, constraints, strict=False):
                 joint.set_constraints(*constraint)  # type: ignore[misc]
@@ -513,9 +539,11 @@ class Linkage:
         :returns: Number of iterations with dt=1.
         """
         periods = 1
-        for j in self.joints:
-            if isinstance(j, Crank) and j.angle is not None:
-                freq = round(tau / abs(j.angle))
+        for j in self._cranks:
+            # Support both new (angular_velocity) and legacy (angle) attribute names
+            angle = getattr(j, "angular_velocity", None) or getattr(j, "angle", None)
+            if angle is not None:
+                freq = round(tau / abs(angle))
                 periods = periods * freq // gcd(periods, freq)
         return periods
 

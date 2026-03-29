@@ -47,9 +47,6 @@ def _get_constraint_names(linkage: Linkage) -> tuple[str, ...]:
         Tuple of constraint names matching the flat constraint order
         from get_num_constraints().
     """
-    from ..joints import Crank, Fixed, Prismatic, Revolute
-    from ..joints.joint import _StaticBase
-
     names: list[str] = []
 
     for joint in linkage.joints:
@@ -58,19 +55,22 @@ def _get_constraint_names(linkage: Linkage) -> tuple[str, ...]:
         if joint_name is None:
             joint_name = f"{joint.__class__.__name__}_{id(joint) % 10000}"
 
-        if isinstance(joint, _StaticBase):
-            # Static joints have no constraints
+        n_constraints = len(joint.get_constraints())
+
+        if n_constraints == 0:
+            # Ground/Static - no constraints
             pass
-        elif isinstance(joint, Crank):
+        elif n_constraints == 1:
+            # Crank, Prismatic/RRPDyad, LinearActuator
             names.append(f"{joint_name}_radius")
-        elif isinstance(joint, Revolute):
-            names.append(f"{joint_name}_dist1")
-            names.append(f"{joint_name}_dist2")
-        elif isinstance(joint, Fixed):
-            names.append(f"{joint_name}_radius")
-            names.append(f"{joint_name}_angle")
-        elif isinstance(joint, Prismatic):
-            names.append(f"{joint_name}_radius")
+        elif n_constraints == 2:
+            # FixedDyad/Fixed (distance + angle) vs RRRDyad/Revolute (two distances)
+            if hasattr(joint, "angle") and not hasattr(joint, "angular_velocity"):
+                names.append(f"{joint_name}_radius")
+                names.append(f"{joint_name}_angle")
+            else:
+                names.append(f"{joint_name}_dist1")
+                names.append(f"{joint_name}_dist2")
 
     return tuple(names)
 

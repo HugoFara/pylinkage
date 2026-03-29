@@ -139,7 +139,10 @@ def solution_to_linkage(
     Returns:
         Linkage object ready for simulation.
     """
-    from ..joints import Crank, Fixed, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
     from ..linkage import Linkage
 
     # Create ground pivots
@@ -270,7 +273,10 @@ def linkage_to_synthesis_params(
     Raises:
         ValueError: If linkage is not a valid four-bar.
     """
-    from ..joints import Crank, Fixed, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.fixed import Fixed
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
 
     # Find joints by type
     statics: list[Static] = []
@@ -400,7 +406,9 @@ def fourbar_from_lengths(
         >>> linkage = fourbar_from_lengths(1.0, 3.0, 3.0, 4.0)
         >>> linkage.show()
     """
-    from ..joints import Crank, Revolute, Static
+    from ..joints.crank import Crank
+    from ..joints.joint import Static
+    from ..joints.revolute import Revolute
     from ..linkage import Linkage
 
     A = ground_pivot_a

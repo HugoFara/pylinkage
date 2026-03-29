@@ -49,7 +49,7 @@ def plot_velocity_vectors(
     Returns:
         The Quiver object for further customization.
     """
-    from ..joints import Static
+    from ..joints.joint import _StaticBase as Static
 
     positions = np.asarray(positions)
     velocities = np.asarray(velocities)
@@ -112,7 +112,7 @@ def plot_acceleration_vectors(
     Returns:
         The Quiver object for further customization.
     """
-    from ..joints import Static
+    from ..joints.joint import _StaticBase as Static
 
     positions = np.asarray(positions)
     accelerations = np.asarray(accelerations)
@@ -222,7 +222,7 @@ def show_kinematics(
     import matplotlib.pyplot as plt
 
     # Check that omega is set on at least one crank
-    from ..joints import Crank
+    from ..joints.crank import Crank
     from ..linkage.analysis import movement_bounding_box
 
     has_omega = any(
@@ -334,7 +334,8 @@ def animate_kinematics(
     import matplotlib.animation as anim
     import matplotlib.pyplot as plt
 
-    from ..joints import Crank, Static
+    from ..joints.crank import Crank
+    from ..joints.joint import _StaticBase as Static
     from ..linkage.analysis import movement_bounding_box
     from .core import _get_color
 
