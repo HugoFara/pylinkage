@@ -69,6 +69,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ring-topology PSO. The `pso` optional extra is kept but empty for backwards
   compatibility. The API is unchanged.
 
+- **Renamed abbreviated parameters for clarity
+  ([#17](https://github.com/HugoFara/pylinkage/issues/17)):**
+  All old names are still accepted as keyword arguments for backwards
+  compatibility.
+  - `iters` → `iterations` in `particle_swarm_optimization()` and its async
+    variant.
+  - `pos` → `initial_positions` in `Linkage.rebuild()`.
+  - `init_positions` → `initial_positions` in `Agent`, `MutableAgent`, and
+    `ParetoSolution`.
+
 ### Removed
 
 - **pyswarms dependency** removed from all extras (`pso`, `full`, dev group).
