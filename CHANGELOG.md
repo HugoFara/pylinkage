@@ -39,6 +39,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `TopologyCatalog.topology_index()` and `topology_by_index()` for
     integer-indexed topology lookup.
 
+- **Triad solving in mechanism simulation:** `Mechanism.step()` now uses Assur
+  group decomposition internally, solving dyads and triads via `solve_group()`
+  dispatch. Six-bar linkages (Watt and Stephenson types) can be simulated
+  end-to-end. `graph_to_mechanism()` handles triad groups (2 internal nodes,
+  4+ edges), creating the appropriate joints and links.
+
 - **Topology enumeration:**
   - Graph isomorphism detection via WL-1 color refinement + backtracking
     verification: `canonical_form()`, `canonical_hash()`, `are_isomorphic()`.

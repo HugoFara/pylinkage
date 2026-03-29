@@ -238,6 +238,52 @@ def graph_to_mechanism(graph: LinkageGraph, dimensions: Dimensions) -> Mechanism
                     )
                     links.append(link)
 
+        elif group.group_class >= 2:
+            # Triad (or higher) — 2+ internal nodes connected to anchors
+            # Create a RevoluteJoint for each internal node
+            for internal_id in group.internal_nodes:
+                node = graph.nodes[internal_id]
+                pos = dimensions.get_node_position(internal_id)
+                x = pos[0] if pos else 0.0
+                y = pos[1] if pos else 0.0
+
+                revolute_joint = RevoluteJoint(
+                    id=internal_id,
+                    position=(x, y),
+                    name=node.name,
+                )
+                joints.append(revolute_joint)
+                node_to_joint[internal_id] = revolute_joint
+
+            # Create a Link for each edge in edge_map
+            edge_map = getattr(group, "edge_map", {})
+            if not edge_map:
+                # Fallback: create links from internal_edges and graph topology
+                for edge_id in group.internal_edges:
+                    edge = graph.edges.get(edge_id)
+                    if edge is None:
+                        continue
+                    joint_a = node_to_joint.get(edge.source)
+                    joint_b = node_to_joint.get(edge.target)
+                    if joint_a and joint_b:
+                        link = Link(
+                            id=edge_id,
+                            joints=[joint_a, joint_b],
+                            name=edge_id,
+                        )
+                        links.append(link)
+            else:
+                for edge_id, (node_a, node_b) in edge_map.items():
+                    joint_a = node_to_joint.get(node_a)
+                    joint_b = node_to_joint.get(node_b)
+                    if joint_a and joint_b:
+                        link = Link(
+                            id=edge_id,
+                            joints=[joint_a, joint_b],
+                            name=edge_id,
+                        )
+                        links.append(link)
+
         else:
             raise NotImplementedError(
                 f"Conversion for {group.joint_signature} group not implemented"

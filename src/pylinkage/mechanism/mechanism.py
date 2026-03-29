@@ -15,6 +15,7 @@ The Mechanism class uses proper mechanical engineering terminology:
 
 from __future__ import annotations
 
+import logging
 import math
 from collections.abc import Generator
 from dataclasses import dataclass, field
@@ -27,6 +28,11 @@ from .link import ArcDriverLink, DriverLink, GroundLink, Link
 
 if TYPE_CHECKING:
     from .._types import Coord, MaybeCoord
+    from ..assur.decomposition import DecompositionResult
+    from ..assur.graph import LinkageGraph
+    from ..dimensions import Dimensions
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -66,12 +72,19 @@ class Mechanism:
     _joint_map: dict[str, Joint] = field(default_factory=dict, repr=False)
     _link_map: dict[str, Link] = field(default_factory=dict, repr=False)
 
+    # Assur group decomposition (built lazily for group-based solving)
+    _decomposition: DecompositionResult | None = field(default=None, repr=False)
+    _assur_graph: LinkageGraph | None = field(default=None, repr=False)
+    _assur_dimensions: Dimensions | None = field(default=None, repr=False)
+    _use_group_solver: bool = field(default=False, repr=False)
+
     def __post_init__(self) -> None:
         """Build internal indices and compute solve order."""
         self._build_indices()
         self._compute_solve_order()
         self._connect_joints_to_links()
         self._cache_link_distances()
+        self._build_decomposition()
 
     def _build_indices(self) -> None:
         """Build lookup maps for joints and links."""
@@ -107,6 +120,31 @@ class Mechanism:
         """
         for link in self.links:
             link.cache_distances()
+
+    def _build_decomposition(self) -> None:
+        """Build Assur group decomposition for group-based solving.
+
+        Converts the mechanism to a LinkageGraph, decomposes it, and
+        caches the result. Falls back to joint-by-joint solving if
+        decomposition fails (e.g., for trivial mechanisms).
+        """
+        try:
+            from ..assur.mechanism_conversion import mechanism_to_graph
+            from ..solver.solve import solve_group as _solve_group  # noqa: F401
+
+            graph, dimensions = mechanism_to_graph(self)
+
+            from ..assur.decomposition import decompose_assur_groups
+
+            decomposition = decompose_assur_groups(graph)
+
+            self._assur_graph = graph
+            self._assur_dimensions = dimensions
+            self._decomposition = decomposition
+            self._use_group_solver = True
+        except Exception:
+            logger.debug("Assur decomposition failed, using joint-by-joint solver", exc_info=True)
+            self._use_group_solver = False
 
     def _compute_solve_order(self) -> None:
         """Compute the order in which joints should be solved.
@@ -212,23 +250,81 @@ class Mechanism:
         """Perform a single simulation step.
 
         1. Advance all driver links
-        2. Solve all dependent joints in order
+        2. Solve all dependent joints (group-based or joint-by-joint)
         3. Update tracker joints
         """
         # Step drivers
         for driver in self._driver_links:
             driver.step(dt)
 
-        # Solve remaining joints
-        for joint in self._solve_order:
-            if isinstance(joint, GroundJoint):
-                continue  # Ground joints don't move
-            if any(joint == d.output_joint for d in self._driver_links):
-                continue  # Driver outputs already updated
-
-            self._solve_joint(joint)
+        if self._use_group_solver:
+            self._step_groups()
+        else:
+            self._step_joints()
 
         # Update tracker joints (they depend on solved joints)
+        self._update_trackers()
+
+    @staticmethod
+    def _joint_coord(joint: Joint) -> Coord:
+        """Extract defined (x, y) from a joint. Caller must check is_defined()."""
+        x, y = joint.position
+        assert x is not None and y is not None
+        return (x, y)
+
+    def _step_groups(self) -> None:
+        """Solve joints using Assur group decomposition."""
+        from ..solver.solve import solve_group
+
+        assert self._decomposition is not None
+        assert self._assur_dimensions is not None
+
+        # Build current positions from ground + driver joints
+        positions: dict[str, Coord] = {}
+
+        for node_id in self._decomposition.ground:
+            joint = self._joint_map.get(node_id)
+            if joint and joint.is_defined():
+                positions[node_id] = self._joint_coord(joint)
+
+        for node_id in self._decomposition.drivers:
+            joint = self._joint_map.get(node_id)
+            if joint and joint.is_defined():
+                positions[node_id] = self._joint_coord(joint)
+
+        # Solve each group in order
+        for group in self._decomposition.groups:
+            # Use current joint positions as hints for disambiguation
+            hint_positions: dict[str, Coord] = {}
+            for nid in group.internal_nodes:
+                joint = self._joint_map.get(nid)
+                if joint and joint.is_defined():
+                    hint_positions[nid] = self._joint_coord(joint)
+
+            new_positions = solve_group(
+                group, positions, self._assur_dimensions, hint_positions
+            )
+
+            # Write solved positions back to joints
+            for nid, (nx, ny) in new_positions.items():
+                joint = self._joint_map.get(nid)
+                if joint:
+                    joint.set_coord(nx, ny)
+
+            # Add to known positions for subsequent groups
+            positions.update(new_positions)
+
+    def _step_joints(self) -> None:
+        """Solve joints one by one (legacy fallback for simple mechanisms)."""
+        for joint in self._solve_order:
+            if isinstance(joint, GroundJoint):
+                continue
+            if any(joint == d.output_joint for d in self._driver_links):
+                continue
+            self._solve_joint(joint)
+
+    def _update_trackers(self) -> None:
+        """Update tracker joints from their reference joints."""
         for joint in self.joints:
             if isinstance(joint, TrackerJoint):
                 ref1 = self._joint_map.get(joint.ref_joint1_id)

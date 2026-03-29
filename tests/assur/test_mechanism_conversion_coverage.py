@@ -89,12 +89,8 @@ class TestDriverWithoutGroundConnection:
 # ---------------------------------------------------------------------------
 
 class TestUnsupportedGroupType:
-    def test_unsupported_signature_raises(self):
-        """Group with unimplemented signature raises NotImplementedError.
-
-        We mock the decomposition to produce a triad group, which is not
-        supported by graph_to_mechanism.
-        """
+    def test_triad_creates_joints_and_links(self):
+        """Triad group creates RevoluteJoints and Links for internal nodes."""
         from unittest.mock import patch
 
         from pylinkage.assur.decomposition import DecompositionResult
@@ -112,6 +108,12 @@ class TestUnsupportedGroupType:
                 _signature="RRRRRR",
                 internal_nodes=("X", "Y"),
                 anchor_nodes=("G1",),
+                internal_edges=("GX", "XY", "YG"),
+                edge_map={
+                    "GX": ("G1", "X"),
+                    "XY": ("X", "Y"),
+                    "YG": ("Y", "G1"),
+                },
             )],
             graph=g,
         )
@@ -127,8 +129,19 @@ class TestUnsupportedGroupType:
         with patch(
             "pylinkage.assur.mechanism_conversion.decompose_assur_groups",
             return_value=fake_result,
-        ), pytest.raises(NotImplementedError, match="not implemented"):
-            graph_to_mechanism(g, dims)
+        ):
+            mech = graph_to_mechanism(g, dims)
+
+        # Should have created joints for X and Y
+        joint_ids = {j.id for j in mech.joints}
+        assert "X" in joint_ids
+        assert "Y" in joint_ids
+
+        # Should have created links from edge_map
+        link_ids = {lnk.id for lnk in mech.links}
+        assert "GX" in link_ids
+        assert "XY" in link_ids
+        assert "YG" in link_ids
 
 
 # ---------------------------------------------------------------------------
