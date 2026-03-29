@@ -6,16 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorials &mdash; pylinkage 0.6.0 documentation</title>
+  <title>Tutorials &mdash; pylinkage 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -56,7 +56,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#core-features">Core Features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cam_follower.html">Cam-Follower Mechanisms</a></li>
 <li class="toctree-l3"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multi_objective.html">Multi-Objective Optimization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="sensitivity_analysis.html">Sensitivity &amp; Tolerance Analysis</a></li>
 </ul>
@@ -127,7 +129,9 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="visualization.html">Visualization Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cam_follower.html">Cam-Follower Mechanisms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_optimization.html">Advanced Optimization Techniques</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_objective.html">Multi-Objective Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="kinematics_optimization.html">Kinematics-Based Optimization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sensitivity_analysis.html">Sensitivity &amp; Tolerance Analysis</a></li>
 </ul>
@@ -164,8 +168,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="visualization.html"><span class="doc">Visualization Backends</span></a></p></td>
 <td><p>Matplotlib animations, Plotly interactive plots, SVG export</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a></p></td>
-<td><p>PSO optimization, fitness functions, bounds, multi-objective</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="cam_follower.html"><span class="doc">Cam-Follower Mechanisms</span></a></p></td>
+<td><p>Cam profiles, motion laws, translating/oscillating followers</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a></p></td>
+<td><p>PSO optimization, fitness functions, bounds, grid search</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="multi_objective.html"><span class="doc">Multi-Objective Optimization</span></a></p></td>
+<td><p>NSGA-II/III Pareto optimization, trade-off analysis, hypervolume</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a></p></td>
 <td><p>Velocity analysis, acceleration, kinematic-based optimization</p></td>
