@@ -92,6 +92,10 @@ def _generate_orientation_candidates(
     orientation at each point is a free variable. This generator
     systematically samples the orientation space.
 
+    The search fixes the first orientation (a reference frame choice)
+    and varies the remaining orientations independently, since each
+    precision point can have a completely different coupler angle.
+
     Args:
         points: List of precision points.
         n_samples: Number of samples per point.
@@ -106,19 +110,47 @@ def _generate_orientation_candidates(
     # First yield the base estimate
     yield base_orientations
 
-    # Then yield uniform perturbations (all same delta)
-    deltas = np.linspace(-perturbation_range, perturbation_range, n_samples, endpoint=True)
+    # --- Independent orientation search ---
+    # Fix first orientation (reference) and search the rest over
+    # the full circle.  For 3 points this is a 2-D grid; for more
+    # points the grid grows, so we use a coarser per-axis resolution.
+    free = n - 1  # number of free orientations (first is fixed)
+    if free > 0:
+        per_axis = max(6, int(round(n_samples ** (1.0 / free))))
+        angle_grid = np.linspace(-math.pi, math.pi, per_axis, endpoint=False)
 
+        if free == 1:
+            for a in angle_grid:
+                yield [base_orientations[0], a]
+        elif free == 2:
+            for a in angle_grid:
+                for b in angle_grid:
+                    yield [base_orientations[0], a, b]
+        else:
+            # For 4+ points, combine a coarse independent grid with
+            # random samples to keep the count manageable.
+            from itertools import product as _product
+
+            count = 0
+            for combo in _product(angle_grid, repeat=free):
+                yield [base_orientations[0], *combo]
+                count += 1
+                if count >= n_samples * n_samples:
+                    break
+
+    # Uniform perturbations (original strategy, still useful)
+    deltas = np.linspace(-perturbation_range, perturbation_range,
+                         max(6, n_samples // 3), endpoint=True)
     for delta in deltas:
         if abs(delta) < 1e-10:
-            continue  # Skip zero (already yielded)
-        perturbed = [o + delta for o in base_orientations]
-        yield perturbed
+            continue
+        yield [o + delta for o in base_orientations]
 
-    # Progressive rotation (orientation increases along path)
-    for total_rotation in [math.pi / 4, math.pi / 2, math.pi, -math.pi / 4, -math.pi / 2]:
-        progressive = [base_orientations[i] + total_rotation * i / (n - 1) for i in range(n)]
-        yield progressive
+    # Progressive rotation
+    for total_rotation in [math.pi / 4, math.pi / 2, math.pi,
+                           -math.pi / 4, -math.pi / 2]:
+        yield [base_orientations[i] + total_rotation * i / max(n - 1, 1)
+               for i in range(n)]
 
 
 def _points_to_poses(
@@ -260,6 +292,66 @@ def _filter_solutions(
     return valid, warnings
 
 
+def _verify_coupler_path(
+    solution: FourBarSolution,
+    precision_points: list[PrecisionPoint],
+    iterations: int = 300,
+    tolerance: float | None = None,
+) -> bool:
+    """Check that a solution's coupler point traces through precision points.
+
+    Builds a temporary linkage, simulates one full rotation, and verifies
+    that each precision point has a nearby point on the coupler trajectory.
+
+    Args:
+        solution: Candidate four-bar solution.
+        precision_points: Target points the coupler must pass through.
+        iterations: Number of simulation steps.
+        tolerance: Maximum acceptable distance.  Defaults to 5 % of the
+            bounding-box diagonal of the precision points.
+
+    Returns:
+        True if the coupler passes near all precision points.
+    """
+    from .conversion import solution_to_linkage
+
+    if not precision_points or solution.coupler_point is None:
+        return True
+
+    # Compute tolerance from precision point spread
+    if tolerance is None:
+        xs = [p[0] for p in precision_points]
+        ys = [p[1] for p in precision_points]
+        diag = math.sqrt((max(xs) - min(xs)) ** 2 + (max(ys) - min(ys)) ** 2)
+        tolerance = max(0.05 * diag, 0.01)
+
+    try:
+        lk = solution_to_linkage(solution, iterations=iterations)
+    except Exception:
+        return False
+
+    # Simulate and collect coupler point trajectory
+    try:
+        trajectory: list[tuple[float, float]] = []
+        for positions in lk.step(iterations=iterations):
+            px, py = positions[-1]  # P is the last joint
+            if px is not None and py is not None:
+                trajectory.append((px, py))
+    except Exception:
+        return False
+
+    if not trajectory:
+        return False
+
+    traj_arr = np.asarray(trajectory)
+    for px, py in precision_points:
+        dists = np.hypot(traj_arr[:, 0] - px, traj_arr[:, 1] - py)
+        if dists.min() > tolerance:
+            return False
+
+    return True
+
+
 def _remove_duplicate_solutions(
     solutions: list[FourBarSolution],
     tolerance: float = 0.01,
@@ -378,59 +470,87 @@ def path_generation(
         precision_points, n_samples=n_orientation_samples
     )
 
+    # The coupler point is the first precision point — it's the
+    # body reference that should trace through all precision points.
+    coupler_pt: Point2D = precision_points[0]
+
+    # Verified solutions are collected inline so that the search keeps
+    # going until we have enough *confirmed* results (not just raw
+    # candidates). Each orientation+dyad pair is verified immediately;
+    # bad assembly modes are discarded without consuming the budget.
+    n_assembly_rejected = 0
+    _seen_lengths: set[tuple[float, ...]] = set()
+
     for orientations in orientation_gen:
         poses = _points_to_poses(precision_points, orientations)
 
         try:
-            # Use only first 3-5 poses for Burmester theory
             poses_for_burmester = poses[: min(5, len(poses))]
-
             curves = compute_circle_point_curve(poses_for_burmester)
-
             if not curves:
                 continue
 
-            # Select compatible dyad pairs
-            # Limit pairs per orientation to avoid excessive candidates
-            remaining = (max_solutions * 3 - len(raw_solutions)) if max_solutions else None
             dyad_pairs = select_compatible_dyads(
                 curves,
                 ground_constraint=ground_constraint,
                 ground_tolerance=ground_tolerance,
-                max_pairs=remaining,
+                max_pairs=20,
             )
 
-            # The coupler point is the first precision point — it's the
-            # body reference that should trace through all precision points.
-            coupler_pt: Point2D = precision_points[0]
-
             for dyad_left, dyad_right in dyad_pairs:
-                solution = _dyads_to_fourbar(dyad_left, dyad_right, coupler_point_world=coupler_pt)
+                solution = _dyads_to_fourbar(
+                    dyad_left, dyad_right, coupler_point_world=coupler_pt,
+                )
+                if solution is None:
+                    continue
 
-                if solution is not None:
-                    raw_solutions.append(solution)
+                # Quick dedup by rounded link lengths
+                key = (
+                    round(solution.crank_length, 2),
+                    round(solution.coupler_length, 2),
+                    round(solution.rocker_length, 2),
+                    round(solution.ground_length, 2),
+                )
+                if key in _seen_lengths:
+                    continue
+                _seen_lengths.add(key)
 
-                    if max_solutions and len(raw_solutions) >= max_solutions * 3:
-                        # Collected enough candidates
-                        break
+                # Lightweight Grashof filter (no simulation)
+                grashof_type = grashof_check(
+                    solution.crank_length,
+                    solution.coupler_length,
+                    solution.rocker_length,
+                    solution.ground_length,
+                )
+                if require_grashof and grashof_type == GrashofType.NON_GRASHOF:
+                    continue
+                if require_crank_rocker and grashof_type not in (
+                    GrashofType.GRASHOF_CRANK_ROCKER,
+                    GrashofType.CHANGE_POINT,
+                ):
+                    continue
+
+                # Verify coupler passes through precision points
+                if not _verify_coupler_path(solution, precision_points):
+                    n_assembly_rejected += 1
+                    continue
+
+                raw_solutions.append(solution)
+
+                if max_solutions and len(raw_solutions) >= max_solutions:
+                    break
 
         except (ValueError, np.linalg.LinAlgError, scipy_linalg.LinAlgError):
-            # Configuration doesn't yield valid solution
             continue
 
-        if max_solutions and len(raw_solutions) >= max_solutions * 3:
+        if max_solutions and len(raw_solutions) >= max_solutions:
             break
 
-    # Remove duplicates
-    raw_solutions = _remove_duplicate_solutions(raw_solutions)
-
-    # Filter solutions
-    raw_solutions, filter_warnings = _filter_solutions(
-        raw_solutions,
-        require_grashof=require_grashof,
-        require_crank_rocker=require_crank_rocker,
-    )
-    warnings.extend(filter_warnings)
+    if n_assembly_rejected > 0:
+        warnings.append(
+            f"{n_assembly_rejected} candidate(s) rejected: coupler point did "
+            "not pass through all precision points (assembly-mode mismatch)."
+        )
 
     # Limit to max_solutions
     if max_solutions and len(raw_solutions) > max_solutions:
