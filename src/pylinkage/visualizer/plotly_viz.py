@@ -10,13 +10,12 @@ Supports both legacy (``pylinkage.linkage.Linkage``) and modern
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import plotly.graph_objects as go
 
 from ..joints.fixed import Fixed
-from ..joints.prismatic import Prismatic
 from ..joints.revolute import Pivot
 from .symbols import (
     SymbolType,
@@ -69,10 +68,11 @@ def _get_parent_pairs(component: Any) -> list[Any]:
         parents.append(joint0)
 
     joint1 = getattr(component, "joint1", None)
-    if joint1 is not None:
+    if joint1 is not None and (
+        isinstance(component, (Fixed, Pivot)) or type(component).__name__ == "Revolute"
+    ):
         # Legacy: only draw link to joint1 for specific types
-        if isinstance(component, (Fixed, Pivot)) or type(component).__name__ == "Revolute":
-            parents.append(joint1)
+        parents.append(joint1)
 
     return parents
 
@@ -129,8 +129,8 @@ def _get_plotly_marker(symbol_type: SymbolType) -> dict[str, object]:
 
 
 def plot_linkage_plotly(
-    linkage: Union["LegacyLinkage", "SimLinkage"],
-    loci: "Iterable[tuple[Coord, ...]] | None" = None,
+    linkage: LegacyLinkage | SimLinkage,
+    loci: Iterable[tuple[Coord, ...]] | None = None,
     *,
     title: str | None = None,
     show_dimensions: bool = False,
@@ -331,8 +331,8 @@ def plot_linkage_plotly(
 
 
 def animate_linkage_plotly(
-    linkage: Union["LegacyLinkage", "SimLinkage"],
-    loci: "Iterable[tuple[Coord, ...]] | None" = None,
+    linkage: LegacyLinkage | SimLinkage,
+    loci: Iterable[tuple[Coord, ...]] | None = None,
     *,
     title: str | None = None,
     show_loci: bool = True,
@@ -544,7 +544,7 @@ def animate_linkage_plotly(
 
 
 def plot_linkage_plotly_with_velocity(
-    linkage: "LegacyLinkage",
+    linkage: LegacyLinkage,
     frame_index: int = 0,
     *,
     title: str | None = None,
@@ -710,7 +710,7 @@ def plot_linkage_plotly_with_velocity(
 
 
 def interactive_linkage_plotly(
-    linkage: Union["LegacyLinkage", "SimLinkage"],
+    linkage: LegacyLinkage | SimLinkage,
     iterations: int | None = None,
     *,
     title: str | None = None,

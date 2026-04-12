@@ -38,8 +38,8 @@ Example:
 """
 
 from .arc_crank import ArcCrank as ArcCrank
-from .crank import Crank as Crank
 from .crank import DEFAULT_ANGULAR_VELOCITY as DEFAULT_ANGULAR_VELOCITY
+from .crank import Crank as Crank
 from .linear import LinearActuator as LinearActuator
 
 __all__ = [
