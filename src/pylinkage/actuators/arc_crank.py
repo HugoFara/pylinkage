@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 
 from ..components import ConnectedComponent, Ground, _AnchorProxy
+from .crank import DEFAULT_ANGULAR_VELOCITY
 
 
 class ArcCrank(ConnectedComponent):
@@ -66,7 +67,7 @@ class ArcCrank(ConnectedComponent):
         self,
         anchor: Ground,
         radius: float,
-        angular_velocity: float = 0.1,
+        angular_velocity: float = DEFAULT_ANGULAR_VELOCITY,
         arc_start: float = 0.0,
         arc_end: float = math.pi,
         initial_angle: float | None = None,

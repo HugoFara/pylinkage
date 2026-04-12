@@ -86,7 +86,7 @@ def plot_kinematic_linkage(
     fig: "Figure",
     axis: "Axes",
     loci: "Sequence[tuple[Coord, ...]]",
-    frames: int = 100,
+    frames: int = 360,
     interval: float = 40,
 ) -> anim.FuncAnimation:
     """Plot a linkage with an animation.
@@ -131,7 +131,7 @@ def show_linkage(
     save: bool = False,
     prev: "Sequence[Coord] | None" = None,
     loci: "Sequence[tuple[Coord, ...]] | None" = None,
-    points: int = 100,
+    points: int = 360,
     iteration_factor: float = 1,
     title: str | None = None,
     duration: float = 5,

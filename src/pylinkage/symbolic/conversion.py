@@ -250,8 +250,8 @@ def symbolic_to_linkage(
             else:
                 r_val = float(sym_joint.r.subs(all_subs).evalf())
 
-            # Compute angle step (default to 2*pi/100 for 100 steps per rotation)
-            angle_step = 2 * np.pi / 100
+            # Compute angle step (default to 2*pi/360 for 360 steps per rotation)
+            angle_step = 2 * np.pi / 360
 
             joint = Crank(
                 x=x_val,

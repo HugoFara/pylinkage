@@ -483,7 +483,7 @@ def _build_linkage_from_chromosome(
 
         # Always use the generic converter since joint names come from
         # the catalog graph (J0_1, etc.), not the synthesis convention (A, B, C...).
-        return _generic_nbar_to_linkage(nbar, iterations=100)
+        return _generic_nbar_to_linkage(nbar, iterations=360)
     except Exception:
         return None
 

@@ -243,7 +243,7 @@ class DriverLink(Link):
     """
 
     motor_joint: GroundJoint | None = None
-    angular_velocity: float = 0.1  # radians per step
+    angular_velocity: float = math.tau / 360  # radians per step (1 deg/step)
     initial_angle: float = 0.0  # radians
     current_angle: float = field(default=0.0, repr=False)
 
@@ -342,7 +342,7 @@ class ArcDriverLink(Link):
     """
 
     motor_joint: GroundJoint | None = None
-    angular_velocity: float = 0.1  # radians per step (magnitude)
+    angular_velocity: float = math.tau / 360  # radians per step (1 deg/step) (magnitude)
     arc_start: float = 0.0  # minimum angle
     arc_end: float = math.pi  # maximum angle
     initial_angle: float | None = None  # defaults to arc_start

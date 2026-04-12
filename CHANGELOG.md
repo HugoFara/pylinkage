@@ -69,6 +69,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Default simulation resolution increased from ~63 to 360 steps per rotation:**
+  The default angular velocity for `Crank`, `ArcCrank`, `DriverLink`, and
+  `ArcDriverLink` changed from `0.1` rad/step to `tau / 360` (~0.01745 rad/step),
+  giving one sample per degree. The `Mechanism.get_rotation_period()` fallback
+  and all synthesis/visualizer iteration defaults changed from `100` to `360`
+  accordingly. A `DEFAULT_ANGULAR_VELOCITY` constant is now exported from
+  `pylinkage.actuators`.
+
 - **PSO is now pure NumPy:** `particle_swarm_optimization()` no longer depends on
   pyswarms (unmaintained since 2021). Replaced with a built-in local-best
   ring-topology PSO. The `pso` optional extra is kept but empty for backwards

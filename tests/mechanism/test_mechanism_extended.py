@@ -97,7 +97,7 @@ class TestMechanismGetRotationPeriod:
     def test_default_when_no_drivers(self):
         origin = GroundJoint("O", position=(0.0, 0.0))
         mech = Mechanism(joints=[origin], links=[])
-        assert mech.get_rotation_period() == 100
+        assert mech.get_rotation_period() == 360
 
     def test_period_based_on_angular_velocity(self):
         mech = _build_four_bar(omega=0.1)

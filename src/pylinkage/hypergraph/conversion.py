@@ -14,6 +14,7 @@ representation, use the assur.hypergraph_conversion module.
 """
 
 import warnings
+from math import tau
 from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions, DriverAngle
@@ -109,7 +110,7 @@ def to_linkage(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Linkag
                 break
 
         driver_angle = dimensions.get_driver_angle(node.id)
-        angle = driver_angle.angular_velocity if driver_angle else 0.1
+        angle = driver_angle.angular_velocity if driver_angle else tau / 360
 
         crank_joint = Crank(
             x=x,
@@ -317,7 +318,7 @@ def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:
 
         if isinstance(joint, Crank) and joint.angle is not None:
             driver_angles[node_id] = DriverAngle(
-                angular_velocity=0.1,
+                angular_velocity=tau / 360,
                 initial_angle=joint.angle,
             )
 

@@ -130,7 +130,7 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
 
             # Get driver angle from dimensions
             driver_angle = dimensions.get_driver_angle(node.id)
-            angular_velocity = driver_angle.angular_velocity if driver_angle else 0.1
+            angular_velocity = driver_angle.angular_velocity if driver_angle else math.tau / 360
 
             driver = DriverLink(
                 id=f"{node.id}_crank",

@@ -14,6 +14,7 @@ This enables interoperability between the two systems:
 """
 
 import warnings
+from math import tau
 from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions, DriverAngle
@@ -130,9 +131,9 @@ def linkage_to_graph(linkage: "Linkage") -> tuple[LinkageGraph, Dimensions]:
 
         # Store driver angle in dimensions
         if isinstance(joint, Crank) and joint.angle is not None:
-            # joint.angle is the initial angle, angular_velocity defaults to 0.1
+            # joint.angle is the initial angle
             driver_angles[node_id] = DriverAngle(
-                angular_velocity=0.1,
+                angular_velocity=tau / 360,
                 initial_angle=joint.angle,
             )
 
@@ -374,7 +375,7 @@ def graph_to_linkage(graph: LinkageGraph, dimensions: Dimensions) -> "Linkage":
                 break
 
         driver_angle = dimensions.get_driver_angle(node_id)
-        angle = driver_angle.angular_velocity if driver_angle else 0.1
+        angle = driver_angle.angular_velocity if driver_angle else tau / 360
 
         crank_joint = Crank(
             x=x,

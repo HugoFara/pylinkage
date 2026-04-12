@@ -7,8 +7,12 @@ at a constant angular velocity.
 from __future__ import annotations
 
 import math
+from math import tau
 
 from ..components import ConnectedComponent, Ground, _AnchorProxy
+
+#: Default angular velocity: one degree per step (360 steps per full rotation).
+DEFAULT_ANGULAR_VELOCITY = tau / 360
 
 
 class Crank(ConnectedComponent):
@@ -26,7 +30,7 @@ class Crank(ConnectedComponent):
 
     Example:
         >>> O1 = Ground(0.0, 0.0, name="O1")
-        >>> crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1)
+        >>> crank = Crank(anchor=O1, radius=1.0)
         >>> crank.position
         (1.0, 0.0)
         >>> crank.output.position  # Same as crank.position
@@ -53,7 +57,7 @@ class Crank(ConnectedComponent):
         self,
         anchor: Ground,
         radius: float,
-        angular_velocity: float = 0.1,
+        angular_velocity: float = DEFAULT_ANGULAR_VELOCITY,
         initial_angle: float = 0.0,
         name: str | None = None,
     ) -> None:

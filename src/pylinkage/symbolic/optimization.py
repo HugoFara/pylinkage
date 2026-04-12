@@ -92,7 +92,7 @@ class SymbolicOptimizer:
         self,
         linkage: SymbolicLinkage,
         objective_func: Callable[[dict[str, SymCoord]], sp.Expr],
-        theta_samples: int = 100,
+        theta_samples: int = 360,
     ) -> None:
         """
         Create a symbolic optimizer.
@@ -103,7 +103,7 @@ class SymbolicOptimizer:
             {joint_name: (x_expr, y_expr)} where x_expr and y_expr are
             symbolic expressions in theta and parameters.
         :param theta_samples: Number of theta samples for averaging objectives
-            that depend on the full trajectory. Default is 100.
+            that depend on the full trajectory. Default is 360.
         """
         self.linkage = linkage
         self.objective_func = objective_func

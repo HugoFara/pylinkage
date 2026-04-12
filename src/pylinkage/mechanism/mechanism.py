@@ -442,7 +442,7 @@ class Mechanism:
         Based on the slowest driver link's angular velocity.
         """
         if not self._driver_links:
-            return 100  # Default
+            return 360  # Default: one step per degree
 
         # Find minimum angular velocity
         min_omega = min(
@@ -450,7 +450,7 @@ class Mechanism:
         )
 
         if min_omega == 0:
-            return 100
+            return 360
 
         # Check if we have arc drivers - they need different period calculation
         for driver in self._driver_links:

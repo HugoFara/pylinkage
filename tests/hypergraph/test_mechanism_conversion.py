@@ -149,7 +149,7 @@ class TestToMechanism:
         assert len(driver_links) == 0
 
     def test_missing_driver_angle_defaults_velocity(self):
-        """When Dimensions has no driver_angle entry, angular_velocity defaults to 0.1."""
+        """When Dimensions has no driver_angle entry, angular_velocity defaults to tau/360."""
         hg = HypergraphLinkage(name="default-vel")
         hg.add_node(Node(id="G", role=NodeRole.GROUND))
         hg.add_node(Node(id="A", role=NodeRole.DRIVER))
@@ -161,7 +161,7 @@ class TestToMechanism:
         )
         mech = to_mechanism(hg, dims)
         dl = [lk for lk in mech.links if isinstance(lk, DriverLink)][0]
-        assert dl.angular_velocity == pytest.approx(0.1)
+        assert dl.angular_velocity == pytest.approx(math.tau / 360)
 
 
 class TestFromMechanism:

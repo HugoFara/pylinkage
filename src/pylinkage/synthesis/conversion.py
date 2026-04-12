@@ -117,7 +117,7 @@ def _compute_crank_limits(
 def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
-    iterations: int = 100,
+    iterations: int = 360,
 ) -> Linkage:
     """Convert a single FourBarSolution to a Linkage object.
 
@@ -231,7 +231,7 @@ def solution_to_linkage(
 def solutions_to_linkages(
     solutions: list[FourBarSolution],
     synthesis_type: SynthesisType,
-    iterations: int = 100,
+    iterations: int = 360,
 ) -> list[Linkage]:
     """Convert multiple solutions to Linkage objects.
 
@@ -381,7 +381,7 @@ def fourbar_from_lengths(
     ground_length: float,
     ground_pivot_a: Point2D = (0.0, 0.0),
     initial_crank_angle: float = 0.0,
-    iterations: int = 100,
+    iterations: int = 360,
     name: str = "fourbar",
 ) -> Linkage:
     """Create a four-bar linkage from link lengths.
@@ -475,7 +475,7 @@ def fourbar_from_lengths(
 def nbar_solution_to_linkage(
     solution: NBarSolution,
     name: str = "synthesized",
-    iterations: int = 100,
+    iterations: int = 360,
 ) -> Linkage:
     """Convert an NBarSolution to a Linkage object.
 
@@ -537,7 +537,7 @@ def nbar_solution_to_linkage(
 def _generic_nbar_to_linkage(
     solution: NBarSolution,
     name: str = "synthesized",
-    iterations: int = 100,
+    iterations: int = 360,
 ) -> Linkage:
     """Generic converter for N-bar solutions of any topology.
 

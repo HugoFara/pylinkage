@@ -11,6 +11,7 @@ The serialization format separates joints and links clearly:
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -203,7 +204,7 @@ def link_from_dict(
             joints=joints,
             name=name,
             motor_joint=motor_joint,
-            angular_velocity=data.get("angular_velocity", 0.1),
+            angular_velocity=data.get("angular_velocity", math.tau / 360),
             arc_start=data.get("arc_start", 0.0),
             arc_end=data.get("arc_end", 3.14159),
             initial_angle=data.get("initial_angle"),
@@ -221,7 +222,7 @@ def link_from_dict(
             joints=joints,
             name=name,
             motor_joint=motor_joint,
-            angular_velocity=data.get("angular_velocity", 0.1),
+            angular_velocity=data.get("angular_velocity", math.tau / 360),
             initial_angle=data.get("initial_angle", 0.0),
         )
     # Default: regular link

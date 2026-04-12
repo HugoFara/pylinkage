@@ -36,11 +36,11 @@ Example usage::
 
     # Compute numeric trajectory with specific parameter values
     params = {"L1": 1.0, "L2": 3.0, "L3": 3.0}
-    theta_vals = np.linspace(0, 2 * np.pi, 100)
+    theta_vals = np.linspace(0, 2 * np.pi, 360)
     trajectories = compute_trajectory_numeric(linkage, params, theta_vals)
 
     # Access (x, y) positions for joint C
-    C_positions = trajectories["C"]  # Shape: (100, 2)
+    C_positions = trajectories["C"]  # Shape: (360, 2)
 
 For optimization::
 

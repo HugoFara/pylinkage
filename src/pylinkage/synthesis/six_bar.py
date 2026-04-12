@@ -681,7 +681,7 @@ def _combine_to_six_bar(
 
 def _nbar_to_six_bar_linkage(
     solution: NBarSolution,
-    iterations: int = 100,
+    iterations: int = 360,
 ) -> Linkage | None:
     """Convert an NBarSolution to a six-bar Linkage.
 

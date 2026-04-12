@@ -135,7 +135,7 @@ def mechanism_from_linkage(linkage: Linkage) -> Mechanism:
                     joints=[motor_joint, output_joint],
                     name=f"{old_joint.name}_crank",
                     motor_joint=motor_joint,
-                    angular_velocity=old_joint.angle or 0.1,
+                    angular_velocity=old_joint.angle or math.tau / 360,
                     initial_angle=_compute_initial_angle(motor_joint, output_joint),
                 )
                 links.append(driver)
