@@ -52,8 +52,8 @@ def _local_best_pso(
     :param neighbors: Ring-topology neighborhood size *k*.
     :param iterations: Number of iterations.
     :param center: Center for initial position sampling. If ``None``, particles
-        are sampled uniformly within *bounds*; if a float, positions are sampled
-        from ``U(lower, upper) * center``.
+        are sampled uniformly within *bounds*; otherwise positions are concentrated
+        around the center point within bounds.
     :param verbose: Print iteration progress.
     :returns: ``(best_cost, best_position)``.
     """
@@ -64,7 +64,13 @@ def _local_best_pso(
     if center is None:
         positions = rng.uniform(lb, ub, size=(n_particles, dimensions))
     else:
-        positions = rng.uniform(lb, ub, size=(n_particles, dimensions)) * float(center)
+        center_arr = np.asarray(center, dtype=float)
+        # Sample positions concentrated around center within bounds
+        half_span = np.minimum(center_arr - lb, ub - center_arr)
+        positions = rng.uniform(
+            center_arr - half_span, center_arr + half_span,
+            size=(n_particles, dimensions),
+        )
         positions = np.clip(positions, lb, ub)
 
     # Initialize velocities as small random values
