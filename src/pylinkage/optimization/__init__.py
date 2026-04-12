@@ -32,8 +32,6 @@ __all__ = [
 
 import importlib as _importlib
 
-from ..population import Ensemble as Ensemble
-
 # Eagerly import lightweight submodules
 from . import collections as collections
 from .collections.pareto import (
@@ -54,6 +52,7 @@ from .utils import (
 
 # Lazy-loaded attributes (require scipy / pyswarms)
 _LAZY_ATTRS: dict[str, tuple[str, str]] = {
+    "Ensemble": ("..population", "Ensemble"),
     "chain_optimizers": (".scipy_optimize", "chain_optimizers"),
     "differential_evolution_optimization": (
         ".scipy_optimize",

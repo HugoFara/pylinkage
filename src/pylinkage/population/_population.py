@@ -18,6 +18,7 @@ from ._member import Member
 
 if TYPE_CHECKING:
     from ..linkage import Linkage
+    from ..synthesis.topology_types import TopologySolution
 
 
 class Population:
@@ -204,6 +205,75 @@ class Population:
                 dimensions=dims,
                 initial_positions=positions,
                 scores=scores_dict,
+            )
+
+        return cls(ensembles=ensembles)
+
+    @classmethod
+    def from_topology_solutions(
+        cls,
+        solutions: list[TopologySolution],
+    ) -> Population:
+        """Build a Population from multi-topology synthesis results.
+
+        Groups solutions by ``topology_id`` into Ensembles. Each
+        solution's :class:`~pylinkage.synthesis.topology_types.QualityMetrics`
+        are carried as scores on the Ensemble members.
+
+        Args:
+            solutions: Results from ``multi_topology_synthesize()`` or
+                ``generalized_synthesis()``.
+        """
+        # Group by topology_id
+        groups: dict[str, list[TopologySolution]] = defaultdict(list)
+        for sol in solutions:
+            groups[sol.solution.topology_id].append(sol)
+
+        ensembles: dict[str, Ensemble] = {}
+        for topo_id, group in groups.items():
+            template = group[0].linkage
+            n = len(group)
+            n_constraints = len(template.get_num_constraints(flat=True))
+            n_joints = len(template.joints)
+
+            dims = np.empty((n, n_constraints), dtype=np.float64)
+            positions = np.empty((n, n_joints, 2), dtype=np.float64)
+
+            for i, tsol in enumerate(group):
+                lk = tsol.linkage
+                constraints = lk.get_num_constraints(flat=True)
+                dims[i] = [
+                    c if c is not None else 0.0 for c in constraints
+                ]
+                for j, (x, y) in enumerate(lk.get_coords()):
+                    positions[i, j, 0] = x if x is not None else 0.0
+                    positions[i, j, 1] = y if y is not None else 0.0
+
+            # Carry QualityMetrics as score columns
+            scores: dict[str, np.ndarray] = {
+                "path_accuracy": np.array(
+                    [s.metrics.path_accuracy for s in group], dtype=np.float64,
+                ),
+                "min_transmission_angle": np.array(
+                    [s.metrics.min_transmission_angle for s in group],
+                    dtype=np.float64,
+                ),
+                "link_ratio": np.array(
+                    [s.metrics.link_ratio for s in group], dtype=np.float64,
+                ),
+                "compactness": np.array(
+                    [s.metrics.compactness for s in group], dtype=np.float64,
+                ),
+                "overall_score": np.array(
+                    [s.metrics.overall_score for s in group], dtype=np.float64,
+                ),
+            }
+
+            ensembles[topo_id] = Ensemble(
+                linkage=template,
+                dimensions=dims,
+                initial_positions=positions,
+                scores=scores,
             )
 
         return cls(ensembles=ensembles)

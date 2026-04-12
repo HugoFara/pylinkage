@@ -29,6 +29,7 @@ from ._types import (
 
 if TYPE_CHECKING:
     from ..linkage import Linkage
+    from ..population import Ensemble
 
 
 @dataclass
@@ -109,6 +110,67 @@ class SynthesisResult:
     def __bool__(self) -> bool:
         """True if any solutions were found."""
         return len(self.solutions) > 0
+
+    def to_ensemble(self) -> Ensemble:
+        """Convert synthesis solutions to an Ensemble.
+
+        All solutions in a SynthesisResult share the same joint topology
+        (same joint types and wiring, different dimensions), so they map
+        naturally to a single Ensemble.
+
+        The raw ``FourBarSolution`` link lengths are stored as scores
+        (``crank_length``, ``coupler_length``, ``rocker_length``,
+        ``ground_length``) for convenient filtering and ranking.
+
+        Returns:
+            Ensemble with one member per valid solution.
+
+        Raises:
+            ValueError: If no solutions are available.
+        """
+        from ..population import Ensemble
+
+        if not self.solutions:
+            raise ValueError("Cannot convert empty SynthesisResult to Ensemble")
+
+        template = self.solutions[0]
+        n = len(self.solutions)
+        n_constraints = len(template.get_num_constraints(flat=True))
+        n_joints = len(template.joints)
+
+        dims = np.empty((n, n_constraints), dtype=np.float64)
+        positions = np.empty((n, n_joints, 2), dtype=np.float64)
+
+        for i, linkage in enumerate(self.solutions):
+            constraints = linkage.get_num_constraints(flat=True)
+            dims[i] = [c if c is not None else 0.0 for c in constraints]
+            for j, (x, y) in enumerate(linkage.get_coords()):
+                positions[i, j, 0] = x if x is not None else 0.0
+                positions[i, j, 1] = y if y is not None else 0.0
+
+        # Extract link lengths from raw solutions as scores
+        scores: dict[str, NDArray[np.float64]] = {}
+        if self.raw_solutions and len(self.raw_solutions) >= n:
+            raw = self.raw_solutions[:n]
+            scores["crank_length"] = np.array(
+                [s.crank_length for s in raw], dtype=np.float64,
+            )
+            scores["coupler_length"] = np.array(
+                [s.coupler_length for s in raw], dtype=np.float64,
+            )
+            scores["rocker_length"] = np.array(
+                [s.rocker_length for s in raw], dtype=np.float64,
+            )
+            scores["ground_length"] = np.array(
+                [s.ground_length for s in raw], dtype=np.float64,
+            )
+
+        return Ensemble(
+            linkage=template,
+            dimensions=dims,
+            initial_positions=positions,
+            scores=scores,
+        )
 
 
 @dataclass(frozen=True, slots=True)
