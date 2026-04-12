@@ -96,6 +96,27 @@ class Member:
 
         return cls(dimensions=dims, initial_positions=pos, scores=scores)
 
+    def to_loci(self) -> tuple[tuple[tuple[float, float], ...], ...]:
+        """Convert trajectory to the loci format used by the visualizer.
+
+        Returns:
+            Nested tuples ``loci[frame][joint] = (x, y)`` compatible
+            with :func:`~pylinkage.visualizer.show_linkage` and friends.
+
+        Raises:
+            ValueError: If no trajectory has been computed yet.
+        """
+        if self.trajectory is None:
+            raise ValueError(
+                "No trajectory available. Call Ensemble.simulate() first."
+            )
+        traj = self.trajectory
+        return tuple(
+            tuple((float(traj[f, j, 0]), float(traj[f, j, 1]))
+                  for j in range(traj.shape[1]))
+            for f in range(traj.shape[0])
+        )
+
     def to_agent(self) -> Agent:
         """Convert back to a legacy Agent for backwards compatibility."""
         pos_tuples = [

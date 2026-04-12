@@ -9,7 +9,7 @@ solver for maximum performance.
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from numpy.typing import NDArray
@@ -333,6 +333,92 @@ class Ensemble:
     def to_agents(self) -> list[Agent]:
         """Convert all members back to legacy Agents."""
         return [self._member_at(i).to_agent() for i in range(self.n_members)]
+
+    # ------------------------------------------------------------------
+    # Visualization
+    # ------------------------------------------------------------------
+
+    def show(
+        self,
+        idx: int = 0,
+        iterations: int | None = None,
+        **kwargs: Any,
+    ) -> object:
+        """Animate a member with :func:`~pylinkage.visualizer.show_linkage`.
+
+        Simulates the member if no trajectory is cached.
+
+        Args:
+            idx: Member index to visualize.
+            iterations: Simulation steps (if trajectory not yet computed).
+            **kwargs: Forwarded to ``show_linkage()``.
+
+        Returns:
+            The matplotlib FuncAnimation object.
+        """
+        from ..visualizer.animated import show_linkage
+
+        member = self._member_at(idx)
+        if member.trajectory is None:
+            self.simulate_member(idx, iterations=iterations)
+            member = self._member_at(idx)
+
+        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)
+
+    def plot_plotly(
+        self,
+        idx: int = 0,
+        iterations: int | None = None,
+        **kwargs: Any,
+    ) -> object:
+        """Plot a member with :func:`~pylinkage.visualizer.plot_linkage_plotly`.
+
+        Simulates the member if no trajectory is cached.
+
+        Args:
+            idx: Member index to visualize.
+            iterations: Simulation steps (if trajectory not yet computed).
+            **kwargs: Forwarded to ``plot_linkage_plotly()``.
+
+        Returns:
+            A plotly Figure object.
+        """
+        from ..visualizer.plotly_viz import plot_linkage_plotly
+
+        member = self._member_at(idx)
+        if member.trajectory is None:
+            self.simulate_member(idx, iterations=iterations)
+            member = self._member_at(idx)
+
+        return plot_linkage_plotly(
+            self._linkage, loci=member.to_loci(), **kwargs,
+        )
+
+    def save_svg(
+        self,
+        path: str,
+        idx: int = 0,
+        iterations: int | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Save a member as SVG via :func:`~pylinkage.visualizer.save_linkage_svg`.
+
+        Simulates the member if no trajectory is cached.
+
+        Args:
+            path: Output file path.
+            idx: Member index to visualize.
+            iterations: Simulation steps (if trajectory not yet computed).
+            **kwargs: Forwarded to ``save_linkage_svg()``.
+        """
+        from ..visualizer.drawsvg_viz import save_linkage_svg
+
+        member = self._member_at(idx)
+        if member.trajectory is None:
+            self.simulate_member(idx, iterations=iterations)
+            member = self._member_at(idx)
+
+        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)
 
     # ------------------------------------------------------------------
     # Internal helpers
