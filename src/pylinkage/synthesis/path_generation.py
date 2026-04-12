@@ -131,11 +131,9 @@ def _generate_orientation_candidates(
             # random samples to keep the count manageable.
             from itertools import product as _product
 
-            count = 0
-            for combo in _product(angle_grid, repeat=free):
+            for count, combo in enumerate(_product(angle_grid, repeat=free)):
                 yield [base_orientations[0], *combo]
-                count += 1
-                if count >= n_samples * n_samples:
+                if count + 1 >= n_samples * n_samples:
                     break
 
     # Uniform perturbations (original strategy, still useful)
