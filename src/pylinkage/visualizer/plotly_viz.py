@@ -3,9 +3,14 @@ Plotly-based visualization for interactive kinematic diagrams.
 
 This module provides interactive HTML output with zoom, pan, hover tooltips,
 and animation controls. Includes velocity vector visualization.
+
+Supports both legacy (``pylinkage.linkage.Linkage``) and modern
+(``pylinkage.simulation.Linkage``) linkage objects.
 """
 
-from typing import TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Union
 
 import numpy as np
 import plotly.graph_objects as go
@@ -24,7 +29,75 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage
+    from ..linkage.linkage import Linkage as LegacyLinkage
+    from ..simulation.linkage import Linkage as SimLinkage
+
+
+def _get_components(linkage: Any) -> list[Any]:
+    """Return the ordered list of joints/components from either API."""
+    if hasattr(linkage, "joints"):
+        return list(linkage.joints)
+    return list(linkage.components)
+
+
+def _get_parent_pairs(component: Any) -> list[Any]:
+    """Return the parent components that should draw links to *component*.
+
+    Works with both legacy joints (``joint0``, ``joint1``) and modern
+    components (``anchor``, ``anchor1``, ``anchor2``).
+    """
+    parents: list[Any] = []
+
+    # Modern API: Crank.anchor, BinaryDyad.anchor1/anchor2
+    anchor = getattr(component, "anchor", None)
+    if anchor is not None:
+        parents.append(anchor)
+        return parents  # Crank has exactly one parent
+
+    anchor1 = getattr(component, "anchor1", None)
+    anchor2 = getattr(component, "anchor2", None)
+    if anchor1 is not None:
+        parents.append(anchor1)
+    if anchor2 is not None:
+        parents.append(anchor2)
+    if parents:
+        return parents
+
+    # Legacy API: joint0, joint1
+    joint0 = getattr(component, "joint0", None)
+    if joint0 is not None:
+        parents.append(joint0)
+
+    joint1 = getattr(component, "joint1", None)
+    if joint1 is not None:
+        # Legacy: only draw link to joint1 for specific types
+        if isinstance(component, (Fixed, Pivot)) or type(component).__name__ == "Revolute":
+            parents.append(joint1)
+
+    return parents
+
+
+def _resolve_position(
+    component: Any,
+    pos_map: dict[int, tuple[float, float]],
+) -> tuple[float, float]:
+    """Resolve the (x, y) position of a component from the position map.
+
+    Falls back to the component's own coordinate method if not in the map.
+    """
+    cid = id(component)
+    if cid in pos_map:
+        return pos_map[cid]
+    # Try .position property (modern API)
+    pos = getattr(component, "position", None)
+    if pos is not None:
+        return (pos[0] or 0.0, pos[1] or 0.0)
+    # Try .coord() method (legacy API)
+    coord_fn = getattr(component, "coord", None)
+    if coord_fn is not None:
+        coord = coord_fn()
+        return (coord[0] or 0.0, coord[1] or 0.0)
+    return (0.0, 0.0)
 
 
 def _get_plotly_marker(symbol_type: SymbolType) -> dict[str, object]:
@@ -56,7 +129,7 @@ def _get_plotly_marker(symbol_type: SymbolType) -> dict[str, object]:
 
 
 def plot_linkage_plotly(
-    linkage: "Linkage",
+    linkage: Union["LegacyLinkage", "SimLinkage"],
     loci: "Iterable[tuple[Coord, ...]] | None" = None,
     *,
     title: str | None = None,
@@ -68,8 +141,11 @@ def plot_linkage_plotly(
 ) -> go.Figure:
     """Create an interactive Plotly diagram of a linkage.
 
+    Accepts both legacy ``pylinkage.linkage.Linkage`` and modern
+    ``pylinkage.simulation.Linkage`` objects.
+
     Args:
-        linkage: The linkage to visualize.
+        linkage: The linkage to visualize (legacy or modern API).
         loci: Optional precomputed loci. If None, runs simulation.
         title: Optional title for the diagram.
         show_dimensions: Whether to show dimension annotations.
@@ -88,25 +164,18 @@ def plot_linkage_plotly(
         raise ValueError("No loci data available. Run linkage.step() first.")
 
     fig = go.Figure()
+    components = _get_components(linkage)
 
-    # Get current joint positions (first frame for static)
-    current_positions: dict[object, tuple[float, float]] = {
-        joint: (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
-        for i, joint in enumerate(linkage.joints)
+    # Build position map keyed by id (works for both APIs)
+    pos_map: dict[int, tuple[float, float]] = {
+        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
+        for i, comp in enumerate(components)
     }
-
-    def get_position(joint: object) -> tuple[float, float]:
-        """Get position of a joint, handling implicit Static joints."""
-        if joint in current_positions:
-            return current_positions[joint]
-        # For implicit Static joints (created from coordinate tuples)
-        coord = joint.coord()  # type: ignore[attr-defined]
-        return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Draw loci (movement paths)
     if show_loci and len(loci) > 1:
-        for i, joint in enumerate(linkage.joints):
-            spec = get_symbol_spec(joint)
+        for i, comp in enumerate(components):
+            spec = get_symbol_spec(comp)
             xs = [frame[i][0] for frame in loci]
             ys = [frame[i][1] for frame in loci]
 
@@ -117,7 +186,7 @@ def plot_linkage_plotly(
                     mode="lines",
                     line={"color": spec.color, "width": 1, "dash": "dot"},
                     opacity=0.5,
-                    name=f"{joint.name} path" if joint.name else f"Joint {i} path",
+                    name=f"{comp.name} path" if comp.name else f"Joint {i} path",
                     showlegend=False,
                     hoverinfo="skip",
                 )
@@ -127,122 +196,54 @@ def plot_linkage_plotly(
     link_index = 0
     drawn_links: set[tuple[int, int]] = set()
 
-    for joint in linkage.joints:
-        pos = get_position(joint)
+    for comp in components:
+        pos = _resolve_position(comp, pos_map)
 
-        # Link to joint0
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is not None:
-            parent_pos = get_position(joint0)
+        for parent in _get_parent_pairs(comp):
+            parent_pos = _resolve_position(parent, pos_map)
+            edge = (id(comp), id(parent))
+            rev_edge = (id(parent), id(comp))
+            if edge in drawn_links or rev_edge in drawn_links:
+                continue
+            drawn_links.add(edge)
 
-            joint_ids = (id(joint), id(joint0))
-            rev_ids = (id(joint0), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                fig.add_trace(
-                    go.Scatter(
-                        x=[parent_pos[0], pos[0]],
-                        y=[parent_pos[1], pos[1]],
-                        mode="lines",
-                        line={"color": color, "width": 8},
-                        name=f"Link {link_index + 1}",
-                        hoverinfo="name",
-                    )
+            color = get_link_color(link_index)
+            fig.add_trace(
+                go.Scatter(
+                    x=[parent_pos[0], pos[0]],
+                    y=[parent_pos[1], pos[1]],
+                    mode="lines",
+                    line={"color": color, "width": 8},
+                    name=f"Link {link_index + 1}",
+                    hoverinfo="name",
                 )
-                drawn_links.add(joint_ids)
+            )
 
-                # Dimension annotation
-                if show_dimensions:
-                    import math
+            if show_dimensions:
+                import math
 
-                    length = math.sqrt(
-                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                    )
-                    mid_x = (pos[0] + parent_pos[0]) / 2
-                    mid_y = (pos[1] + parent_pos[1]) / 2
-                    fig.add_annotation(
-                        x=mid_x,
-                        y=mid_y,
-                        text=f"{length:.2f}",
-                        showarrow=False,
-                        font={"size": 10, "color": color},
-                        bgcolor="white",
-                        opacity=0.8,
-                    )
-
-                link_index += 1
-
-        # Link to joint1
-        if (
-            hasattr(joint, "joint1")
-            and joint.joint1 is not None
-            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
-        ):
-            parent_pos = get_position(joint.joint1)
-
-            joint_ids = (id(joint), id(joint.joint1))
-            rev_ids = (id(joint.joint1), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                fig.add_trace(
-                    go.Scatter(
-                        x=[parent_pos[0], pos[0]],
-                        y=[parent_pos[1], pos[1]],
-                        mode="lines",
-                        line={"color": color, "width": 8},
-                        name=f"Link {link_index + 1}",
-                        hoverinfo="name",
-                    )
+                length = math.sqrt(
+                    (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
                 )
-                drawn_links.add(joint_ids)
-
-                if show_dimensions:
-                    import math
-
-                    length = math.sqrt(
-                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                    )
-                    mid_x = (pos[0] + parent_pos[0]) / 2
-                    mid_y = (pos[1] + parent_pos[1]) / 2
-                    fig.add_annotation(
-                        x=mid_x,
-                        y=mid_y,
-                        text=f"{length:.2f}",
-                        showarrow=False,
-                        font={"size": 10, "color": color},
-                        bgcolor="white",
-                        opacity=0.8,
-                    )
-
-                link_index += 1
-
-        # Handle Prismatic joints
-        if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
-            p1_pos = get_position(joint.joint1)
-            p2_pos = get_position(joint.joint2)
-
-            joint_ids = (id(joint.joint1), id(joint.joint2))
-            rev_ids = (id(joint.joint2), id(joint.joint1))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                fig.add_trace(
-                    go.Scatter(
-                        x=[p1_pos[0], p2_pos[0]],
-                        y=[p1_pos[1], p2_pos[1]],
-                        mode="lines",
-                        line={"color": color, "width": 6},
-                        name=f"Link {link_index + 1}",
-                        hoverinfo="name",
-                    )
+                mid_x = (pos[0] + parent_pos[0]) / 2
+                mid_y = (pos[1] + parent_pos[1]) / 2
+                fig.add_annotation(
+                    x=mid_x,
+                    y=mid_y,
+                    text=f"{length:.2f}",
+                    showarrow=False,
+                    font={"size": 10, "color": color},
+                    bgcolor="white",
+                    opacity=0.8,
                 )
-                drawn_links.add(joint_ids)
-                link_index += 1
+
+            link_index += 1
 
     # Draw ground hatching for ground joints
-    ground_joints = [j for j in linkage.joints if is_ground_joint(j)]
-    for joint in ground_joints:
-        pos = get_position(joint)
-        # Draw hatching lines below ground symbol
+    for comp in components:
+        if not is_ground_joint(comp):
+            continue
+        pos = _resolve_position(comp, pos_map)
         for i in range(3):
             offset = -0.1 - i * 0.05
             fig.add_trace(
@@ -257,9 +258,9 @@ def plot_linkage_plotly(
             )
 
     # Draw joints (on top)
-    for joint in linkage.joints:
-        pos = get_position(joint)
-        spec = get_symbol_spec(joint)
+    for comp in components:
+        pos = _resolve_position(comp, pos_map)
+        spec = get_symbol_spec(comp)
         marker_props = _get_plotly_marker(spec.symbol_type)
 
         fig.add_trace(
@@ -272,9 +273,9 @@ def plot_linkage_plotly(
                     "color": "white",
                     "line": {**marker_props.get("line", {}), "color": spec.color},  # type: ignore[dict-item]
                 },
-                name=joint.name or type(joint).__name__,
+                name=comp.name or type(comp).__name__,
                 hovertemplate=(
-                    f"<b>{joint.name or type(joint).__name__}</b><br>"
+                    f"<b>{comp.name or type(comp).__name__}</b><br>"
                     f"x: {pos[0]:.3f}<br>"
                     f"y: {pos[1]:.3f}<extra></extra>"
                 ),
@@ -282,11 +283,11 @@ def plot_linkage_plotly(
         )
 
         # Label
-        if show_labels and joint.name:
+        if show_labels and comp.name:
             fig.add_annotation(
                 x=pos[0] + spec.label_offset[0] * 0.2,
                 y=pos[1] + spec.label_offset[1] * 0.2,
-                text=joint.name,
+                text=comp.name,
                 showarrow=False,
                 font={"size": 12, "color": "#333"},
             )
@@ -330,7 +331,7 @@ def plot_linkage_plotly(
 
 
 def animate_linkage_plotly(
-    linkage: "Linkage",
+    linkage: Union["LegacyLinkage", "SimLinkage"],
     loci: "Iterable[tuple[Coord, ...]] | None" = None,
     *,
     title: str | None = None,
@@ -341,8 +342,11 @@ def animate_linkage_plotly(
 ) -> go.Figure:
     """Create an animated Plotly diagram with play/pause controls.
 
+    Accepts both legacy ``pylinkage.linkage.Linkage`` and modern
+    ``pylinkage.simulation.Linkage`` objects.
+
     Args:
-        linkage: The linkage to visualize.
+        linkage: The linkage to visualize (legacy or modern API).
         loci: Optional precomputed loci. If None, runs simulation.
         title: Optional title for the diagram.
         show_loci: Whether to show joint movement paths.
@@ -359,55 +363,35 @@ def animate_linkage_plotly(
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")
 
-    # Build link pairs
-    link_pairs: list[tuple[object, object]] = []
+    comp_list = _get_components(linkage)
+
+    # Build link pairs using the unified parent resolution
+    link_pairs: list[tuple[Any, Any]] = []
     drawn_links: set[tuple[int, int]] = set()
 
-    for joint in linkage.joints:
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is not None:
-            joint_ids = (id(joint), id(joint0))
-            rev_ids = (id(joint0), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_pairs.append((joint, joint0))
-                drawn_links.add(joint_ids)
-
-        joint1 = getattr(joint, "joint1", None)
-        if (
-            joint1 is not None
-            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
-        ):
-            joint_ids = (id(joint), id(joint1))
-            rev_ids = (id(joint1), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_pairs.append((joint, joint1))
-                drawn_links.add(joint_ids)
+    for comp in comp_list:
+        for parent in _get_parent_pairs(comp):
+            edge = (id(comp), id(parent))
+            rev_edge = (id(parent), id(comp))
+            if edge not in drawn_links and rev_edge not in drawn_links:
+                link_pairs.append((comp, parent))
+                drawn_links.add(edge)
 
     # Create frames
     frames = []
-    joint_list = list(linkage.joints)
-
-    def get_pos_from_map(
-        pos_map: dict[object, tuple[float, float]], joint: object
-    ) -> tuple[float, float]:
-        """Get position, handling implicit Static joints."""
-        if joint in pos_map:
-            return pos_map[joint]
-        coord = joint.coord()  # type: ignore[attr-defined]
-        return (coord[0] or 0.0, coord[1] or 0.0)
 
     for frame_idx, positions in enumerate(loci):
-        pos_map: dict[object, tuple[float, float]] = {
-            joint: (positions[i][0] or 0.0, positions[i][1] or 0.0)
-            for i, joint in enumerate(joint_list)
+        frame_pos: dict[int, tuple[float, float]] = {
+            id(comp): (positions[i][0] or 0.0, positions[i][1] or 0.0)
+            for i, comp in enumerate(comp_list)
         }
 
         frame_data = []
 
         # Links for this frame
         for link_idx, (j1, j2) in enumerate(link_pairs):
-            p1 = get_pos_from_map(pos_map, j1)
-            p2 = get_pos_from_map(pos_map, j2)
+            p1 = _resolve_position(j1, frame_pos)
+            p2 = _resolve_position(j2, frame_pos)
             color = get_link_color(link_idx)
             frame_data.append(
                 go.Scatter(
@@ -419,12 +403,12 @@ def animate_linkage_plotly(
             )
 
         # Joints for this frame
-        joint_xs = [pos_map[j][0] for j in joint_list]
-        joint_ys = [pos_map[j][1] for j in joint_list]
+        comp_xs = [_resolve_position(c, frame_pos)[0] for c in comp_list]
+        comp_ys = [_resolve_position(c, frame_pos)[1] for c in comp_list]
         frame_data.append(
             go.Scatter(
-                x=joint_xs,
-                y=joint_ys,
+                x=comp_xs,
+                y=comp_ys,
                 mode="markers",
                 marker={"size": 14, "color": "white", "line": {"width": 2, "color": "#E63946"}},
             )
@@ -433,22 +417,16 @@ def animate_linkage_plotly(
         frames.append(go.Frame(data=frame_data, name=str(frame_idx)))
 
     # Initial data
-    initial_pos_map: dict[object, tuple[float, float]] = {
-        joint: (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0) for i, joint in enumerate(joint_list)
+    init_pos: dict[int, tuple[float, float]] = {
+        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
+        for i, comp in enumerate(comp_list)
     }
     initial_data = []
 
-    def get_initial_pos(joint: object) -> tuple[float, float]:
-        """Get initial position, handling implicit Static joints."""
-        if joint in initial_pos_map:
-            return initial_pos_map[joint]
-        coord = joint.coord()  # type: ignore[attr-defined]
-        return (coord[0] or 0.0, coord[1] or 0.0)
-
     # Loci traces (static, behind animation)
     if show_loci:
-        for i, joint in enumerate(joint_list):
-            spec = get_symbol_spec(joint)
+        for i, comp in enumerate(comp_list):
+            spec = get_symbol_spec(comp)
             xs = [frame[i][0] for frame in loci]
             ys = [frame[i][1] for frame in loci]
             initial_data.append(
@@ -458,15 +436,15 @@ def animate_linkage_plotly(
                     mode="lines",
                     line={"color": spec.color, "width": 1, "dash": "dot"},
                     opacity=0.4,
-                    name=f"{joint.name} path" if joint.name else f"Path {i}",
+                    name=f"{comp.name} path" if comp.name else f"Path {i}",
                     showlegend=False,
                 )
             )
 
     # Initial links
     for link_idx, (j1, j2) in enumerate(link_pairs):
-        p1 = get_initial_pos(j1)
-        p2 = get_initial_pos(j2)
+        p1 = _resolve_position(j1, init_pos)
+        p2 = _resolve_position(j2, init_pos)
         color = get_link_color(link_idx)
         initial_data.append(
             go.Scatter(
@@ -479,12 +457,12 @@ def animate_linkage_plotly(
         )
 
     # Initial joints
-    joint_xs = [get_initial_pos(j)[0] for j in joint_list]
-    joint_ys = [get_initial_pos(j)[1] for j in joint_list]
+    comp_xs = [_resolve_position(c, init_pos)[0] for c in comp_list]
+    comp_ys = [_resolve_position(c, init_pos)[1] for c in comp_list]
     initial_data.append(
         go.Scatter(
-            x=joint_xs,
-            y=joint_ys,
+            x=comp_xs,
+            y=comp_ys,
             mode="markers",
             marker={"size": 14, "color": "white", "line": {"width": 2, "color": "#E63946"}},
             name="Joints",
@@ -566,7 +544,7 @@ def animate_linkage_plotly(
 
 
 def plot_linkage_plotly_with_velocity(
-    linkage: "Linkage",
+    linkage: "LegacyLinkage",
     frame_index: int = 0,
     *,
     title: str | None = None,
@@ -581,6 +559,11 @@ def plot_linkage_plotly_with_velocity(
 
     Runs simulation with kinematics and displays velocity arrows at the
     specified frame.
+
+    .. note::
+        This function currently requires a legacy
+        ``pylinkage.linkage.Linkage`` because it depends on
+        ``step_fast_with_kinematics()`` and per-joint ``omega``.
 
     Args:
         linkage: The linkage to visualize.
@@ -604,9 +587,12 @@ def plot_linkage_plotly_with_velocity(
     from ..joints.crank import Crank
     from ..joints.joint import _StaticBase as Static
 
+    components = _get_components(linkage)
+
     # Check that omega is set
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
+        isinstance(j, Crank) and j.omega is not None and j.omega != 0
+        for j in components
     )
     if not has_omega:
         raise ValueError(
@@ -622,10 +608,11 @@ def plot_linkage_plotly_with_velocity(
         raise ValueError(f"frame_index must be in [0, {n_frames}), got {frame_index}")
 
     # Convert to loci format for base plot
+    n_components = len(components)
     loci = [
         tuple(
             (float(positions[i, j, 0]), float(positions[i, j, 1]))
-            for j in range(len(linkage.joints))
+            for j in range(n_components)
         )
         for i in range(n_frames)
     ]
@@ -657,8 +644,8 @@ def plot_linkage_plotly_with_velocity(
             velocity_scale = pos_range * 0.15 / max_vel if max_vel > 0 else 1.0
 
         # Draw velocity arrows for non-static joints
-        for i, joint in enumerate(linkage.joints):
-            if isinstance(joint, Static):
+        for i, comp in enumerate(components):
+            if isinstance(comp, Static) or is_ground_joint(comp):
                 continue
 
             vx, vy = vel[i, 0], vel[i, 1]

@@ -43,8 +43,10 @@ class SymbolSpec:
 
 
 # Symbol specifications for each joint type
-# Maps joint class names to their visual specifications
+# Maps joint class names to their visual specifications.
+# Includes both legacy (joints.*) and modern (components/actuators/dyads) names.
 SYMBOL_SPECS: dict[str, SymbolSpec] = {
+    # Legacy joint class names
     "Static": SymbolSpec(SymbolType.GROUND, "#333333", 1.0, (0, 1.5)),
     "Crank": SymbolSpec(SymbolType.CRANK, "#2E86AB", 1.2, (0.5, -0.5)),
     "Revolute": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 1.0, (0.5, -0.5)),
@@ -52,6 +54,18 @@ SYMBOL_SPECS: dict[str, SymbolSpec] = {
     "Fixed": SymbolSpec(SymbolType.FIXED, "#F4A261", 1.0, (0.5, -0.5)),
     "Linear": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),  # Deprecated
     "Prismatic": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
+    # Modern component class names
+    "Ground": SymbolSpec(SymbolType.GROUND, "#333333", 1.0, (0, 1.5)),
+    "PointTracker": SymbolSpec(SymbolType.FIXED, "#F4A261", 1.0, (0.5, -0.5)),
+    "ArcCrank": SymbolSpec(SymbolType.CRANK, "#2E86AB", 1.2, (0.5, -0.5)),
+    "LinearActuator": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
+    "RRRDyad": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 1.0, (0.5, -0.5)),
+    "RRPDyad": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
+    "PPDyad": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
+    "FixedDyad": SymbolSpec(SymbolType.FIXED, "#F4A261", 1.0, (0.5, -0.5)),
+    "BinaryDyad": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 1.0, (0.5, -0.5)),
+    "TranslatingCamFollower": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
+    "OscillatingCamFollower": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 1.0, (0.5, -0.5)),
 }
 
 # Link colors for consistent styling across backends
@@ -102,6 +116,9 @@ def is_ground_joint(joint: "Component") -> bool:
         joint: The joint to check.
 
     Returns:
-        True if the joint is a ground joint (Static with no parents).
+        True if the joint is a ground joint (Static/Ground with no parents).
     """
-    return type(joint).__name__ == "Static" and getattr(joint, "joint0", None) is None
+    name = type(joint).__name__
+    if name == "Ground":
+        return True
+    return name == "Static" and getattr(joint, "joint0", None) is None
