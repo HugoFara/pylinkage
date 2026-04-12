@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`skip_unbuildable` mode for `Linkage.step()`:** new boolean parameter that
+  catches `UnbuildableError` per iteration and yields `None`-coordinate tuples
+  instead of aborting the entire simulation. Non-Grashof and double-rocker
+  linkages now recover the valid trajectory on both sides of dead zones.
+
 - **Dual Annealing optimizer:** `dual_annealing_optimization()` wraps scipy's
   generalized simulated annealing — a single-trajectory global optimizer effective
   for problems with many local minima and expensive evaluations.

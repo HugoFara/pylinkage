@@ -242,6 +242,7 @@ class Linkage:
         self,
         iterations: int | None = None,
         dt: float = 1,
+        skip_unbuildable: bool = False,
     ) -> Generator[tuple[tuple[float | None, float | None], ...], None, None]:
         """Make a step of the linkage.
 
@@ -251,6 +252,11 @@ class Linkage:
         :param dt: Amount of rotation to turn the cranks by.
             All cranks rotate by their self.angle * dt. The default is 1.
             (Default value = 1).
+        :param skip_unbuildable: If True, yield None-coordinate tuples for
+            positions where the linkage cannot be assembled, instead of
+            raising UnbuildableError. The crank continues advancing so
+            the simulation resumes when the linkage becomes buildable
+            again. (Default value = False).
 
         :returns: Iterable of the joints' coordinates.
         """
@@ -258,10 +264,25 @@ class Linkage:
             self.__find_solving_order__()
         if iterations is None:
             iterations = self.get_rotation_period()
-        for _ in range(iterations):
-            for j in self._solve_order:
-                j.reload(dt)
-            yield tuple(j.coord() for j in self.joints)
+        if skip_unbuildable:
+            from ..exceptions import UnbuildableError
+
+            none_positions = tuple(
+                (None, None) for _ in self.joints
+            )
+            for _ in range(iterations):
+                try:
+                    for j in self._solve_order:
+                        j.reload(dt)
+                except UnbuildableError:
+                    yield none_positions
+                else:
+                    yield tuple(j.coord() for j in self.joints)
+        else:
+            for _ in range(iterations):
+                for j in self._solve_order:
+                    j.reload(dt)
+                yield tuple(j.coord() for j in self.joints)
 
     def compile(self) -> None:
         """Prepare numba-optimized solver for fast simulation.
