@@ -707,3 +707,220 @@ def plot_linkage_plotly_with_velocity(
     )
 
     return fig
+
+
+def interactive_linkage_plotly(
+    linkage: Union["LegacyLinkage", "SimLinkage"],
+    iterations: int | None = None,
+    *,
+    title: str | None = None,
+    show_loci: bool = True,
+    width: int = 800,
+    height: int = 600,
+) -> go.FigureWidget:
+    """Create an interactive linkage controlled by a crank-angle slider.
+
+    Pre-computes the full trajectory, then provides a slider (via
+    ``ipywidgets``) that scrubs through frames. The figure updates
+    in-place using ``FigureWidget`` — no flickering, instant feedback.
+
+    Requires ``ipywidgets`` to be installed (``pip install ipywidgets``).
+
+    Accepts both legacy ``pylinkage.linkage.Linkage`` and modern
+    ``pylinkage.simulation.Linkage`` objects.
+
+    Args:
+        linkage: The linkage to visualize (legacy or modern API).
+        iterations: Number of simulation steps. If None, uses the
+            linkage's rotation period.
+        title: Optional title for the diagram.
+        show_loci: Whether to show faded joint-path traces behind
+            the mechanism.
+        width: Figure width in pixels.
+        height: Figure height in pixels.
+
+    Returns:
+        A ``plotly.graph_objects.FigureWidget``.  In Jupyter, calling
+        ``display(slider, widget)`` shows the interactive diagram.
+
+    Example:
+        In a Jupyter notebook::
+
+            from pylinkage.visualizer import interactive_linkage_plotly
+
+            widget, slider = interactive_linkage_plotly(hoeken)
+            from IPython.display import display
+            display(slider, widget)
+
+        Or use the convenience wrapper that displays automatically::
+
+            interactive_linkage_plotly(hoeken)
+    """
+    try:
+        import ipywidgets  # noqa: F401
+    except ImportError as exc:
+        raise ImportError(
+            "ipywidgets is required for interactive_linkage_plotly. "
+            "Install it with: pip install ipywidgets"
+        ) from exc
+
+    from IPython.display import display as ipy_display
+
+    # ------------------------------------------------------------------
+    # Pre-compute trajectory
+    # ------------------------------------------------------------------
+    components = _get_components(linkage)
+    n_components = len(components)
+
+    all_frames = list(linkage.step(iterations=iterations))  # type: ignore[arg-type]
+    n_frames = len(all_frames)
+
+    if n_frames == 0:
+        raise ValueError("Simulation produced no frames.")
+
+    # Convert to numpy for fast indexing
+    positions = np.empty((n_frames, n_components, 2), dtype=np.float64)
+    for f, frame in enumerate(all_frames):
+        for j in range(n_components):
+            positions[f, j, 0] = frame[j][0] if frame[j][0] is not None else np.nan
+            positions[f, j, 1] = frame[j][1] if frame[j][1] is not None else np.nan
+
+    # ------------------------------------------------------------------
+    # Build link pairs (edges to draw)
+    # ------------------------------------------------------------------
+    link_pairs: list[tuple[int, int]] = []  # indices into components
+    drawn: set[tuple[int, int]] = set()
+
+    comp_ids = {id(c): i for i, c in enumerate(components)}
+
+    for i, comp in enumerate(components):
+        for parent in _get_parent_pairs(comp):
+            pi = comp_ids.get(id(parent))
+            if pi is None:
+                continue
+            edge = (min(i, pi), max(i, pi))
+            if edge not in drawn:
+                link_pairs.append((i, pi))
+                drawn.add(edge)
+
+    # ------------------------------------------------------------------
+    # Build FigureWidget with initial frame
+    # ------------------------------------------------------------------
+    fw = go.FigureWidget()
+    frame0 = positions[0]
+
+    # Loci traces (faded paths for each joint)
+    if show_loci:
+        for j, comp in enumerate(components):
+            spec = get_symbol_spec(comp)
+            fw.add_scatter(
+                x=positions[:, j, 0],
+                y=positions[:, j, 1],
+                mode="lines",
+                line={"color": spec.color, "width": 1, "dash": "dot"},
+                opacity=0.35,
+                name=f"{comp.name} path" if comp.name else f"Path {j}",
+                showlegend=False,
+                hoverinfo="skip",
+            )
+
+    # Link traces (one trace per link, updated each frame)
+    _link_trace_start = len(fw.data)
+    for li, (a, b) in enumerate(link_pairs):
+        color = get_link_color(li)
+        fw.add_scatter(
+            x=[frame0[a, 0], frame0[b, 0]],
+            y=[frame0[a, 1], frame0[b, 1]],
+            mode="lines",
+            line={"color": color, "width": 8},
+            name=f"Link {li + 1}",
+            hoverinfo="name",
+        )
+
+    # Joint markers (single trace for all joints)
+    _joints_trace_idx = len(fw.data)
+    marker_colors = [get_symbol_spec(c).color for c in components]
+    joint_labels = [c.name or type(c).__name__ for c in components]
+    fw.add_scatter(
+        x=frame0[:, 0],
+        y=frame0[:, 1],
+        mode="markers+text",
+        marker={
+            "size": 14,
+            "color": "white",
+            "line": {"width": 2, "color": marker_colors},
+        },
+        text=joint_labels,
+        textposition="top center",
+        textfont={"size": 10, "color": "#333"},
+        name="Joints",
+        hovertemplate="%{text}<br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>",
+    )
+
+    # Ground hatching
+    for j, comp in enumerate(components):
+        if is_ground_joint(comp):
+            gx, gy = frame0[j, 0], frame0[j, 1]
+            for k in range(3):
+                off = -0.1 - k * 0.05
+                fw.add_scatter(
+                    x=[gx - 0.15 + k * 0.03, gx + 0.15 - k * 0.03],
+                    y=[gy + off, gy + off],
+                    mode="lines",
+                    line={"color": "#333", "width": 2},
+                    showlegend=False,
+                    hoverinfo="skip",
+                )
+
+    # Layout
+    fw.update_layout(
+        title={"text": title or linkage.name or "Interactive Linkage", "font": {"size": 18}},
+        showlegend=False,
+        xaxis={
+            "scaleanchor": "y",
+            "scaleratio": 1,
+            "showgrid": True,
+            "gridcolor": "#E5E5E5",
+            "title": "X",
+        },
+        yaxis={"showgrid": True, "gridcolor": "#E5E5E5", "title": "Y"},
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        width=width,
+        height=height,
+    )
+
+    # ------------------------------------------------------------------
+    # Slider callback — updates link and joint positions in-place
+    # ------------------------------------------------------------------
+    def _update_frame(change: dict[str, Any]) -> None:
+        f = change["new"]
+        frame = positions[f]
+
+        with fw.batch_update():
+            # Update links
+            for li, (a, b) in enumerate(link_pairs):
+                trace = fw.data[_link_trace_start + li]
+                trace.x = [frame[a, 0], frame[b, 0]]
+                trace.y = [frame[a, 1], frame[b, 1]]
+
+            # Update joints
+            jt = fw.data[_joints_trace_idx]
+            jt.x = frame[:, 0]
+            jt.y = frame[:, 1]
+
+    slider = ipywidgets.IntSlider(
+        value=0,
+        min=0,
+        max=n_frames - 1,
+        step=1,
+        description="Frame:",
+        continuous_update=True,
+        layout=ipywidgets.Layout(width=f"{width}px"),
+    )
+    slider.observe(_update_frame, names="value")
+
+    # Auto-display in Jupyter
+    ipy_display(slider, fw)
+
+    return fw

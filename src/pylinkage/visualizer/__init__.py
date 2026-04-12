@@ -28,6 +28,7 @@ __all__ = [
     "show_kinematics",
     # Plotly backend (interactive)
     "animate_linkage_plotly",
+    "interactive_linkage_plotly",
     "plot_linkage_plotly",
     "plot_linkage_plotly_with_velocity",
     # drawsvg backend (publication SVG)
@@ -73,6 +74,7 @@ _LAZY_ATTRS: dict[str, tuple[str, str]] = {
     "show_kinematics": (".kinematics", "show_kinematics"),
     # Plotly backend
     "animate_linkage_plotly": (".plotly_viz", "animate_linkage_plotly"),
+    "interactive_linkage_plotly": (".plotly_viz", "interactive_linkage_plotly"),
     "plot_linkage_plotly": (".plotly_viz", "plot_linkage_plotly"),
     "plot_linkage_plotly_with_velocity": (".plotly_viz", "plot_linkage_plotly_with_velocity"),
     # drawsvg backend
