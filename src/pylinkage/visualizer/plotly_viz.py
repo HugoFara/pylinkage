@@ -740,19 +740,14 @@ def interactive_linkage_plotly(
         height: Figure height in pixels.
 
     Returns:
-        A ``plotly.graph_objects.FigureWidget``.  In Jupyter, calling
-        ``display(slider, widget)`` shows the interactive diagram.
+        An ``ipywidgets.VBox`` containing the slider and figure.
+        In Jupyter, just let the cell return it — no manual
+        ``display()`` needed.
 
     Example:
         In a Jupyter notebook::
 
             from pylinkage.visualizer import interactive_linkage_plotly
-
-            widget, slider = interactive_linkage_plotly(hoeken)
-            from IPython.display import display
-            display(slider, widget)
-
-        Or use the convenience wrapper that displays automatically::
 
             interactive_linkage_plotly(hoeken)
     """
@@ -763,8 +758,6 @@ def interactive_linkage_plotly(
             "ipywidgets is required for interactive_linkage_plotly. "
             "Install it with: pip install ipywidgets"
         ) from exc
-
-    from IPython.display import display as ipy_display
 
     # ------------------------------------------------------------------
     # Pre-compute trajectory
@@ -920,7 +913,4 @@ def interactive_linkage_plotly(
     )
     slider.observe(_update_frame, names="value")
 
-    # Auto-display in Jupyter
-    ipy_display(slider, fw)
-
-    return fw
+    return ipywidgets.VBox([slider, fw])
