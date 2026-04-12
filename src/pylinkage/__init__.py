@@ -62,6 +62,10 @@ __all__ = [
     "kinematic_minimization",
     "particle_swarm_optimization",
     "trials_and_errors_optimization",
+    # Population (lazy)
+    "Ensemble",
+    "Member",
+    "Population",
     # Visualizer (lazy, requires matplotlib/plotly/drawsvg)
     "plot_kinematic_linkage",
     "plot_static_linkage",
@@ -149,6 +153,7 @@ from .linkage import (
 # --- Lazy imports (heavy optional dependencies) ---
 
 _LAZY_SUBMODULES = {
+    "population",
     "symbolic",
     "synthesis",
 }
@@ -162,6 +167,10 @@ _LAZY_ATTRS: dict[str, str] = {
     "Revolute": ".joints",
     "Static": ".joints",
     "Pivot": ".joints.revolute",
+    # From .population
+    "Ensemble": ".population",
+    "Member": ".population",
+    "Population": ".population",
     # From .optimization
     "collections": ".optimization",
     "generate_bounds": ".optimization",
