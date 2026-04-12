@@ -17,6 +17,7 @@ from numpy.typing import NDArray
 
 from .._types import JointPositions
 from ..exceptions import OptimizationError
+from ..population import Ensemble
 from .collections import MutableAgent
 from .utils import generate_bounds
 
@@ -118,12 +119,11 @@ def trials_and_errors_optimization(
     n_results: int = 10,
     divisions: int = 5,
     **kwargs: Any,
-) -> list[MutableAgent]:
-    """Return the list of dimensions optimizing eval_func.
+) -> Ensemble:
+    """Return the best dimensions optimizing eval_func as an Ensemble.
 
-    Each dimension set has a score, which is added in an array of n_results
-    results, contains the linkages with the best scores in a maximization problem
-    by default.
+    Each dimension set has a score. The returned Ensemble contains up to
+    *n_results* members with the best scores (maximization by default).
 
     :param eval_func: Evaluation function.
         Input: (linkage, num_constraints, initial_coordinates).
@@ -146,9 +146,7 @@ def trials_and_errors_optimization(
             (Default value = True).
         - sequential : If True, two consecutive linkages will have a small variation.
 
-    :returns: 3-uplet of score, dimensions and initial position for each Linkage to
-        return.
-        Its size is {n_results}.
+    :returns: Ensemble with up to *n_results* members.
 
     :raises OptimizationError: If parameters are invalid or no valid solution is found.
     """
@@ -218,4 +216,27 @@ def trials_and_errors_optimization(
             "Trials and errors optimization finished. "
             f"Best score: {results[0][0]}, best dimensions: {results[0][1]}"
         )
-    return results
+
+    # Filter out empty results and convert to Ensemble
+    valid = [r for r in results if r.score is not None]
+    dims_arr = np.array(
+        [list(r.dimensions) if r.dimensions is not None else [] for r in valid],
+        dtype=np.float64,
+    )
+    scores_arr = np.array([r.score for r in valid], dtype=np.float64)
+    pos_arr = np.array(
+        [
+            [
+                (x if x is not None else 0.0, y if y is not None else 0.0)
+                for x, y in (r.initial_positions or [])
+            ]
+            for r in valid
+        ],
+        dtype=np.float64,
+    )
+    return Ensemble(
+        linkage=linkage,
+        dimensions=dims_arr,
+        initial_positions=pos_arr,
+        scores={"score": scores_arr},
+    )

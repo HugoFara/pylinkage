@@ -9,6 +9,7 @@ from pylinkage import optimization
 from pylinkage.exceptions import OptimizationError
 from pylinkage.optimization.collections import ParetoFront, ParetoSolution
 from pylinkage.optimization.utils import kinematic_minimization
+from pylinkage.population import Ensemble
 
 # Check if pymoo is available
 try:
@@ -208,7 +209,7 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
         dim = len(self.constraints)
         bounds = np.zeros(dim), np.ones(dim) * 5
 
-        pareto = multi_objective_optimization(
+        result = multi_objective_optimization(
             objectives=[objective1, objective2],
             linkage=self.linkage,
             bounds=bounds,
@@ -217,18 +218,17 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertIsInstance(pareto, ParetoFront)
-        self.assertGreater(len(pareto), 0)
-        self.assertEqual(pareto.n_objectives, 2)
+        self.assertIsInstance(result, Ensemble)
+        self.assertGreater(len(result), 0)
 
-    def test_returns_pareto_front(self):
-        """Test that result is a ParetoFront."""
+    def test_returns_ensemble_with_scores(self):
+        """Test that result is an Ensemble with objective scores."""
         from pylinkage.optimization import multi_objective_optimization
 
         dim = len(self.constraints)
         bounds = np.zeros(dim), np.ones(dim) * 5
 
-        pareto = multi_objective_optimization(
+        result = multi_objective_optimization(
             objectives=[objective1, objective2],
             linkage=self.linkage,
             bounds=bounds,
@@ -237,16 +237,16 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertIsInstance(pareto, ParetoFront)
-        for sol in pareto:
-            self.assertIsInstance(sol, ParetoSolution)
-            self.assertEqual(len(sol.scores), 2)
+        self.assertIsInstance(result, Ensemble)
+        # Each member should have two scores
+        member = result[0]
+        self.assertEqual(len(member.scores), 2)
 
     def test_auto_bounds(self):
         """Test that bounds are auto-generated when not provided."""
         from pylinkage.optimization import multi_objective_optimization
 
-        pareto = multi_objective_optimization(
+        result = multi_objective_optimization(
             objectives=[objective1, objective2],
             linkage=self.linkage,
             bounds=None,
@@ -255,16 +255,16 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertIsInstance(pareto, ParetoFront)
+        self.assertIsInstance(result, Ensemble)
 
     def test_objective_names(self):
-        """Test that objective names are stored."""
+        """Test that objective names are stored as score keys."""
         from pylinkage.optimization import multi_objective_optimization
 
         dim = len(self.constraints)
         bounds = np.zeros(dim), np.ones(dim) * 5
 
-        pareto = multi_objective_optimization(
+        result = multi_objective_optimization(
             objectives=[objective1, objective2],
             linkage=self.linkage,
             bounds=bounds,
@@ -274,7 +274,8 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertEqual(pareto.objective_names, ("Path Error", "Transmission"))
+        self.assertIn("Path Error", result.scores)
+        self.assertIn("Transmission", result.scores)
 
     def test_nsga3(self):
         """Test NSGA-III algorithm."""
@@ -283,7 +284,7 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
         dim = len(self.constraints)
         bounds = np.zeros(dim), np.ones(dim) * 5
 
-        pareto = multi_objective_optimization(
+        result = multi_objective_optimization(
             objectives=[objective1, objective2],
             linkage=self.linkage,
             bounds=bounds,
@@ -293,7 +294,7 @@ class TestMultiObjectiveOptimization(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertIsInstance(pareto, ParetoFront)
+        self.assertIsInstance(result, Ensemble)
 
     def test_invalid_algorithm_raises(self):
         """Test that invalid algorithm raises OptimizationError."""

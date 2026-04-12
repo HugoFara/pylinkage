@@ -7,6 +7,7 @@ __all__ = [
     "CoOptimizationResult",
     "CoOptSolution",
     "collections",
+    "Ensemble",
     "differential_evolution_optimization",
     "differential_evolution_optimization_async",
     "dual_annealing_optimization",
@@ -30,6 +31,8 @@ __all__ = [
 ]
 
 import importlib as _importlib
+
+from ..population import Ensemble as Ensemble
 
 # Eagerly import lightweight submodules
 from . import collections as collections

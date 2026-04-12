@@ -7,12 +7,12 @@ import numpy as np
 import pylinkage as pl
 from pylinkage import optimization
 from pylinkage.exceptions import OptimizationError
-from pylinkage.optimization.collections import Agent
 from pylinkage.optimization.scipy_optimize import (
     differential_evolution_optimization,
     minimize_linkage,
 )
 from pylinkage.optimization.utils import kinematic_minimization
+from pylinkage.population import Ensemble, Member
 
 
 def prepare_linkage():
@@ -59,11 +59,10 @@ class TestDifferentialEvolution(unittest.TestCase):
         )
 
         self.assertEqual(len(result), 1)
-        score, dimensions, coord = result[0]
-        self.assertAlmostEqual(0.0, score, delta=0.5)
+        self.assertAlmostEqual(0.0, result[0].score, delta=0.5)
 
-    def test_returns_agent(self):
-        """Test that result is a list of Agent objects."""
+    def test_returns_ensemble(self):
+        """Test that result is an Ensemble."""
         dim = len(self.constraints)
         bounds = np.zeros(dim), np.ones(dim) * 5
 
@@ -76,8 +75,8 @@ class TestDifferentialEvolution(unittest.TestCase):
             verbose=False,
         )
 
-        self.assertIsInstance(result, list)
-        self.assertIsInstance(result[0], Agent)
+        self.assertIsInstance(result, Ensemble)
+        self.assertIsInstance(result[0], Member)
 
     def test_auto_bounds(self):
         """Test that bounds are auto-generated when not provided."""
@@ -131,7 +130,7 @@ class TestMinimizeLinkage(unittest.TestCase):
         )
 
         self.assertEqual(len(result), 1)
-        self.assertIsInstance(result[0], Agent)
+        self.assertIsInstance(result, Ensemble)
 
     def test_powell(self):
         """Test Powell optimization."""

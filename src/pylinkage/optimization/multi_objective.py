@@ -18,7 +18,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from ..exceptions import OptimizationError
-from .collections.pareto import ParetoFront, ParetoSolution
+from ..population import Ensemble
 from .utils import generate_bounds
 
 if TYPE_CHECKING:
@@ -112,7 +112,7 @@ def multi_objective_optimization(
     seed: int | None = None,
     verbose: bool = True,
     **kwargs: Any,
-) -> ParetoFront:
+) -> Ensemble:
     """Multi-objective optimization using NSGA-II or NSGA-III.
 
     Finds Pareto-optimal solutions that trade off between multiple objectives.
@@ -138,7 +138,8 @@ def multi_objective_optimization(
         **kwargs: Additional arguments passed to the algorithm.
 
     Returns:
-        ParetoFront containing all non-dominated solutions.
+        Ensemble containing all non-dominated solutions, with one
+        score column per objective.
 
     Raises:
         ImportError: If pymoo is not installed.
@@ -250,28 +251,34 @@ def multi_objective_optimization(
         verbose=verbose,
     )
 
-    # Extract Pareto front
-    if result.F is None or result.X is None:
-        # No feasible solutions found
-        return ParetoFront(
-            solutions=[],
-            objective_names=tuple(objective_names) if objective_names else tuple(),
-        )
-
-    solutions = []
-    for i in range(len(result.F)):
-        sol = ParetoSolution(
-            scores=tuple(result.F[i]),
-            dimensions=result.X[i],
-            initial_positions=joint_pos,
-        )
-        solutions.append(sol)
-
     # Generate objective names if not provided
     if objective_names is None:
         objective_names = tuple(f"Objective {i}" for i in range(n_obj))
 
-    return ParetoFront(
-        solutions=solutions,
-        objective_names=tuple(objective_names),
+    # Extract Pareto front
+    if result.F is None or result.X is None:
+        # No feasible solutions found — return empty Ensemble
+        return Ensemble(
+            linkage=linkage,
+            dimensions=np.empty((0, dimensions), dtype=np.float64),
+            initial_positions=np.empty((0, len(joint_pos), 2), dtype=np.float64),
+            scores={name: np.empty(0, dtype=np.float64) for name in objective_names},
+        )
+
+    n_solutions = len(result.F)
+    joint_pos_arr = np.array(
+        [(x if x is not None else 0.0, y if y is not None else 0.0) for x, y in joint_pos],
+        dtype=np.float64,
+    )
+    all_positions = np.tile(joint_pos_arr, (n_solutions, 1, 1))
+
+    scores_dict: dict[str, NDArray[np.float64]] = {}
+    for k, name in enumerate(objective_names):
+        scores_dict[name] = result.F[:, k].astype(np.float64)
+
+    return Ensemble(
+        linkage=linkage,
+        dimensions=result.X.astype(np.float64),
+        initial_positions=all_positions,
+        scores=scores_dict,
     )

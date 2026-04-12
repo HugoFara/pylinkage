@@ -17,8 +17,27 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 import numpy as np
 
 from ..exceptions import OptimizationError
-from .collections import Agent
+from ..population import Ensemble
 from .utils import generate_bounds
+
+
+def _make_ensemble(
+    linkage: "Linkage",
+    best_score: float,
+    best_dims: np.ndarray,
+    joint_pos: tuple[tuple[float | None, float | None], ...],
+) -> Ensemble:
+    """Build a single-member Ensemble from an optimizer result."""
+    joint_pos_arr = np.array(
+        [(x if x is not None else 0.0, y if y is not None else 0.0) for x, y in joint_pos],
+        dtype=np.float64,
+    )
+    return Ensemble(
+        linkage=linkage,
+        dimensions=np.asarray(best_dims, dtype=np.float64).reshape(1, -1),
+        initial_positions=joint_pos_arr.reshape(1, -1, 2),
+        scores={"score": np.array([best_score])},
+    )
 
 if TYPE_CHECKING:
     from .._types import JointPositions
@@ -40,7 +59,7 @@ def differential_evolution_optimization(
     workers: int = 1,
     verbose: bool = True,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Differential Evolution optimization wrapper for scipy.
 
     This function is a wrapper to optimize a linkage using Differential
@@ -73,7 +92,7 @@ def differential_evolution_optimization(
     :param verbose: Print progress if True. Default is True.
     :param kwargs: Additional keyword arguments passed to differential_evolution.
 
-    :returns: List containing single Agent with best score, dimensions, and positions.
+    :returns: Ensemble with the best result (single member).
 
     :raises OptimizationError: If parameters are invalid or optimization fails.
 
@@ -86,13 +105,13 @@ def differential_evolution_optimization(
         def fitness(loci, **kwargs):
             return some_metric(loci)
 
-        results = differential_evolution_optimization(
+        result = differential_evolution_optimization(
             eval_func=fitness,
             linkage=my_linkage,
             maxiter=500,
             order_relation=min,
         )
-        best_score, best_dims, init_pos = results[0]
+        best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
     raw_constraints = tuple(linkage.get_num_constraints())
     # Filter to get only float values for bounds generation
@@ -161,9 +180,7 @@ def differential_evolution_optimization(
 
     # Convert result
     best_score = -result.fun if order_relation is max else result.fun
-    best_dims = result.x
-
-    return [Agent(best_score, best_dims, joint_pos)]
+    return _make_ensemble(linkage, best_score, result.x, joint_pos)
 
 
 def dual_annealing_optimization(
@@ -179,7 +196,7 @@ def dual_annealing_optimization(
     seed: int | None = None,
     verbose: bool = True,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Dual Annealing optimization wrapper for scipy.
 
     This function wraps scipy's generalized simulated annealing optimizer.
@@ -207,7 +224,7 @@ def dual_annealing_optimization(
     :param verbose: Print progress if True. Default is True.
     :param kwargs: Additional keyword arguments passed to dual_annealing.
 
-    :returns: List containing single Agent with best score, dimensions, and positions.
+    :returns: Ensemble with the best result (single member).
 
     :raises OptimizationError: If parameters are invalid or optimization fails.
 
@@ -220,13 +237,13 @@ def dual_annealing_optimization(
         def fitness(loci, **kwargs):
             return some_metric(loci)
 
-        results = dual_annealing_optimization(
+        result = dual_annealing_optimization(
             eval_func=fitness,
             linkage=my_linkage,
             maxiter=500,
             order_relation=min,
         )
-        best_score, best_dims, init_pos = results[0]
+        best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
     raw_constraints = tuple(linkage.get_num_constraints())
     constraints = cast(
@@ -298,7 +315,7 @@ def dual_annealing_optimization(
         print()
 
     best_score = -result.fun if order_relation is max else result.fun
-    return [Agent(best_score, result.x, joint_pos)]
+    return _make_ensemble(linkage, best_score, result.x, joint_pos)
 
 
 def minimize_linkage(
@@ -312,7 +329,7 @@ def minimize_linkage(
     tol: float | None = None,
     verbose: bool = True,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Local optimization using scipy.optimize.minimize.
 
     This function is a wrapper for local optimization of a linkage using
@@ -342,7 +359,7 @@ def minimize_linkage(
     :param verbose: Print progress if True. Default is True.
     :param kwargs: Additional keyword arguments passed to minimize.
 
-    :returns: List containing single Agent with best score, dimensions, and positions.
+    :returns: Ensemble with the best result (single member).
 
     :raises OptimizationError: If parameters are invalid or optimization fails.
 
@@ -356,14 +373,14 @@ def minimize_linkage(
             return some_metric(loci)
 
         # Refine a solution from global optimization
-        results = minimize_linkage(
+        result = minimize_linkage(
             eval_func=fitness,
             linkage=my_linkage,
             x0=initial_guess,
             method="Nelder-Mead",
             order_relation=min,
         )
-        best_score, best_dims, init_pos = results[0]
+        best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
     raw_constraints = tuple(linkage.get_num_constraints())
     # Filter to get only float values
@@ -432,9 +449,7 @@ def minimize_linkage(
 
     # Convert result
     best_score = -result.fun if order_relation is max else result.fun
-    best_dims = result.x
-
-    return [Agent(best_score, best_dims, joint_pos)]
+    return _make_ensemble(linkage, best_score, result.x, joint_pos)
 
 
 def chain_optimizers(
@@ -442,13 +457,13 @@ def chain_optimizers(
     linkage: "Linkage",
     stages: Sequence[
         tuple[
-            "Callable[..., list[Agent]]",
+            "Callable[..., Ensemble]",
             dict[str, Any],
         ]
     ],
     order_relation: Callable[[float, float], float] = max,
     verbose: bool = True,
-) -> list[Agent]:
+) -> Ensemble:
     """Run multiple optimizers in sequence, feeding each result to the next.
 
     A common pattern is global search followed by local refinement, e.g.
@@ -467,7 +482,7 @@ def chain_optimizers(
     :param order_relation: How to compare scores (max or min). Default is max.
     :param verbose: Print stage headers and progress. Default is True.
 
-    :returns: List containing the single best Agent from the final stage.
+    :returns: Ensemble from the final optimization stage.
 
     :raises OptimizationError: If no stages are provided.
 
@@ -479,7 +494,7 @@ def chain_optimizers(
             minimize_linkage,
         )
 
-        results = chain_optimizers(
+        result = chain_optimizers(
             eval_func=fitness,
             linkage=my_linkage,
             stages=[
@@ -488,12 +503,12 @@ def chain_optimizers(
             ],
             order_relation=min,
         )
-        best = results[0]
+        best = result[0]
     """
     if not stages:
         raise OptimizationError("At least one optimization stage is required")
 
-    best_result: list[Agent] | None = None
+    best_result: Ensemble | None = None
 
     for i, (optimizer, kwargs) in enumerate(stages):
         if verbose:

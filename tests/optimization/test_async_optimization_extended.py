@@ -18,6 +18,7 @@ from pylinkage.optimization.async_optimization import (
     minimize_linkage_async,
 )
 from pylinkage.optimization.utils import kinematic_minimization
+from pylinkage.population import Ensemble
 
 
 def prepare_linkage():
@@ -125,6 +126,7 @@ class TestDifferentialEvolutionAsync(unittest.TestCase):
             )
 
         results = asyncio.run(run_test())
+        self.assertIsInstance(results, Ensemble)
         self.assertGreater(len(results), 0)
         self.assertIsNotNone(results[0].score)
 
@@ -199,6 +201,7 @@ class TestMinimizeLinkageAsync(unittest.TestCase):
             )
 
         results = asyncio.run(run_test())
+        self.assertIsInstance(results, Ensemble)
         self.assertGreater(len(results), 0)
         self.assertIsNotNone(results[0].score)
 

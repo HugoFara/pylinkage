@@ -15,7 +15,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from ..exceptions import OptimizationError
-from .collections import Agent
+from ..population import Ensemble
 
 if TYPE_CHECKING:
     from .._types import JointPositions
@@ -149,7 +149,7 @@ def particle_swarm_optimization(
     order_relation: Callable[[float, float], float] = max,
     verbose: bool = True,
     **kwargs: int,
-) -> list[Agent]:
+) -> Ensemble:
     """Particle Swarm Optimization for linkage parameters.
 
     Uses a local-best ring-topology PSO implemented in pure NumPy.
@@ -180,7 +180,7 @@ def particle_swarm_optimization(
     :param verbose: The optimization state will be printed in the console if True.
         (Default value = True).
 
-    :returns: List of Agents: best score, best dimensions and initial positions.
+    :returns: Ensemble with the best result (single member).
 
     :raises OptimizationError: If parameters are invalid or optimization fails.
     """
@@ -245,4 +245,14 @@ def particle_swarm_optimization(
 
     # Un-negate for maximization
     best_score = -best_cost if order_relation is max else best_cost
-    return [Agent(best_score, best_pos, joint_pos)]
+
+    joint_pos_arr = np.array(
+        [(x if x is not None else 0.0, y if y is not None else 0.0) for x, y in joint_pos],
+        dtype=np.float64,
+    )
+    return Ensemble(
+        linkage=linkage,
+        dimensions=np.asarray(best_pos, dtype=np.float64).reshape(1, -1),
+        initial_positions=joint_pos_arr.reshape(1, -1, 2),
+        scores={"score": np.array([best_score])},
+    )

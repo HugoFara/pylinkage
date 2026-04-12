@@ -13,6 +13,7 @@ from pylinkage.optimization import (
     trials_and_errors_optimization_async,
 )
 from pylinkage.optimization.utils import kinematic_minimization
+from pylinkage.population import Ensemble
 
 
 def prepare_linkage():
@@ -90,6 +91,7 @@ class TestTrialsAndErrorsAsync(unittest.TestCase):
             return results
 
         results = asyncio.run(run_test())
+        self.assertIsInstance(results, Ensemble)
         self.assertGreater(len(results), 0)
         self.assertIsNotNone(results[0].score)
 
@@ -166,6 +168,7 @@ class TestPSOAsync(unittest.TestCase):
             )
 
         results = asyncio.run(run_test())
+        self.assertIsInstance(results, Ensemble)
         self.assertGreater(len(results), 0)
         self.assertIsNotNone(results[0].score)
 

@@ -6,6 +6,7 @@ import pylinkage as pl
 from pylinkage import optimization
 from pylinkage.optimization.grid_search import fast_variator, sequential_variator
 from pylinkage.optimization.utils import kinematic_minimization
+from pylinkage.population import Ensemble
 
 
 def prepare_linkage():
@@ -85,7 +86,7 @@ class TestTrialsAndErrors(unittest.TestCase):
     def test_convergence(self):
         """Test if the output after some iterations is improved."""
         bounds = optimization.generate_bounds(self.linkage.get_num_constraints(), 2, 2)
-        score, dimensions, coord = optimization.trials_and_errors_optimization(
+        result = optimization.trials_and_errors_optimization(
             eval_func=fitness_func,
             linkage=self.linkage,
             divisions=10,
@@ -93,8 +94,9 @@ class TestTrialsAndErrors(unittest.TestCase):
             n_results=10,
             order_relation=min,
             verbose=False,
-        )[0]
-        self.assertAlmostEqual(0.0, score, delta=0.3)
+        )
+        self.assertIsInstance(result, Ensemble)
+        self.assertAlmostEqual(0.0, result[0].score, delta=0.3)
 
 
 class TestPSO(unittest.TestCase):
@@ -117,7 +119,9 @@ class TestPSO(unittest.TestCase):
             "order_relation": min,
             "verbose": False,
         }
-        score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
+        result = optimization.particle_swarm_optimization(**opti_kwargs)
+        self.assertIsInstance(result, Ensemble)
+        score = result[0].score
         if score > delta:
             # Try again with more agents
             opti_kwargs.update(
@@ -126,7 +130,8 @@ class TestPSO(unittest.TestCase):
                     "iters": 100,
                 }
             )
-            score, dimensions, coord = optimization.particle_swarm_optimization(**opti_kwargs)[0]
+            result = optimization.particle_swarm_optimization(**opti_kwargs)
+            score = result[0].score
         # Do not apply optimization problems
         self.assertAlmostEqual(0.0, score, delta=delta)
 

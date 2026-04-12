@@ -17,7 +17,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from .collections import Agent, MutableAgent
+from ..population import Ensemble
 
 if TYPE_CHECKING:
     from .._types import JointPositions
@@ -68,7 +68,7 @@ async def particle_swarm_optimization_async(
     on_progress: ProgressCallback | None = None,
     executor: ThreadPoolExecutor | None = None,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Async version of particle_swarm_optimization.
 
     This function runs the PSO optimization in a thread pool executor to avoid
@@ -136,7 +136,7 @@ async def particle_swarm_optimization_async(
 
     from .particle_swarm import particle_swarm_optimization
 
-    def run_optimization() -> list[Agent]:
+    def run_optimization() -> Ensemble:
         return particle_swarm_optimization(
             eval_func=eval_func,
             linkage=linkage,
@@ -162,7 +162,7 @@ async def particle_swarm_optimization_async(
 
     # Signal completion
     if on_progress is not None:
-        best_score = result[0].score if result else None
+        best_score = result[0].score if len(result) > 0 else None
         on_progress(
             OptimizationProgress(
                 current_iteration=iterations,
@@ -184,7 +184,7 @@ async def trials_and_errors_optimization_async(
     on_progress: ProgressCallback | None = None,
     executor: ThreadPoolExecutor | None = None,
     **kwargs: Any,
-) -> list[MutableAgent]:
+) -> Ensemble:
     """Async version of trials_and_errors_optimization.
 
     This function runs the grid search optimization in a thread pool executor
@@ -248,7 +248,7 @@ async def trials_and_errors_optimization_async(
 
     from .grid_search import trials_and_errors_optimization
 
-    def run_optimization() -> list[MutableAgent]:
+    def run_optimization() -> Ensemble:
         return trials_and_errors_optimization(
             eval_func=eval_func,
             linkage=linkage,
@@ -267,7 +267,7 @@ async def trials_and_errors_optimization_async(
 
     # Signal completion
     if on_progress is not None:
-        best_score = result[0].score if result else None
+        best_score = result[0].score if len(result) > 0 else None
         on_progress(
             OptimizationProgress(
                 current_iteration=total_iterations,
@@ -295,7 +295,7 @@ async def differential_evolution_optimization_async(
     on_progress: ProgressCallback | None = None,
     executor: ThreadPoolExecutor | None = None,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Async version of differential_evolution_optimization.
 
     This function runs the differential evolution optimization in a thread pool
@@ -339,7 +339,7 @@ async def differential_evolution_optimization_async(
 
     from .scipy_optimize import differential_evolution_optimization
 
-    def run_optimization() -> list[Agent]:
+    def run_optimization() -> Ensemble:
         return differential_evolution_optimization(
             eval_func=eval_func,
             linkage=linkage,
@@ -365,7 +365,7 @@ async def differential_evolution_optimization_async(
 
     # Signal completion
     if on_progress is not None:
-        best_score = result[0].score if result else None
+        best_score = result[0].score if len(result) > 0 else None
         on_progress(
             OptimizationProgress(
                 current_iteration=maxiter,
@@ -390,7 +390,7 @@ async def minimize_linkage_async(
     on_progress: ProgressCallback | None = None,
     executor: ThreadPoolExecutor | None = None,
     **kwargs: Any,
-) -> list[Agent]:
+) -> Ensemble:
     """Async version of minimize_linkage.
 
     This function runs the local optimization in a thread pool executor to avoid
@@ -434,7 +434,7 @@ async def minimize_linkage_async(
 
     from .scipy_optimize import minimize_linkage
 
-    def run_optimization() -> list[Agent]:
+    def run_optimization() -> Ensemble:
         return minimize_linkage(
             eval_func=eval_func,
             linkage=linkage,
@@ -456,7 +456,7 @@ async def minimize_linkage_async(
 
     # Signal completion
     if on_progress is not None:
-        best_score = result[0].score if result else None
+        best_score = result[0].score if len(result) > 0 else None
         on_progress(
             OptimizationProgress(
                 current_iteration=total_iters,
