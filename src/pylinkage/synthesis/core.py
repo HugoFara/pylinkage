@@ -9,6 +9,7 @@ This module provides the fundamental data structures for mechanism synthesis:
 
 from __future__ import annotations
 
+import warnings
 from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
@@ -81,6 +82,15 @@ class SynthesisResult:
     the synthesis process including warnings, raw mathematical
     solutions, and branch information.
 
+    The primary way to access the solutions is via the :attr:`ensemble`
+    property, which returns an :class:`~pylinkage.population.Ensemble`
+    for batch simulation, ranking, filtering, and visualization.
+
+    .. deprecated:: 0.9.0
+        Iterating, indexing, and calling ``len()`` directly on a
+        ``SynthesisResult`` is deprecated. Use ``.ensemble`` instead.
+        These proxies will be removed in version 1.0.0.
+
     Attributes:
         solutions: List of valid Linkage objects.
         raw_solutions: Raw mathematical solutions before filtering.
@@ -95,43 +105,106 @@ class SynthesisResult:
     warnings: list[str] = field(default_factory=list)
     branch_info: list[dict[str, int]] = field(default_factory=list)
 
+    # Cached Ensemble — built lazily on first access
+    _ensemble: Ensemble | None = field(default=None, repr=False, compare=False)
+
+    # ------------------------------------------------------------------
+    # Primary API — Ensemble access
+    # ------------------------------------------------------------------
+
+    @property
+    def ensemble(self) -> Ensemble:
+        """Solutions as an :class:`~pylinkage.population.Ensemble`.
+
+        Built lazily on first access and cached. The Ensemble carries
+        link lengths from ``raw_solutions`` as score columns
+        (``crank_length``, ``coupler_length``, ``rocker_length``,
+        ``ground_length``) when available.
+
+        Raises:
+            ValueError: If no valid solutions exist.
+        """
+        if self._ensemble is None:
+            self._ensemble = self._build_ensemble()
+        return self._ensemble
+
+    # ------------------------------------------------------------------
+    # Deprecated collection protocol
+    # ------------------------------------------------------------------
+
     def __len__(self) -> int:
-        """Number of valid solutions found."""
+        """Number of valid solutions found.
+
+        .. deprecated:: 0.9.0
+            Use ``len(result.ensemble)`` instead.
+        """
+        warnings.warn(
+            "len(SynthesisResult) is deprecated. "
+            "Use len(result.ensemble) instead. "
+            "Direct len() will be removed in version 1.0.0.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return len(self.solutions)
 
     def __iter__(self) -> Iterator[Linkage]:
-        """Iterate over valid solutions."""
+        """Iterate over valid solutions.
+
+        .. deprecated:: 0.9.0
+            Use ``result.ensemble`` instead.
+        """
+        warnings.warn(
+            "Iterating over SynthesisResult is deprecated. "
+            "Use result.ensemble instead. "
+            "Direct iteration will be removed in version 1.0.0.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return iter(self.solutions)
 
     def __getitem__(self, index: int) -> Linkage:
-        """Get solution by index."""
+        """Get solution by index.
+
+        .. deprecated:: 0.9.0
+            Use ``result.ensemble[index]`` instead.
+        """
+        warnings.warn(
+            "SynthesisResult[i] is deprecated. "
+            "Use result.ensemble[i] instead. "
+            "Direct indexing will be removed in version 1.0.0.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.solutions[index]
 
     def __bool__(self) -> bool:
-        """True if any solutions were found."""
+        """True if any solutions were found.
+
+        .. deprecated:: 0.9.0
+            Use ``len(result.solutions) > 0`` or
+            ``len(result.ensemble) > 0`` instead.
+        """
+        warnings.warn(
+            "bool(SynthesisResult) is deprecated. "
+            "Use len(result.solutions) > 0 instead. "
+            "Direct bool() will be removed in version 1.0.0.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return len(self.solutions) > 0
 
-    def to_ensemble(self) -> Ensemble:
-        """Convert synthesis solutions to an Ensemble.
+    # ------------------------------------------------------------------
+    # Internal
+    # ------------------------------------------------------------------
 
-        All solutions in a SynthesisResult share the same joint topology
-        (same joint types and wiring, different dimensions), so they map
-        naturally to a single Ensemble.
-
-        The raw ``FourBarSolution`` link lengths are stored as scores
-        (``crank_length``, ``coupler_length``, ``rocker_length``,
-        ``ground_length``) for convenient filtering and ranking.
-
-        Returns:
-            Ensemble with one member per valid solution.
-
-        Raises:
-            ValueError: If no solutions are available.
-        """
+    def _build_ensemble(self) -> Ensemble:
+        """Build an Ensemble from the solutions list."""
         from ..population import Ensemble
 
         if not self.solutions:
-            raise ValueError("Cannot convert empty SynthesisResult to Ensemble")
+            raise ValueError(
+                "Cannot build Ensemble from empty SynthesisResult"
+            )
 
         template = self.solutions[0]
         n = len(self.solutions)

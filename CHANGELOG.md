@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Population abstractions for batch mechanism work** (`pylinkage.population`):
+  - `Member`: universal single-mechanism record (dimensions, scores, trajectory).
+    `to_loci()` converts trajectories to the tuple format the visualizer expects.
+  - `Ensemble`: topology-bound population — one linkage structure with N parameter
+    variants. Batch simulation via the numba solver, numpy-style indexing
+    (`ens[i]` → Member, `ens[1:3]` → Ensemble), columnar scores for vectorized
+    `rank()`, `top()`, `filter()`, `filter_by_score()`. Visualization shortcuts:
+    `show()`, `plot_plotly()`, `save_svg()`.
+  - `Population`: heterogeneous collection of Ensembles, keyed by topology label.
+    `simulate_all()`, `rank()`, `top()` across topologies.
+    `from_members()` auto-groups by topology key.
+    `from_topology_solutions()` wraps multi-topology synthesis results with
+    `QualityMetrics` as score columns.
+  - `SynthesisResult.ensemble` property: lazily builds an Ensemble from synthesis
+    solutions with link lengths as score columns.
+
 - **`skip_unbuildable` mode for `Linkage.step()`:** new boolean parameter that
   catches `UnbuildableError` per iteration and yields `None`-coordinate tuples
   instead of aborting the entire simulation. Non-Grashof and double-rocker
@@ -67,7 +83,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with k nodes as (k−1) links instead of 1 rigid body, giving wrong DOF for any
   mechanism with ternary or higher links (all six-bars and eight-bars).
 
+### Deprecated
+
+- **`SynthesisResult` collection protocol:** `len(result)`, `result[i]`,
+  `for linkage in result`, and `bool(result)` now emit `DeprecationWarning`.
+  Use `result.ensemble` instead. Will be removed in 1.0.0.
 ### Changed
+
+- **All optimization functions now return `Ensemble`** instead of `list[Agent]`,
+  `list[MutableAgent]`, or `ParetoFront`. Affected functions:
+  `particle_swarm_optimization()`, `trials_and_errors_optimization()`,
+  `differential_evolution_optimization()`, `dual_annealing_optimization()`,
+  `minimize_linkage()`, `chain_optimizers()`, `multi_objective_optimization()`,
+  and all async variants. Migration: replace `score, dims, pos = result[0]`
+  (Agent tuple unpacking) with `member = result[0]; member.score`.
 
 - **Default simulation resolution increased from ~63 to 360 steps per rotation:**
   The default angular velocity for `Crank`, `ArcCrank`, `DriverLink`, and
