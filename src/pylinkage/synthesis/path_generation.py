@@ -513,6 +513,17 @@ def path_generation(
                     continue
                 _seen_lengths.add(key)
 
+                # Link-ratio filter: reject degenerate mechanisms
+                # where one link is much shorter/longer than the rest
+                _lengths = [
+                    solution.crank_length,
+                    solution.coupler_length,
+                    solution.rocker_length,
+                    solution.ground_length,
+                ]
+                if max(_lengths) / min(_lengths) > 10.0:
+                    continue
+
                 # Lightweight Grashof filter (no simulation)
                 grashof_type = grashof_check(
                     solution.crank_length,
