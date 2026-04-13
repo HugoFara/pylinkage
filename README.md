@@ -16,7 +16,7 @@ result = path_generation([(0, 0), (1, 1), (2, 1), (3, 0)])
 plot_kinematic_linkage(result.solutions[0])
 ```
 
-![Path generation result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/synthesis_path_generation.png)
+![Path generation result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/synthesis_path_generation.gif)
 
 ## Installation
 
