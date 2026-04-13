@@ -5,7 +5,7 @@
 [![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)](https://codecov.io/gh/HugoFara/pylinkage)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst)
 
-Pylinkage lets you design planar linkage mechanisms by specifying the motion you need. Tell it where you want a coupler point to go, and it finds mechanism dimensions automatically using classical synthesis theory (Burmester, Freudenstein) and metaheuristic optimization (PSO, differential evolution). You can then simulate, analyze, visualize, and export to DXF or STEP for fabrication.
+Pylinkage lets you design [planar linkage mechanisms](https://en.wikipedia.org/wiki/Linkage_(mechanical)) by specifying the motion you need. Tell it where you want a coupler point to go, and it finds mechanism dimensions automatically using classical synthesis theory ([Burmester](https://en.wikipedia.org/wiki/Burmester_theory), [Freudenstein](https://en.wikipedia.org/wiki/Ferdinand_Freudenstein)) and metaheuristic optimization ([PSO](https://en.wikipedia.org/wiki/Particle_swarm_optimization), [differential evolution](https://en.wikipedia.org/wiki/Differential_evolution)). You can then simulate, analyze, visualize, and export to DXF or STEP for fabrication.
 
 ```python
 from pylinkage.synthesis import path_generation
@@ -48,7 +48,7 @@ uv sync  # or pip install -e ".[full,dev]"
 
 ## Quick Start
 
-### Define and Visualize a Four-Bar Linkage
+### Define and Visualize a [Four-Bar Linkage](https://en.wikipedia.org/wiki/Four-bar_linkage)
 
 Using the component-based API (recommended). Visualization requires `pip install pylinkage[viz]`.
 
@@ -154,10 +154,10 @@ The [`docs/notebooks/`](docs/notebooks/) directory contains hands-on tutorials t
 | 03 | [Tolerance Analysis](docs/notebooks/03_tolerance_analysis.ipynb) | Monte Carlo analysis for manufacturing variation |
 | 04 | [Cam-Follower Timing](docs/notebooks/04_cam_follower_timing.ipynb) | Design cam profiles with motion laws |
 | 05 | [Symbolic Coupler Curve](docs/notebooks/05_symbolic_coupler_curve.ipynb) | Closed-form trajectory expressions with SymPy |
-| 06 | [Function Generation](docs/notebooks/06_function_generation.ipynb) | Match input/output angle relationships (Freudenstein) |
-| 07 | [Motion Generation](docs/notebooks/07_motion_generation.ipynb) | Guide a rigid body through specified poses (Burmester) |
+| 06 | [Function Generation](docs/notebooks/06_function_generation.ipynb) | Match input/output angle relationships ([Freudenstein](https://en.wikipedia.org/wiki/Ferdinand_Freudenstein)) |
+| 07 | [Motion Generation](docs/notebooks/07_motion_generation.ipynb) | Guide a rigid body through specified poses ([Burmester](https://en.wikipedia.org/wiki/Burmester_theory)) |
 | 08 | [Velocity & Acceleration](docs/notebooks/08_velocity_acceleration.ipynb) | Compute joint velocities and accelerations |
-| 09 | [Transmission Angle & DOF](docs/notebooks/09_transmission_angle_and_dof.ipynb) | Evaluate mechanism quality and mobility |
+| 09 | [Transmission Angle & DOF](docs/notebooks/09_transmission_angle_and_dof.ipynb) | Evaluate mechanism quality and [mobility](https://en.wikipedia.org/wiki/Degree_of_freedom_(mechanics)) |
 | 10 | [Mechanism Builder](docs/notebooks/10_mechanism_builder.ipynb) | Link-first definition with `MechanismBuilder` |
 | 11 | [Multi-Objective Optimization](docs/notebooks/11_multi_objective_and_scipy_optimization.ipynb) | Pareto-optimal design with NSGA-II and scipy |
 | 12 | [Three Synthesis Problems](docs/notebooks/12_three_synthesis_problems.ipynb) | Side-by-side comparison of path, function, and motion synthesis |
@@ -166,7 +166,7 @@ The [`docs/notebooks/`](docs/notebooks/) directory contains hands-on tutorials t
 
 ## What Else Can It Do?
 
-Pylinkage also supports velocity and acceleration analysis, cam-follower mechanisms with configurable motion laws, transmission angle evaluation, Monte Carlo tolerance analysis for manufacturing, multi-objective optimization (NSGA-II/III via pymoo), and export to DXF and STEP for CNC and CAD workflows. See the [tutorials](#tutorials) for details.
+Pylinkage also supports velocity and acceleration analysis, [cam-follower](https://en.wikipedia.org/wiki/Cam_(mechanism)) mechanisms with configurable motion laws, transmission angle evaluation, [Monte Carlo](https://en.wikipedia.org/wiki/Monte_Carlo_method) tolerance analysis for manufacturing, [multi-objective optimization](https://en.wikipedia.org/wiki/Multi-objective_optimization) (NSGA-II/III via pymoo), and export to DXF and STEP for CNC and CAD workflows. See the [tutorials](#tutorials) for details.
 
 ## Architecture
 
@@ -187,7 +187,7 @@ Level 4: Applications   → Optimization, Synthesis, Symbolic, Visualization
 |--------|---------|---------------|
 | `pylinkage.components` | Base components: `Ground`, `Component` | — |
 | `pylinkage.actuators` | Motor drivers: `Crank`, `LinearActuator` | — |
-| `pylinkage.dyads` | Assur groups: `RRRDyad`, `RRPDyad`, `FixedDyad` | — |
+| `pylinkage.dyads` | [Assur groups](https://en.wikipedia.org/wiki/Assur_group): `RRRDyad`, `RRPDyad`, `FixedDyad` | — |
 | `pylinkage.simulation` | `Linkage` class for simulation via `step()` / `step_fast()` | — |
 | `pylinkage.mechanism` | Low-level Links+Joints model and `MechanismBuilder` | — |
 | `pylinkage.solver` | High-performance numba-compiled simulation backend | `numba` |
