@@ -40,9 +40,6 @@ class UnderconstrainedError(Exception):
         super().__init__(message)
 
 
-# Backwards compatibility alias (deprecated)
-HypostaticError = UnderconstrainedError
-
 
 class NotCompletelyDefinedError(Exception):
     """The linkage definition is incomplete."""

@@ -145,21 +145,3 @@ class Prismatic(pl_joint.Joint):
         :param args: Unused, but preserves the object structure.
         """
         self.revolute_radius = distance0 or self.revolute_radius
-
-
-class Linear(Prismatic):
-    """Deprecated alias for Prismatic joint.
-
-    .. deprecated::
-        Use :class:`Prismatic` instead. The ``Linear`` name will be removed
-        in a future version.
-    """
-
-    def __init__(self, *args: object, **kwargs: object) -> None:
-        """Initialize with deprecation warning."""
-        warnings.warn(
-            "Linear is deprecated, use Prismatic instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        super().__init__(*args, **kwargs)  # type: ignore[arg-type]

@@ -31,7 +31,6 @@ __all__ = [
     "ComponentId",
     "PortId",
     # Exceptions
-    "HypostaticError",  # Deprecated alias for UnderconstrainedError
     "NotCompletelyDefinedError",
     "OptimizationError",
     "UnbuildableError",
@@ -45,7 +44,6 @@ __all__ = [
     # Joints (legacy, lazy)
     "Crank",
     "Fixed",
-    "Linear",  # Deprecated alias for Prismatic
     "Prismatic",
     "Revolute",
     "Static",
@@ -108,9 +106,6 @@ from ._types import (
     PortId as PortId,
 )
 from .exceptions import (
-    HypostaticError as HypostaticError,  # Deprecated alias
-)
-from .exceptions import (
     NotCompletelyDefinedError as NotCompletelyDefinedError,
 )
 from .exceptions import (
@@ -162,7 +157,6 @@ _LAZY_ATTRS: dict[str, str] = {
     # From .joints (legacy, deprecated)
     "Crank": ".joints",
     "Fixed": ".joints",
-    "Linear": ".joints",
     "Prismatic": ".joints",
     "Revolute": ".joints",
     "Static": ".joints",

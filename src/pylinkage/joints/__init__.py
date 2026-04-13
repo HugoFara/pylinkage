@@ -28,14 +28,13 @@
 
 import warnings
 
-__all__ = ["Crank", "Fixed", "Linear", "Prismatic", "Revolute", "Static"]
+__all__ = ["Crank", "Fixed", "Prismatic", "Revolute", "Static"]
 
 # Lazy imports: emit deprecation warning only when accessing package-level names.
 # Internal submodule imports (from .joint, .crank, etc.) bypass this entirely.
 _LAZY_MAP = {
     "Crank": (".crank", "Crank"),
     "Fixed": (".fixed", "Fixed"),
-    "Linear": (".prismatic", "Linear"),
     "Prismatic": (".prismatic", "Prismatic"),
     "Revolute": (".revolute", "Revolute"),
     "Static": (".joint", "Static"),

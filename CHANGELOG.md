@@ -136,6 +136,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **`HypostaticError`** alias removed. Use `UnderconstrainedError` directly
+  (alias was deprecated since 0.7.0).
+- **`Linear`** joint alias removed. Use `Prismatic` directly
+  (alias was deprecated since 0.7.0).
 - **pyswarms dependency** removed from all extras (`pso`, `full`, dev group).
 
 ## [0.8.0] - 2026-03-28

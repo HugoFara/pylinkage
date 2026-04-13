@@ -10,7 +10,7 @@ import unittest
 
 from pylinkage import UnbuildableError
 from pylinkage.exceptions import NotCompletelyDefinedError
-from pylinkage.joints import Crank, Fixed, Linear, Prismatic, Revolute, Static
+from pylinkage.joints import Crank, Fixed, Prismatic, Revolute, Static
 from pylinkage.joints.joint import _StaticBase, joint_syntax_parser
 from pylinkage.joints.revolute import Pivot
 from pylinkage.joints.static import Static as StaticFromModule
@@ -341,25 +341,6 @@ class TestPrismaticJoint(unittest.TestCase):
         with self.assertRaises(UnbuildableError):
             prismatic.reload()
 
-    def test_linear_alias_deprecated(self):
-        """Test that Linear alias emits deprecation warning."""
-        import warnings
-
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            Linear(
-                2,
-                2,
-                joint0=self.anchor,
-                joint1=self.line_start,
-                joint2=self.line_end,
-                revolute_radius=2,
-            )
-            # Now emits 2 warnings: Linear alias deprecation + Prismatic class deprecation
-            self.assertEqual(len(w), 2)
-            messages = [str(warning.message) for warning in w]
-            self.assertTrue(any("Linear is deprecated" in msg for msg in messages))
-            self.assertTrue(any("Prismatic is deprecated" in msg for msg in messages))
 
 
 class TestPivot(unittest.TestCase):
