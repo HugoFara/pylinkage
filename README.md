@@ -115,15 +115,18 @@ import pylinkage as pl
 
 @pl.kinematic_minimization
 def fitness(loci, **_):
-    # Define your objective based on joint trajectories
     tip_locus = tuple(x[-1] for x in loci)
     return pl.bounding_box(tip_locus)[0]  # Minimize min_y
 
 bounds = pl.generate_bounds(my_linkage.get_num_constraints())
-score, position, coords = pl.particle_swarm_optimization(
+ensemble = pl.particle_swarm_optimization(
     eval_func=fitness, linkage=my_linkage, bounds=bounds, order_relation=min
-)[0]
+)
+best = ensemble.top(1)[0]
+my_linkage.set_num_constraints(best.dimensions)
 ```
+
+![PSO optimization result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/pso_optimization.png)
 
 ### Symbolic Analysis
 
