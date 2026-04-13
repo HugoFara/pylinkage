@@ -151,18 +151,16 @@ def _auto_detect_fourbar_joints(
     Raises:
         ValueError: If joints cannot be auto-detected.
     """
-    # Import here to avoid circular imports
-    from ..joints.crank import Crank
-    from ..joints.revolute import Revolute
+    from .._compat import get_parts, is_driver, is_dyad
 
     crank = None
     revolute = None
 
-    for joint in linkage.joints:
-        if isinstance(joint, Crank):
-            crank = joint
-        elif isinstance(joint, Revolute):
-            revolute = joint
+    for part in get_parts(linkage):
+        if is_driver(part) and crank is None:
+            crank = part
+        elif is_dyad(part) and revolute is None:
+            revolute = part
 
     if crank is None:
         raise ValueError(
@@ -173,10 +171,12 @@ def _auto_detect_fourbar_joints(
             "Cannot auto-detect: no Revolute joint found. Please specify joints explicitly."
         )
 
-    # The rocker pivot is joint1 of the Revolute
-    rocker_pivot = revolute.joint1
+    # The rocker pivot: joint1 (legacy) or anchor2 (modern)
+    rocker_pivot = getattr(revolute, "anchor2", None) or getattr(
+        revolute, "joint1", None
+    )
     if rocker_pivot is None:
-        raise ValueError("Cannot auto-detect: Revolute.joint1 (rocker pivot) is None.")
+        raise ValueError("Cannot auto-detect rocker pivot from dyad.")
 
     return crank, revolute, rocker_pivot
 
@@ -388,11 +388,12 @@ def _auto_detect_prismatic_joint(linkage: Linkage) -> object:
     Raises:
         ValueError: If no Prismatic joint is found.
     """
-    from ..joints.prismatic import Prismatic
+    from .._compat import get_parts
 
-    for joint in linkage.joints:
-        if isinstance(joint, Prismatic):
-            return joint
+    for part in get_parts(linkage):
+        name = type(part).__name__
+        if name in ("Prismatic", "Linear", "RRPDyad"):
+            return part
 
     raise ValueError(
         "Cannot auto-detect: no Prismatic joint found. Please specify the joint explicitly."

@@ -118,7 +118,7 @@ class TestAutoDetectFourBarMissingRockerPivot:
             rev.joint1 = None
             linkage = pl.Linkage(joints=[crank, rev], order=[crank, rev])
 
-        with pytest.raises(ValueError, match="rocker pivot.*None"):
+        with pytest.raises(ValueError, match="rocker pivot"):
             _auto_detect_fourbar_joints(linkage)
 
 

@@ -233,15 +233,17 @@ class Population:
         for topo_id, group in groups.items():
             template = group[0].linkage
             n = len(group)
-            n_constraints = len(template.get_num_constraints(flat=True))
-            n_joints = len(template.joints)
+            n_constraints = len(template.get_num_constraints())
+            from .._compat import get_parts
+
+            n_joints = len(get_parts(template))
 
             dims = np.empty((n, n_constraints), dtype=np.float64)
             positions = np.empty((n, n_joints, 2), dtype=np.float64)
 
             for i, tsol in enumerate(group):
                 lk = tsol.linkage
-                constraints = lk.get_num_constraints(flat=True)
+                constraints = lk.get_num_constraints()
                 dims[i] = [
                     c if c is not None else 0.0 for c in constraints
                 ]

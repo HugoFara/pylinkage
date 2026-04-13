@@ -553,7 +553,9 @@ def _synthesize_sixbar_as_nbar(
         positions: dict[str, Point2D] = {}
         lengths: dict[str, float] = {}
 
-        for joint in linkage.joints:
+        from .._compat import get_parts
+
+        for joint in get_parts(linkage):
             name = getattr(joint, "name", None)
             if name and joint.x is not None and joint.y is not None:
                 positions[name] = (joint.x, joint.y)

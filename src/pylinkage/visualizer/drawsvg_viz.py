@@ -15,6 +15,7 @@ from ..joints.fixed import Fixed
 from ..joints.joint import _StaticBase as Static
 from ..joints.prismatic import Prismatic
 from ..joints.revolute import Pivot
+from .core import get_components
 from .symbols import (
     LinkStyle,
     SymbolType,
@@ -524,7 +525,7 @@ def plot_linkage_svg(
 
     # Draw loci (movement paths) first (behind everything)
     if show_loci and len(loci) > 1:
-        for i, joint in enumerate(linkage.joints):
+        for i, joint in enumerate(get_components(linkage)):
             path_coords = [w2c(frame[i][0], frame[i][1]) for frame in loci]
             if len(path_coords) > 1:
                 spec = get_symbol_spec(joint)
@@ -543,7 +544,7 @@ def plot_linkage_svg(
     # Get current joint positions (use first frame for static diagram)
     current_positions: dict[object, tuple[float, float]] = {
         joint: (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
-        for i, joint in enumerate(linkage.joints)
+        for i, joint in enumerate(get_components(linkage))
     }
 
     def get_position(joint: object) -> tuple[float, float]:
@@ -555,7 +556,7 @@ def plot_linkage_svg(
         return (coord[0] or 0.0, coord[1] or 0.0)
 
     # Draw ground line if there are ground joints
-    ground_joints = [j for j in linkage.joints if is_ground_joint(j)]
+    ground_joints = [j for j in get_components(linkage) if is_ground_joint(j)]
     if ground_joints:
         ground_y_canvas = max(w2c(0, get_position(j)[1])[1] for j in ground_joints)
         x_positions = [w2c(get_position(j)[0], 0)[0] for j in ground_joints]
@@ -574,7 +575,7 @@ def plot_linkage_svg(
     link_index = 0
     drawn_links: set[tuple[int, int]] = set()
 
-    for joint in linkage.joints:
+    for joint in get_components(linkage):
         pos = get_position(joint)
         cx, cy = w2c(pos[0], pos[1])
 
@@ -639,7 +640,7 @@ def plot_linkage_svg(
                 link_index += 1
 
     # Draw joints (on top of links)
-    for joint in linkage.joints:
+    for joint in get_components(linkage):
         pos = get_position(joint)
         cx, cy = w2c(pos[0], pos[1])
         spec = get_symbol_spec(joint)
@@ -795,19 +796,19 @@ def plot_linkage_svg_with_velocity(
         )
 
     # Draw ground line if there are ground joints
-    ground_joints = [j for j in linkage.joints if is_ground_joint(j)]
+    ground_joints = [j for j in get_components(linkage) if is_ground_joint(j)]
     if ground_joints:
         ground_ys = [
             w2c(
-                positions[list(linkage.joints).index(j), 0],
-                positions[list(linkage.joints).index(j), 1],
+                positions[list(get_components(linkage)).index(j), 0],
+                positions[list(get_components(linkage)).index(j), 1],
             )[1]
             for j in ground_joints
         ]
         ground_xs = [
             w2c(
-                positions[list(linkage.joints).index(j), 0],
-                positions[list(linkage.joints).index(j), 1],
+                positions[list(get_components(linkage)).index(j), 0],
+                positions[list(get_components(linkage)).index(j), 1],
             )[0]
             for j in ground_joints
         ]
@@ -826,9 +827,9 @@ def plot_linkage_svg_with_velocity(
     # Draw links
     link_index = 0
     drawn_links: set[tuple[int, int]] = set()
-    joint_list = list(linkage.joints)
+    joint_list = list(get_components(linkage))
 
-    for joint in linkage.joints:
+    for joint in get_components(linkage):
         i = joint_list.index(joint)
         cx, cy = w2c(positions[i, 0], positions[i, 1])
 
@@ -875,7 +876,7 @@ def plot_linkage_svg_with_velocity(
                 link_index += 1
 
     # Draw joints
-    for i, joint in enumerate(linkage.joints):
+    for i, joint in enumerate(get_components(linkage)):
         cx, cy = w2c(positions[i, 0], positions[i, 1])
         spec = get_symbol_spec(joint)
 
@@ -905,7 +906,7 @@ def plot_linkage_svg_with_velocity(
             )
 
     # Draw velocity vectors on top
-    for i, joint in enumerate(linkage.joints):
+    for i, joint in enumerate(get_components(linkage)):
         if skip_static and isinstance(joint, Static):
             continue
 

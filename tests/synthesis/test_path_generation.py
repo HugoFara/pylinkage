@@ -120,9 +120,9 @@ class TestPathGeneration(unittest.TestCase):
         result = path_generation(points, require_grashof=False)
 
         if result.solutions:
-            from pylinkage import Linkage
+            from pylinkage.simulation import Linkage as SimLinkage
 
-            self.assertIsInstance(result.solutions[0], Linkage)
+            self.assertIsInstance(result.solutions[0], SimLinkage)
 
     def test_ground_constraint(self):
         """Test with ground pivot constraints."""
@@ -145,7 +145,7 @@ class TestPathGeneration(unittest.TestCase):
         result = path_generation(points, require_grashof=False)
 
         for linkage in result.solutions:
-            joint_names = [j.name for j in linkage.joints]
+            joint_names = [j.name for j in linkage.components]
             self.assertIn("P", joint_names, "Synthesized linkage should have coupler point joint P")
 
     def test_raw_solutions_have_coupler_point(self):
@@ -281,7 +281,7 @@ class TestPathGenerationIntegration(unittest.TestCase):
         for linkage in result.solutions[:2]:
             p_joint = None
             p_idx = None
-            for idx, j in enumerate(linkage.joints):
+            for idx, j in enumerate(linkage.components):
                 if j.name == "P":
                     p_joint = j
                     p_idx = idx

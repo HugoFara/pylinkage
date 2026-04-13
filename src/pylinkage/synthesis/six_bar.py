@@ -43,6 +43,7 @@ from .topology_types import GroupSynthesisResult, NBarSolution
 
 if TYPE_CHECKING:
     from ..linkage import Linkage
+    from ..simulation import Linkage as SimLinkage
 
 
 def six_bar_path_generation(
@@ -209,7 +210,7 @@ def _watt_synthesis(
     for nbar, raw_fb in zip(all_nbar_solutions, all_raw_fourbars, strict=True):
         linkage = _nbar_to_six_bar_linkage(nbar)
         if linkage is not None and _validate_six_bar(linkage, precision_points):
-                solutions.append(linkage)
+                solutions.append(linkage)  # type: ignore[arg-type]
                 valid_raw.append(raw_fb)
                 if len(solutions) >= max_solutions:
                     break
@@ -436,8 +437,10 @@ def _find_coupler_positions_at_targets(
         return None
 
     # Identify B and C joint indices
+    from .._compat import get_parts
+
     b_idx = c_idx = None
-    for i, joint in enumerate(linkage.joints):
+    for i, joint in enumerate(get_parts(linkage)):
         name = getattr(joint, "name", "")
         if name == "B":
             b_idx = i
@@ -682,93 +685,87 @@ def _combine_to_six_bar(
 def _nbar_to_six_bar_linkage(
     solution: NBarSolution,
     iterations: int = 360,
-) -> Linkage | None:
-    """Convert an NBarSolution to a six-bar Linkage.
+) -> SimLinkage | None:
+    """Convert an NBarSolution to a six-bar SimLinkage.
 
-    Creates joints: A (Static), D (Static), E (Static),
-    B (Crank from A), C (Revolute from B, D),
-    F (Revolute from C, E), P (Fixed coupler point on C-F).
+    Creates components: A (Ground), D (Ground), E (Ground),
+    B (Crank from A), C (RRRDyad from B, D),
+    F (RRRDyad from C, E), P (FixedDyad coupler point on C-F).
     """
-    from ..joints.crank import Crank
-    from ..joints.fixed import Fixed
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
-    from ..linkage import Linkage
+    from ..actuators import Crank
+    from ..components import Ground
+    from ..dyads import FixedDyad, RRRDyad
+    from ..simulation import Linkage as SimLinkage
 
     pos = solution.joint_positions
     lengths = solution.link_lengths
 
     try:
         # Ground pivots
-        joint_A = Static(x=pos["A"][0], y=pos["A"][1], name="A")
-        joint_D = Static(x=pos["D"][0], y=pos["D"][1], name="D")
-        joint_E = Static(x=pos["E"][0], y=pos["E"][1], name="E")
+        ground_a = Ground(pos["A"][0], pos["A"][1], name="A")
+        ground_d = Ground(pos["D"][0], pos["D"][1], name="D")
+        ground_e = Ground(pos["E"][0], pos["E"][1], name="E")
 
         # Crank
-        angle_step = 2 * math.pi / iterations
-        joint_B = Crank(
-            x=pos["B"][0], y=pos["B"][1],
-            joint0=joint_A,
-            distance=lengths["crank_AB"],
-            angle=angle_step,
+        angular_velocity = 2 * math.pi / iterations
+        initial_angle = math.atan2(
+            pos["B"][1] - pos["A"][1], pos["B"][0] - pos["A"][0],
+        )
+        crank_b = Crank(
+            anchor=ground_a,
+            radius=lengths["crank_AB"],
+            angular_velocity=angular_velocity,
+            initial_angle=initial_angle,
             name="B",
         )
 
-        # First revolute: C connected to B (coupler) and D (rocker)
-        joint_C = Revolute(
-            x=pos["C"][0], y=pos["C"][1],
-            joint0=joint_B,
-            joint1=joint_D,
-            distance0=lengths["coupler_BC"],
-            distance1=lengths["rocker_DC"],
+        # First dyad: C connected to B (coupler) and D (rocker)
+        joint_c = RRRDyad(
+            anchor1=crank_b.output,
+            anchor2=ground_d,
+            distance1=lengths["coupler_BC"],
+            distance2=lengths["rocker_DC"],
             name="C",
         )
 
-        # Second revolute: F connected to C (link CF) and E (rocker EF)
-        joint_F = Revolute(
-            x=pos["F"][0], y=pos["F"][1],
-            joint0=joint_C,
-            joint1=joint_E,
-            distance0=lengths["link_CF"],
-            distance1=lengths["rocker_EF"],
+        # Second dyad: F connected to C (link CF) and E (rocker EF)
+        joint_f = RRRDyad(
+            anchor1=joint_c,
+            anchor2=ground_e,
+            distance1=lengths["link_CF"],
+            distance2=lengths["rocker_EF"],
             name="F",
         )
 
-        joints = [joint_A, joint_D, joint_E, joint_B, joint_C, joint_F]
-        order = [joint_B, joint_C, joint_F]
+        components: list[object] = [
+            ground_a, ground_d, ground_e, crank_b, joint_c, joint_f,
+        ]
 
         # Add coupler point tracker if available
         if solution.coupler_point is not None:
-            P = solution.coupler_point
-            # Compute Fixed joint params relative to C-F link
+            p = solution.coupler_point
             from .conversion import _compute_coupler_point_params
+
             dist_cp, angle_cp = _compute_coupler_point_params(
-                pos["C"], pos["F"], P
+                pos["C"], pos["F"], p,
             )
-            joint_P = Fixed(
-                x=P[0], y=P[1],
-                joint0=joint_C,
-                joint1=joint_F,
+            joint_p = FixedDyad(
+                anchor1=joint_c,
+                anchor2=joint_f,
                 distance=dist_cp,
                 angle=angle_cp,
                 name="P",
             )
-            joints.append(joint_P)
-            order.append(joint_P)
+            components.append(joint_p)
 
-        linkage = Linkage(
-            joints=joints,
-            order=order,
-            name="six_bar_watt",
-        )
-        return linkage
+        return SimLinkage(components, name="six_bar_watt")  # type: ignore[arg-type]
 
     except Exception:
         return None
 
 
 def _validate_six_bar(
-    linkage: Linkage,
+    linkage: Linkage | SimLinkage,
     precision_points: list[PrecisionPoint],
     min_trajectory_fraction: float = 0.1,
 ) -> bool:
@@ -913,7 +910,7 @@ def _optimize_stephenson_triad(
         coupler_point=all_points[0] if all_points else None,
     )
 
-    return _nbar_to_six_bar_linkage(nbar)
+    return _nbar_to_six_bar_linkage(nbar)  # type: ignore[return-value]
 
 
 def _midpoint(a: Point2D, b: Point2D) -> Point2D:

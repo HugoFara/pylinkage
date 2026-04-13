@@ -184,9 +184,9 @@ class TestFunctionGeneration(unittest.TestCase):
         result = function_generation(angle_pairs, require_grashof=False)
 
         if result.solutions:
-            from pylinkage import Linkage
+            from pylinkage.simulation import Linkage as SimLinkage
 
-            self.assertIsInstance(result.solutions[0], Linkage)
+            self.assertIsInstance(result.solutions[0], SimLinkage)
 
     def test_insufficient_pairs_raises(self):
         """Test that <3 angle pairs raises ValueError."""
@@ -277,12 +277,12 @@ class TestVerifyFunctionGeneration(unittest.TestCase):
 
     def test_verify_handles_invalid_linkage(self):
         """Test that verification handles invalid linkage structure."""
-        from pylinkage import Linkage
-        from pylinkage.joints import Static
-
         # Create a linkage without proper four-bar structure
-        joint_A = Static(x=0, y=0, name="A")
-        linkage = Linkage(joints=[joint_A], order=[])
+        from pylinkage.components import Ground
+        from pylinkage.simulation import Linkage as SimLinkage
+
+        joint_A = Ground(0, 0, name="A")
+        linkage = SimLinkage([joint_A])
 
         angle_pairs = [(0.0, 0.0), (0.3, 0.4), (0.6, 0.75)]
 

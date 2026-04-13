@@ -58,9 +58,9 @@ def get_components(linkage: Any) -> list[Any]:
     Works with both legacy ``Linkage.joints`` and modern
     ``SimLinkage.components``.
     """
-    if hasattr(linkage, "joints"):
-        return list(linkage.joints)
-    return list(linkage.components)
+    from .._compat import get_parts
+
+    return get_parts(linkage)
 
 
 def get_parent_pairs(component: Any) -> list[Any]:

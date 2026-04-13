@@ -30,9 +30,9 @@ class TestSolutionToLinkage(unittest.TestCase):
 
         linkage = solution_to_linkage(solution, name="test_linkage")
 
-        from pylinkage import Linkage
+        from pylinkage.simulation import Linkage as SimLinkage
 
-        self.assertIsInstance(linkage, Linkage)
+        self.assertIsInstance(linkage, SimLinkage)
         self.assertEqual(linkage.name, "test_linkage")
 
     def test_joint_positions(self):
@@ -50,20 +50,20 @@ class TestSolutionToLinkage(unittest.TestCase):
 
         linkage = solution_to_linkage(solution)
 
-        # Check joint positions
-        joints = linkage.joints
-        self.assertEqual(len(joints), 4)
+        # Check component positions
+        comps = linkage.components
+        self.assertEqual(len(comps), 4)
 
-        # Joint A (Static)
-        self.assertAlmostEqual(joints[0].x, 0.0)
-        self.assertAlmostEqual(joints[0].y, 0.0)
+        # Ground A
+        self.assertAlmostEqual(comps[0].x, 0.0)
+        self.assertAlmostEqual(comps[0].y, 0.0)
 
-        # Joint D (Static)
-        self.assertAlmostEqual(joints[1].x, 4.0)
-        self.assertAlmostEqual(joints[1].y, 0.0)
+        # Ground D
+        self.assertAlmostEqual(comps[1].x, 4.0)
+        self.assertAlmostEqual(comps[1].y, 0.0)
 
     def test_iterations_parameter(self):
-        """Test that iterations parameter affects angle step."""
+        """Test that iterations parameter affects angular velocity."""
         solution = FourBarSolution(
             ground_pivot_a=(0, 0),
             ground_pivot_d=(4, 0),
@@ -78,14 +78,13 @@ class TestSolutionToLinkage(unittest.TestCase):
         linkage_100 = solution_to_linkage(solution, iterations=100)
         linkage_50 = solution_to_linkage(solution, iterations=50)
 
-        # Crank angle step should be 2*pi/iterations
-        from pylinkage import Crank
+        from pylinkage.actuators import Crank
 
-        crank_100 = [j for j in linkage_100.joints if isinstance(j, Crank)][0]
-        crank_50 = [j for j in linkage_50.joints if isinstance(j, Crank)][0]
+        crank_100 = [c for c in linkage_100.components if isinstance(c, Crank)][0]
+        crank_50 = [c for c in linkage_50.components if isinstance(c, Crank)][0]
 
-        self.assertAlmostEqual(crank_100.angle, 2 * math.pi / 100)
-        self.assertAlmostEqual(crank_50.angle, 2 * math.pi / 50)
+        self.assertAlmostEqual(crank_100.angular_velocity, 2 * math.pi / 100)
+        self.assertAlmostEqual(crank_50.angular_velocity, 2 * math.pi / 50)
 
 
 class TestSolutionsToLinkages(unittest.TestCase):

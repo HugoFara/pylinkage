@@ -210,10 +210,10 @@ class TestNBarToLinkage:
         linkage = _nbar_to_six_bar_linkage(nbar)
         assert linkage is not None
         # 6 main joints + possibly P (coupler tracker)
-        assert len(linkage.joints) >= 6
+        assert len(linkage.components) >= 6
 
         # Check joint names
-        names = {getattr(j, "name", None) for j in linkage.joints}
+        names = {getattr(j, "name", None) for j in linkage.components}
         assert "A" in names
         assert "B" in names
         assert "C" in names

@@ -20,6 +20,8 @@ from typing import TYPE_CHECKING, cast
 import numpy as np
 from numpy.typing import NDArray
 
+from .._compat import get_parts
+
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
 
@@ -49,7 +51,7 @@ def _get_constraint_names(linkage: Linkage) -> tuple[str, ...]:
     """
     names: list[str] = []
 
-    for joint in linkage.joints:
+    for joint in get_parts(linkage):
         # Get joint name, use class name + index if no name attribute
         joint_name = getattr(joint, "name", None)
         if joint_name is None:
@@ -96,20 +98,20 @@ def _get_output_joint_index(linkage: Linkage, output_joint: object | int | None)
         output_joint: Joint object, index, or None (auto-detect last).
 
     Returns:
-        Index of the output joint in linkage.joints.
+        Index of the output joint in get_parts(linkage).
 
     Raises:
         ValueError: If joint not found.
     """
     if output_joint is None:
         # Default to last joint (typically the output/coupler point)
-        return len(linkage.joints) - 1
+        return len(get_parts(linkage)) - 1
     if isinstance(output_joint, int):
-        if output_joint < 0 or output_joint >= len(linkage.joints):
+        if output_joint < 0 or output_joint >= len(get_parts(linkage)):
             raise ValueError(f"Joint index {output_joint} out of range")
         return output_joint
     # Find joint object
-    for i, joint in enumerate(linkage.joints):
+    for i, joint in enumerate(get_parts(linkage)):
         if joint is output_joint:
             return i
     raise ValueError(f"Joint {output_joint} not found in linkage")
@@ -272,7 +274,7 @@ def analyze_sensitivity(
     constraint_names = _get_constraint_names(linkage)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since we skip None values in the loop
-    nominal_constraints = cast(list[float], list(linkage.get_num_constraints(flat=True)))
+    nominal_constraints = cast(list[float], list(linkage.get_num_constraints()))
 
     # Save initial state
     initial_coords = linkage.get_coords()
@@ -315,7 +317,7 @@ def analyze_sensitivity(
             perturbed[i] = nominal_constraints[i] + perturbation
 
             # Apply and simulate
-            linkage.set_num_constraints(perturbed, flat=True)
+            linkage.set_num_constraints(perturbed)
             linkage.set_coords(initial_coords)
 
             try:
@@ -342,12 +344,12 @@ def analyze_sensitivity(
                     perturbed_trans.append(None)
 
             # Restore constraints
-            linkage.set_num_constraints(nominal_constraints, flat=True)
+            linkage.set_num_constraints(nominal_constraints)
             linkage.set_coords(initial_coords)
 
     finally:
         # Always restore original state
-        linkage.set_num_constraints(nominal_constraints, flat=True)
+        linkage.set_num_constraints(nominal_constraints)
         linkage.set_coords(initial_coords)
 
     # Build transmission array if available
@@ -522,7 +524,7 @@ def analyze_tolerance(
     name_to_idx = _name_to_index(linkage, constraint_names)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since constraints are always set for valid linkages
-    nominal_constraints = cast(list[float], list(linkage.get_num_constraints(flat=True)))
+    nominal_constraints = cast(list[float], list(linkage.get_num_constraints()))
 
     # Validate tolerance names
     for name in tolerances:
@@ -555,7 +557,7 @@ def analyze_tolerance(
                 perturbed[idx] = perturbed[idx] + perturbation
 
             # Apply and simulate
-            linkage.set_num_constraints(perturbed, flat=True)
+            linkage.set_num_constraints(perturbed)
             linkage.set_coords(initial_coords)
 
             try:
@@ -570,12 +572,12 @@ def analyze_tolerance(
                 pass
 
             # Restore for next iteration
-            linkage.set_num_constraints(nominal_constraints, flat=True)
+            linkage.set_num_constraints(nominal_constraints)
             linkage.set_coords(initial_coords)
 
     finally:
         # Always restore original state
-        linkage.set_num_constraints(nominal_constraints, flat=True)
+        linkage.set_num_constraints(nominal_constraints)
         linkage.set_coords(initial_coords)
 
     if not output_cloud:

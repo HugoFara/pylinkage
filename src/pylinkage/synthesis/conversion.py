@@ -119,19 +119,15 @@ def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
     iterations: int = 360,
-) -> Linkage:
+) -> SimLinkage:
     """Convert a single FourBarSolution to a Linkage object.
 
     Creates a four-bar linkage with:
-    - Two Static joints (A, D) as ground pivots
-    - One Crank joint (B) connected to A
-    - One Revolute joint (C) connecting B to D
-    - Optionally, a Fixed joint (P) for the coupler point that traces
-      the target path (only if solution.coupler_point is set)
-
-    For non-Grashof linkages, arc limits are stored on the Crank joint
-    so that downstream conversion to a Mechanism can create an
-    ArcDriverLink instead of a DriverLink.
+    - Two Ground components as ground pivots
+    - One Crank as motor input
+    - One RRRDyad connecting crank to rocker
+    - Optionally, a FixedDyad for the coupler point that traces the
+      target path (only if ``solution.coupler_point`` is set)
 
     Args:
         solution: FourBarSolution containing geometry.
@@ -139,101 +135,64 @@ def solution_to_linkage(
         iterations: Number of simulation steps per rotation.
 
     Returns:
-        Linkage object ready for simulation.
+        SimLinkage object ready for simulation.
     """
-    from ..joints.crank import Crank
-    from ..joints.fixed import Fixed
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
-    from ..linkage import Linkage
+    from ..actuators import Crank
+    from ..components import Ground
+    from ..dyads import FixedDyad, RRRDyad
+    from ..simulation import Linkage as SimLinkage
 
-    # Create ground pivots
     A = solution.ground_pivot_a
     D = solution.ground_pivot_d
-
-    joint_A = Static(x=A[0], y=A[1], name="A")
-    joint_D = Static(x=D[0], y=D[1], name="D")
-
-    # Create crank joint
     B = solution.crank_pivot_b
+    C = solution.coupler_pivot_c
 
-    # Check if the four-bar needs limited rotation
-    arc_limits = _compute_crank_limits(
-        solution.crank_length,
-        solution.coupler_length,
-        solution.rocker_length,
-        solution.ground_length,
-    )
+    ground_a = Ground(A[0], A[1], name="A")
+    ground_d = Ground(D[0], D[1], name="D")
 
-    # Angle step per iteration (full rotation in `iterations` steps)
-    angle_step = 2 * math.pi / iterations
+    initial_angle = math.atan2(B[1] - A[1], B[0] - A[0])
+    angular_velocity = 2 * math.pi / iterations
 
-    joint_B = Crank(
-        x=B[0],
-        y=B[1],
-        joint0=joint_A,
-        distance=solution.crank_length,
-        angle=angle_step,
+    crank = Crank(
+        anchor=ground_a,
+        radius=solution.crank_length,
+        angular_velocity=angular_velocity,
+        initial_angle=initial_angle,
         name="B",
     )
 
-    # For non-Grashof: reposition crank within valid arc range
-    if arc_limits is not None:
-        arc_start, arc_end = arc_limits
-        initial_angle = math.atan2(B[1] - A[1], B[0] - A[0])
-        if initial_angle < arc_start or initial_angle > arc_end:
-            mid_angle = (arc_start + arc_end) / 2
-            joint_B.x = A[0] + solution.crank_length * math.cos(mid_angle)
-            joint_B.y = A[1] + solution.crank_length * math.sin(mid_angle)
-
-    # Create revolute joint connecting crank to rocker
-    C = solution.coupler_pivot_c
-
-    joint_C = Revolute(
-        x=C[0],
-        y=C[1],
-        joint0=joint_B,
-        joint1=joint_D,
-        distance0=solution.coupler_length,
-        distance1=solution.rocker_length,
+    joint_c = RRRDyad(
+        anchor1=crank.output,
+        anchor2=ground_d,
+        distance1=solution.coupler_length,
+        distance2=solution.rocker_length,
         name="C",
     )
 
-    joints = [joint_A, joint_D, joint_B, joint_C]
-    order = [joint_B, joint_C]
+    components: list[object] = [ground_a, ground_d, crank, joint_c]
 
     # Add coupler point tracker if present
     if solution.coupler_point is not None:
         P = solution.coupler_point
         dist_bp, angle_bp = _compute_coupler_point_params(B, C, P)
 
-        joint_P = Fixed(
-            x=P[0],
-            y=P[1],
-            joint0=joint_B,
-            joint1=joint_C,
+        joint_p = FixedDyad(
+            anchor1=crank.output,
+            anchor2=joint_c,
             distance=dist_bp,
             angle=angle_bp,
             name="P",
         )
-        joints.append(joint_P)
-        order.append(joint_P)
+        components.append(joint_p)
 
-    # Create linkage with solve order
-    linkage = Linkage(
-        joints=joints,
-        order=order,
-        name=name,
-    )
-
-    return linkage
+    return SimLinkage(components, name=name)  # type: ignore[arg-type]
 
 
 def solutions_to_linkages(
     solutions: list[FourBarSolution],
     synthesis_type: SynthesisType,
     iterations: int = 360,
-) -> list[Linkage]:
+) -> list[SimLinkage]:
     """Convert multiple solutions to Linkage objects.
 
     Args:
@@ -242,9 +201,9 @@ def solutions_to_linkages(
         iterations: Number of simulation steps per rotation.
 
     Returns:
-        List of Linkage objects.
+        List of SimLinkage objects.
     """
-    linkages: list[Linkage] = []
+    linkages: list[SimLinkage] = []
 
     for i, sol in enumerate(solutions):
         name = f"{synthesis_type.name.lower()}_{i}"
@@ -767,7 +726,7 @@ def nbar_solution_to_linkage(
                 "Joint positions may be invalid."
             )
         linkage.name = name
-        return linkage
+        return linkage  # type: ignore[return-value]
 
     # For four-bar, convert via FourBarSolution if possible
     if solution.topology_id == "four-bar":
@@ -786,7 +745,7 @@ def nbar_solution_to_linkage(
             ground_length=lengths.get("ground_AD", 1.0),
             coupler_point=solution.coupler_point,
         )
-        return solution_to_linkage(fb, name=name, iterations=iterations)
+        return solution_to_linkage(fb, name=name, iterations=iterations)  # type: ignore[return-value]
 
     # General case: build linkage from joint positions and topology
     # For eight-bars and beyond, use a generic construction approach

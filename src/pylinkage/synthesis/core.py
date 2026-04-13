@@ -99,7 +99,7 @@ class SynthesisResult:
         branch_info: Branch selection info for each solution.
     """
 
-    solutions: list[Linkage]
+    solutions: list  # type: ignore[type-arg]  # list of Linkage or SimLinkage objects
     raw_solutions: list[FourBarSolution]
     problem: SynthesisProblem
     warnings: list[str] = field(default_factory=list)
@@ -175,7 +175,7 @@ class SynthesisResult:
             DeprecationWarning,
             stacklevel=2,
         )
-        return self.solutions[index]
+        return self.solutions[index]  # type: ignore[no-any-return]
 
     def __bool__(self) -> bool:
         """True if any solutions were found.
@@ -208,14 +208,16 @@ class SynthesisResult:
 
         template = self.solutions[0]
         n = len(self.solutions)
-        n_constraints = len(template.get_num_constraints(flat=True))
-        n_joints = len(template.joints)
+        n_constraints = len(template.get_num_constraints())
+        from .._compat import get_parts
+
+        n_joints = len(get_parts(template))
 
         dims = np.empty((n, n_constraints), dtype=np.float64)
         positions = np.empty((n, n_joints, 2), dtype=np.float64)
 
         for i, linkage in enumerate(self.solutions):
-            constraints = linkage.get_num_constraints(flat=True)
+            constraints = linkage.get_num_constraints()
             dims[i] = [c if c is not None else 0.0 for c in constraints]
             for j, (x, y) in enumerate(linkage.get_coords()):
                 positions[i, j, 0] = x if x is not None else 0.0

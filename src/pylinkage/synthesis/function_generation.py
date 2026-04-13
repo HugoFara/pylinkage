@@ -28,7 +28,7 @@ References:
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import linalg as scipy_linalg
@@ -471,52 +471,48 @@ def verify_function_generation(
     Returns:
         Tuple of (all_satisfied, list of actual errors for each pair).
     """
+    from .._compat import get_parts, is_driver, is_dyad, is_ground
     from ..geometry.secants import circle_intersect
-    from ..joints.crank import Crank
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
 
     errors: list[float] = []
 
-    # Find the joints by type
-    # Expected structure: [Static A, Static D, Crank B, Revolute C]
-    joint_A: Static | None = None
-    joint_D: Static | None = None
-    joint_B: Crank | None = None
-    joint_C: Revolute | None = None
+    # Find joints by role from either legacy or modern API
+    parts = get_parts(linkage)
+    grounds: list[Any] = []
+    joint_B = None
+    joint_C = None
 
-    for joint in linkage.joints:
-        if isinstance(joint, Crank):
-            joint_B = joint
-        elif isinstance(joint, Revolute):
-            joint_C = joint
-        elif isinstance(joint, Static):
-            # Determine which static is A (connected to crank) vs D
-            if joint_A is None:
-                joint_A = joint
-            else:
-                joint_D = joint
+    for part in parts:
+        if is_driver(part) and joint_B is None:
+            joint_B = part
+        elif is_dyad(part) and joint_C is None:
+            joint_C = part
+        elif is_ground(part):
+            grounds.append(part)
+
+    joint_A = grounds[0] if len(grounds) >= 1 else None
+    joint_D = grounds[1] if len(grounds) >= 2 else None
 
     # Validate structure
     if joint_A is None or joint_D is None or joint_B is None or joint_C is None:
         return False, [float("inf")] * len(angle_pairs)
 
     # Ensure A is the one connected to the crank
-    if joint_B.joint0 is joint_D:
+    crank_anchor = getattr(joint_B, "anchor", None) or getattr(joint_B, "joint0", None)
+    if crank_anchor is joint_D:
         joint_A, joint_D = joint_D, joint_A
 
-    # Get fixed parameters
+    # Get fixed parameters (handle both legacy and modern attribute names)
     assert joint_A.x is not None and joint_A.y is not None
     assert joint_D.x is not None and joint_D.y is not None
-    assert joint_B.r is not None
-    assert joint_C.r0 is not None and joint_C.r1 is not None
-    assert joint_C.x is not None and joint_C.y is not None
 
     A = (joint_A.x, joint_A.y)
     D = (joint_D.x, joint_D.y)
-    crank_length = joint_B.r
-    coupler_length = joint_C.r0
-    rocker_length = joint_C.r1
+    crank_length = getattr(joint_B, "radius", None) or getattr(joint_B, "r", None)
+    coupler_length = getattr(joint_C, "distance1", None) or getattr(joint_C, "r0", None)
+    rocker_length = getattr(joint_C, "distance2", None) or getattr(joint_C, "r1", None)
+    if crank_length is None or coupler_length is None or rocker_length is None:
+        return False, [float("inf")] * len(angle_pairs)
 
     # Determine the configuration (which branch) from initial C position
     # This is needed to consistently choose the same branch during verification

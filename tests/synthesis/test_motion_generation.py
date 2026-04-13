@@ -79,9 +79,9 @@ class TestMotionGeneration(unittest.TestCase):
         result = motion_generation(poses, require_grashof=False)
 
         if result.solutions:
-            from pylinkage import Linkage
+            from pylinkage.simulation import Linkage as SimLinkage
 
-            self.assertIsInstance(result.solutions[0], Linkage)
+            self.assertIsInstance(result.solutions[0], SimLinkage)
 
     def test_ground_constraint(self):
         """Test with ground pivot constraints."""

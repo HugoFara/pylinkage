@@ -33,6 +33,9 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
     This extracts all joint positions, constraints, and topology into
     contiguous numpy arrays for efficient numba processing.
 
+    Works with both legacy ``Linkage`` (joints API) and modern
+    ``SimLinkage`` (components API).
+
     Args:
         linkage: The linkage to convert.
 
@@ -42,6 +45,10 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
     Raises:
         ValueError: If joint references cannot be resolved.
     """
+    # Dispatch to the modern converter if this is a SimLinkage
+    if hasattr(linkage, "components") and not hasattr(linkage, "joints"):
+        return _sim_linkage_to_solver_data(linkage)
+
     # Import here to avoid circular imports
     from ..joints.crank import Crank
     from ..joints.fixed import Fixed
@@ -179,30 +186,126 @@ def linkage_to_solver_data(linkage: "Linkage") -> SolverData:
     )
 
 
+def _sim_linkage_to_solver_data(linkage: "object") -> SolverData:
+    """Convert a modern SimLinkage to SolverData.
+
+    Maps the component/actuator/dyad API to the solver's numeric arrays.
+    """
+    from .._compat import get_parts, is_driver, is_dyad, is_ground
+
+    parts = get_parts(linkage)
+
+    # Build index map — includes resolving AnchorProxy references
+    part_to_idx: dict[int, int] = {}
+    for i, part in enumerate(parts):
+        part_to_idx[id(part)] = i
+
+    n_parts = len(parts)
+    positions = np.zeros((n_parts, 2), dtype=np.float64)
+    joint_types = np.zeros(n_parts, dtype=np.int32)
+    parent_indices = np.full((n_parts, MAX_PARENTS), -1, dtype=np.int32)
+    constraints_list: list[float] = []
+    offsets: list[int] = []
+    counts: list[int] = []
+
+    for i, part in enumerate(parts):
+        offsets.append(len(constraints_list))
+        positions[i, 0] = part.x if part.x is not None else 0.0
+        positions[i, 1] = part.y if part.y is not None else 0.0
+
+        if is_ground(part):
+            joint_types[i] = JOINT_STATIC
+            counts.append(0)
+
+        elif is_driver(part):
+            joint_types[i] = JOINT_CRANK
+            anchor = getattr(part, "anchor", None)
+            if anchor is not None:
+                idx = part_to_idx.get(id(anchor))
+                if idx is not None:
+                    parent_indices[i, 0] = idx
+            radius = getattr(part, "radius", 0.0)
+            omega = getattr(part, "angular_velocity", 0.0)
+            constraints_list.append(radius)
+            constraints_list.append(omega)
+            counts.append(2)
+
+        elif is_dyad(part):
+            joint_types[i] = JOINT_REVOLUTE
+            for p_idx, attr in enumerate(("anchor1", "anchor2")):
+                parent = getattr(part, attr, None)
+                if parent is None:
+                    continue
+                # Resolve AnchorProxy
+                actual = getattr(parent, "_parent", parent)
+                idx = part_to_idx.get(id(actual))
+                if idx is not None:
+                    parent_indices[i, p_idx] = idx
+            d1 = getattr(part, "distance1", 0.0)
+            d2 = getattr(part, "distance2", 0.0)
+            constraints_list.append(d1)
+            constraints_list.append(d2)
+            counts.append(2)
+
+        else:
+            joint_types[i] = JOINT_STATIC
+            counts.append(0)
+
+    # Build solve order — use the linkage's own order if available
+    solve_order_list: list[int] = []
+    # Trigger lazy computation if needed
+    if hasattr(linkage, "_find_solve_order") and not hasattr(linkage, "_solve_order"):
+        linkage._find_solve_order()
+    solve_order = getattr(linkage, "_solve_order", None)
+    if solve_order is not None:
+        for part in solve_order:
+            idx = part_to_idx.get(id(part))
+            if idx is not None:
+                solve_order_list.append(idx)
+    else:
+        # Fallback: all non-ground parts in order
+        for i, part in enumerate(parts):
+            if not is_ground(part):
+                solve_order_list.append(i)
+
+    return SolverData(
+        positions=positions,
+        constraints=np.array(constraints_list, dtype=np.float64),
+        joint_types=joint_types,
+        parent_indices=parent_indices,
+        constraint_offsets=np.array(offsets, dtype=np.int32),
+        constraint_counts=np.array(counts, dtype=np.int32),
+        solve_order=np.array(solve_order_list, dtype=np.int32),
+    )
+
+
 def solver_data_to_linkage(data: SolverData, linkage: "Linkage") -> None:
     """Update linkage joint positions and velocities from solver data.
 
     This synchronizes the numeric positions and velocities back to the
     Joint objects after simulation.
 
+    Works with both legacy ``Linkage`` and modern ``SimLinkage``.
+
     Args:
         data: SolverData containing updated positions and optionally velocities.
         linkage: Linkage to update.
     """
-    for i, joint in enumerate(linkage.joints):
-        joint.x = float(data.positions[i, 0])
-        joint.y = float(data.positions[i, 1])
+    from .._compat import get_parts
 
-        # Sync velocities if available
+    parts = get_parts(linkage)
+    for i, part in enumerate(parts):
+        part.x = float(data.positions[i, 0])
+        part.y = float(data.positions[i, 1])
+
         if data.velocities is not None:
-            joint.velocity = (
+            part.velocity = (
                 float(data.velocities[i, 0]),
                 float(data.velocities[i, 1]),
             )
 
-        # Sync accelerations if available
         if data.accelerations is not None:
-            joint.acceleration = (
+            part.acceleration = (
                 float(data.accelerations[i, 0]),
                 float(data.accelerations[i, 1]),
             )
@@ -214,34 +317,44 @@ def update_solver_constraints(data: SolverData, linkage: "Linkage") -> None:
     Call this after modifying joint constraints via set_constraints()
     to keep the solver data in sync.
 
+    Works with both legacy ``Linkage`` and modern ``SimLinkage``.
+
     Args:
         data: SolverData to update.
         linkage: Linkage containing updated constraints.
     """
-    from ..joints.crank import Crank
-    from ..joints.fixed import Fixed
-    from ..joints.prismatic import Prismatic
-    from ..joints.revolute import Revolute
+    from .._compat import get_parts, is_driver
 
-    for i, joint in enumerate(linkage.joints):
+    parts = get_parts(linkage)
+    for i, part in enumerate(parts):
         offset = data.constraint_offsets[i]
+        name = type(part).__name__
 
-        if isinstance(joint, Crank):
-            data.constraints[offset] = joint.r if joint.r is not None else 0.0
-            data.constraints[offset + 1] = joint.angle if joint.angle is not None else 0.0
-
-        elif isinstance(joint, Revolute):
-            data.constraints[offset] = joint.r0 if joint.r0 is not None else 0.0
-            data.constraints[offset + 1] = joint.r1 if joint.r1 is not None else 0.0
-
-        elif isinstance(joint, Fixed):
-            data.constraints[offset] = joint.r if joint.r is not None else 0.0
-            data.constraints[offset + 1] = joint.angle if joint.angle is not None else 0.0
-
-        elif isinstance(joint, Prismatic):
-            data.constraints[offset] = (
-                joint.revolute_radius if joint.revolute_radius is not None else 0.0
+        if is_driver(part):
+            radius = getattr(part, "radius", None) or getattr(part, "r", None)
+            omega = getattr(part, "angular_velocity", None) or getattr(
+                part, "angle", None
             )
+            data.constraints[offset] = radius if radius is not None else 0.0
+            data.constraints[offset + 1] = omega if omega is not None else 0.0
+
+        elif name in ("Revolute", "RRRDyad"):
+            d1 = getattr(part, "distance1", None) or getattr(part, "r0", None)
+            d2 = getattr(part, "distance2", None) or getattr(part, "r1", None)
+            data.constraints[offset] = d1 if d1 is not None else 0.0
+            data.constraints[offset + 1] = d2 if d2 is not None else 0.0
+
+        elif name in ("Fixed", "FixedDyad"):
+            r = getattr(part, "distance", None) or getattr(part, "r", None)
+            a = getattr(part, "angle", None)
+            data.constraints[offset] = r if r is not None else 0.0
+            data.constraints[offset + 1] = a if a is not None else 0.0
+
+        elif name in ("Prismatic", "Linear", "RRPDyad"):
+            rr = getattr(part, "revolute_radius", None) or getattr(
+                part, "distance1", None
+            )
+            data.constraints[offset] = rr if rr is not None else 0.0
 
 
 def update_solver_positions(data: SolverData, linkage: "Linkage") -> None:
@@ -250,10 +363,15 @@ def update_solver_positions(data: SolverData, linkage: "Linkage") -> None:
     Call this after modifying joint positions via set_coord()
     to keep the solver data in sync.
 
+    Works with both legacy ``Linkage`` and modern ``SimLinkage``.
+
     Args:
         data: SolverData to update.
         linkage: Linkage containing updated positions.
     """
-    for i, joint in enumerate(linkage.joints):
-        data.positions[i, 0] = joint.x if joint.x is not None else 0.0
-        data.positions[i, 1] = joint.y if joint.y is not None else 0.0
+    from .._compat import get_parts
+
+    parts = get_parts(linkage)
+    for i, part in enumerate(parts):
+        data.positions[i, 0] = part.x if part.x is not None else 0.0
+        data.positions[i, 1] = part.y if part.y is not None else 0.0
