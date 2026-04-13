@@ -18,6 +18,7 @@ Expected topology counts for DOF=1 (revolute only):
 from __future__ import annotations
 
 from collections import deque
+from functools import lru_cache
 from itertools import combinations, permutations
 
 from ..hypergraph.core import Edge, Hyperedge, Node
@@ -43,6 +44,16 @@ def enumerate_topologies(
         ValueError: If num_links doesn't yield integer joint count,
             or if num_links < 4.
     """
+    return list(_enumerate_topologies_cached(num_links, dof=dof))
+
+
+@lru_cache(maxsize=32)
+def _enumerate_topologies_cached(
+    num_links: int,
+    *,
+    dof: int = 1,
+) -> tuple[HypergraphLinkage, ...]:
+    """Cached implementation of enumerate_topologies."""
     if num_links < 4:
         raise ValueError(f"Need at least 4 links, got {num_links}")
 
@@ -81,7 +92,7 @@ def enumerate_topologies(
             if compute_dof(hg) == dof:
                 results.append(hg)
 
-    return results
+    return tuple(results)
 
 
 def enumerate_all(
