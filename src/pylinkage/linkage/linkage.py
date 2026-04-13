@@ -86,6 +86,14 @@ class Linkage:
             If None, take the value str(id(self)).
             (Default value = None).
         """
+        warnings.warn(
+            "pylinkage.linkage.Linkage is deprecated and will be removed in "
+            "version 1.0.0. Use pylinkage.simulation.Linkage with the "
+            "component/actuator/dyad API instead. "
+            "See CLAUDE.md 'API Migration' section for the mapping.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.name = name if name is not None else str(id(self))
         self.joints = tuple(joints)
         self._cranks = tuple(j for j in self.joints if _is_driver(j))
