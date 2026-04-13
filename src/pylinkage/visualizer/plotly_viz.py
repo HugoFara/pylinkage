@@ -15,8 +15,6 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import plotly.graph_objects as go
 
-from ..joints.fixed import Fixed
-from ..joints.revolute import Pivot
 from .symbols import (
     SymbolType,
     get_link_color,
@@ -34,47 +32,16 @@ if TYPE_CHECKING:
 
 def _get_components(linkage: Any) -> list[Any]:
     """Return the ordered list of joints/components from either API."""
-    if hasattr(linkage, "joints"):
-        return list(linkage.joints)
-    return list(linkage.components)
+    # Delegate to shared implementation in core
+    from .core import get_components
+    return get_components(linkage)
 
 
 def _get_parent_pairs(component: Any) -> list[Any]:
-    """Return the parent components that should draw links to *component*.
-
-    Works with both legacy joints (``joint0``, ``joint1``) and modern
-    components (``anchor``, ``anchor1``, ``anchor2``).
-    """
-    parents: list[Any] = []
-
-    # Modern API: Crank.anchor, BinaryDyad.anchor1/anchor2
-    anchor = getattr(component, "anchor", None)
-    if anchor is not None:
-        parents.append(anchor)
-        return parents  # Crank has exactly one parent
-
-    anchor1 = getattr(component, "anchor1", None)
-    anchor2 = getattr(component, "anchor2", None)
-    if anchor1 is not None:
-        parents.append(anchor1)
-    if anchor2 is not None:
-        parents.append(anchor2)
-    if parents:
-        return parents
-
-    # Legacy API: joint0, joint1
-    joint0 = getattr(component, "joint0", None)
-    if joint0 is not None:
-        parents.append(joint0)
-
-    joint1 = getattr(component, "joint1", None)
-    if joint1 is not None and (
-        isinstance(component, (Fixed, Pivot)) or type(component).__name__ == "Revolute"
-    ):
-        # Legacy: only draw link to joint1 for specific types
-        parents.append(joint1)
-
-    return parents
+    """Return the parent components that should draw links to *component*."""
+    # Delegate to shared implementation in core
+    from .core import get_parent_pairs
+    return get_parent_pairs(component)
 
 
 def _resolve_position(

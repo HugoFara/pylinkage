@@ -13,11 +13,14 @@ import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 
 from ..exceptions import UnbuildableError
-from ..joints.crank import Crank
-from ..joints.joint import _StaticBase
 from ..linkage.analysis import movement_bounding_box
-from .core import _get_color
+from .core import (
+    get_components,
+    get_parent_pairs,
+    resolve_component,
+)
 from .static import plot_static_linkage
+from .symbols import get_link_color, is_ground_joint
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
@@ -35,12 +38,14 @@ ANIMATIONS: list[Any] = []
 
 
 def update_animated_plot(
-    linkage: "Linkage",
+    linkage: Any,
     index: int,
     images: "list[Line2D]",
     loci: "Sequence[tuple[Coord, ...]]",
 ) -> "list[Line2D]":
     """Modify im, instead of recreating it to make the animation run faster.
+
+    Works with both legacy Linkage and modern SimLinkage.
 
     Args:
         linkage: The linkage being animated.
@@ -51,33 +56,25 @@ def update_animated_plot(
     Returns:
         Updated version of images.
     """
+    components = get_components(linkage)
+    frame = loci[index]
     image = iter(images)
-    locus = loci[index]
-    for j, pos in enumerate(locus):
-        joint = linkage.joints[j]
-        # Draw a link to the first parent if it exists
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is None:
-            continue
-        # Use _StaticBase to match both user-created Static and internal _StaticBase
-        if isinstance(joint0, _StaticBase):
-            par_locus = joint0.coord()
-        else:
-            par_locus = locus[linkage.joints.index(joint0)]
-        im = next(image)
-        im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
-        # Then second parent
-        if isinstance(joint, (Crank, _StaticBase)):
-            continue
-        joint1 = getattr(joint, "joint1", None)
-        if isinstance(joint1, _StaticBase):
-            par_locus = joint1.coord()
-        elif joint1 is not None:
-            par_locus = locus[linkage.joints.index(joint1)]
-        else:
-            continue
-        im = next(image)
-        im.set_data([par_locus[0], pos[0]], [par_locus[1], pos[1]])  # type: ignore[arg-type]
+
+    for j, comp in enumerate(components):
+        parents = get_parent_pairs(comp)
+        for parent in parents:
+            p = resolve_component(parent, components)
+            if p is None:
+                # Static parent — use its own coordinates
+                par_pos = (getattr(parent, "x", None), getattr(parent, "y", None))
+            else:
+                par_pos = frame[p]
+            im = next(image)
+            pos = frame[j]
+            im.set_data(
+                [par_pos[0], pos[0]],  # type: ignore[arg-type]
+                [par_pos[1], pos[1]],  # type: ignore[arg-type]
+            )
     return images
 
 
@@ -106,14 +103,19 @@ def plot_kinematic_linkage(
     axis.set_title("Animation")
 
     images: list[Line2D] = []
-    for joint in linkage.joints:
-        for parent in (getattr(joint, "joint0", None), getattr(joint, "joint1", None)):
-            if parent is not None:
-                images.append(
-                    axis.plot([], [], c=_get_color(joint), animated=isinstance(joint, _StaticBase))[
-                        0
-                    ]
-                )
+    components = get_components(linkage)
+    for link_idx, comp in enumerate(components):
+        parents = get_parent_pairs(comp)
+        for _parent in parents:
+            color = get_link_color(link_idx)
+            images.append(
+                axis.plot(
+                    [], [],
+                    c=color,
+                    linewidth=2,
+                    animated=is_ground_joint(comp),
+                )[0]
+            )
 
     animation = anim.FuncAnimation(
         fig=fig,
