@@ -765,7 +765,7 @@ def interactive_linkage_plotly(
     components = _get_components(linkage)
     n_components = len(components)
 
-    all_frames = list(linkage.step(iterations=iterations))  # type: ignore[arg-type]
+    all_frames = list(linkage.step(iterations=iterations))
     n_frames = len(all_frames)
 
     if n_frames == 0:
