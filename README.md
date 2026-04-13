@@ -141,13 +141,7 @@ params = {"L1": 1.0, "L2": 3.0, "L3": 3.0}
 trajectories = compute_trajectory_numeric(linkage, params, np.linspace(0, 2*np.pi, 100))
 ```
 
-Output (the rocker angle as a function of crank angle):
-
-```
-theta_4(theta_2) = atan2(N2, N1) + atan2(sqrt(N1**2 + N2**2 - N3**2), N3)
-```
-
-where N1, N2, N3 are Freudenstein coefficients derived from your link lengths.
+![Symbolic equations](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/symbolic_equations.png)
 
 ## Tutorials
 
