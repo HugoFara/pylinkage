@@ -616,16 +616,21 @@ def verify_path_generation(
     if not precision_points:
         return True, []
 
+    # Support both legacy Linkage (.joints) and SimLinkage (.components)
+    parts = getattr(linkage, "components", None) or linkage.joints
+
     # Find the coupler point joint
     coupler_joint = None
-    for joint in linkage.joints:
+    for joint in parts:
         if getattr(joint, "name", None) == "P":
             coupler_joint = joint
             break
 
     if coupler_joint is None:
         # Fallback: use last joint in order (typically joint C)
-        coupler_joint = linkage.joints[-1]
+        coupler_joint = parts[-1]
+
+    coupler_idx = list(parts).index(coupler_joint)
 
     # Compute auto-tolerance from precision point spread
     if tolerance is None:
@@ -638,8 +643,7 @@ def verify_path_generation(
     try:
         trajectory: list[tuple[float, float]] = []
         for positions in linkage.step():
-            idx = linkage.joints.index(coupler_joint)
-            px, py = positions[idx]
+            px, py = positions[coupler_idx]
             if px is not None and py is not None:
                 trajectory.append((px, py))
     except UnbuildableError:

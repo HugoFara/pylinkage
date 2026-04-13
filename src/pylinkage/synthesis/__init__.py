@@ -165,6 +165,8 @@ __all__ = [
     "solutions_to_linkages",
     "linkage_to_synthesis_params",
     "fourbar_from_lengths",
+    "watt_from_lengths",
+    "stephenson_from_lengths",
     # Utility functions
     "grashof_check",
     "is_grashof",
@@ -204,6 +206,8 @@ from .conversion import (
     nbar_solution_to_linkage,
     solution_to_linkage,
     solutions_to_linkages,
+    stephenson_from_lengths,
+    watt_from_lengths,
 )
 
 # Core classes

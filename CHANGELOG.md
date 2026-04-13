@@ -66,6 +66,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   end-to-end. `graph_to_mechanism()` handles triad groups (2 internal nodes,
   4+ edges), creating the appropriate joints and links.
 
+- **Convenience builders for six-bar linkages:**
+  - `watt_from_lengths()`: build a Watt six-bar from seven link lengths +
+    ground length. Returns a `SimLinkage` ready for simulation.
+  - `stephenson_from_lengths()`: build a Stephenson six-bar from the same
+    parameter pattern. Both include ASCII kinematic chain diagrams in docstrings.
+  - Exported from `pylinkage.synthesis` alongside `fourbar_from_lengths()`.
+
 - **Topology enumeration:**
   - Graph isomorphism detection via WL-1 color refinement + backtracking
     verification: `canonical_form()`, `canonical_hash()`, `are_isomorphic()`.
@@ -89,6 +96,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `for linkage in result`, and `bool(result)` now emit `DeprecationWarning`.
   Use `result.ensemble` instead. Will be removed in 1.0.0.
 ### Changed
+
+- **`fourbar_from_lengths()` now returns `SimLinkage`** (from `pylinkage.simulation`)
+  instead of the legacy `Linkage` (from `pylinkage.linkage`). The new object uses
+  the component/actuator/dyad API: access joints via `.components` instead of
+  `.joints`. The `.step()` method is unchanged. `linkage_to_synthesis_params()`
+  accepts both old and new linkage types.
 
 - **All optimization functions now return `Ensemble`** instead of `list[Agent]`,
   `list[MutableAgent]`, or `ParetoFront`. Affected functions:

@@ -139,6 +139,9 @@ dev = [
     "bump-my-version>=1.2.5",
     "taskipy>=1.12.0",
     "nbconvert>=7.17.0",
+    "ipykernel>=7.2.0",
+    "ipywidgets>=8.1.8",
+    "anywidget>=0.10.0",
 ]
 
 [tool.taskipy.tasks]

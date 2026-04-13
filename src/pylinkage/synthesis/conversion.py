@@ -8,12 +8,13 @@ be simulated and visualized.
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ._types import FourBarSolution, Point2D, SynthesisType
 
 if TYPE_CHECKING:
     from ..linkage import Linkage
+    from ..simulation import Linkage as SimLinkage
     from .topology_types import NBarSolution
 
 
@@ -258,15 +259,15 @@ def solutions_to_linkages(
 
 
 def linkage_to_synthesis_params(
-    linkage: Linkage,
+    linkage: Linkage | SimLinkage,
 ) -> FourBarSolution:
     """Extract synthesis parameters from an existing four-bar linkage.
 
-    Analyzes a Linkage object to extract the four-bar geometry
-    parameters as a FourBarSolution.
+    Analyzes a Linkage or SimLinkage object to extract the four-bar
+    geometry parameters as a FourBarSolution.
 
     Args:
-        linkage: A four-bar Linkage object.
+        linkage: A four-bar Linkage (legacy) or SimLinkage (new API).
 
     Returns:
         FourBarSolution tuple with geometry parameters.
@@ -274,19 +275,69 @@ def linkage_to_synthesis_params(
     Raises:
         ValueError: If linkage is not a valid four-bar.
     """
-    from ..joints.crank import Crank
+    # Support both new SimLinkage (components) and legacy Linkage (joints)
+    parts: tuple[Any, ...] | list[Any] = (
+        getattr(linkage, "components", None)
+        or linkage.joints  # type: ignore[union-attr]
+    )
+
+    from ..actuators import Crank as NewCrank
+    from ..components import Ground
+
+    grounds: list[Ground] = []
+    crank_comp: NewCrank | None = None
+    dyad_comp = None
+
+    for comp in parts:
+        if isinstance(comp, Ground):
+            grounds.append(comp)
+        elif isinstance(comp, NewCrank):
+            crank_comp = comp
+        elif hasattr(comp, "distance1") and hasattr(comp, "distance2"):
+            dyad_comp = comp
+
+    if crank_comp is not None and len(grounds) >= 2 and dyad_comp is not None:
+        # New component API path
+        joint_a = grounds[0]
+        joint_d = grounds[1]
+
+        assert joint_a.x is not None and joint_a.y is not None
+        assert joint_d.x is not None and joint_d.y is not None
+        assert crank_comp.x is not None and crank_comp.y is not None
+        assert dyad_comp.x is not None and dyad_comp.y is not None
+
+        a: Point2D = (joint_a.x, joint_a.y)
+        d: Point2D = (joint_d.x, joint_d.y)
+        b: Point2D = (crank_comp.x, crank_comp.y)
+        c: Point2D = (dyad_comp.x, dyad_comp.y)
+
+        return FourBarSolution(
+            ground_pivot_a=a,
+            ground_pivot_d=d,
+            crank_pivot_b=b,
+            coupler_pivot_c=c,
+            crank_length=crank_comp.radius,
+            coupler_length=dyad_comp.distance1,
+            rocker_length=dyad_comp.distance2,
+            ground_length=math.sqrt(
+                (d[0] - a[0]) ** 2 + (d[1] - a[1]) ** 2
+            ),
+            coupler_point=None,
+        )
+
+    # Legacy joints API fallback
+    from ..joints.crank import Crank as LegacyCrank
     from ..joints.fixed import Fixed
     from ..joints.joint import Static
     from ..joints.revolute import Revolute
 
-    # Find joints by type
     statics: list[Static] = []
-    cranks: list[Crank] = []
+    cranks: list[LegacyCrank] = []
     revolutes: list[Revolute] = []
     fixed_joints: list[Fixed] = []
 
-    for joint in linkage.joints:
-        if isinstance(joint, Crank):
+    for joint in parts:
+        if isinstance(joint, LegacyCrank):
             cranks.append(joint)
         elif isinstance(joint, Fixed):
             fixed_joints.append(joint)
@@ -295,7 +346,6 @@ def linkage_to_synthesis_params(
         elif isinstance(joint, Static):
             statics.append(joint)
 
-    # Validate structure
     if len(statics) < 2:
         raise ValueError(f"Four-bar needs 2 static joints, found {len(statics)}")
     if len(cranks) < 1:
@@ -303,58 +353,48 @@ def linkage_to_synthesis_params(
     if len(revolutes) < 1:
         raise ValueError(f"Four-bar needs 1 revolute joint, found {len(revolutes)}")
 
-    # Identify joints
     crank = cranks[0]
     revolute = revolutes[0]
 
-    # Find which static is A (connected to crank)
     joint_A = None
     joint_D = None
-
     for static in statics:
         if crank.joint0 is static:
             joint_A = static
         else:
             joint_D = static
-
     if joint_A is None:
         joint_A = statics[0]
     if joint_D is None:
         joint_D = statics[1] if len(statics) > 1 else statics[0]
 
-    # Extract positions (assert not None for type checker)
     assert joint_A.x is not None and joint_A.y is not None
     assert joint_D.x is not None and joint_D.y is not None
     assert crank.x is not None and crank.y is not None
     assert revolute.x is not None and revolute.y is not None
 
-    A: Point2D = (joint_A.x, joint_A.y)
-    D: Point2D = (joint_D.x, joint_D.y)
-    B: Point2D = (crank.x, crank.y)
-    C: Point2D = (revolute.x, revolute.y)
+    la: Point2D = (joint_A.x, joint_A.y)
+    ld: Point2D = (joint_D.x, joint_D.y)
+    lb: Point2D = (crank.x, crank.y)
+    lc: Point2D = (revolute.x, revolute.y)
 
-    # Extract lengths
     crank_length_val: float = (
         crank.r
         if hasattr(crank, "r") and crank.r is not None
-        else math.sqrt((B[0] - A[0]) ** 2 + (B[1] - A[1]) ** 2)
+        else math.sqrt((lb[0] - la[0]) ** 2 + (lb[1] - la[1]) ** 2)
     )
-
     coupler_length_val: float = (
         revolute.r0
         if hasattr(revolute, "r0") and revolute.r0 is not None
-        else math.sqrt((C[0] - B[0]) ** 2 + (C[1] - B[1]) ** 2)
+        else math.sqrt((lc[0] - lb[0]) ** 2 + (lc[1] - lb[1]) ** 2)
     )
-
     rocker_length_val: float = (
         revolute.r1
         if hasattr(revolute, "r1") and revolute.r1 is not None
-        else math.sqrt((C[0] - D[0]) ** 2 + (C[1] - D[1]) ** 2)
+        else math.sqrt((lc[0] - ld[0]) ** 2 + (lc[1] - ld[1]) ** 2)
     )
+    ground_length = math.sqrt((ld[0] - la[0]) ** 2 + (ld[1] - la[1]) ** 2)
 
-    ground_length = math.sqrt((D[0] - A[0]) ** 2 + (D[1] - A[1]) ** 2)
-
-    # Extract coupler point if present
     coupler_point: Point2D | None = None
     for fj in fixed_joints:
         if fj.name == "P" and fj.x is not None and fj.y is not None:
@@ -362,10 +402,10 @@ def linkage_to_synthesis_params(
             break
 
     return FourBarSolution(
-        ground_pivot_a=A,
-        ground_pivot_d=D,
-        crank_pivot_b=B,
-        coupler_pivot_c=C,
+        ground_pivot_a=la,
+        ground_pivot_d=ld,
+        crank_pivot_b=lb,
+        coupler_pivot_c=lc,
         crank_length=crank_length_val,
         coupler_length=coupler_length_val,
         rocker_length=rocker_length_val,
@@ -383,12 +423,17 @@ def fourbar_from_lengths(
     initial_crank_angle: float = 0.0,
     iterations: int = 360,
     name: str = "fourbar",
-) -> Linkage:
+) -> SimLinkage:
     """Create a four-bar linkage from link lengths.
 
     Convenience function to create a four-bar linkage given only
     the link lengths. The linkage is placed with ground pivot A
     at the specified position.
+
+    Kinematic chain::
+
+        A ─── crank ─── B ─── coupler ─── C ─── rocker ─── D
+              (input)
 
     Args:
         crank_length: Length of crank (a).
@@ -401,73 +446,280 @@ def fourbar_from_lengths(
         name: Name for the linkage.
 
     Returns:
-        Linkage object.
+        Linkage built from the component/actuator/dyad API.
+
+    Raises:
+        ValueError: If the mechanism cannot be assembled with the given
+            link lengths at the initial crank angle.
 
     Example:
         >>> linkage = fourbar_from_lengths(1.0, 3.0, 3.0, 4.0)
-        >>> linkage.show()
+        >>> len(list(linkage.step(iterations=100)))
+        100
     """
-    from ..joints.crank import Crank
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
-    from ..linkage import Linkage
-
-    A = ground_pivot_a
-    D = (A[0] + ground_length, A[1])
-
-    # Initial crank position
-    B = (
-        A[0] + crank_length * math.cos(initial_crank_angle),
-        A[1] + crank_length * math.sin(initial_crank_angle),
-    )
-
-    # Initial coupler/rocker position (solve for C)
-    # C is at distance coupler_length from B and rocker_length from D
-    # Use circle-circle intersection
+    from ..actuators import Crank
+    from ..components import Ground
+    from ..dyads import RRRDyad
     from ..geometry.secants import circle_intersect
+    from ..simulation import Linkage as SimLinkage
 
-    n_intersections, x1, y1, x2, y2 = circle_intersect(
-        B[0], B[1], coupler_length, D[0], D[1], rocker_length
+    ax, ay = ground_pivot_a
+    dx, dy = ax + ground_length, ay
+
+    # Verify the mechanism can be assembled at the initial angle
+    bx = ax + crank_length * math.cos(initial_crank_angle)
+    by = ay + crank_length * math.sin(initial_crank_angle)
+    n_intersections, *_ = circle_intersect(
+        bx, by, coupler_length, dx, dy, rocker_length
     )
-
     if n_intersections == 0:
         raise ValueError(
-            f"Cannot assemble four-bar with given lengths at angle {initial_crank_angle}"
+            f"Cannot assemble four-bar with given lengths "
+            f"at angle {initial_crank_angle}"
         )
 
-    # Choose the upper solution (positive y relative to BD line)
-    C = (x1, y1)
-    if n_intersections == 2 and y2 > y1:
-        # Pick the one with larger y (upper configuration)
-        C = (x2, y2)
+    ground_a = Ground(ax, ay, name="A")
+    ground_d = Ground(dx, dy, name="D")
 
-    # Create joints
-    joint_A = Static(x=A[0], y=A[1], name="A")
-    joint_D = Static(x=D[0], y=D[1], name="D")
-
-    angle_step = 2 * math.pi / iterations
-    joint_B = Crank(
-        x=B[0],
-        y=B[1],
-        joint0=joint_A,
-        distance=crank_length,
-        angle=angle_step,
+    angular_velocity = 2 * math.pi / iterations
+    crank_joint = Crank(
+        anchor=ground_a,
+        radius=crank_length,
+        angular_velocity=angular_velocity,
+        initial_angle=initial_crank_angle,
         name="B",
     )
 
-    joint_C = Revolute(
-        x=C[0],
-        y=C[1],
-        joint0=joint_B,
-        joint1=joint_D,
-        distance0=coupler_length,
-        distance1=rocker_length,
+    joint_c = RRRDyad(
+        anchor1=crank_joint.output,
+        anchor2=ground_d,
+        distance1=coupler_length,
+        distance2=rocker_length,
         name="C",
     )
 
-    return Linkage(
-        joints=[joint_A, joint_D, joint_B, joint_C],
-        order=[joint_B, joint_C],
+    return SimLinkage(
+        [ground_a, ground_d, crank_joint, joint_c],
+        name=name,
+    )
+
+
+def watt_from_lengths(
+    crank: float,
+    coupler1: float,
+    rocker1: float,
+    link4: float,
+    link5: float,
+    rocker2: float,
+    ground_length: float,
+    ground_pivot_a: Point2D = (0.0, 0.0),
+    initial_crank_angle: float = 0.0,
+    iterations: int = 360,
+    name: str = "watt",
+) -> SimLinkage:
+    """Create a Watt six-bar linkage from link lengths.
+
+    A Watt six-bar has two four-bar loops sharing the crank output.
+    The crank output (B) connects to two separate dyads, both of
+    which close back to the second ground pivot (D).
+
+    Kinematic chain::
+
+        A ─── crank ─── B ─── coupler1 ─── C ─── rocker1 ─── D
+              (input)    │                                     │
+                         └─── link4 ─── E ─── link5 ──── rocker2 ─── D
+
+    In Assur group terms: the crank drives two cascaded RRR dyads.
+
+    - Loop 1: A → B → C → D  (four-bar: crank + coupler1 + rocker1)
+    - Loop 2: B → E → F → D  (second chain: link4 + link5 + rocker2,
+      where E is constrained by B and C)
+
+    Args:
+        crank: Length of input crank (A–B).
+        coupler1: Length of first coupler link (B–C).
+        rocker1: Length of first rocker (C–D).
+        link4: Distance from B to E (first arm of second loop).
+        link5: Distance from C to E (second arm, constraining E).
+        rocker2: Distance from E to D (closing link back to ground).
+        ground_length: Distance between ground pivots A and D.
+        ground_pivot_a: Position of first ground pivot (A).
+        initial_crank_angle: Starting crank angle in radians.
+        iterations: Simulation steps per full rotation.
+        name: Name for the linkage.
+
+    Returns:
+        Linkage built from the component/actuator/dyad API.
+
+    Raises:
+        ValueError: If the mechanism cannot be assembled with the given
+            link lengths at the initial crank angle.
+
+    Example:
+        >>> linkage = watt_from_lengths(
+        ...     crank=1.5, coupler1=4.0, rocker1=3.5,
+        ...     link4=3.0, link5=2.5, rocker2=3.0,
+        ...     ground_length=6.0,
+        ... )
+        >>> len(list(linkage.step(iterations=100)))
+        100
+    """
+    from ..actuators import Crank
+    from ..components import Ground
+    from ..dyads import RRRDyad
+    from ..simulation import Linkage as SimLinkage
+
+    ax, ay = ground_pivot_a
+    ground_a = Ground(ax, ay, name="A")
+    ground_d = Ground(ax + ground_length, ay, name="D")
+
+    angular_velocity = 2 * math.pi / iterations
+    crank_joint = Crank(
+        anchor=ground_a,
+        radius=crank,
+        angular_velocity=angular_velocity,
+        initial_angle=initial_crank_angle,
+        name="B",
+    )
+
+    # Loop 1: B → C → D
+    joint_c = RRRDyad(
+        anchor1=crank_joint.output,
+        anchor2=ground_d,
+        distance1=coupler1,
+        distance2=rocker1,
+        name="C",
+    )
+
+    # Loop 2: B,C → E → D
+    joint_e = RRRDyad(
+        anchor1=crank_joint.output,
+        anchor2=joint_c,
+        distance1=link4,
+        distance2=link5,
+        name="E",
+    )
+
+    joint_f = RRRDyad(
+        anchor1=joint_e,
+        anchor2=ground_d,
+        distance1=rocker2,
+        distance2=rocker2,  # closing link length
+        name="F",
+    )
+
+    return SimLinkage(
+        [ground_a, ground_d, crank_joint, joint_c, joint_e, joint_f],
+        name=name,
+    )
+
+
+def stephenson_from_lengths(
+    crank: float,
+    coupler: float,
+    rocker: float,
+    link4: float,
+    link5: float,
+    link6: float,
+    ground_length: float,
+    ground_pivot_a: Point2D = (0.0, 0.0),
+    initial_crank_angle: float = 0.0,
+    iterations: int = 360,
+    name: str = "stephenson",
+) -> SimLinkage:
+    """Create a Stephenson six-bar linkage from link lengths.
+
+    A Stephenson six-bar has two four-bar loops where the second loop
+    branches from the coupler of the first loop (not from the crank).
+
+    Kinematic chain::
+
+        A ─── crank ─── B ─── coupler ─── C ─── rocker ─── D
+              (input)                      │                 │
+                                           └── link4 ── E ── link5 ── F ── link6 ── D
+
+    In Assur group terms, joint E is constrained by the coupler point C
+    and the crank output B, while F closes back to ground at D.
+
+    - Loop 1: A → B → C → D  (four-bar: crank + coupler + rocker)
+    - Loop 2: C → E → F → D  (second chain branching from coupler,
+      where E is constrained by C and B)
+
+    Args:
+        crank: Length of input crank (A–B).
+        coupler: Length of coupler (B–C).
+        rocker: Length of rocker (C–D).
+        link4: Distance from C to E (first arm of second loop).
+        link5: Distance from B to E (second arm, constraining E).
+        link6: Distance from E to D (closing link back to ground).
+        ground_length: Distance between ground pivots A and D.
+        ground_pivot_a: Position of first ground pivot (A).
+        initial_crank_angle: Starting crank angle in radians.
+        iterations: Simulation steps per full rotation.
+        name: Name for the linkage.
+
+    Returns:
+        Linkage built from the component/actuator/dyad API.
+
+    Raises:
+        ValueError: If the mechanism cannot be assembled with the given
+            link lengths at the initial crank angle.
+
+    Example:
+        >>> linkage = stephenson_from_lengths(
+        ...     crank=1.2, coupler=4.0, rocker=3.0,
+        ...     link4=2.0, link5=3.0, link6=2.5,
+        ...     ground_length=5.0,
+        ... )
+        >>> len(list(linkage.step(iterations=100)))
+        100
+    """
+    from ..actuators import Crank
+    from ..components import Ground
+    from ..dyads import RRRDyad
+    from ..simulation import Linkage as SimLinkage
+
+    ax, ay = ground_pivot_a
+    ground_a = Ground(ax, ay, name="A")
+    ground_d = Ground(ax + ground_length, ay, name="D")
+
+    angular_velocity = 2 * math.pi / iterations
+    crank_joint = Crank(
+        anchor=ground_a,
+        radius=crank,
+        angular_velocity=angular_velocity,
+        initial_angle=initial_crank_angle,
+        name="B",
+    )
+
+    # Loop 1: B → C → D
+    joint_c = RRRDyad(
+        anchor1=crank_joint.output,
+        anchor2=ground_d,
+        distance1=coupler,
+        distance2=rocker,
+        name="C",
+    )
+
+    # Loop 2: C,B → E → D
+    joint_e = RRRDyad(
+        anchor1=joint_c,
+        anchor2=crank_joint.output,
+        distance1=link4,
+        distance2=link5,
+        name="E",
+    )
+
+    joint_f = RRRDyad(
+        anchor1=joint_e,
+        anchor2=ground_d,
+        distance1=link6,
+        distance2=link6,  # closing link
+        name="F",
+    )
+
+    return SimLinkage(
+        [ground_a, ground_d, crank_joint, joint_c, joint_e, joint_f],
         name=name,
     )
 

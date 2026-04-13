@@ -2972,9 +2972,12 @@ viz = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "anywidget" },
     { name = "bump-my-version" },
     { name = "drawsvg" },
     { name = "hypothesis" },
+    { name = "ipykernel" },
+    { name = "ipywidgets" },
     { name = "matplotlib" },
     { name = "mypy" },
     { name = "myst-parser", version = "4.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -3036,9 +3039,12 @@ provides-extras = ["numba", "scipy", "symbolic", "pso", "viz", "plotly", "svg", 
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "anywidget", specifier = ">=0.10.0" },
     { name = "bump-my-version", specifier = ">=1.2.5" },
     { name = "drawsvg", specifier = ">=2.4.0" },
     { name = "hypothesis", specifier = ">=6.0.0" },
+    { name = "ipykernel", specifier = ">=7.2.0" },
+    { name = "ipywidgets", specifier = ">=8.1.8" },
     { name = "matplotlib", specifier = ">=3.3.4" },
     { name = "mypy", specifier = ">=1.0.0" },
     { name = "myst-parser", specifier = ">=3.0.1" },

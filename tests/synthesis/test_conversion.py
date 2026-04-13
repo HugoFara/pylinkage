@@ -185,10 +185,10 @@ class TestFourbarFromLengths(unittest.TestCase):
             ground_length=4.0,
         )
 
-        from pylinkage import Linkage
+        from pylinkage.simulation import Linkage as SimLinkage
 
-        self.assertIsInstance(linkage, Linkage)
-        self.assertEqual(len(linkage.joints), 4)
+        self.assertIsInstance(linkage, SimLinkage)
+        self.assertEqual(len(linkage.components), 4)
 
     def test_custom_ground_pivot(self):
         """Test custom ground pivot position."""
@@ -200,9 +200,9 @@ class TestFourbarFromLengths(unittest.TestCase):
             ground_pivot_a=(10, 5),
         )
 
-        # First joint should be at specified position
-        self.assertAlmostEqual(linkage.joints[0].x, 10.0)
-        self.assertAlmostEqual(linkage.joints[0].y, 5.0)
+        # First component should be at specified position
+        self.assertAlmostEqual(linkage.components[0].x, 10.0)
+        self.assertAlmostEqual(linkage.components[0].y, 5.0)
 
     def test_initial_crank_angle(self):
         """Test initial crank angle."""
@@ -214,9 +214,9 @@ class TestFourbarFromLengths(unittest.TestCase):
             initial_crank_angle=math.pi / 4,
         )
 
-        from pylinkage import Crank
+        from pylinkage.actuators import Crank
 
-        crank = [j for j in linkage.joints if isinstance(j, Crank)][0]
+        crank = [c for c in linkage.components if isinstance(c, Crank)][0]
 
         # Crank should be at 45 degrees from A
         expected_x = 1.0 * math.cos(math.pi / 4)
