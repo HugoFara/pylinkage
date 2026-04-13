@@ -630,28 +630,34 @@ def stephenson_from_lengths(
     """Create a Stephenson six-bar linkage from link lengths.
 
     A Stephenson six-bar has two four-bar loops where the second loop
-    branches from the coupler of the first loop (not from the crank).
+    branches from the coupler joint C and the ground pivot D, closing
+    back to the crank output B. This separates the two ternary links
+    (unlike the Watt, where they are adjacent).
 
     Kinematic chain::
 
         A ─── crank ─── B ─── coupler ─── C ─── rocker ─── D
-              (input)                      │                 │
-                                           └── link4 ── E ── link5 ── F ── link6 ── D
-
-    In Assur group terms, joint E is constrained by the coupler point C
-    and the crank output B, while F closes back to ground at D.
+              (input)   │                  │                 │
+                        │                  └── link4 ───┐    │
+                        └── link6 ── F ── link5 ── E ───┘    │
+                                                   └─────────┘
 
     - Loop 1: A → B → C → D  (four-bar: crank + coupler + rocker)
-    - Loop 2: C → E → F → D  (second chain branching from coupler,
-      where E is constrained by C and B)
+    - Loop 2: C,D → E, then E → F → B  (second chain branches from
+      coupler C and ground D, closing back to crank output B)
+
+    The topological difference from Watt: in the Watt chain, E depends
+    on (B, C) — both joints of the coupler link, making the ternary
+    links adjacent. Here E depends on (C, D) — the coupler endpoint
+    and ground, separating the ternary links.
 
     Args:
         crank: Length of input crank (A–B).
         coupler: Length of coupler (B–C).
         rocker: Length of rocker (C–D).
-        link4: Distance from C to E (first arm of second loop).
-        link5: Distance from B to E (second arm, constraining E).
-        link6: Distance from E to D (closing link back to ground).
+        link4: Distance from C to E.
+        link5: Distance from D to E.
+        link6: Distance from E to F.
         ground_length: Distance between ground pivots A and D.
         ground_pivot_a: Position of first ground pivot (A).
         initial_crank_angle: Starting crank angle in radians.
@@ -667,9 +673,9 @@ def stephenson_from_lengths(
 
     Example:
         >>> linkage = stephenson_from_lengths(
-        ...     crank=1.2, coupler=4.0, rocker=3.0,
-        ...     link4=2.0, link5=3.0, link6=2.5,
-        ...     ground_length=5.0,
+        ...     crank=0.8, coupler=3.5, rocker=3.0,
+        ...     link4=2.0, link5=2.5, link6=3.0,
+        ...     ground_length=4.0,
         ... )
         >>> len(list(linkage.step(iterations=100)))
         100
@@ -701,20 +707,21 @@ def stephenson_from_lengths(
         name="C",
     )
 
-    # Loop 2: C,B → E → D
+    # Loop 2: C,D → E (branches from coupler and ground, not crank)
     joint_e = RRRDyad(
         anchor1=joint_c,
-        anchor2=crank_joint.output,
+        anchor2=ground_d,
         distance1=link4,
         distance2=link5,
         name="E",
     )
 
+    # F closes back to crank output B (not to ground D)
     joint_f = RRRDyad(
         anchor1=joint_e,
-        anchor2=ground_d,
+        anchor2=crank_joint.output,
         distance1=link6,
-        distance2=link6,  # closing link
+        distance2=link6,
         name="F",
     )
 
