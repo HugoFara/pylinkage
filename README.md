@@ -7,7 +7,7 @@
 
 Pylinkage is a comprehensive Python library for planar linkage mechanisms. It provides tools to:
 
-- **Define** linkages using joints (`Crank`, `Revolute`, `Linear`, etc.)
+- **Define** linkages using joints (`Crank`, `RRRDyad`, `Prismatic`, etc.)
 - **Simulate** kinematic motion with high-performance numba-compiled solvers
 - **Optimize** geometry using Particle Swarm Optimization (PSO)
 - **Synthesize** linkages from motion requirements (Burmester theory, Freudenstein's equation)
@@ -34,13 +34,12 @@ Install only what you need:
 |-------|-------------|
 | `numba` | JIT-compiled solvers (1.5-2.5M steps/sec) |
 | `scipy` | Differential evolution optimizer, synthesis solvers |
-| `pso` | Particle Swarm Optimization via pyswarms |
 | `symbolic` | SymPy-based closed-form expressions and gradient optimization |
 | `viz` | Matplotlib visualization and animation |
 | `plotly` | Interactive HTML visualization |
 | `svg` | Publication-quality SVG export via drawsvg |
 
-Extras can be combined: `pip install pylinkage[viz,scipy,pso]`
+Extras can be combined: `pip install pylinkage[viz,scipy,numba]`
 
 For development:
 
@@ -61,7 +60,7 @@ from pylinkage.components import Ground
 from pylinkage.actuators import Crank
 from pylinkage.dyads import RRRDyad
 from pylinkage.simulation import Linkage
-from pylinkage.visualizer import show_linkage  # requires viz extra
+from pylinkage.visualizer import plot_kinematic_linkage  # requires viz extra
 
 # Define ground pivots
 O1 = Ground(0, 0, name="O1")
@@ -80,7 +79,7 @@ rocker = RRRDyad(
 )
 
 my_linkage = Linkage([O1, O2, crank, rocker], name="Four-Bar")
-show_linkage(my_linkage)
+plot_kinematic_linkage(my_linkage)
 ```
 
 ![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif)
@@ -121,15 +120,19 @@ from pylinkage.synthesis import path_generation
 points = [(0, 1), (1, 2), (2, 1.5), (3, 0)]
 result = path_generation(points)
 
+from pylinkage.visualizer import plot_kinematic_linkage
+
 for linkage in result.solutions:
-    pl.show_linkage(linkage)
+    plot_kinematic_linkage(linkage)
 ```
 
 ### Optimize with PSO
 
-Requires `pip install pylinkage[pso]`.
+PSO is built-in (no extra needed).
 
 ```python
+import pylinkage as pl
+
 @pl.kinematic_minimization
 def fitness(loci, **_):
     # Define your objective based on joint trajectories
@@ -167,7 +170,7 @@ trajectories = compute_trajectory_numeric(linkage, params, np.linspace(0, 2*np.p
 | `pylinkage.assur` | Assur group decomposition and graph representation | — |
 | `pylinkage.hypergraph` | Hierarchical component-based linkage definition | — |
 | `pylinkage.solver` | High-performance numba-compiled simulation backend | `numba` |
-| `pylinkage.optimization` | PSO, differential evolution, grid search | `pso`, `scipy` |
+| `pylinkage.optimization` | PSO, differential evolution, grid search | `scipy` (DE only) |
 | `pylinkage.synthesis` | Classical synthesis: function/path/motion generation | `scipy` |
 | `pylinkage.symbolic` | SymPy-based symbolic computation and gradient optimization | `symbolic` |
 | `pylinkage.visualizer` | Matplotlib, Plotly, and SVG visualization backends | `viz`, `plotly`, `svg` |
@@ -189,7 +192,7 @@ Level 5: Applications   → Optimization, Synthesis, Symbolic, Visualization
 
 - Python ≥ 3.10
 - Core: numpy, tqdm
-- Optional (via extras): numba, scipy, sympy, pyswarms, matplotlib, plotly, drawsvg
+- Optional (via extras): numba, scipy, sympy, matplotlib, plotly, drawsvg
 
 ## Contributing
 
