@@ -12,7 +12,7 @@ from pylinkage.synthesis import path_generation
 from pylinkage.visualizer import plot_kinematic_linkage
 
 # "I need a coupler that passes through these four points"
-result = path_generation([(0, 1), (1, 2), (2, 1.5), (3, 0)])
+result = path_generation([(0, 0), (1, 1), (2, 1), (3, 0)])
 plot_kinematic_linkage(result.solutions[0])
 ```
 
