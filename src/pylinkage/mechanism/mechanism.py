@@ -629,6 +629,43 @@ class Mechanism:
     # Analysis bound methods — thin shims over pylinkage.linkage.*
     # ------------------------------------------------------------------
 
+    def rebuild(
+        self,
+        initial_positions: list[Coord] | None = None,
+    ) -> None:
+        """Reset joint positions to an initial configuration.
+
+        Convenience wrapper that calls :meth:`set_joint_positions` when
+        a position list is supplied, and invalidates any cached
+        SolverData so the next :meth:`step_fast` recompiles.
+
+        Args:
+            initial_positions: Optional ``(x, y)`` positions per joint
+                (order matches ``self.joints``). When ``None`` the
+                joint positions are left untouched.
+        """
+        self._solver_data = None
+        if initial_positions is not None:
+            self.set_joint_positions(initial_positions)
+
+    def transmission_angle(self) -> float:
+        """Transmission angle at the current pose, in degrees.
+
+        See :func:`pylinkage.linkage.transmission_angle_at_position`.
+        """
+        from ..linkage.transmission import transmission_angle_at_position
+
+        return transmission_angle_at_position(self)
+
+    def stroke_position(self) -> float:
+        """Slide position of a prismatic joint at the current pose.
+
+        See :func:`pylinkage.linkage.stroke_at_position`.
+        """
+        from ..linkage.transmission import stroke_at_position
+
+        return stroke_at_position(self)
+
     def analyze_transmission(
         self,
         iterations: int | None = None,

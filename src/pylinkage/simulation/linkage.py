@@ -367,6 +367,24 @@ class Linkage:
     # Analysis bound methods — thin shims over pylinkage.linkage.*
     # ------------------------------------------------------------------
 
+    def transmission_angle(self) -> float:
+        """Transmission angle at the current pose, in degrees.
+
+        See :func:`pylinkage.linkage.transmission_angle_at_position`.
+        """
+        from ..linkage.transmission import transmission_angle_at_position
+
+        return transmission_angle_at_position(self)
+
+    def stroke_position(self) -> float:
+        """Slide position of a prismatic joint at the current pose.
+
+        See :func:`pylinkage.linkage.stroke_at_position`.
+        """
+        from ..linkage.transmission import stroke_at_position
+
+        return stroke_at_position(self)
+
     def analyze_transmission(
         self,
         iterations: int | None = None,
