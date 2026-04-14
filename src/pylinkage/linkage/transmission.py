@@ -24,9 +24,9 @@ from numpy.typing import NDArray
 from .._types import Coord
 
 if TYPE_CHECKING:
-    from matplotlib.axes import Axes
-
     from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
+    from matplotlib.axes import Axes
 
 
 @dataclass(frozen=True)

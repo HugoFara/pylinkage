@@ -23,9 +23,9 @@ from numpy.typing import NDArray
 from .._compat import get_parts
 
 if TYPE_CHECKING:
-    from matplotlib.axes import Axes
-
     from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
+    from matplotlib.axes import Axes
 
 
 # =============================================================================

@@ -17,6 +17,7 @@ from ..components import Component, ConnectedComponent, _AnchorProxy
 from ..exceptions import UnderconstrainedError
 
 if TYPE_CHECKING:
+    from .._simulation_context import Simulation as _SimulationContext
     from ..actuators import ArcCrank, Crank, LinearActuator
     from ..linkage.sensitivity import SensitivityAnalysis, ToleranceAnalysis
     from ..linkage.transmission import StrokeAnalysis, TransmissionAngleAnalysis
@@ -293,6 +294,73 @@ class Linkage:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
 
+    def set_completely(
+        self,
+        constraints: list[float],
+        positions: list[tuple[float, float]],
+    ) -> None:
+        """Apply both constraints and initial positions in one call.
+
+        Args:
+            constraints: Flat list (as accepted by :meth:`set_num_constraints`).
+            positions: Per-component ``(x, y)`` positions
+                (as accepted by :meth:`set_coords`).
+        """
+        self.set_num_constraints(constraints)
+        self.set_coords(positions)
+
+    def simulation(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> _SimulationContext:
+        """Return a context manager that simulates this linkage.
+
+        The context restores the initial joint positions on exit, so
+        repeated invocations return to the same starting state.
+        """
+        from .._simulation_context import Simulation as _SimulationContext
+
+        return _SimulationContext(self, iterations=iterations, dt=dt)
+
+    def indeterminacy(self) -> int:
+        """Mobility (DOF) of the linkage — planar Gruebler-Kutzbach.
+
+        ``DOF = 3·(n − 1) − 2·R − P`` where each non-ground component
+        contributes its share of bodies and kinematic pairs:
+
+        - ``Ground`` anchors are points on the frame (no new body, no
+          new pair on their own);
+        - ``Crank`` / ``LinearActuator`` add 1 body + 1 R/P pair;
+        - binary dyads (``RRRDyad``, ``FixedDyad``) add 2 bodies + 3
+          R-pairs;
+        - ``RRPDyad`` adds 2 bodies + 2 R-pairs + 1 P-pair.
+
+        A standard Grashof four-bar (Crank + RRRDyad) returns ``1``.
+        """
+        from ..actuators import ArcCrank, LinearActuator
+        from ..actuators import Crank as _Crank
+        from ..dyads import FixedDyad, RRPDyad, RRRDyad
+
+        bodies = 1  # ground frame
+        revolute_pairs = 0
+        prismatic_pairs = 0
+        for c in self.components:
+            if isinstance(c, (_Crank, ArcCrank)):
+                bodies += 1
+                revolute_pairs += 1
+            elif isinstance(c, LinearActuator):
+                bodies += 1
+                prismatic_pairs += 1
+            elif isinstance(c, (RRRDyad, FixedDyad)):
+                bodies += 2
+                revolute_pairs += 3
+            elif isinstance(c, RRPDyad):
+                bodies += 2
+                revolute_pairs += 2
+                prismatic_pairs += 1
+        return 3 * (bodies - 1) - 2 * revolute_pairs - prismatic_pairs
+
     # ------------------------------------------------------------------
     # Analysis bound methods — thin shims over pylinkage.linkage.*
     # ------------------------------------------------------------------
@@ -301,7 +369,7 @@ class Linkage:
         self,
         iterations: int | None = None,
         acceptable_range: tuple[float, float] = (40.0, 140.0),
-    ) -> "TransmissionAngleAnalysis":
+    ) -> TransmissionAngleAnalysis:
         """Analyze transmission angle over a full motion cycle.
 
         See :func:`pylinkage.linkage.analyze_transmission` for details.
@@ -318,7 +386,7 @@ class Linkage:
         self,
         prismatic_joint: object | None = None,
         iterations: int | None = None,
-    ) -> "StrokeAnalysis":
+    ) -> StrokeAnalysis:
         """Analyze stroke/slide position over a full motion cycle.
 
         See :func:`pylinkage.linkage.analyze_stroke`.
@@ -337,7 +405,7 @@ class Linkage:
         delta: float = 0.01,
         include_transmission: bool = True,
         iterations: int | None = None,
-    ) -> "SensitivityAnalysis":
+    ) -> SensitivityAnalysis:
         """Compute sensitivity of an output path to constraint perturbations.
 
         See :func:`pylinkage.linkage.analyze_sensitivity`.
@@ -358,7 +426,7 @@ class Linkage:
         output_joint: object | int | None = None,
         iterations: int | None = None,
         n_samples: int = 1000,
-    ) -> "ToleranceAnalysis":
+    ) -> ToleranceAnalysis:
         """Monte-Carlo tolerance analysis over the output path.
 
         See :func:`pylinkage.linkage.analyze_tolerance`.

@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     import numpy as np
     from numpy.typing import NDArray
 
+    from .._simulation_context import Simulation as _SimulationContext
     from .._types import Coord, MaybeCoord
     from ..assur.decomposition import DecompositionResult
     from ..assur.graph import LinkageGraph
@@ -565,6 +566,50 @@ class Mechanism:
         """Alias of :meth:`set_joint_positions` for cross-API compatibility."""
         self.set_joint_positions(positions)
 
+    def set_completely(
+        self,
+        constraints: list[float],
+        positions: list[Coord],
+    ) -> None:
+        """Apply both constraints and joint positions in one call."""
+        self.set_constraints(constraints)
+        self.set_joint_positions(positions)
+
+    def simulation(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> _SimulationContext:
+        """Return a context manager that simulates this mechanism.
+
+        The context restores the initial joint positions on exit. See
+        :class:`pylinkage._simulation_context.Simulation`.
+        """
+        from .._simulation_context import Simulation as _SimulationContext
+
+        return _SimulationContext(self, iterations=iterations, dt=dt)
+
+    def indeterminacy(self) -> int:
+        """Mobility (DOF) of the mechanism — planar Gruebler-Kutzbach.
+
+        Returns ``3·(n − 1) − 2·R − P`` where ``n`` is the total number
+        of links (including the ground frame), ``R`` counts revolute
+        pairs (``RevoluteJoint`` and ``GroundJoint``) and ``P`` counts
+        prismatic pairs.
+
+        Positive ⇒ unconstrained DOF (a 1-DOF four-bar returns ``1``);
+        zero ⇒ statically determinate; negative ⇒ over-constrained.
+        """
+        n = sum(1 for _ in self.links)
+        revolute_pairs = 0
+        prismatic_pairs = 0
+        for joint in self.joints:
+            if isinstance(joint, PrismaticJoint):
+                prismatic_pairs += 1
+            elif isinstance(joint, RevoluteJoint):
+                revolute_pairs += 1
+        return 3 * (n - 1) - 2 * revolute_pairs - prismatic_pairs
+
     def get_joint_positions(self) -> list[Coord]:
         """Get current positions of all joints."""
         positions: list[Coord] = []
@@ -586,7 +631,7 @@ class Mechanism:
         self,
         iterations: int | None = None,
         acceptable_range: tuple[float, float] = (40.0, 140.0),
-    ) -> "TransmissionAngleAnalysis":
+    ) -> TransmissionAngleAnalysis:
         """Analyze transmission angle over a full motion cycle.
 
         See :func:`pylinkage.linkage.analyze_transmission` for details.
@@ -603,7 +648,7 @@ class Mechanism:
         self,
         prismatic_joint: object | None = None,
         iterations: int | None = None,
-    ) -> "StrokeAnalysis":
+    ) -> StrokeAnalysis:
         """Analyze stroke/slide position over a full motion cycle.
 
         See :func:`pylinkage.linkage.analyze_stroke`.
@@ -622,7 +667,7 @@ class Mechanism:
         delta: float = 0.01,
         include_transmission: bool = True,
         iterations: int | None = None,
-    ) -> "SensitivityAnalysis":
+    ) -> SensitivityAnalysis:
         """Compute sensitivity of an output path to constraint perturbations.
 
         See :func:`pylinkage.linkage.analyze_sensitivity`.
@@ -643,7 +688,7 @@ class Mechanism:
         output_joint: object | int | None = None,
         iterations: int | None = None,
         n_samples: int = 1000,
-    ) -> "ToleranceAnalysis":
+    ) -> ToleranceAnalysis:
         """Monte-Carlo tolerance analysis over the output path.
 
         See :func:`pylinkage.linkage.analyze_tolerance`.
