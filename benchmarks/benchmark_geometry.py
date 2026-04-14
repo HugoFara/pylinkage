@@ -159,9 +159,18 @@ def gen_circle_line_args():
 
 def create_fourbar_linkage():
     """Create a standard four-bar linkage for benchmarking."""
-    crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="B")
-    pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
-    return pl.Linkage(joints=(crank, pin), order=(crank, pin), name="Benchmark four-bar")
+    from pylinkage.actuators import Crank
+    from pylinkage.components import Ground
+    from pylinkage.dyads import RRRDyad
+    from pylinkage.simulation import Linkage
+
+    A = Ground(0.0, 0.0, name="A")
+    D = Ground(3.0, 0.0, name="D")
+    crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="B")
+    pin = RRRDyad(
+        anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="C",
+    )
+    return Linkage([A, D, crank, pin], name="Benchmark four-bar")
 
 
 def benchmark_linkage_step(linkage, n_cycles: int = 1000) -> dict:

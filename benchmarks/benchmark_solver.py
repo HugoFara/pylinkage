@@ -2,27 +2,34 @@
 
 import time
 
-import pylinkage as pl
+from pylinkage.actuators import Crank
+from pylinkage.components import Ground
+from pylinkage.dyads import RRRDyad
+from pylinkage.simulation import Linkage
 
 
-def create_fourbar_linkage():
+def create_fourbar_linkage() -> Linkage:
     """Create a four-bar linkage for benchmarking."""
-    ground1 = pl.Static(0, 0, name="ground1")
-    ground2 = pl.Static(3, 0, name="ground2")
-    crank = pl.Crank(1, 0, joint0=ground1, distance=1, angle=0.1, name="crank")
-    pin = pl.Revolute(2, 1, joint0=crank, joint1=ground2, distance0=2, distance1=2, name="pin")
-    return pl.Linkage(
-        joints=(ground1, ground2, crank, pin), order=(ground1, ground2, crank, pin), name="four-bar"
+    ground1 = Ground(0.0, 0.0, name="ground1")
+    ground2 = Ground(3.0, 0.0, name="ground2")
+    crank = Crank(
+        anchor=ground1, radius=1.0, angular_velocity=0.1, name="crank",
     )
+    pin = RRRDyad(
+        anchor1=crank.output,
+        anchor2=ground2,
+        distance1=2.0,
+        distance2=2.0,
+        name="pin",
+    )
+    return Linkage([ground1, ground2, crank, pin], name="four-bar")
 
 
-def benchmark_step(linkage: pl.Linkage, iterations: int = 1000, warmup: int = 100):
+def benchmark_step(linkage: Linkage, iterations: int = 1000, warmup: int = 100) -> float:
     """Benchmark the step() generator method."""
-    # Warmup
     for _ in range(warmup):
         list(linkage.step(iterations=10, dt=1.0))
 
-    # Benchmark
     start = time.perf_counter()
     for _ in range(iterations):
         list(linkage.step(iterations=10, dt=1.0))
@@ -33,13 +40,14 @@ def benchmark_step(linkage: pl.Linkage, iterations: int = 1000, warmup: int = 10
     return total_steps / elapsed
 
 
-def benchmark_step_fast(linkage: pl.Linkage, iterations: int = 1000, warmup: int = 100):
+def benchmark_step_fast(
+    linkage: Linkage, iterations: int = 1000, warmup: int = 100,
+) -> float:
     """Benchmark the step_fast() method."""
     # Warmup (includes JIT compilation)
     for _ in range(warmup):
         linkage.step_fast(iterations=10, dt=1.0)
 
-    # Benchmark
     start = time.perf_counter()
     for _ in range(iterations):
         linkage.step_fast(iterations=10, dt=1.0)
@@ -50,7 +58,7 @@ def benchmark_step_fast(linkage: pl.Linkage, iterations: int = 1000, warmup: int
     return total_steps / elapsed
 
 
-def main():
+def main() -> None:
     """Run the benchmark."""
     print("=" * 60)
     print("Pylinkage Solver Benchmark: step() vs step_fast()")
