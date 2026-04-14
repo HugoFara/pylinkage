@@ -74,10 +74,7 @@ def plot_static_linkage(
 
     # --- Draw ghost mechanism outlines ---
     if n_ghosts > 0 and loci_list:
-        ghost_indices = [
-            int(i * len(loci_list) / n_ghosts)
-            for i in range(n_ghosts)
-        ]
+        ghost_indices = [int(i * len(loci_list) / n_ghosts) for i in range(n_ghosts)]
         for gi, fi in enumerate(ghost_indices):
             alpha = 0.12 + 0.13 * (gi / max(n_ghosts - 1, 1))
             frame = loci_list[fi]
@@ -87,7 +84,10 @@ def plot_static_linkage(
                 axis.plot(
                     [frame[p][0], frame[j][0]],
                     [frame[p][1], frame[j][1]],
-                    "-", color="#777777", linewidth=1.5, alpha=alpha,
+                    "-",
+                    color="#777777",
+                    linewidth=1.5,
+                    alpha=alpha,
                 )
 
     # --- Draw mechanism bars at initial position ---
@@ -100,7 +100,11 @@ def plot_static_linkage(
             axis.plot(
                 [frame0[p][0], frame0[j][0]],
                 [frame0[p][1], frame0[j][1]],
-                "-o", color=color, linewidth=3, markersize=5, zorder=4,
+                "-o",
+                color=color,
+                linewidth=3,
+                markersize=5,
+                zorder=4,
                 label=components[j].name if show_legend else None,
             )
 
@@ -108,8 +112,11 @@ def plot_static_linkage(
         for j, comp in enumerate(components):
             if is_ground_joint(comp) and frame0[j][0] is not None:
                 axis.plot(
-                    frame0[j][0], frame0[j][1],
-                    "ks", markersize=10, zorder=5,
+                    frame0[j][0],
+                    frame0[j][1],
+                    "ks",
+                    markersize=10,
+                    zorder=5,
                 )
 
         # --- Draw joint labels ---

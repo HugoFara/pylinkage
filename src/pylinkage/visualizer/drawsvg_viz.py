@@ -11,11 +11,12 @@ from typing import TYPE_CHECKING, Literal
 import drawsvg as draw
 import numpy as np
 
-from ..joints.fixed import Fixed
-from ..joints.joint import _StaticBase as Static
-from ..joints.prismatic import Prismatic
-from ..joints.revolute import Pivot
-from .core import get_components
+from .core import (
+    get_components,
+    is_prismatic_like,
+    is_revolute_like,
+    is_static_like,
+)
 from .symbols import (
     LinkStyle,
     SymbolType,
@@ -602,10 +603,7 @@ def plot_linkage_svg(
 
         # Draw link to joint1 (second parent) for joints that have it
         joint1 = getattr(joint, "joint1", None)
-        if (
-            joint1 is not None
-            and (isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute")
-        ):
+        if joint1 is not None and is_revolute_like(joint):
             parent_pos = get_position(joint1)
             px, py = w2c(parent_pos[0], parent_pos[1])
 
@@ -624,15 +622,17 @@ def plot_linkage_svg(
                     _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
 
         # Handle Prismatic joints differently
-        if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
+        p_joint1 = getattr(joint, "joint1", None)
+        p_joint2 = getattr(joint, "joint2", None)
+        if is_prismatic_like(joint) and p_joint1 is not None and p_joint2 is not None:
             # Draw the constraint line between joint1 and joint2
-            p1_pos = get_position(joint.joint1)
-            p2_pos = get_position(joint.joint2)
+            p1_pos = get_position(p_joint1)
+            p2_pos = get_position(p_joint2)
             p1x, p1y = w2c(p1_pos[0], p1_pos[1])
             p2x, p2y = w2c(p2_pos[0], p2_pos[1])
 
-            joint_ids = (id(joint.joint1), id(joint.joint2))
-            rev_ids = (id(joint.joint2), id(joint.joint1))
+            joint_ids = (id(p_joint1), id(p_joint2))
+            rev_ids = (id(p_joint2), id(p_joint1))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 color = get_link_color(link_index)
                 _draw_link(d, p1x, p1y, p2x, p2y, color=color, width=10, style=link_style_enum)
@@ -856,8 +856,7 @@ def plot_linkage_svg_with_velocity(
 
         # Draw link to joint1
         joint1 = getattr(joint, "joint1", None)
-        is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
-        if joint1 is not None and is_revolute_type:
+        if joint1 is not None and is_revolute_like(joint):
             if joint1 in joint_list:
                 pi = joint_list.index(joint1)
                 px, py = w2c(positions[pi, 0], positions[pi, 1])
@@ -907,7 +906,7 @@ def plot_linkage_svg_with_velocity(
 
     # Draw velocity vectors on top
     for i, joint in enumerate(get_components(linkage)):
-        if skip_static and isinstance(joint, Static):
+        if skip_static and is_static_like(joint):
             continue
 
         vx, vy = velocities[i, 0], velocities[i, 1]

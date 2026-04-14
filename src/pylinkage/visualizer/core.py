@@ -13,38 +13,53 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..components._base import Component
-from ..joints.crank import Crank
-from ..joints.fixed import Fixed
-from ..joints.joint import Joint
-from ..joints.joint import _StaticBase as Static
-from ..joints.prismatic import Prismatic
-from ..joints.revolute import Pivot, Revolute
+# Type-name sets covering both the legacy joints API (Static/Revolute/Pivot/
+# Fixed/Prismatic) and the modern component/actuator/dyad API
+# (Ground/RRRDyad/FixedDyad/RRPDyad). Keyed by ``type(...).__name__`` so
+# the visualizer doesn't take a hard import on the legacy ``joints``
+# module — which is scheduled for removal in 1.0.
+_STATIC_TYPE_NAMES = frozenset({"Static", "_StaticBase", "Ground"})
+_REVOLUTE_TYPE_NAMES = frozenset({"Revolute", "Pivot", "Fixed", "RRRDyad", "FixedDyad"})
+_PRISMATIC_TYPE_NAMES = frozenset({"Prismatic", "RRPDyad"})
 
-# Colors to use for matplotlib plotting (backwards compatible)
-COLOR_SWITCHER: dict[type[Joint], str] = {
-    Static: "k",
-    Crank: "g",
-    Fixed: "r",
-    Pivot: "b",
-    Revolute: "b",
-    Prismatic: "orange",
+# Colors per type name, for matplotlib plotting.
+COLOR_SWITCHER: dict[str, str] = {
+    "Static": "k",
+    "_StaticBase": "k",
+    "Ground": "k",
+    "Crank": "g",
+    "Fixed": "r",
+    "FixedDyad": "r",
+    "Pivot": "b",
+    "Revolute": "b",
+    "RRRDyad": "b",
+    "Prismatic": "orange",
+    "RRPDyad": "orange",
 }
 
 
-def _get_color(joint: Joint | Component) -> str:
-    """Search in COLOR_SWITCHER for the corresponding color.
+def is_static_like(component: Any) -> bool:
+    """True if the component is a fixed-frame joint (Static/Ground)."""
+    return type(component).__name__ in _STATIC_TYPE_NAMES
 
-    Args:
-        joint: The joint to get the color for.
 
-    Returns:
-        The color string for matplotlib.
+def is_revolute_like(component: Any) -> bool:
+    """True if the component draws as a pin joint with two anchored parents.
+
+    Matches legacy ``Revolute``/``Pivot``/``Fixed`` and modern
+    ``RRRDyad``/``FixedDyad``.
     """
-    for joint_type, color in COLOR_SWITCHER.items():
-        if isinstance(joint, joint_type):
-            return color
-    return ""
+    return type(component).__name__ in _REVOLUTE_TYPE_NAMES
+
+
+def is_prismatic_like(component: Any) -> bool:
+    """True if the component is a slider (legacy ``Prismatic`` or ``RRPDyad``)."""
+    return type(component).__name__ in _PRISMATIC_TYPE_NAMES
+
+
+def _get_color(joint: Any) -> str:
+    """Return the matplotlib color for *joint* based on its class name."""
+    return COLOR_SWITCHER.get(type(joint).__name__, "")
 
 
 # ------------------------------------------------------------------
@@ -92,17 +107,15 @@ def get_parent_pairs(component: Any) -> list[Any]:
         parents.append(joint0)
 
     joint1 = getattr(component, "joint1", None)
-    if joint1 is not None and (
-        isinstance(component, (Fixed, Pivot))
-        or type(component).__name__ == "Revolute"
-    ):
+    if joint1 is not None and is_revolute_like(component):
         parents.append(joint1)
 
     return parents
 
 
 def resolve_component(
-    parent: Any, components: list[Any],
+    parent: Any,
+    components: list[Any],
 ) -> int | None:
     """Resolve a parent reference to its index in the component list.
 

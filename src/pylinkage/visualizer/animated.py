@@ -101,7 +101,8 @@ def plot_kinematic_linkage(
         both_ground = is_ground_joint(components[p]) and is_ground_joint(components[j])
         images.append(
             axis.plot(
-                [], [],
+                [],
+                [],
                 c=color,
                 linewidth=2,
                 animated=both_ground,

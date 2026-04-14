@@ -288,10 +288,7 @@ def build_linkage_3d(
         coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
-    # Import joint types for isinstance checks
-    from ..joints.fixed import Fixed
-    from ..joints.prismatic import Prismatic
-    from ..joints.revolute import Pivot
+    from .core import is_prismatic_like, is_revolute_like
 
     # Collect all parts
     parts: list[Any] = []
@@ -330,8 +327,7 @@ def build_linkage_3d(
 
         # Link to joint1 for applicable joint types
         joint1 = getattr(joint, "joint1", None)
-        is_revolute_type = isinstance(joint, (Fixed, Pivot)) or type(joint).__name__ == "Revolute"
-        if joint1 is not None and is_revolute_type:
+        if joint1 is not None and is_revolute_like(joint):
             parent_pos = get_position(joint1)
 
             joint_ids = (id(joint), id(joint1))
@@ -355,12 +351,14 @@ def build_linkage_3d(
                     link_index += 1
 
         # Prismatic constraint link
-        if isinstance(joint, Prismatic) and joint.joint1 is not None and joint.joint2 is not None:
-            p1_pos = get_position(joint.joint1)
-            p2_pos = get_position(joint.joint2)
+        p_joint1 = getattr(joint, "joint1", None)
+        p_joint2 = getattr(joint, "joint2", None)
+        if is_prismatic_like(joint) and p_joint1 is not None and p_joint2 is not None:
+            p1_pos = get_position(p_joint1)
+            p2_pos = get_position(p_joint2)
 
-            joint_ids = (id(joint.joint1), id(joint.joint2))
-            rev_ids = (id(joint.joint2), id(joint.joint1))
+            joint_ids = (id(p_joint1), id(p_joint2))
+            rev_ids = (id(p_joint2), id(p_joint1))
             if joint_ids not in drawn_links and rev_ids not in drawn_links:
                 link_z = z_offset + link_index * link_profile.thickness * 0.1
 

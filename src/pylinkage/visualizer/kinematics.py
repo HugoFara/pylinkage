@@ -49,14 +49,14 @@ def plot_velocity_vectors(
     Returns:
         The Quiver object for further customization.
     """
-    from ..joints.joint import _StaticBase as Static
+    from .core import is_static_like
 
     positions = np.asarray(positions)
     velocities = np.asarray(velocities)
 
     # Filter out static joints if requested
     if skip_static:
-        mask = [not isinstance(j, Static) for j in linkage.joints]
+        mask = [not is_static_like(j) for j in linkage.joints]
         positions = positions[mask]
         velocities = velocities[mask]
 
@@ -112,14 +112,14 @@ def plot_acceleration_vectors(
     Returns:
         The Quiver object for further customization.
     """
-    from ..joints.joint import _StaticBase as Static
+    from .core import is_static_like
 
     positions = np.asarray(positions)
     accelerations = np.asarray(accelerations)
 
     # Filter out static joints if requested
     if skip_static:
-        mask = [not isinstance(j, Static) for j in linkage.joints]
+        mask = [not is_static_like(j) for j in linkage.joints]
         positions = positions[mask]
         accelerations = accelerations[mask]
 
@@ -221,12 +221,13 @@ def show_kinematics(
     """
     import matplotlib.pyplot as plt
 
-    # Check that omega is set on at least one crank
-    from ..joints.crank import Crank
+    # Check that omega is set on at least one crank (legacy Linkage.Crank
+    # exposes the ``omega`` attribute used by ``step_fast_with_kinematics``).
     from ..linkage.analysis import movement_bounding_box
 
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
+        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0)
+        for j in linkage.joints
     )
     if not has_omega:
         raise ValueError(
@@ -334,14 +335,13 @@ def animate_kinematics(
     import matplotlib.animation as anim
     import matplotlib.pyplot as plt
 
-    from ..joints.crank import Crank
-    from ..joints.joint import _StaticBase as Static
     from ..linkage.analysis import movement_bounding_box
-    from .core import _get_color
+    from .core import _get_color, is_static_like
 
-    # Check that omega is set
+    # Check that omega is set (legacy Linkage.Crank exposes ``omega``).
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0 for j in linkage.joints
+        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0)
+        for j in linkage.joints
     )
     if not has_omega:
         raise ValueError(
@@ -409,7 +409,7 @@ def animate_kinematics(
 
     # Velocity quiver (will be updated each frame)
     # Initialize with empty data
-    non_static_mask = [not isinstance(j, Static) for j in linkage.joints]
+    non_static_mask = [not is_static_like(j) for j in linkage.joints]
     n_non_static = sum(non_static_mask)
     quiver = ax2.quiver(
         np.zeros(n_non_static),
@@ -434,7 +434,7 @@ def animate_kinematics(
         # Update links
         for joint, parent, line in link_lines:
             j_idx = list(linkage.joints).index(joint)
-            if isinstance(parent, Static):
+            if is_static_like(parent):
                 p_pos = parent.coord()
             else:
                 p_idx = list(linkage.joints).index(parent)

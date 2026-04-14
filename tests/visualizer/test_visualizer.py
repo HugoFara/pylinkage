@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 import pylinkage as pl
 from pylinkage.joints.crank import Crank
 from pylinkage.joints.fixed import Fixed
-from pylinkage.joints.joint import Static, _StaticBase
+from pylinkage.joints.joint import Static
 from pylinkage.joints.prismatic import Prismatic
-from pylinkage.joints.revolute import Pivot, Revolute
+from pylinkage.joints.revolute import Revolute
 from pylinkage.visualizer.animated import (
     plot_kinematic_linkage,
     show_linkage,
@@ -61,9 +61,21 @@ class TestGetColor(unittest.TestCase):
         self.assertEqual(_get_color(prismatic), "orange")
 
     def test_color_switcher_has_all_types(self):
-        """Test that COLOR_SWITCHER has colors for all joint types."""
-        expected_types = {_StaticBase, Crank, Fixed, Pivot, Revolute, Prismatic}
-        self.assertEqual(set(COLOR_SWITCHER.keys()), expected_types)
+        """Test that COLOR_SWITCHER has colors for all joint type names."""
+        expected_names = {
+            "Static",
+            "_StaticBase",
+            "Ground",
+            "Crank",
+            "Fixed",
+            "FixedDyad",
+            "Pivot",
+            "Revolute",
+            "RRRDyad",
+            "Prismatic",
+            "RRPDyad",
+        }
+        self.assertEqual(set(COLOR_SWITCHER.keys()), expected_names)
 
 
 class FourBarLinkageTestCase(unittest.TestCase):

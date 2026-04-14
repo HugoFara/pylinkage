@@ -34,6 +34,7 @@ def _get_components(linkage: Any) -> list[Any]:
     """Return the ordered list of joints/components from either API."""
     # Delegate to shared implementation in core
     from .core import get_components
+
     return get_components(linkage)
 
 
@@ -41,6 +42,7 @@ def _get_parent_pairs(component: Any) -> list[Any]:
     """Return the parent components that should draw links to *component*."""
     # Delegate to shared implementation in core
     from .core import get_parent_pairs
+
     return get_parent_pairs(component)
 
 
@@ -135,8 +137,7 @@ def plot_linkage_plotly(
 
     # Build position map keyed by id (works for both APIs)
     pos_map: dict[int, tuple[float, float]] = {
-        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
-        for i, comp in enumerate(components)
+        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0) for i, comp in enumerate(components)
     }
 
     # Draw loci (movement paths)
@@ -189,9 +190,7 @@ def plot_linkage_plotly(
             if show_dimensions:
                 import math
 
-                length = math.sqrt(
-                    (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                )
+                length = math.sqrt((pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2)
                 mid_x = (pos[0] + parent_pos[0]) / 2
                 mid_y = (pos[1] + parent_pos[1]) / 2
                 fig.add_annotation(
@@ -385,8 +384,7 @@ def animate_linkage_plotly(
 
     # Initial data
     init_pos: dict[int, tuple[float, float]] = {
-        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0)
-        for i, comp in enumerate(comp_list)
+        id(comp): (loci[0][i][0] or 0.0, loci[0][i][1] or 0.0) for i, comp in enumerate(comp_list)
     }
     initial_data = []
 
@@ -551,15 +549,14 @@ def plot_linkage_plotly_with_velocity(
         >>> fig = plot_linkage_plotly_with_velocity(linkage, frame_index=25)
         >>> fig.show()
     """
-    from ..joints.crank import Crank
-    from ..joints.joint import _StaticBase as Static
+    from .core import is_static_like
 
     components = _get_components(linkage)
 
-    # Check that omega is set
+    # Check that omega is set (legacy Linkage.Crank exposes an ``omega`` attr
+    # used by ``step_fast_with_kinematics``).
     has_omega = any(
-        isinstance(j, Crank) and j.omega is not None and j.omega != 0
-        for j in components
+        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0) for j in components
     )
     if not has_omega:
         raise ValueError(
@@ -577,10 +574,7 @@ def plot_linkage_plotly_with_velocity(
     # Convert to loci format for base plot
     n_components = len(components)
     loci = [
-        tuple(
-            (float(positions[i, j, 0]), float(positions[i, j, 1]))
-            for j in range(n_components)
-        )
+        tuple((float(positions[i, j, 0]), float(positions[i, j, 1])) for j in range(n_components))
         for i in range(n_frames)
     ]
 
@@ -612,7 +606,7 @@ def plot_linkage_plotly_with_velocity(
 
         # Draw velocity arrows for non-static joints
         for i, comp in enumerate(components):
-            if isinstance(comp, Static) or is_ground_joint(comp):
+            if is_static_like(comp) or is_ground_joint(comp):
                 continue
 
             vx, vy = vel[i, 0], vel[i, 1]
