@@ -301,9 +301,7 @@ class Mechanism:
                 if joint and joint.is_defined():
                     hint_positions[nid] = self._joint_coord(joint)
 
-            new_positions = solve_group(
-                group, positions, self._assur_dimensions, hint_positions
-            )
+            new_positions = solve_group(group, positions, self._assur_dimensions, hint_positions)
 
             # Write solved positions back to joints
             for nid, (nx, ny) in new_positions.items():
@@ -543,6 +541,333 @@ class Mechanism:
         """Set positions of all joints."""
         for joint, pos in zip(self.joints, positions, strict=False):
             joint.set_coord(pos[0], pos[1])
+
+    # ------------------------------------------------------------------
+    # Velocity / acceleration kinematics
+    # ------------------------------------------------------------------
+
+    def set_input_velocity(
+        self,
+        driver: DriverLink | ArcDriverLink,
+        omega: float,
+        alpha: float = 0.0,
+    ) -> None:
+        """Set the angular velocity (and optional acceleration) of a driver.
+
+        These values are used by :meth:`step_with_derivatives` to compute
+        joint linear velocities and accelerations. They are independent of
+        ``DriverLink.angular_velocity`` (which is in radians per simulation
+        step) — ``omega`` is interpreted in physical units, typically rad/s.
+
+        Args:
+            driver: Driver link to set the input on.
+            omega: Angular velocity (rad/s).
+            alpha: Angular acceleration (rad/s²). Default 0.
+
+        Raises:
+            ValueError: If ``driver`` is not part of this mechanism.
+        """
+        if driver not in self._driver_links:
+            raise ValueError(f"{driver.id!r} is not a driver link in this mechanism")
+        # Stored as runtime attributes (not declared on the dataclass) so
+        # they don't widen the public Driver API. ``getattr`` is used at
+        # read sites to gracefully fall back to 0.
+        object.__setattr__(driver, "_omega", omega)
+        object.__setattr__(driver, "_alpha", alpha)
+
+    def get_velocities(self) -> list[Coord | None]:
+        """Return per-joint linear velocities, in joint order.
+
+        Each entry is ``(vx, vy)`` or ``None`` if the joint's velocity
+        has not been computed (i.e. before :meth:`step_with_derivatives`
+        has been run).
+        """
+        return [j.velocity for j in self.joints]
+
+    def get_accelerations(self) -> list[Coord | None]:
+        """Return per-joint linear accelerations, in joint order."""
+        return [j.acceleration for j in self.joints]
+
+    def step_with_derivatives(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> Generator[
+        tuple[
+            tuple[MaybeCoord, ...],
+            tuple[Coord | None, ...],
+            tuple[Coord | None, ...],
+        ],
+        None,
+        None,
+    ]:
+        """Simulate the mechanism while computing velocities and accelerations.
+
+        On each step yields ``(positions, velocities, accelerations)``.
+        The ``omega`` (and optionally ``alpha``) of every driver link
+        used as input must have been set via :meth:`set_input_velocity`;
+        otherwise the driver is treated as having zero input velocity.
+
+        Args:
+            iterations: Number of steps. Defaults to :meth:`get_rotation_period`.
+            dt: Time step multiplier (default 1.0).
+
+        Yields:
+            Three tuples of length ``len(self.joints)`` containing the
+            joint positions, velocities, and accelerations for the step.
+        """
+        from ..solver.acceleration import (
+            solve_crank_acceleration,
+            solve_prismatic_acceleration,
+            solve_revolute_acceleration,
+        )
+        from ..solver.velocity import (
+            solve_crank_velocity,
+            solve_prismatic_velocity,
+            solve_revolute_velocity,
+        )
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        # Map output joint id → driving DriverLink for fast lookup
+        driver_for: dict[str, DriverLink | ArcDriverLink] = {}
+        for d in self._driver_links:
+            out = d.output_joint
+            if out is not None:
+                driver_for[out.id] = d
+
+        def _anchors_with_distance(joint: Joint) -> list[tuple[Joint, float]]:
+            anchors: list[tuple[Joint, float]] = []
+            seen: set[str] = set()
+            for link in joint._links:
+                for other in link.joints:
+                    if other is joint or other.id in seen:
+                        continue
+                    if not other.is_defined():
+                        continue
+                    dist = link.get_distance(joint, other)
+                    if dist is None:
+                        continue
+                    anchors.append((other, dist))
+                    seen.add(other.id)
+            return anchors
+
+        for _ in range(iterations):
+            # 1. Positions
+            self._step_once(dt)
+
+            # 2. Velocities (in solve order so anchors are populated first)
+            for joint in self._solve_order:
+                if isinstance(joint, GroundJoint):
+                    joint.velocity = (0.0, 0.0)
+                    continue
+
+                jx, jy = joint.position
+                if jx is None or jy is None:
+                    joint.velocity = None
+                    continue
+
+                # Driver output joint — use crank velocity formula
+                driver = driver_for.get(joint.id)
+                if driver is not None and driver.motor_joint is not None:
+                    mj = driver.motor_joint
+                    if mj.x is None or mj.y is None or driver.radius is None:
+                        joint.velocity = None
+                        continue
+                    omega = float(getattr(driver, "_omega", 0.0))
+                    mv = mj.velocity or (0.0, 0.0)
+                    vx, vy = solve_crank_velocity(
+                        jx,
+                        jy,
+                        mj.x,
+                        mj.y,
+                        mv[0],
+                        mv[1],
+                        driver.radius,
+                        omega,
+                    )
+                    joint.velocity = None if math.isnan(vx) or math.isnan(vy) else (vx, vy)
+                    continue
+
+                anchors = _anchors_with_distance(joint)
+
+                if isinstance(joint, PrismaticJoint):
+                    # Prismatic: 1 revolute anchor + sliding line. Until the
+                    # mechanism model exposes a line constraint API for
+                    # prismatic joints we fall back to None.
+                    if len(anchors) >= 1 and anchors[0][0].velocity is not None:
+                        a, dist = anchors[0]
+                        ax_, ay_ = a.position
+                        av = a.velocity or (0.0, 0.0)
+                        # No second line anchor available → leave undefined.
+                        if ax_ is None or ay_ is None:
+                            joint.velocity = None
+                            continue
+                        vx, vy = solve_prismatic_velocity(
+                            jx,
+                            jy,
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                            dist,
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                        )
+                        joint.velocity = None if math.isnan(vx) or math.isnan(vy) else (vx, vy)
+                    else:
+                        joint.velocity = None
+                    continue
+
+                # Generic revolute joint: needs two solved anchors
+                if len(anchors) < 2:
+                    joint.velocity = None
+                    continue
+                a1, _d1 = anchors[0]
+                a2, _d2 = anchors[1]
+                if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                    joint.velocity = None
+                    continue
+                v1 = a1.velocity or (0.0, 0.0)
+                v2 = a2.velocity or (0.0, 0.0)
+                vx, vy = solve_revolute_velocity(
+                    jx,
+                    jy,
+                    a1.x,
+                    a1.y,
+                    v1[0],
+                    v1[1],
+                    a2.x,
+                    a2.y,
+                    v2[0],
+                    v2[1],
+                )
+                joint.velocity = None if math.isnan(vx) or math.isnan(vy) else (vx, vy)
+
+            # 3. Accelerations
+            for joint in self._solve_order:
+                if isinstance(joint, GroundJoint):
+                    joint.acceleration = (0.0, 0.0)
+                    continue
+
+                jx, jy = joint.position
+                if jx is None or jy is None or joint.velocity is None:
+                    joint.acceleration = None
+                    continue
+                jvx, jvy = joint.velocity
+
+                driver = driver_for.get(joint.id)
+                if driver is not None and driver.motor_joint is not None:
+                    mj = driver.motor_joint
+                    if mj.x is None or mj.y is None or driver.radius is None:
+                        joint.acceleration = None
+                        continue
+                    omega = float(getattr(driver, "_omega", 0.0))
+                    alpha = float(getattr(driver, "_alpha", 0.0))
+                    mv = mj.velocity or (0.0, 0.0)
+                    ma = mj.acceleration or (0.0, 0.0)
+                    ax, ay = solve_crank_acceleration(
+                        jx,
+                        jy,
+                        jvx,
+                        jvy,
+                        mj.x,
+                        mj.y,
+                        mv[0],
+                        mv[1],
+                        ma[0],
+                        ma[1],
+                        driver.radius,
+                        omega,
+                        alpha,
+                    )
+                    joint.acceleration = None if math.isnan(ax) or math.isnan(ay) else (ax, ay)
+                    continue
+
+                anchors = _anchors_with_distance(joint)
+                if isinstance(joint, PrismaticJoint):
+                    if len(anchors) >= 1 and anchors[0][0].velocity is not None:
+                        a, dist = anchors[0]
+                        ax_, ay_ = a.position
+                        av = a.velocity or (0.0, 0.0)
+                        aa = a.acceleration or (0.0, 0.0)
+                        if ax_ is None or ay_ is None:
+                            joint.acceleration = None
+                            continue
+                        ax, ay = solve_prismatic_acceleration(
+                            jx,
+                            jy,
+                            jvx,
+                            jvy,
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                            aa[0],
+                            aa[1],
+                            dist,
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                            aa[0],
+                            aa[1],
+                            ax_,
+                            ay_,
+                            av[0],
+                            av[1],
+                            aa[0],
+                            aa[1],
+                        )
+                        joint.acceleration = None if math.isnan(ax) or math.isnan(ay) else (ax, ay)
+                    else:
+                        joint.acceleration = None
+                    continue
+
+                if len(anchors) < 2:
+                    joint.acceleration = None
+                    continue
+                a1, _ = anchors[0]
+                a2, _ = anchors[1]
+                if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
+                    joint.acceleration = None
+                    continue
+                v1 = a1.velocity or (0.0, 0.0)
+                v2 = a2.velocity or (0.0, 0.0)
+                acc1 = a1.acceleration or (0.0, 0.0)
+                acc2 = a2.acceleration or (0.0, 0.0)
+                ax, ay = solve_revolute_acceleration(
+                    jx,
+                    jy,
+                    jvx,
+                    jvy,
+                    a1.x,
+                    a1.y,
+                    v1[0],
+                    v1[1],
+                    acc1[0],
+                    acc1[1],
+                    a2.x,
+                    a2.y,
+                    v2[0],
+                    v2[1],
+                    acc2[0],
+                    acc2[1],
+                )
+                joint.acceleration = None if math.isnan(ax) or math.isnan(ay) else (ax, ay)
+
+            yield (
+                tuple(j.coord() for j in self.joints),
+                tuple(j.velocity for j in self.joints),
+                tuple(j.acceleration for j in self.joints),
+            )
 
     def reset(self) -> None:
         """Reset all driver links to initial state."""

@@ -56,6 +56,10 @@ class Joint(ABC):
     # Links connected at this joint (populated by Mechanism)
     _links: list[Link] = field(default_factory=list, repr=False, compare=False)
 
+    # Kinematic state — populated by Mechanism.step_with_derivatives()
+    velocity: Coord | None = field(default=None, repr=False, compare=False)
+    acceleration: Coord | None = field(default=None, repr=False, compare=False)
+
     def __post_init__(self) -> None:
         """Set default name to id if not provided."""
         if self.name is None:
