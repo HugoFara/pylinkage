@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`extract_trajectory(loci, joint=-1)`** in `pylinkage.linkage.analysis`
+  (re-exported from `pylinkage`): returns `(xs, ys)` numpy arrays for one
+  joint's path, skipping unbuildable frames. Replaces the recurring
+  `[(p[i][0], p[i][1]) for p in loci if p[i][0] is not None]` boilerplate.
+  Accepts integer index, joint name, or joint instance (when `linkage` is
+  given).
+
 - **Population abstractions for batch mechanism work** (`pylinkage.population`):
   - `Member`: universal single-mechanism record (dimensions, scores, trajectory).
     `to_loci()` converts trajectories to the tuple format the visualizer expects.

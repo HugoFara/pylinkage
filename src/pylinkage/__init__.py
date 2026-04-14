@@ -52,6 +52,7 @@ __all__ = [
     "Linkage",
     "Simulation",
     "bounding_box",
+    "extract_trajectory",
     "kinematic_default_test",
     # Optimization (lazy, some require scipy)
     "collections",
@@ -140,6 +141,9 @@ from .linkage import (
 )
 from .linkage import (
     bounding_box as bounding_box,
+)
+from .linkage import (
+    extract_trajectory as extract_trajectory,
 )
 from .linkage import (
     kinematic_default_test as kinematic_default_test,

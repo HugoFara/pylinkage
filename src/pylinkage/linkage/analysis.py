@@ -2,8 +2,10 @@
 Analysis tools for linkages.
 """
 
-from collections.abc import Callable, Iterable
-from typing import TYPE_CHECKING
+from collections.abc import Callable, Iterable, Sequence
+from typing import TYPE_CHECKING, Any
+
+import numpy as np
 
 from .._types import BoundingBox, Coord, JointPositions
 from ..exceptions import UnbuildableError
@@ -60,6 +62,64 @@ def kinematic_default_test(
             return func(linkage=linkage, params=params, init_pos=actual_init_pos, loci=loci)
 
     return wrapper
+
+
+def extract_trajectory(
+    loci: "Sequence[Sequence[Coord | tuple[Any, Any]]]",
+    joint: "int | str | Any" = -1,
+    linkage: "Any | None" = None,
+) -> tuple["np.ndarray", "np.ndarray"]:
+    """Extract the (x, y) path of a single joint from simulation loci.
+
+    Frames where the joint position is ``None`` (unbuildable configuration) are
+    silently skipped.
+
+    :param loci: Sequence of frames as produced by ``Linkage.step()`` or
+        ``Mechanism.step()``. Each frame is a sequence of ``(x, y)`` tuples,
+        one per joint/component in the linkage's iteration order.
+    :param joint: Which joint's trajectory to extract. Can be:
+
+        - an integer index into each frame (default ``-1`` = last joint),
+        - a joint/component name (requires ``linkage``),
+        - a joint/component instance (requires ``linkage``).
+
+    :param linkage: The ``Linkage`` or ``Mechanism`` the loci come from.
+        Required when ``joint`` is a name or instance.
+
+    :returns: Pair ``(xs, ys)`` of ``numpy.ndarray`` with the same length.
+        Empty arrays if every frame is unbuildable.
+    """
+    if isinstance(joint, int):
+        index = joint
+    else:
+        if linkage is None:
+            msg = "linkage is required when joint is not an integer index"
+            raise ValueError(msg)
+        index = _resolve_joint_index(linkage, joint)
+
+    xs: list[float] = []
+    ys: list[float] = []
+    for frame in loci:
+        point = frame[index]
+        if point[0] is None or point[1] is None:
+            continue
+        xs.append(point[0])
+        ys.append(point[1])
+    return np.asarray(xs, dtype=float), np.asarray(ys, dtype=float)
+
+
+def _resolve_joint_index(linkage: "Any", joint: "Any") -> int:
+    """Return the frame index of ``joint`` within ``linkage``'s iteration order."""
+    candidates = (
+        getattr(linkage, "joints", None)
+        or getattr(linkage, "components", None)
+        or ()
+    )
+    for i, candidate in enumerate(candidates):
+        if candidate is joint or getattr(candidate, "name", None) == joint:
+            return i
+    msg = f"joint {joint!r} not found in linkage"
+    raise ValueError(msg)
 
 
 def bounding_box(locus: Iterable[Coord]) -> BoundingBox:
