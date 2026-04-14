@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Accepts integer index, joint name, or joint instance (when `linkage` is
   given).
 
+- **`pylinkage.mechanism.fourbar(crank, coupler, rocker, ground, ...)`** and
+  **`slider_crank(crank, rod, ...)`** factory functions: collapse the
+  eight-line `MechanismBuilder` chain for the canonical four-bar and
+  slider-crank topologies into a single call, returning an assembled
+  `Mechanism`.
+
 - **Population abstractions for batch mechanism work** (`pylinkage.population`):
   - `Member`: universal single-mechanism record (dimensions, scores, trajectory).
     `to_loci()` converts trajectories to the tuple format the visualizer expects.

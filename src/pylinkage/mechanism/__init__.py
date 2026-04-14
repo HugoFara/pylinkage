@@ -57,6 +57,12 @@ from .conversion import (
     mechanism_from_linkage,
     mechanism_to_linkage,
 )
+
+# Factory functions for common mechanisms
+from .factories import (
+    fourbar,
+    slider_crank,
+)
 from .joint import (
     AnyJoint,
     GroundJoint,
@@ -109,6 +115,9 @@ __all__ = [
     "Mechanism",
     # Builder
     "MechanismBuilder",
+    # Factories
+    "fourbar",
+    "slider_crank",
     # Conversion
     "mechanism_from_linkage",
     "mechanism_to_linkage",
