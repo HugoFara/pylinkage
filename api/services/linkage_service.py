@@ -1,9 +1,12 @@
 """Business logic for linkage operations."""
 
+import logging
 from typing import Any
 
 import pylinkage as pl
 from pylinkage.exceptions import UnbuildableError
+
+logger = logging.getLogger(__name__)
 
 
 def validate_and_build(linkage_dict: dict[str, Any]) -> tuple[pl.Linkage | None, bool, str]:
@@ -13,7 +16,12 @@ def validate_and_build(linkage_dict: dict[str, Any]) -> tuple[pl.Linkage | None,
         linkage_dict: Dictionary representation of the linkage.
 
     Returns:
-        Tuple of (linkage, is_buildable, error_message).
+        Tuple of (linkage, is_buildable, error_message). The error
+        message is safe to surface to API clients: for known-domain
+        failures (``UnbuildableError``) it echoes the domain message,
+        for any other exception it returns a generic string and logs
+        the real traceback server-side so stack-trace details never
+        leak to the caller.
     """
     try:
         linkage = pl.Linkage.from_dict(linkage_dict)
@@ -22,8 +30,9 @@ def validate_and_build(linkage_dict: dict[str, Any]) -> tuple[pl.Linkage | None,
         return linkage, True, ""
     except UnbuildableError as e:
         return None, False, f"Unbuildable: {e}"
-    except Exception as e:
-        return None, False, f"Error: {e}"
+    except Exception:
+        logger.exception("Unexpected error building linkage")
+        return None, False, "Internal error: could not build linkage"
 
 
 def get_rotation_period(linkage: pl.Linkage) -> int:

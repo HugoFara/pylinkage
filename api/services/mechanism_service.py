@@ -1,10 +1,13 @@
 """Business logic for mechanism operations."""
 
+import logging
 from typing import Any
 
 from pylinkage.exceptions import UnbuildableError
 from pylinkage.mechanism import Mechanism
 from pylinkage.mechanism.serialization import mechanism_from_dict
+
+logger = logging.getLogger(__name__)
 
 
 def validate_and_build(
@@ -16,7 +19,12 @@ def validate_and_build(
         mechanism_dict: Dictionary representation of the mechanism.
 
     Returns:
-        Tuple of (mechanism, is_buildable, error_message).
+        Tuple of (mechanism, is_buildable, error_message). The error
+        message is safe to surface to API clients: for known-domain
+        failures (``UnbuildableError``) it echoes the domain message,
+        for any other exception it returns a generic string and logs
+        the real traceback server-side so stack-trace details never
+        leak to the caller.
     """
     try:
         mechanism = mechanism_from_dict(mechanism_dict)
@@ -26,8 +34,9 @@ def validate_and_build(
         return mechanism, True, ""
     except UnbuildableError as e:
         return None, False, f"Unbuildable: {e}"
-    except Exception as e:
-        return None, False, f"Error: {e}"
+    except Exception:
+        logger.exception("Unexpected error building mechanism")
+        return None, False, "Internal error: could not build mechanism"
 
 
 def get_rotation_period(mechanism: Mechanism) -> int:
