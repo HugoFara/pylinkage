@@ -25,7 +25,7 @@ from .._compat import get_parts
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
 
-    from .linkage import Linkage
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
 
 # =============================================================================

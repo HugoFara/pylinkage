@@ -34,6 +34,8 @@ if TYPE_CHECKING:
     from ..assur.decomposition import DecompositionResult
     from ..assur.graph import LinkageGraph
     from ..dimensions import Dimensions
+    from ..linkage.sensitivity import SensitivityAnalysis, ToleranceAnalysis
+    from ..linkage.transmission import StrokeAnalysis, TransmissionAngleAnalysis
     from ..solver.types import SolverData
 
 logger = logging.getLogger(__name__)
@@ -236,18 +238,24 @@ class Mechanism:
         """Get a link by ID."""
         return self._link_map.get(link_id)
 
-    def step(self, dt: float = 1.0) -> Generator[tuple[MaybeCoord, ...], None, None]:
-        """Simulate one full rotation of the mechanism.
+    def step(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> Generator[tuple[MaybeCoord, ...], None, None]:
+        """Simulate the mechanism.
 
         Yields joint positions at each step of the simulation.
 
         Args:
+            iterations: Number of steps. Defaults to :meth:`get_rotation_period`.
             dt: Time step multiplier (default 1.0).
 
         Yields:
             Tuple of (x, y) coordinates for all joints.
         """
-        iterations = self.get_rotation_period()
+        if iterations is None:
+            iterations = self.get_rotation_period()
 
         for _ in range(iterations):
             self._step_once(dt)
@@ -536,6 +544,27 @@ class Mechanism:
                 idx += 1
                 # Position update happens during simulation
 
+    # ``simulation.Linkage`` and the legacy ``Linkage`` both use these
+    # names, so we expose them as aliases on Mechanism for parity. The
+    # native ``get_constraints``/``set_constraints``/``get_joint_positions``/
+    # ``set_joint_positions`` accessors below remain the primary API.
+
+    def get_num_constraints(self) -> list[float]:
+        """Alias of :meth:`get_constraints` for cross-API compatibility."""
+        return self.get_constraints()
+
+    def set_num_constraints(self, values: list[float]) -> None:
+        """Alias of :meth:`set_constraints` for cross-API compatibility."""
+        self.set_constraints(values)
+
+    def get_coords(self) -> list[Coord]:
+        """Alias of :meth:`get_joint_positions` for cross-API compatibility."""
+        return self.get_joint_positions()
+
+    def set_coords(self, positions: list[Coord]) -> None:
+        """Alias of :meth:`set_joint_positions` for cross-API compatibility."""
+        self.set_joint_positions(positions)
+
     def get_joint_positions(self) -> list[Coord]:
         """Get current positions of all joints."""
         positions: list[Coord] = []
@@ -548,6 +577,86 @@ class Mechanism:
         """Set positions of all joints."""
         for joint, pos in zip(self.joints, positions, strict=False):
             joint.set_coord(pos[0], pos[1])
+
+    # ------------------------------------------------------------------
+    # Analysis bound methods — thin shims over pylinkage.linkage.*
+    # ------------------------------------------------------------------
+
+    def analyze_transmission(
+        self,
+        iterations: int | None = None,
+        acceptable_range: tuple[float, float] = (40.0, 140.0),
+    ) -> "TransmissionAngleAnalysis":
+        """Analyze transmission angle over a full motion cycle.
+
+        See :func:`pylinkage.linkage.analyze_transmission` for details.
+        """
+        from ..linkage.transmission import analyze_transmission
+
+        return analyze_transmission(
+            self,
+            iterations=iterations,
+            acceptable_range=acceptable_range,
+        )
+
+    def analyze_stroke(
+        self,
+        prismatic_joint: object | None = None,
+        iterations: int | None = None,
+    ) -> "StrokeAnalysis":
+        """Analyze stroke/slide position over a full motion cycle.
+
+        See :func:`pylinkage.linkage.analyze_stroke`.
+        """
+        from ..linkage.transmission import analyze_stroke
+
+        return analyze_stroke(
+            self,
+            prismatic_joint=prismatic_joint,
+            iterations=iterations,
+        )
+
+    def analyze_sensitivity(
+        self,
+        output_joint: object | int | None = None,
+        delta: float = 0.01,
+        include_transmission: bool = True,
+        iterations: int | None = None,
+    ) -> "SensitivityAnalysis":
+        """Compute sensitivity of an output path to constraint perturbations.
+
+        See :func:`pylinkage.linkage.analyze_sensitivity`.
+        """
+        from ..linkage.sensitivity import analyze_sensitivity
+
+        return analyze_sensitivity(
+            self,
+            output_joint=output_joint,
+            delta=delta,
+            include_transmission=include_transmission,
+            iterations=iterations,
+        )
+
+    def analyze_tolerance(
+        self,
+        tolerances: dict[str, float],
+        output_joint: object | int | None = None,
+        iterations: int | None = None,
+        n_samples: int = 1000,
+    ) -> "ToleranceAnalysis":
+        """Monte-Carlo tolerance analysis over the output path.
+
+        See :func:`pylinkage.linkage.analyze_tolerance`.
+        """
+        from ..linkage.sensitivity import analyze_tolerance
+
+        return analyze_tolerance(
+            self,
+            tolerances=tolerances,
+            output_joint=output_joint,
+            iterations=iterations,
+            n_samples=n_samples,
+        )
 
     # ------------------------------------------------------------------
     # Numba fast path

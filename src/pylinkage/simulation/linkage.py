@@ -18,6 +18,8 @@ from ..exceptions import UnderconstrainedError
 
 if TYPE_CHECKING:
     from ..actuators import ArcCrank, Crank, LinearActuator
+    from ..linkage.sensitivity import SensitivityAnalysis, ToleranceAnalysis
+    from ..linkage.transmission import StrokeAnalysis, TransmissionAngleAnalysis
     from ..solver import SolverData
 
 
@@ -290,6 +292,86 @@ class Linkage:
             if n_constraints > 0:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
+
+    # ------------------------------------------------------------------
+    # Analysis bound methods — thin shims over pylinkage.linkage.*
+    # ------------------------------------------------------------------
+
+    def analyze_transmission(
+        self,
+        iterations: int | None = None,
+        acceptable_range: tuple[float, float] = (40.0, 140.0),
+    ) -> "TransmissionAngleAnalysis":
+        """Analyze transmission angle over a full motion cycle.
+
+        See :func:`pylinkage.linkage.analyze_transmission` for details.
+        """
+        from ..linkage.transmission import analyze_transmission
+
+        return analyze_transmission(
+            self,
+            iterations=iterations,
+            acceptable_range=acceptable_range,
+        )
+
+    def analyze_stroke(
+        self,
+        prismatic_joint: object | None = None,
+        iterations: int | None = None,
+    ) -> "StrokeAnalysis":
+        """Analyze stroke/slide position over a full motion cycle.
+
+        See :func:`pylinkage.linkage.analyze_stroke`.
+        """
+        from ..linkage.transmission import analyze_stroke
+
+        return analyze_stroke(
+            self,
+            prismatic_joint=prismatic_joint,
+            iterations=iterations,
+        )
+
+    def analyze_sensitivity(
+        self,
+        output_joint: object | int | None = None,
+        delta: float = 0.01,
+        include_transmission: bool = True,
+        iterations: int | None = None,
+    ) -> "SensitivityAnalysis":
+        """Compute sensitivity of an output path to constraint perturbations.
+
+        See :func:`pylinkage.linkage.analyze_sensitivity`.
+        """
+        from ..linkage.sensitivity import analyze_sensitivity
+
+        return analyze_sensitivity(
+            self,
+            output_joint=output_joint,
+            delta=delta,
+            include_transmission=include_transmission,
+            iterations=iterations,
+        )
+
+    def analyze_tolerance(
+        self,
+        tolerances: dict[str, float],
+        output_joint: object | int | None = None,
+        iterations: int | None = None,
+        n_samples: int = 1000,
+    ) -> "ToleranceAnalysis":
+        """Monte-Carlo tolerance analysis over the output path.
+
+        See :func:`pylinkage.linkage.analyze_tolerance`.
+        """
+        from ..linkage.sensitivity import analyze_tolerance
+
+        return analyze_tolerance(
+            self,
+            tolerances=tolerances,
+            output_joint=output_joint,
+            iterations=iterations,
+            n_samples=n_samples,
+        )
 
     # ------------------------------------------------------------------
     # Numba fast path

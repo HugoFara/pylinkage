@@ -26,7 +26,7 @@ from .._types import Coord
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
 
-    from .linkage import Linkage
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
 
 @dataclass(frozen=True)
@@ -95,18 +95,20 @@ class TransmissionAngleAnalysis:
             _, ax = plt.subplots(figsize=(10, 5))
 
         crank_angles = np.linspace(0, 360, len(self.angles), endpoint=False)
-        ax.plot(crank_angles, self.angles, "b-", linewidth=2,
-                label="Transmission angle")
+        ax.plot(crank_angles, self.angles, "b-", linewidth=2, label="Transmission angle")
 
         if show_limits:
             lo, hi = self.acceptable_range
-            ax.axhline(y=lo, color="r", linestyle="--", linewidth=1,
-                       label=f"Lower limit ({lo:g}\u00b0)")
-            ax.axhline(y=hi, color="r", linestyle="--", linewidth=1,
-                       label=f"Upper limit ({hi:g}\u00b0)")
+            ax.axhline(
+                y=lo, color="r", linestyle="--", linewidth=1, label=f"Lower limit ({lo:g}\u00b0)"
+            )
+            ax.axhline(
+                y=hi, color="r", linestyle="--", linewidth=1, label=f"Upper limit ({hi:g}\u00b0)"
+            )
         if show_optimum:
-            ax.axhline(y=90, color="g", linestyle=":", linewidth=1, alpha=0.6,
-                       label="Optimal (90\u00b0)")
+            ax.axhline(
+                y=90, color="g", linestyle=":", linewidth=1, alpha=0.6, label="Optimal (90\u00b0)"
+            )
 
         ax.set_xlabel("Crank angle (degrees)")
         ax.set_ylabel("Transmission angle (degrees)")
@@ -224,10 +226,20 @@ def _auto_detect_fourbar_joints(
             "Cannot auto-detect: no Revolute joint found. Please specify joints explicitly."
         )
 
-    # The rocker pivot: joint1 (legacy) or anchor2 (modern)
-    rocker_pivot = getattr(revolute, "anchor2", None) or getattr(
-        revolute, "joint1", None
-    )
+    # The rocker pivot: joint1 (legacy), anchor2 (modern), or — for a
+    # Mechanism RevoluteJoint — the link-neighbour that is *not* the
+    # crank-side anchor.
+    rocker_pivot = getattr(revolute, "anchor2", None) or getattr(revolute, "joint1", None)
+    if rocker_pivot is None:
+        links = getattr(revolute, "_links", None) or ()
+        for link in links:
+            for other in getattr(link, "joints", ()):
+                if other is revolute or other is crank:
+                    continue
+                rocker_pivot = other
+                break
+            if rocker_pivot is not None:
+                break
     if rocker_pivot is None:
         raise ValueError("Cannot auto-detect rocker pivot from dyad.")
 

@@ -227,7 +227,7 @@ class AssurMechanism:
         Yields:
             Tuple of (x, y) positions for each joint at each step.
         """
-        return self.mechanism.step(dt)
+        return self.mechanism.step(dt=dt)
 
     def get_joint_positions(self) -> list[Coord]:
         """Get current positions of all joints.
