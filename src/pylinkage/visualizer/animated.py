@@ -63,8 +63,8 @@ def update_animated_plot(
         par_pos = frame[p]
         pos = frame[j]
         im.set_data(
-            [par_pos[0], pos[0]],  # type: ignore[arg-type]
-            [par_pos[1], pos[1]],  # type: ignore[arg-type]
+            [par_pos[0], pos[0]],
+            [par_pos[1], pos[1]],
         )
     return images
 
