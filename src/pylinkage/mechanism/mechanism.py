@@ -27,10 +27,14 @@ from .joint import GroundJoint, Joint, PrismaticJoint, RevoluteJoint, TrackerJoi
 from .link import ArcDriverLink, DriverLink, GroundLink, Link
 
 if TYPE_CHECKING:
+    import numpy as np
+    from numpy.typing import NDArray
+
     from .._types import Coord, MaybeCoord
     from ..assur.decomposition import DecompositionResult
     from ..assur.graph import LinkageGraph
     from ..dimensions import Dimensions
+    from ..solver.types import SolverData
 
 logger = logging.getLogger(__name__)
 
@@ -77,6 +81,9 @@ class Mechanism:
     _assur_graph: LinkageGraph | None = field(default=None, repr=False)
     _assur_dimensions: Dimensions | None = field(default=None, repr=False)
     _use_group_solver: bool = field(default=False, repr=False)
+
+    # Numba solver cache (populated lazily by compile()/step_fast())
+    _solver_data: SolverData | None = field(default=None, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         """Build internal indices and compute solve order."""
@@ -541,6 +548,65 @@ class Mechanism:
         """Set positions of all joints."""
         for joint, pos in zip(self.joints, positions, strict=False):
             joint.set_coord(pos[0], pos[1])
+
+    # ------------------------------------------------------------------
+    # Numba fast path
+    # ------------------------------------------------------------------
+
+    def compile(self) -> None:
+        """Pre-compile the numba solver state for :meth:`step_fast`.
+
+        Cached on ``self._solver_data`` and reused until invalidated.
+        """
+        from ..bridge.solver_conversion import linkage_to_solver_data
+
+        self._solver_data = linkage_to_solver_data(self)
+
+    def step_fast(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> NDArray[np.float64]:
+        """Run the simulation through the numba-compiled solver.
+
+        Significantly faster than :meth:`step` for large iteration counts.
+
+        Args:
+            iterations: Number of steps. Defaults to :meth:`get_rotation_period`.
+            dt: Time step multiplier.
+
+        Returns:
+            ``numpy.ndarray`` of shape ``(iterations, n_joints, 2)``.
+            Unbuildable configurations appear as NaN.
+        """
+        from ..bridge.solver_conversion import (
+            solver_data_to_linkage,
+            update_solver_positions,
+        )
+        from ..solver.simulation import simulate
+
+        if self._solver_data is None:
+            self.compile()
+        assert self._solver_data is not None
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        update_solver_positions(self._solver_data, self)
+
+        trajectory: NDArray[np.float64] = simulate(
+            self._solver_data.positions,
+            self._solver_data.constraints,
+            self._solver_data.joint_types,
+            self._solver_data.parent_indices,
+            self._solver_data.constraint_offsets,
+            self._solver_data.solve_order,
+            iterations,
+            dt,
+        )
+
+        solver_data_to_linkage(self._solver_data, self)
+        return trajectory
 
     # ------------------------------------------------------------------
     # Velocity / acceleration kinematics

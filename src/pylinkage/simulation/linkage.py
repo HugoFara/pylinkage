@@ -10,11 +10,15 @@ from collections.abc import Generator, Iterable
 from math import gcd, tau
 from typing import TYPE_CHECKING
 
+import numpy as np
+from numpy.typing import NDArray
+
 from ..components import Component, ConnectedComponent, _AnchorProxy
 from ..exceptions import UnderconstrainedError
 
 if TYPE_CHECKING:
     from ..actuators import ArcCrank, Crank, LinearActuator
+    from ..solver import SolverData
 
 
 class Linkage:
@@ -46,6 +50,7 @@ class Linkage:
         "_arc_cranks",
         "_linear_actuators",
         "_solve_order",
+        "_solver_data",
     )
 
     name: str
@@ -54,6 +59,7 @@ class Linkage:
     _arc_cranks: tuple[ArcCrank, ...]
     _linear_actuators: tuple[LinearActuator, ...]
     _solve_order: tuple[Component, ...]
+    _solver_data: SolverData | None
 
     def __init__(
         self,
@@ -78,6 +84,7 @@ class Linkage:
 
         if order is not None:
             self._solve_order = tuple(order)
+        self._solver_data = None
 
     @property
     def dyads(self) -> tuple[Component, ...]:
@@ -283,6 +290,70 @@ class Linkage:
             if n_constraints > 0:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
+
+    # ------------------------------------------------------------------
+    # Numba fast path
+    # ------------------------------------------------------------------
+
+    def compile(self) -> None:
+        """Pre-compile the numba solver state for :meth:`step_fast`.
+
+        Cached on ``self._solver_data`` and reused until invalidated by
+        a call to ``compile()`` again.
+        """
+        from ..bridge.solver_conversion import linkage_to_solver_data
+
+        if not hasattr(self, "_solve_order"):
+            self._find_solve_order()
+        self._solver_data = linkage_to_solver_data(self)
+
+    def step_fast(
+        self,
+        iterations: int | None = None,
+        dt: float = 1,
+    ) -> NDArray[np.float64]:
+        """Run the simulation through the numba-compiled solver.
+
+        Significantly faster than :meth:`step` for large iteration counts
+        because it avoids per-step Python dispatch.
+
+        Args:
+            iterations: Number of steps. Defaults to :meth:`get_rotation_period`.
+            dt: Time step multiplier (default 1.0).
+
+        Returns:
+            Trajectory array of shape ``(iterations, n_components, 2)``.
+            Unbuildable configurations appear as NaN — check with
+            ``np.isnan(trajectory).any()``.
+        """
+        from ..bridge.solver_conversion import (
+            solver_data_to_linkage,
+            update_solver_positions,
+        )
+        from ..solver.simulation import simulate
+
+        if self._solver_data is None:
+            self.compile()
+        assert self._solver_data is not None
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        update_solver_positions(self._solver_data, self)
+
+        trajectory: NDArray[np.float64] = simulate(
+            self._solver_data.positions,
+            self._solver_data.constraints,
+            self._solver_data.joint_types,
+            self._solver_data.parent_indices,
+            self._solver_data.constraint_offsets,
+            self._solver_data.solve_order,
+            iterations,
+            dt,
+        )
+
+        solver_data_to_linkage(self._solver_data, self)
+        return trajectory
 
     def set_input_velocity(
         self,

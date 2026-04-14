@@ -26,8 +26,12 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
     Extracts all joint positions, constraints, and topology into
     contiguous numpy arrays for efficient numba processing.
 
-    Works with any linkage container exposing either the ``.joints`` or
-    ``.components`` attribute — resolved via :mod:`pylinkage._compat`.
+    Works with:
+
+    - ``simulation.Linkage`` (component/actuator/dyad API)
+    - ``mechanism.Mechanism`` (Links + Joints model — dispatched separately)
+    - any container with a ``.joints`` or ``.components`` attribute that
+      can be classified through :mod:`pylinkage._compat`
 
     Args:
         linkage: The linkage to convert.
@@ -35,6 +39,11 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
     Returns:
         SolverData containing all numeric arrays needed for simulation.
     """
+    # Mechanism has both ``.joints`` and ``.links``; route through the
+    # link-aware converter so we can find drivers and constraints.
+    if hasattr(linkage, "links") and hasattr(linkage, "joints"):
+        return _mechanism_to_solver_data(linkage)
+
     from .._compat import get_parts, is_driver, is_dyad, is_ground
 
     parts = get_parts(linkage)
@@ -111,6 +120,118 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
         for i, part in enumerate(parts):
             if not is_ground(part):
                 solve_order_list.append(i)
+
+    return SolverData(
+        positions=positions,
+        constraints=np.array(constraints_list, dtype=np.float64),
+        joint_types=joint_types,
+        parent_indices=parent_indices,
+        constraint_offsets=np.array(offsets, dtype=np.int32),
+        constraint_counts=np.array(counts, dtype=np.int32),
+        solve_order=np.array(solve_order_list, dtype=np.int32),
+    )
+
+
+def _mechanism_to_solver_data(mechanism: Any) -> SolverData:
+    """Convert a ``Mechanism`` (Links + Joints model) to ``SolverData``.
+
+    The Mechanism stores constraints on links rather than on joints, so
+    we walk each non-driver joint's link list to find anchors and link
+    distances. Driver outputs are typed as ``JOINT_CRANK`` and pull
+    their radius/angular_velocity from the owning ``DriverLink``.
+    """
+    from ..mechanism.joint import GroundJoint, PrismaticJoint, RevoluteJoint
+    from ..mechanism.link import ArcDriverLink, DriverLink
+
+    joints = list(mechanism.joints)
+    n_joints = len(joints)
+    joint_idx: dict[int, int] = {id(j): i for i, j in enumerate(joints)}
+
+    # Map driver output joint id → owning DriverLink for fast lookup.
+    driver_for: dict[int, Any] = {}
+    for link in mechanism.links:
+        if isinstance(link, (DriverLink, ArcDriverLink)) and link.output_joint is not None:
+            driver_for[id(link.output_joint)] = link
+
+    positions = np.zeros((n_joints, 2), dtype=np.float64)
+    joint_types = np.zeros(n_joints, dtype=np.int32)
+    parent_indices = np.full((n_joints, MAX_PARENTS), -1, dtype=np.int32)
+    constraints_list: list[float] = []
+    offsets: list[int] = []
+    counts: list[int] = []
+
+    for i, joint in enumerate(joints):
+        offsets.append(len(constraints_list))
+        x, y = joint.position
+        positions[i, 0] = x if x is not None else 0.0
+        positions[i, 1] = y if y is not None else 0.0
+
+        if isinstance(joint, GroundJoint):
+            joint_types[i] = JOINT_STATIC
+            counts.append(0)
+            continue
+
+        driver = driver_for.get(id(joint))
+        if driver is not None and driver.motor_joint is not None:
+            joint_types[i] = JOINT_CRANK
+            anchor_idx = joint_idx.get(id(driver.motor_joint))
+            if anchor_idx is not None:
+                parent_indices[i, 0] = anchor_idx
+            radius = driver.radius if driver.radius is not None else 0.0
+            constraints_list.append(radius)
+            constraints_list.append(driver.angular_velocity)
+            counts.append(2)
+            continue
+
+        if isinstance(joint, PrismaticJoint):
+            # Prismatic kinematics through the bridge are not yet wired;
+            # treat as STATIC so the simulator at least leaves it in place.
+            joint_types[i] = JOINT_STATIC
+            counts.append(0)
+            continue
+
+        # Revolute-like driven joint: pull two anchors + their link distances.
+        if isinstance(joint, RevoluteJoint):
+            joint_types[i] = JOINT_REVOLUTE
+            anchors_seen: set[int] = set()
+            anchors: list[tuple[Any, float]] = []
+            for link in joint._links:
+                for other in link.joints:
+                    if other is joint or id(other) in anchors_seen:
+                        continue
+                    dist = link.get_distance(joint, other)
+                    if dist is None:
+                        continue
+                    anchors.append((other, dist))
+                    anchors_seen.add(id(other))
+                    if len(anchors) >= 2:
+                        break
+                if len(anchors) >= 2:
+                    break
+
+            for slot, (anchor, dist) in enumerate(anchors[:2]):
+                idx = joint_idx.get(id(anchor))
+                if idx is not None:
+                    parent_indices[i, slot] = idx
+                constraints_list.append(dist)
+            # Pad to 2 constraints if only one anchor was found.
+            while len(constraints_list) - offsets[i] < 2:
+                constraints_list.append(0.0)
+            counts.append(2)
+            continue
+
+        # Fallback: leave fixed.
+        joint_types[i] = JOINT_STATIC
+        counts.append(0)
+
+    # Solve order: prefer mechanism's own ordering, fall back to drivers
+    # then dependents.
+    solve_order_list: list[int] = []
+    raw_order = getattr(mechanism, "_solve_order", None) or joints
+    for joint in raw_order:
+        idx = joint_idx.get(id(joint))
+        if idx is not None and not isinstance(joint, GroundJoint):
+            solve_order_list.append(idx)
 
     return SolverData(
         positions=positions,
