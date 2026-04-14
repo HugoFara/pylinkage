@@ -213,7 +213,7 @@ Basic Path Generation
    for i, linkage in enumerate(result.solutions):
        print(f"\nSolution {i + 1}:")
        # Show the linkage dimensions
-       constraints = list(linkage.get_num_constraints())
+       constraints = list(linkage.get_constraints())
        print(f"  Constraints: {constraints}")
 
        # Verify the path
@@ -519,14 +519,14 @@ point, then use PSO to fine-tune for additional objectives.
 
            return point_error + 0.1 * size
 
-       bounds = pl.generate_bounds(linkage.get_num_constraints())
+       bounds = pl.generate_bounds(linkage.get_constraints())
        optimized = pl.particle_swarm_optimization(
            eval_func=combined_fitness,
            linkage=linkage,
            bounds=bounds,
        )
 
-       linkage.set_num_constraints(optimized[0][1])
+       linkage.set_constraints(optimized[0][1])
        pl.show_linkage(linkage)
 
 Next Steps

@@ -1,6 +1,16 @@
 Custom Joint Creation
 =====================
 
+.. warning::
+
+   This tutorial is out of date. It was written against the legacy
+   ``pylinkage.joints.joint.Joint`` class, which has been removed. The
+   modern replacement is to subclass
+   :class:`pylinkage.components.Component` (or one of its subclasses
+   such as ``ConnectedComponent`` / ``BinaryDyad``). The code snippets
+   below will not run as shown; they are preserved as a reference for
+   the forthcoming rewrite.
+
 This tutorial shows how to create custom joint types by extending the base
 ``Joint`` class. Custom joints let you model specialized mechanical constraints
 not covered by the built-in joint types.
@@ -168,35 +178,33 @@ Here's how to use the slider in a linkage:
 
 .. code-block:: python
 
-   import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
 
    # Define anchor points
-   p1 = pl.Static(0, 0, name="P1")
-   p2 = pl.Static(4, 0, name="P2")
+   p1 = Ground(0.0, 0.0, name="P1")
+   p2 = Ground(4.0, 0.0, name="P2")
 
-   # Create slider between points
+   # Create slider between points (custom component — see above)
    slider = Slider(
        joint0=p1,
        joint1=p2,
        t=0.5,        # Start in the middle
-       name="Slider"
+       name="Slider",
    )
 
    # Create a crank to drive motion
-   crank = pl.Crank(
-       joint0=(2, 2),
-       angle=0,
-       distance=1,
-       name="Crank"
-   )
+   crank_anchor = Ground(2.0, 2.0, name="Crank anchor")
+   crank = Crank(anchor=crank_anchor, radius=1.0, angular_velocity=0.1, name="Crank")
 
-   # Connect crank to slider with a revolute joint
-   connector = pl.Revolute(
-       joint0=crank,
-       joint1=slider,
-       distance0=2,
-       distance1=0.5,
-       name="Connector"
+   # Connect crank to slider with an RRR dyad
+   connector = RRRDyad(
+       anchor1=crank.output,
+       anchor2=slider,
+       distance1=2.0,
+       distance2=0.5,
+       name="Connector",
    )
 
    # Note: For this to work, slider.t would need to be updated

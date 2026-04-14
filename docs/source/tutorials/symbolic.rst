@@ -217,35 +217,31 @@ For custom linkage topologies:
    print(f"Joints: {[j.name for j in linkage.joints]}")
    # Output: Joints: ['A', 'D', 'B', 'C']
 
-Method 3: Converting from Numeric Linkage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Reading Back Numeric Values
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Convert an existing numeric linkage to symbolic:
+When you construct a symbolic linkage, you can stash the original
+numeric values on each symbolic joint (``_numeric_r``,
+``_numeric_r0``, …). ``get_numeric_parameters`` then recovers a plain
+``{parameter_name: value}`` dictionary:
 
 .. code-block:: python
 
-   import pylinkage as pl
-   from pylinkage.symbolic import linkage_to_symbolic, get_numeric_parameters
+   from pylinkage.symbolic import fourbar_symbolic, get_numeric_parameters
 
-   # Create numeric linkage
-   ground_A = pl.Static(0, 0, name="A")
-   ground_D = pl.Static(4, 0, name="D")
-   crank = pl.Crank(0, 1, joint0=ground_A, angle=0.1, distance=1.0, name="B")
-   revolute = pl.Revolute(3, 2, joint0=crank, joint1=ground_D,
-                          distance0=3.0, distance1=3.0, name="C")
-   numeric = pl.Linkage(joints=(ground_A, ground_D, crank, revolute),
-                        order=(crank, revolute))
+   linkage = fourbar_symbolic(
+       ground_length=4.0,
+       crank_length=1.0,
+       coupler_length=3.0,
+       rocker_length=3.0,
+   )
 
-   # Convert to symbolic
-   symbolic = linkage_to_symbolic(numeric)
+   print(f"Parameters: {list(linkage.parameters.keys())}")
 
-   print(f"Parameters: {list(symbolic.parameters.keys())}")
-   # Output: Parameters: ['r_B', 'r0_C', 'r1_C']
-
-   # Get the original numeric values
-   original_values = get_numeric_parameters(symbolic)
-   print(f"Original values: {original_values}")
-   # Output: Original values: {'r_B': 1.0, 'r0_C': 3.0, 'r1_C': 3.0}
+   # If you populated ``_numeric_*`` attributes on each SymJoint, they
+   # are surfaced back out here.
+   values = get_numeric_parameters(linkage)
+   print(f"Current numeric values: {values}")
 
 Computing Trajectories
 ----------------------
@@ -613,14 +609,19 @@ Comparing different computation methods:
 Converting Back to Numeric
 --------------------------
 
-After symbolic analysis, convert to a standard numeric linkage:
+After symbolic analysis, build a numeric linkage from the optimised
+parameters using the modern component API:
 
 .. code-block:: python
 
-   from pylinkage.symbolic import fourbar_symbolic, symbolic_to_linkage
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+   from pylinkage.symbolic import fourbar_symbolic
    import pylinkage as pl
 
-   # Create symbolic linkage and optimize
+   # Create symbolic linkage for analysis / gradient-based optimisation
    sym_linkage = fourbar_symbolic(
        ground_length=4,
        crank_length="L1",
@@ -628,11 +629,18 @@ After symbolic analysis, convert to a standard numeric linkage:
        rocker_length="L3",
    )
 
-   # Optimal parameters from optimization
+   # Optimal parameters from symbolic optimisation
    optimal_params = {"L1": 0.3, "L2": 3.36, "L3": 1.82}
 
-   # Convert to numeric linkage
-   numeric_linkage = symbolic_to_linkage(sym_linkage, optimal_params)
+   # Rebuild the four-bar numerically with those parameters.
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(4.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=optimal_params["L1"], angular_velocity=0.1)
+   output = RRRDyad(
+       anchor1=crank.output, anchor2=D,
+       distance1=optimal_params["L2"], distance2=optimal_params["L3"],
+   )
+   numeric_linkage = Linkage([A, D, crank, output])
 
    # Now use standard visualization and PSO
    pl.show_linkage(numeric_linkage)
@@ -644,8 +652,8 @@ After symbolic analysis, convert to a standard numeric linkage:
        return sum((p[1] - 1.5)**2 for p in output) / len(output)
 
    bounds = pl.generate_bounds(
-       numeric_linkage.get_num_constraints(),
-       min_ratio=0.9, max_ratio=1.1  # Search near optimal
+       numeric_linkage.get_constraints(),
+       min_ratio=0.9, max_ratio=1.1,  # Search near optimal
    )
 
 Complete Workflow Example
@@ -656,11 +664,14 @@ Here's a complete example showing the symbolic workflow:
 .. code-block:: python
 
    """Complete symbolic analysis and optimization workflow."""
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
    from pylinkage.symbolic import (
        fourbar_symbolic,
        compute_trajectory_numeric,
        SymbolicOptimizer,
-       symbolic_to_linkage,
    )
    import pylinkage as pl
    import numpy as np
@@ -708,10 +719,19 @@ Here's a complete example showing the symbolic workflow:
    print(f"  Optimal: L1={result.params['L1']:.3f}, "
          f"L2={result.params['L2']:.3f}, L3={result.params['L3']:.3f}")
 
-   # Step 4: Convert and visualize
+   # Step 4: Build a numeric linkage from the optimised parameters.
    print("\nStep 4: Convert to numeric and visualize")
-   numeric = symbolic_to_linkage(linkage, result.params)
-   print(f"  Numeric linkage created with {len(numeric.joints)} joints")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(4.0, 0.0, name="D")
+   numeric_crank = Crank(
+       anchor=A, radius=result.params["L1"], angular_velocity=0.1,
+   )
+   numeric_output = RRRDyad(
+       anchor1=numeric_crank.output, anchor2=D,
+       distance1=result.params["L2"], distance2=result.params["L3"],
+   )
+   numeric = Linkage([A, D, numeric_crank, numeric_output])
+   print(f"  Numeric linkage created with {len(numeric.components)} components")
 
    # pl.show_linkage(numeric)  # Uncomment to visualize
 

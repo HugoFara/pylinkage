@@ -18,8 +18,6 @@ import time
 from collections.abc import Callable
 
 # For linkage benchmarks
-import pylinkage as pl
-
 # Current implementations
 from pylinkage.geometry.core import (
     cyl_to_cart,

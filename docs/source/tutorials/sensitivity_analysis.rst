@@ -29,28 +29,20 @@ First, create a linkage to analyze:
 
 .. code-block:: python
 
-   import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
 
    # Create a four-bar linkage
-   crank = pl.Crank(
-       x=1, y=0,
-       joint0=(0, 0),
-       angle=0.1,
-       distance=1.0,
-       name="crank"
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(4.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="crank")
+   coupler = RRRDyad(
+       anchor1=crank.output, anchor2=D,
+       distance1=3.0, distance2=2.0, name="coupler",
    )
-   coupler = pl.Revolute(
-       x=3, y=1,
-       joint0=crank,
-       joint1=(4, 0),
-       distance0=3.0,
-       distance1=2.0,
-       name="coupler"
-   )
-   linkage = pl.Linkage(
-       joints=(crank, coupler),
-       order=(crank, coupler),
-   )
+   linkage = Linkage([A, D, crank, coupler])
 
 Sensitivity Analysis
 --------------------
@@ -63,7 +55,7 @@ Sensitivity analysis measures how each constraint dimension affects the output:
 .. code-block:: python
 
    # Run sensitivity analysis with 1% perturbation
-   analysis = linkage.sensitivity_analysis(delta=0.01)
+   analysis = linkage.analyze_sensitivity(delta=0.01)
 
    # View the most sensitive constraint
    print(f"Most sensitive: {analysis.most_sensitive}")
@@ -100,10 +92,10 @@ By default, the last joint is analyzed. You can specify a different output:
 .. code-block:: python
 
    # Analyze sensitivity for the crank output
-   analysis = linkage.sensitivity_analysis(output_joint=0)
+   analysis = linkage.analyze_sensitivity(output_joint=0)
 
    # Or by joint object
-   analysis = linkage.sensitivity_analysis(output_joint=crank)
+   analysis = linkage.analyze_sensitivity(output_joint=crank)
 
 Including Transmission Angle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -112,7 +104,7 @@ For four-bar linkages, you can also track transmission angle sensitivity:
 
 .. code-block:: python
 
-   analysis = linkage.sensitivity_analysis(
+   analysis = linkage.analyze_sensitivity(
        delta=0.01,
        include_transmission=True
    )
@@ -162,7 +154,7 @@ Tolerance analysis uses Monte Carlo simulation to assess manufacturing variabili
    }
 
    # Run Monte Carlo analysis
-   result = linkage.tolerance_analysis(
+   result = linkage.analyze_tolerance(
        tolerances=tolerances,
        n_samples=1000,
        seed=42  # For reproducibility
@@ -217,7 +209,7 @@ You can analyze tolerance for specific constraints:
 .. code-block:: python
 
    # Only analyze crank radius tolerance
-   result = linkage.tolerance_analysis(
+   result = linkage.analyze_tolerance(
        tolerances={"crank_radius": 0.1},
        n_samples=500
    )
@@ -244,7 +236,7 @@ Design linkages that are insensitive to manufacturing variation:
        path_error = compute_path_error(bbox)
 
        # Sensitivity penalty
-       analysis = linkage.sensitivity_analysis(delta=0.01)
+       analysis = linkage.analyze_sensitivity(delta=0.01)
        max_sensitivity = max(analysis.sensitivities.values())
 
        # Combined objective: good path + low sensitivity
@@ -266,7 +258,7 @@ Reject designs that exceed tolerance requirements:
 
        # Check tolerance
        tolerances = {"crank_radius": 0.1, "coupler_dist1": 0.2, "coupler_dist2": 0.2}
-       result = linkage.tolerance_analysis(tolerances, n_samples=100)
+       result = linkage.analyze_tolerance(tolerances, n_samples=100)
 
        if result.max_deviation > 0.5:  # Reject if max deviation > 0.5mm
            raise UnbuildableError("Excessive tolerance variation")
@@ -312,18 +304,25 @@ Example Complete Workflow
 
 .. code-block:: python
 
-   import pylinkage as pl
    import matplotlib.pyplot as plt
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
 
    # Create linkage
-   crank = pl.Crank(1, 0, joint0=(0, 0), angle=0.1, distance=1.0, name="crank")
-   coupler = pl.Revolute(3, 1, joint0=crank, joint1=(4, 0),
-                         distance0=3.0, distance1=2.0, name="coupler")
-   linkage = pl.Linkage(joints=(crank, coupler), order=(crank, coupler))
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(4.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="crank")
+   coupler = RRRDyad(
+       anchor1=crank.output, anchor2=D,
+       distance1=3.0, distance2=2.0, name="coupler",
+   )
+   linkage = Linkage([A, D, crank, coupler])
 
    # Step 1: Sensitivity analysis
    print("=== Sensitivity Analysis ===")
-   sens = linkage.sensitivity_analysis(delta=0.01)
+   sens = linkage.analyze_sensitivity(delta=0.01)
    print(f"Most sensitive: {sens.most_sensitive}")
    for name, val in sens.sensitivity_ranking:
        print(f"  {name}: {val:.4f}")
@@ -335,7 +334,7 @@ Example Complete Workflow
        "coupler_dist1": 0.1,     # Normal tolerance
        "coupler_dist2": 0.1,     # Normal tolerance
    }
-   tol = linkage.tolerance_analysis(tolerances, n_samples=500, seed=42)
+   tol = linkage.analyze_tolerance(tolerances, n_samples=500, seed=42)
 
    print(f"Mean deviation: {tol.mean_deviation:.4f}")
    print(f"Max deviation:  {tol.max_deviation:.4f}")
@@ -366,8 +365,8 @@ API Reference
 - :py:class:`pylinkage.linkage.ToleranceAnalysis` - Tolerance analysis results
 - :py:func:`pylinkage.linkage.analyze_sensitivity` - Sensitivity analysis function
 - :py:func:`pylinkage.linkage.analyze_tolerance` - Tolerance analysis function
-- :py:meth:`pylinkage.linkage.Linkage.sensitivity_analysis` - Convenience method
-- :py:meth:`pylinkage.linkage.Linkage.tolerance_analysis` - Convenience method
+- :py:meth:`pylinkage.simulation.Linkage.analyze_sensitivity` - Convenience method
+- :py:meth:`pylinkage.simulation.Linkage.analyze_tolerance` - Convenience method
 
 Next Steps
 ----------

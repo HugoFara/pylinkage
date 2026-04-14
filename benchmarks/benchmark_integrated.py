@@ -18,8 +18,6 @@ import time
 
 from numba import njit
 
-import pylinkage as pl
-
 # ============================================================================
 # NUMBA-OPTIMIZED JOINT SIMULATION
 # ============================================================================

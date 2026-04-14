@@ -9,19 +9,18 @@ import matplotlib
 
 matplotlib.use("Agg")  # Non-interactive backend for saving
 
+# Reuse the strider builder / evaluator migrated to the modern API.
+import importlib.util
+import pathlib as _pathlib
+
 import matplotlib.animation as anim
 import matplotlib.pyplot as plt
-import numpy as np
 
 import pylinkage as pl
 from pylinkage.visualizer.pso_plots import (
     dashboard_layout,
     parallel_coordinates_plot,
 )
-
-# Reuse the strider builder / evaluator migrated to the modern API.
-import importlib.util
-import pathlib as _pathlib
 
 _strider_spec = importlib.util.spec_from_file_location(
     "_strider_demo", _pathlib.Path(__file__).with_name("strider.py"),

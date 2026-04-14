@@ -87,29 +87,24 @@ Let's optimize a four-bar linkage so its output traces a specific rectangular pa
 .. code-block:: python
 
    import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
 
 
    def create_linkage():
        """Create the base linkage to optimize."""
-       crank = pl.Crank(
-           x=0, y=1,
-           joint0=(0, 0),
-           angle=0.31,
-           distance=1,
-           name="Crank"
+       A = Ground(0.0, 0.0, name="A")
+       D = Ground(3.0, 0.0, name="D")
+       crank = Crank(
+           anchor=A, radius=1.0, angular_velocity=0.31, name="Crank",
        )
-       output = pl.Revolute(
-           x=3, y=2,
-           joint0=crank,
-           joint1=(3, 0),
-           distance0=3,
-           distance1=1,
-           name="Output"
+       output = RRRDyad(
+           anchor1=crank.output, anchor2=D,
+           distance1=3.0, distance2=1.0, name="Output",
        )
-       return pl.Linkage(
-           joints=(crank, output),
-           order=(crank, output),
-       )
+       return Linkage([A, D, crank, output])
 
 
    @pl.kinematic_minimization
@@ -130,7 +125,7 @@ Let's optimize a four-bar linkage so its output traces a specific rectangular pa
    linkage = create_linkage()
 
    # Generate search bounds around current constraints
-   bounds = pl.generate_bounds(linkage.get_num_constraints())
+   bounds = pl.generate_bounds(linkage.get_constraints())
 
    results = pl.particle_swarm_optimization(
        eval_func=rectangle_fitness,
@@ -143,7 +138,7 @@ Let's optimize a four-bar linkage so its output traces a specific rectangular pa
    print(f"Best score: {best_score}")
 
    # Apply best constraints and visualize
-   linkage.set_num_constraints(best_constraints)
+   linkage.set_constraints(best_constraints)
    pl.show_linkage(linkage)
 
 Particle Swarm Optimization Parameters
@@ -181,7 +176,7 @@ The ``generate_bounds`` function creates search ranges around current values:
 
 .. code-block:: python
 
-   constraints = linkage.get_num_constraints()
+   constraints = linkage.get_constraints()
    # Example: [0.31, 1.0, 3.0, 1.0]
 
    bounds = pl.generate_bounds(constraints)
@@ -284,7 +279,7 @@ Sometimes the issue isn't the constraints but the initial joint positions:
    )
 
    # Apply results
-   linkage.set_num_constraints(results[0][1])
+   linkage.set_constraints(results[0][1])
    linkage.set_coords(init_coords)  # Restore initial positions
 
 Visualizing Optimization Progress

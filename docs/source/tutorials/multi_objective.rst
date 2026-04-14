@@ -38,6 +38,10 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
 .. code-block:: python
 
    import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
    from pylinkage.optimization import (
        multi_objective_optimization,
        kinematic_minimization,
@@ -46,15 +50,14 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
 
    # Create the linkage
    def create_fourbar():
-       crank = pl.Crank(
-           x=0, y=1, joint0=(0, 0),
-           angle=0.31, distance=1, name="Crank"
+       A = Ground(0.0, 0.0, name="A")
+       D = Ground(3.0, 0.0, name="D")
+       crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+       output = RRRDyad(
+           anchor1=crank.output, anchor2=D,
+           distance1=3.0, distance2=1.0, name="Output",
        )
-       output = pl.Revolute(
-           x=3, y=2, joint0=crank, joint1=(3, 0),
-           distance0=3, distance1=1, name="Output"
-       )
-       return pl.Linkage(joints=(crank, output), order=(crank, output))
+       return Linkage([A, D, crank, output])
 
 
    # Objective 1: Minimize path error
@@ -91,7 +94,7 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
 
    # Run multi-objective optimization
    linkage = create_fourbar()
-   bounds = pl.generate_bounds(linkage.get_num_constraints())
+   bounds = pl.generate_bounds(linkage.get_constraints())
 
    pareto = multi_objective_optimization(
        objectives=[path_error, transmission_penalty],
@@ -186,7 +189,7 @@ Select a balanced solution using normalized weighted sum:
    best = pareto.best_compromise(weights=[0.8, 0.2])
 
    # Apply to linkage
-   linkage.set_num_constraints(best.dimensions)
+   linkage.set_constraints(best.dimensions)
    pl.show_linkage(linkage)
 
 Filtering Solutions

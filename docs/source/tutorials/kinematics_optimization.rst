@@ -29,28 +29,20 @@ Before computing kinematics, set the angular velocity on the input crank:
 
 .. code-block:: python
 
-   import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
 
    # Create a four-bar linkage
-   crank = pl.Crank(
-       x=0, y=1,
-       joint0=(0, 0),
-       angle=0.1,
-       distance=1,
-       name="Crank"
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="Crank")
+   output = RRRDyad(
+       anchor1=crank.output, anchor2=D,
+       distance1=3.0, distance2=1.0, name="Output",
    )
-   output = pl.Revolute(
-       x=3, y=2,
-       joint0=crank,
-       joint1=(3, 0),
-       distance0=3,
-       distance1=1,
-       name="Output"
-   )
-   linkage = pl.Linkage(
-       joints=(crank, output),
-       order=(crank, output),
-   )
+   linkage = Linkage([A, D, crank, output])
 
    # Set angular velocity (rad/s) and optional angular acceleration (rad/s²)
    linkage.set_input_velocity(crank, omega=10.0, alpha=0.0)
@@ -104,35 +96,28 @@ Design a linkage where the output joint has the lowest possible peak velocity:
 
    import numpy as np
    import pylinkage as pl
+   from pylinkage.actuators import Crank as _Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
 
 
    def create_linkage():
-       crank = pl.Crank(
-           x=0, y=1,
-           joint0=(0, 0),
-           angle=0.1,
-           distance=1,
-           name="Crank"
+       A = Ground(0.0, 0.0, name="A")
+       D = Ground(3.0, 0.0, name="D")
+       crank = _Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="Crank")
+       output = RRRDyad(
+           anchor1=crank.output, anchor2=D,
+           distance1=3.0, distance2=1.0, name="Output",
        )
-       output = pl.Revolute(
-           x=3, y=2,
-           joint0=crank,
-           joint1=(3, 0),
-           distance0=3,
-           distance1=1,
-           name="Output"
-       )
-       return pl.Linkage(
-           joints=(crank, output),
-           order=(crank, output),
-       )
+       return Linkage([A, D, crank, output])
 
 
    @pl.kinematic_minimization
    def minimize_peak_velocity(loci, linkage=None, **kwargs):
        """Minimize the peak velocity at the output joint."""
-       # Get the crank and set angular velocity
-       crank = linkage.joints[0]
+       # First driver is the crank (index 2 in component order)
+       crank = next(c for c in linkage.components if isinstance(c, _Crank))
        linkage.set_input_velocity(crank, omega=10.0)
 
        # Run kinematics
@@ -149,7 +134,7 @@ Design a linkage where the output joint has the lowest possible peak velocity:
 
    # Run optimization
    linkage = create_linkage()
-   bounds = pl.generate_bounds(linkage.get_num_constraints())
+   bounds = pl.generate_bounds(linkage.get_constraints())
 
    results = pl.particle_swarm_optimization(
        eval_func=minimize_peak_velocity,

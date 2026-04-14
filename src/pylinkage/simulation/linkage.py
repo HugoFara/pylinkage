@@ -484,6 +484,7 @@ class Linkage:
         output_joint: object | int | None = None,
         iterations: int | None = None,
         n_samples: int = 1000,
+        seed: int | None = None,
     ) -> ToleranceAnalysis:
         """Monte-Carlo tolerance analysis over the output path.
 
@@ -497,6 +498,7 @@ class Linkage:
             output_joint=output_joint,
             iterations=iterations,
             n_samples=n_samples,
+            seed=seed,
         )
 
     # ------------------------------------------------------------------

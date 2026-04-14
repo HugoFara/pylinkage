@@ -135,32 +135,24 @@ Assur Group Types
        initial_guess=[(1, 0), (3, 2)],
    )
 
-Converting Graph to Linkage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Converting Graph to Mechanism
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-   from pylinkage.assur import graph_to_linkage
+   from pylinkage.assur import graph_to_mechanism
    import pylinkage as pl
 
-   # Convert graph representation to simulatable Linkage
-   linkage = graph_to_linkage(graph)
+   # Convert graph representation to a simulatable Mechanism
+   mechanism = graph_to_mechanism(graph, dimensions)
 
-   print(f"Created linkage with {len(linkage.joints)} joints")
-   for joint in linkage.joints:
+   print(f"Created mechanism with {len(mechanism.joints)} joints")
+   for joint in mechanism.joints:
        print(f"  {joint.name}: {type(joint).__name__}")
 
    # Now use standard simulation and visualization
-   loci = list(linkage.step())
-   pl.show_linkage(linkage)
-
-**Expected output:**
-
-.. code-block:: text
-
-   Created linkage with 2 joints
-     C: Crank
-     D: Revolute
+   loci = list(mechanism.step())
+   pl.show_linkage(mechanism)
 
 Serializing Linkage Graphs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -381,10 +373,10 @@ Convert a hierarchical linkage to a flat hypergraph:
    print(f"Flattened graph has {len(flat_graph.nodes)} nodes")
    print(f"Flattened graph has {len(flat_graph.edges)} edges")
 
-   # Convert to simulatable Linkage
-   from pylinkage.hypergraph import to_linkage
+   # Convert to a simulatable Mechanism
+   from pylinkage.hypergraph import to_mechanism
 
-   sim_linkage = to_linkage(flat_graph)
+   mechanism = to_mechanism(flat_graph, dimensions)
 
 Converting Between Representations
 ----------------------------------
@@ -404,21 +396,19 @@ Hypergraph to Assur Graph
    groups = decompose_assur_groups(assur_graph)
    print(f"Decomposed into {len(groups)} Assur groups")
 
-Linkage to Hypergraph
-^^^^^^^^^^^^^^^^^^^^^
+Mechanism to Hypergraph
+^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
-   import pylinkage as pl
-   from pylinkage.hypergraph import from_linkage
+   from pylinkage.hypergraph import from_mechanism
+   from pylinkage.mechanism import fourbar
 
-   # Create a standard linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(4, 0), distance0=3, distance1=3)
-   linkage = pl.Linkage(joints=(crank, output))
+   # Build a Mechanism first
+   mechanism = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
 
    # Convert to hypergraph
-   graph = from_linkage(linkage)
+   graph, dimensions = from_mechanism(mechanism)
 
    print(f"Converted to hypergraph with {len(graph.nodes)} nodes")
 
@@ -480,10 +470,10 @@ Build a Stephenson Type I six-bar linkage using components:
 
    # Flatten and simulate
    flat = stephenson.flatten()
-   linkage = to_linkage(flat)
+   mechanism = to_mechanism(flat, dimensions)
 
    import pylinkage as pl
-   pl.show_linkage(linkage)
+   pl.show_linkage(mechanism)
 
 Analysis Applications
 ---------------------

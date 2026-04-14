@@ -55,14 +55,20 @@ Basic Visualization
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import show_linkage
 
    # Create a four-bar linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output], name="Four-bar")
 
    # Quick visualization (opens matplotlib window)
    show_linkage(linkage)
@@ -148,16 +154,24 @@ Compare different configurations:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import show_linkage
    import matplotlib.pyplot as plt
 
    # Create two different four-bars
    def make_fourbar(d0, d1, name):
-       crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-       output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                            distance0=d0, distance1=d1)
-       return pl.Linkage(joints=(crank, output), name=name)
+       A = Ground(0.0, 0.0, name="A")
+       D = Ground(3.0, 0.0, name="D")
+       crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31)
+       output = RRRDyad(
+           anchor1=crank.output, anchor2=D, distance1=d0, distance2=d1,
+       )
+       return Linkage([A, D, crank, output], name=name)
 
    linkage1 = make_fourbar(3, 1, "Short rocker")
    linkage2 = make_fourbar(3, 2, "Long rocker")
@@ -185,14 +199,20 @@ Basic Interactive Plot
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import plot_linkage_plotly
 
    # Create linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output], name="Four-bar")
 
    # Create interactive plot
    fig = plot_linkage_plotly(linkage)
@@ -309,14 +329,20 @@ Basic SVG Output
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import save_linkage_svg
 
    # Create linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output], name="Four-bar")
 
    # Save as SVG
    save_linkage_svg(linkage, "linkage.svg")
@@ -365,12 +391,19 @@ Show multiple positions in one image:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    from pylinkage.visualizer import save_linkage_svg_multiframe
    import pylinkage as pl
 
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
-   linkage = pl.Linkage(joints=(crank, output))
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31)
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0)
+   linkage = Linkage([A, D, crank, output])
 
    # Show 5 evenly spaced positions
    save_linkage_svg_multiframe(
@@ -433,14 +466,20 @@ Export to DXF format for AutoCAD, CNC machines, and laser cutters:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import save_linkage_dxf, plot_linkage_dxf
 
    # Create linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output], name="Four-bar")
 
    # Save to DXF file
    save_linkage_dxf(linkage, "linkage.dxf")
@@ -485,14 +524,20 @@ Export to STEP format for 3D CAD applications (FreeCAD, SolidWorks, Fusion 360):
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import save_linkage_step, build_linkage_3d
 
    # Create linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output), name="Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output], name="Four-bar")
 
    # Save to STEP file (dimensions auto-scaled to fit linkage)
    save_linkage_step(linkage, "linkage.step")
@@ -573,6 +618,11 @@ A typical workflow from simulation to fabrication:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import (
        show_linkage,
@@ -583,10 +633,11 @@ A typical workflow from simulation to fabrication:
    )
 
    # 1. Design and simulate
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="Crank")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=3, distance1=1, name="Output")
-   linkage = pl.Linkage(joints=(crank, output))
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0, name="Output")
+   linkage = Linkage([A, D, crank, output])
    loci = list(linkage.step())
 
    # 2. Quick visualization to verify
@@ -616,6 +667,11 @@ Visualize particle swarm optimization progress:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import (
        plot_pso_convergence,
@@ -624,9 +680,11 @@ Visualize particle swarm optimization progress:
    )
 
    # Create and optimize linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
-   linkage = pl.Linkage(joints=(crank, output))
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31)
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0)
+   linkage = Linkage([A, D, crank, output])
 
    @pl.kinematic_minimization
    def fitness(loci, **kwargs):
@@ -634,7 +692,7 @@ Visualize particle swarm optimization progress:
        bbox = pl.bounding_box(output_path)
        return bbox[2] - bbox[0]  # Minimize height
 
-   bounds = pl.generate_bounds(linkage.get_num_constraints())
+   bounds = pl.generate_bounds(linkage.get_constraints())
 
    # Run optimization with history tracking
    results, history = pl.particle_swarm_optimization(
@@ -673,12 +731,19 @@ Show velocity vectors alongside the linkage:
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    from pylinkage.visualizer import show_kinematics, animate_kinematics
    import pylinkage as pl
 
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.1, distance=1)
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1)
-   linkage = pl.Linkage(joints=(crank, output))
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1)
+   output = RRRDyad(anchor1=crank.output, anchor2=D, distance1=3.0, distance2=1.0)
+   linkage = Linkage([A, D, crank, output])
 
    # Set angular velocity
    linkage.set_input_velocity(crank, omega=10.0)
@@ -743,6 +808,11 @@ Example: Complete Visualization Workflow
 
 .. code-block:: python
 
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
+
    import pylinkage as pl
    from pylinkage.visualizer import (
        show_linkage,
@@ -751,10 +821,14 @@ Example: Complete Visualization Workflow
    )
 
    # Create an optimized linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="A")
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0),
-                        distance0=2.5, distance1=1.5, name="B")
-   linkage = pl.Linkage(joints=(crank, output), name="Optimized Four-bar")
+   A = Ground(0.0, 0.0, name="A")
+   D = Ground(3.0, 0.0, name="D")
+   crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="A")
+   output = RRRDyad(
+       anchor1=crank.output, anchor2=D,
+       distance1=2.5, distance2=1.5, name="B",
+   )
+   linkage = Linkage([A, D, crank, output], name="Optimized Four-bar")
 
    # 1. Quick check with Matplotlib
    show_linkage(linkage, loci=True)
