@@ -459,6 +459,82 @@ class Linkage:
             self._find_solve_order()
         self._solver_data = linkage_to_solver_data(self)
 
+    def step_fast_with_kinematics(
+        self,
+        iterations: int | None = None,
+        dt: float = 1.0,
+    ) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
+        """Run the numba-compiled simulation, returning velocities and accelerations.
+
+        Per-crank ``omega``/``alpha`` inputs must be set via
+        :meth:`set_input_velocity` (cranks without an explicit input default
+        to zero).
+
+        Args:
+            iterations: Number of steps. Defaults to :meth:`get_rotation_period`.
+            dt: Time step multiplier (default 1.0).
+
+        Returns:
+            ``(positions, velocities, accelerations)`` — each a numpy array
+            of shape ``(iterations, n_components, 2)``.
+        """
+        from ..bridge.solver_conversion import (
+            solver_data_to_linkage,
+            update_solver_positions,
+        )
+        from ..solver.simulation import simulate_with_kinematics
+
+        if self._solver_data is None:
+            self.compile()
+        assert self._solver_data is not None
+
+        if iterations is None:
+            iterations = self.get_rotation_period()
+
+        update_solver_positions(self._solver_data, self)
+
+        n_components = len(self.components)
+        n_cranks = len(self._cranks)
+
+        if self._solver_data.velocities is None:
+            self._solver_data.velocities = np.zeros((n_components, 2), dtype=np.float64)
+        if self._solver_data.accelerations is None:
+            self._solver_data.accelerations = np.zeros(
+                (n_components, 2),
+                dtype=np.float64,
+            )
+        if self._solver_data.omega_values is None:
+            self._solver_data.omega_values = np.zeros(n_cranks, dtype=np.float64)
+        if self._solver_data.alpha_values is None:
+            self._solver_data.alpha_values = np.zeros(n_cranks, dtype=np.float64)
+        if self._solver_data.crank_indices is None:
+            crank_indices = [i for i, c in enumerate(self.components) if c in self._cranks]
+            self._solver_data.crank_indices = np.array(crank_indices, dtype=np.int32)
+
+        # Sync each crank's stored _omega / _alpha into the solver arrays.
+        for i, crank in enumerate(self._cranks):
+            self._solver_data.omega_values[i] = float(getattr(crank, "_omega", 0.0))
+            self._solver_data.alpha_values[i] = float(getattr(crank, "_alpha", 0.0))
+
+        pos, vel, acc = simulate_with_kinematics(
+            self._solver_data.positions,
+            self._solver_data.velocities,
+            self._solver_data.accelerations,
+            self._solver_data.constraints,
+            self._solver_data.joint_types,
+            self._solver_data.parent_indices,
+            self._solver_data.constraint_offsets,
+            self._solver_data.solve_order,
+            self._solver_data.omega_values,
+            self._solver_data.alpha_values,
+            self._solver_data.crank_indices,
+            iterations,
+            dt,
+        )
+
+        solver_data_to_linkage(self._solver_data, self)
+        return pos, vel, acc
+
     def step_fast(
         self,
         iterations: int | None = None,
