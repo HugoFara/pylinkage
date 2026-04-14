@@ -163,6 +163,7 @@ The [`docs/notebooks/`](docs/notebooks/) directory contains hands-on tutorials t
 | 12 | [Three Synthesis Problems](docs/notebooks/12_three_synthesis_problems.ipynb) | Side-by-side comparison of path, function, and motion synthesis |
 | 13 | [Population Abstractions](docs/notebooks/13_population_abstractions.ipynb) | Batch simulation, ranking, and filtering of mechanism families |
 | 14 | [Topology Enumeration](docs/notebooks/14_topology_enumeration_and_synthesis.ipynb) | Enumerate and synthesize across all valid topologies |
+| 15 | [Hypergraph Composition](docs/notebooks/15_hypergraph_composition.ipynb) | Compose mechanisms hierarchically from reusable hypergraph components |
 
 ## What Else Can It Do?
 
