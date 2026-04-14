@@ -108,6 +108,65 @@ def extract_trajectory(
     return np.asarray(xs, dtype=float), np.asarray(ys, dtype=float)
 
 
+def extract_trajectories(
+    loci: "Sequence[Sequence[Coord | tuple[Any, Any]]]",
+    linkage: "Any | None" = None,
+) -> "dict[Any, tuple[np.ndarray, np.ndarray]]":
+    """Extract the (x, y) path of every joint from simulation loci.
+
+    Frames where a given joint's position is ``None`` (unbuildable
+    configuration) are skipped *per joint* — each joint's arrays only
+    contain frames where that joint was successfully solved.
+
+    :param loci: Sequence of frames as produced by ``Linkage.step()`` or
+        ``Mechanism.step()``. Each frame is a sequence of ``(x, y)``
+        tuples, one per joint/component in the linkage's iteration order.
+    :param linkage: Optional ``Linkage`` or ``Mechanism``. If provided,
+        the returned dict is keyed by joint name; otherwise it is keyed
+        by integer index.
+
+    :returns: Mapping ``{joint_name_or_index: (xs, ys)}``. Each ``(xs,
+        ys)`` pair is a tuple of ``numpy.ndarray`` with matching length.
+        Empty arrays indicate a joint was never buildable.
+    """
+    if not loci:
+        return {}
+
+    n_joints = len(loci[0])
+    keys: list[Any]
+    if linkage is None:
+        keys = list(range(n_joints))
+    else:
+        candidates = (
+            getattr(linkage, "joints", None)
+            or getattr(linkage, "components", None)
+            or ()
+        )
+        if len(candidates) != n_joints:
+            msg = (
+                f"linkage has {len(candidates)} joints but frames have "
+                f"{n_joints} entries"
+            )
+            raise ValueError(msg)
+        keys = [getattr(j, "name", None) or getattr(j, "id", i)
+                for i, j in enumerate(candidates)]
+
+    xs_lists: list[list[float]] = [[] for _ in range(n_joints)]
+    ys_lists: list[list[float]] = [[] for _ in range(n_joints)]
+    for frame in loci:
+        for i, point in enumerate(frame):
+            if point[0] is None or point[1] is None:
+                continue
+            xs_lists[i].append(point[0])
+            ys_lists[i].append(point[1])
+
+    return {
+        keys[i]: (np.asarray(xs_lists[i], dtype=float),
+                  np.asarray(ys_lists[i], dtype=float))
+        for i in range(n_joints)
+    }
+
+
 def _resolve_joint_index(linkage: "Any", joint: "Any") -> int:
     """Return the frame index of ``joint`` within ``linkage``'s iteration order."""
     candidates = (

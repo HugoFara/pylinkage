@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Accepts integer index, joint name, or joint instance (when `linkage` is
   given).
 
+- **`extract_trajectories(loci, linkage=None)`**: all-joints variant of
+  the above. Returns `{joint_name: (xs, ys)}` when `linkage` is given,
+  or `{index: (xs, ys)}` otherwise. Skips `None` frames per joint.
+
 - **`pylinkage.mechanism.fourbar(crank, coupler, rocker, ground, ...)`** and
   **`slider_crank(crank, rod, ...)`** factory functions: collapse the
   eight-line `MechanismBuilder` chain for the canonical four-bar and

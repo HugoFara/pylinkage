@@ -6,6 +6,7 @@ __all__ = [
     "Linkage",
     "Simulation",
     "bounding_box",
+    "extract_trajectories",
     "extract_trajectory",
     "kinematic_default_test",
     # Transmission angle analysis (Revolute joints)
@@ -25,6 +26,9 @@ __all__ = [
 
 from .analysis import (
     bounding_box as bounding_box,
+)
+from .analysis import (
+    extract_trajectories as extract_trajectories,
 )
 from .analysis import (
     extract_trajectory as extract_trajectory,
