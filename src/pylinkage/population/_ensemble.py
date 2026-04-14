@@ -22,10 +22,7 @@ from ._batch_sim import simulate_batch
 from ._member import Member
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage as LegacyLinkage
-    from ..simulation import Linkage as SimLinkage
-
-    Linkage = LegacyLinkage | SimLinkage
+    from ..simulation import Linkage
 
 
 class Ensemble:
@@ -431,7 +428,7 @@ class Ensemble:
             self.simulate_member(idx, iterations=iterations)
             member = self._member_at(idx)
 
-        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)  # type: ignore[arg-type]
+        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)
 
     # ------------------------------------------------------------------
     # Internal helpers

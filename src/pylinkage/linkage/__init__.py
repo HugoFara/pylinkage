@@ -1,10 +1,14 @@
-"""
-Definition and analysis of a linkage as a dynamic set of joints.
+"""Linkage analysis utilities (trajectory extraction, transmission,
+sensitivity, tolerance).
+
+The legacy ``Linkage`` class that previously lived here has been
+removed. Use :class:`pylinkage.simulation.Linkage` for the modern
+component/actuator/dyad API or :class:`pylinkage.mechanism.Mechanism`
+for the links-and-joints model. The analysis helpers exported here
+work with both containers via :mod:`pylinkage._compat`.
 """
 
 __all__ = [
-    "Linkage",
-    "Simulation",
     "bounding_box",
     "extract_trajectories",
     "extract_trajectory",
@@ -36,8 +40,6 @@ from .analysis import (
 from .analysis import (
     kinematic_default_test as kinematic_default_test,
 )
-from .linkage import Linkage as Linkage
-from .linkage import Simulation as Simulation
 from .sensitivity import (
     SensitivityAnalysis as SensitivityAnalysis,
 )

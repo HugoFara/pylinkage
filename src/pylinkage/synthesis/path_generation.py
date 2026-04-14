@@ -46,7 +46,7 @@ from .core import Dyad, SynthesisProblem, SynthesisResult
 from .utils import GrashofType, grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
 
 
 def _estimate_orientations_from_path(
@@ -617,8 +617,9 @@ def verify_path_generation(
     if not precision_points:
         return True, []
 
-    # Support both legacy Linkage (.joints) and SimLinkage (.components)
-    parts = getattr(linkage, "components", None) or linkage.joints
+    from .._compat import get_parts
+
+    parts = get_parts(linkage)
 
     # Find the coupler point joint
     coupler_joint = None

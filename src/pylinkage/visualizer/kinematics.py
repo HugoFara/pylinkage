@@ -11,14 +11,13 @@ import numpy as np
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
+    from typing import Any as Linkage  # accepts simulation.Linkage and Mechanism
 
     from matplotlib.artist import Artist
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
     from matplotlib.quiver import Quiver
     from numpy.typing import NDArray
-
-    from ..linkage.linkage import Linkage
 
 
 def plot_velocity_vectors(

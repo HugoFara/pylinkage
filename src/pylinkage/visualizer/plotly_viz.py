@@ -24,9 +24,9 @@ from .symbols import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from typing import Any as LegacyLinkage  # historical alias, no longer legacy
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage as LegacyLinkage
     from ..simulation.linkage import Linkage as SimLinkage
 
 

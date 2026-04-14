@@ -13,9 +13,9 @@ from .symbols import SymbolType, get_symbol_spec
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
+    from typing import Any as Linkage  # accepts simulation.Linkage and Mechanism
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage
 
 # Try to import ezdxf, set to None if not available
 try:
@@ -278,7 +278,7 @@ def plot_linkage_dxf(
     ezdxf = _check_ezdxf()
 
     # Run simulation if no loci provided
-    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
+    loci = list(linkage.step()) if loci is None else list(loci)
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

@@ -90,6 +90,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **`pylinkage.linkage.Linkage` and `pylinkage.linkage.Simulation`**:
+  the legacy ``Linkage`` class is gone. ``pl.Linkage`` now points at
+  :class:`pylinkage.simulation.Linkage` (component/actuator/dyad API);
+  ``pl.Simulation`` points at the shared
+  :class:`pylinkage._simulation_context.Simulation` context manager.
+  Internal TYPE_CHECKING imports that referenced
+  ``pylinkage.linkage.Linkage`` have been repointed to
+  ``pylinkage.simulation.Linkage``. User code that built linkages via
+  ``pl.Linkage(joints=[...])`` must migrate to the component API —
+  see the migration notes in the 0.10.0 notebooks and tutorials.
 - **`pylinkage.joints` module** (legacy joint API — `Static`, `Crank`,
   `Revolute`, `Pivot`, `Fixed`, `Prismatic`, `Joint`). Deprecated since
   0.7.0 (Pivot since 0.6.0). Use the component/actuator/dyad API:

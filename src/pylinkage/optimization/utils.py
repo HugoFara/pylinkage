@@ -17,7 +17,7 @@ from ..exceptions import OptimizationError
 from ..linkage.analysis import kinematic_default_test
 
 if TYPE_CHECKING:
-    from ..linkage.linkage import Linkage
+    from typing import Any as Linkage  # accepts simulation.Linkage and Mechanism
 
 
 def generate_bounds(

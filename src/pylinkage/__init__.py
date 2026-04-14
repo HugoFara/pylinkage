@@ -77,6 +77,9 @@ from . import dyads as dyads
 
 # Mechanism module - new Links + Joints model
 from . import mechanism as mechanism
+from ._simulation_context import (
+    Simulation as Simulation,
+)
 
 # Canonical types (single source of truth for kinematic types)
 from ._types import (
@@ -128,12 +131,6 @@ from .geometry import (
     sqr_dist as sqr_dist,
 )
 from .linkage import (
-    Linkage as Linkage,
-)
-from .linkage import (
-    Simulation as Simulation,
-)
-from .linkage import (
     bounding_box as bounding_box,
 )
 from .linkage import (
@@ -144,6 +141,9 @@ from .linkage import (
 )
 from .linkage import (
     kinematic_default_test as kinematic_default_test,
+)
+from .simulation import (
+    Linkage as Linkage,
 )
 
 # --- Lazy imports (heavy optional dependencies) ---

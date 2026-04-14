@@ -38,7 +38,7 @@ from .core import SynthesisProblem, SynthesisResult
 from .utils import grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
 
 
 def freudenstein_equation(

@@ -42,7 +42,7 @@ from .path_generation import (
 from .topology_types import GroupSynthesisResult, NBarSolution
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
     from ..simulation import Linkage as SimLinkage
 
 
@@ -207,7 +207,7 @@ def _watt_synthesis(
     for nbar, raw_fb in zip(all_nbar_solutions, all_raw_fourbars, strict=True):
         linkage = _nbar_to_six_bar_linkage(nbar)
         if linkage is not None and _validate_six_bar(linkage, precision_points):
-            solutions.append(linkage)  # type: ignore[arg-type]
+            solutions.append(linkage)
             valid_raw.append(raw_fb)
             if len(solutions) >= max_solutions:
                 break
@@ -920,7 +920,7 @@ def _optimize_stephenson_triad(
         coupler_point=all_points[0] if all_points else None,
     )
 
-    return _nbar_to_six_bar_linkage(nbar)  # type: ignore[return-value]
+    return _nbar_to_six_bar_linkage(nbar)
 
 
 def _midpoint(a: Point2D, b: Point2D) -> Point2D:

@@ -27,11 +27,11 @@ from .symbols import (
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
+    from typing import Any as Linkage  # accepts simulation.Linkage and Mechanism
 
     from numpy.typing import NDArray
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage
 
 # Default scale and padding
 DEFAULT_SCALE = 80  # pixels per unit
@@ -480,7 +480,7 @@ def plot_linkage_svg(
     link_style_enum = style_map.get(link_style, LinkStyle.BAR)
 
     # Run simulation if no loci provided
-    loci = list(linkage.step()) if loci is None else list(loci)  # type: ignore[arg-type]
+    loci = list(linkage.step()) if loci is None else list(loci)
 
     if not loci:
         raise ValueError("No loci data available. Run linkage.step() first.")

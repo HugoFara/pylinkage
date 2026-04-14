@@ -13,7 +13,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
     from ..topology.catalog import CatalogEntry
     from .collections.pareto import ParetoFront
 

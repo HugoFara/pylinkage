@@ -17,7 +17,7 @@ from ._ensemble import Ensemble
 from ._member import Member
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
     from ..synthesis.topology_types import TopologySolution
 
 
