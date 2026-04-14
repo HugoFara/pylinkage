@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   slider-crank topologies into a single call, returning an assembled
   `Mechanism`.
 
+- **`TransmissionAngleAnalysis.plot(ax=None)`**: one-line replacement for
+  the matplotlib boilerplate (`axhline` at the acceptable-range bounds,
+  the 90° optimum, fixed `[0, 180]` y-axis, crank-angle x-axis). Accepts
+  an existing axes for use inside subplot grids.
+
 - **Population abstractions for batch mechanism work** (`pylinkage.population`):
   - `Member`: universal single-mechanism record (dimensions, scores, trajectory).
     `to_loci()` converts trajectories to the tuple format the visualizer expects.

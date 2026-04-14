@@ -24,6 +24,8 @@ from numpy.typing import NDArray
 from .._types import Coord
 
 if TYPE_CHECKING:
+    from matplotlib.axes import Axes
+
     from .linkage import Linkage
 
 
@@ -63,6 +65,57 @@ class TransmissionAngleAnalysis:
         if abs(self.max_angle - 90.0) >= abs(self.min_angle - 90.0):
             return self.max_angle
         return self.min_angle
+
+    def plot(
+        self,
+        ax: Axes | None = None,
+        show_limits: bool = True,
+        show_optimum: bool = True,
+        title: str | None = "Transmission Angle over Full Cycle",
+    ) -> Axes:
+        """Plot transmission angle versus crank angle over one full cycle.
+
+        Crank angle is plotted in degrees on the x-axis (one revolution
+        = 360°). The acceptable-range limits and the 90° optimum are
+        marked with horizontal reference lines, and the y-axis is fixed
+        to ``[0, 180]`` so plots are comparable across mechanisms.
+
+        :param ax: Axes to draw on. A new figure is created if ``None``.
+        :param show_limits: Draw red dashed lines at the acceptable-range
+            bounds (default ``[40°, 140°]``).
+        :param show_optimum: Draw a green dotted line at 90° (the
+            transmission-angle optimum).
+        :param title: Plot title. Pass ``None`` to omit.
+
+        :returns: The Matplotlib axes the plot was drawn on.
+        """
+        import matplotlib.pyplot as plt
+
+        if ax is None:
+            _, ax = plt.subplots(figsize=(10, 5))
+
+        crank_angles = np.linspace(0, 360, len(self.angles), endpoint=False)
+        ax.plot(crank_angles, self.angles, "b-", linewidth=2,
+                label="Transmission angle")
+
+        if show_limits:
+            lo, hi = self.acceptable_range
+            ax.axhline(y=lo, color="r", linestyle="--", linewidth=1,
+                       label=f"Lower limit ({lo:g}\u00b0)")
+            ax.axhline(y=hi, color="r", linestyle="--", linewidth=1,
+                       label=f"Upper limit ({hi:g}\u00b0)")
+        if show_optimum:
+            ax.axhline(y=90, color="g", linestyle=":", linewidth=1, alpha=0.6,
+                       label="Optimal (90\u00b0)")
+
+        ax.set_xlabel("Crank angle (degrees)")
+        ax.set_ylabel("Transmission angle (degrees)")
+        ax.set_ylim(0, 180)
+        if title is not None:
+            ax.set_title(title)
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+        return ax
 
 
 def compute_transmission_angle(

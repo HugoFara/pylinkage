@@ -587,3 +587,99 @@ class TestStrokeAnalysisDataclass:
         )
         with pytest.raises(AttributeError):
             analysis.min_position = 1.0  # type: ignore[misc]
+
+
+class TestTransmissionAnglePlot:
+    """Tests for TransmissionAngleAnalysis.plot()."""
+
+    def _make_analysis(self, n=20):
+        # Sweep cleanly through the acceptable range so legend lines all show.
+        return TransmissionAngleAnalysis(
+            min_angle=70.0,
+            max_angle=110.0,
+            mean_angle=90.0,
+            angles=np.linspace(70.0, 110.0, n),
+            is_acceptable=True,
+            min_deviation=0.0,
+            max_deviation=20.0,
+            min_angle_step=0,
+            max_angle_step=n - 1,
+        )
+
+    def test_returns_axes(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        from matplotlib.axes import Axes
+
+        result = self._make_analysis()
+        ax = result.plot()
+        assert isinstance(ax, Axes)
+        import matplotlib.pyplot as plt
+        plt.close("all")
+
+    def test_uses_provided_axes(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis()
+        fig, ax = plt.subplots()
+        out = result.plot(ax=ax)
+        assert out is ax
+        plt.close(fig)
+
+    def test_x_axis_spans_full_revolution(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis(n=60)
+        ax = result.plot()
+        # The transmission curve is the first artist
+        line = ax.get_lines()[0]
+        xs = line.get_xdata()
+        assert xs[0] == 0.0
+        assert xs[-1] < 360.0  # endpoint=False
+        assert xs[-1] > 350.0  # close to a full revolution
+        plt.close("all")
+
+    def test_y_axis_clamped(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis()
+        ax = result.plot()
+        assert ax.get_ylim() == (0.0, 180.0)
+        plt.close("all")
+
+    def test_show_limits_and_optimum_lines(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis()
+        ax = result.plot()
+        # 1 transmission curve + 2 limit lines + 1 optimum line = 4 lines
+        assert len(ax.get_lines()) == 4
+        plt.close("all")
+
+    def test_can_disable_reference_lines(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis()
+        ax = result.plot(show_limits=False, show_optimum=False)
+        assert len(ax.get_lines()) == 1
+        plt.close("all")
+
+    def test_title_can_be_omitted(self):
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+
+        result = self._make_analysis()
+        ax = result.plot(title=None)
+        assert ax.get_title() == ""
+        plt.close("all")
