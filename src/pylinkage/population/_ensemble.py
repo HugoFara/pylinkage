@@ -374,7 +374,7 @@ class Ensemble:
             self.simulate_member(idx, iterations=iterations)
             member = self._member_at(idx)
 
-        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)  # type: ignore[arg-type]
+        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)
 
     def plot_plotly(
         self,

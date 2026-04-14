@@ -27,7 +27,7 @@ def generate_bounds(
 ) -> tuple[NDArray[np.floating], NDArray[np.floating]]:
     """Simple function to generate bounds from a linkage.
 
-    :param center: 1-D sequence, often in the form of ``linkage.get_num_constraints()``.
+    :param center: 1-D sequence, often in the form of ``linkage.get_constraints()``.
     :param min_ratio: Minimal compression ratio for the bounds. Minimal bounds will be of the
         shape center[x] / min_ratio.
         (Default value = 5).

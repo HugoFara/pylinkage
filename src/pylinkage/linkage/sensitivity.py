@@ -274,7 +274,7 @@ def analyze_sensitivity(
     constraint_names = _get_constraint_names(linkage)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since we skip None values in the loop
-    nominal_constraints = cast(list[float], list(linkage.get_num_constraints()))
+    nominal_constraints = cast(list[float], list(linkage.get_constraints()))
 
     # Save initial state
     initial_coords = linkage.get_coords()
@@ -317,7 +317,7 @@ def analyze_sensitivity(
             perturbed[i] = nominal_constraints[i] + perturbation
 
             # Apply and simulate
-            linkage.set_num_constraints(perturbed)
+            linkage.set_constraints(perturbed)
             linkage.set_coords(initial_coords)
 
             try:
@@ -344,12 +344,12 @@ def analyze_sensitivity(
                     perturbed_trans.append(None)
 
             # Restore constraints
-            linkage.set_num_constraints(nominal_constraints)
+            linkage.set_constraints(nominal_constraints)
             linkage.set_coords(initial_coords)
 
     finally:
         # Always restore original state
-        linkage.set_num_constraints(nominal_constraints)
+        linkage.set_constraints(nominal_constraints)
         linkage.set_coords(initial_coords)
 
     # Build transmission array if available
@@ -524,7 +524,7 @@ def analyze_tolerance(
     name_to_idx = _name_to_index(linkage, constraint_names)
     # Note: with flat=True, get_num_constraints returns list[float | None]
     # We cast to list[float] since constraints are always set for valid linkages
-    nominal_constraints = cast(list[float], list(linkage.get_num_constraints()))
+    nominal_constraints = cast(list[float], list(linkage.get_constraints()))
 
     # Validate tolerance names
     for name in tolerances:
@@ -557,7 +557,7 @@ def analyze_tolerance(
                 perturbed[idx] = perturbed[idx] + perturbation
 
             # Apply and simulate
-            linkage.set_num_constraints(perturbed)
+            linkage.set_constraints(perturbed)
             linkage.set_coords(initial_coords)
 
             try:
@@ -572,12 +572,12 @@ def analyze_tolerance(
                 pass
 
             # Restore for next iteration
-            linkage.set_num_constraints(nominal_constraints)
+            linkage.set_constraints(nominal_constraints)
             linkage.set_coords(initial_coords)
 
     finally:
         # Always restore original state
-        linkage.set_num_constraints(nominal_constraints)
+        linkage.set_constraints(nominal_constraints)
         linkage.set_coords(initial_coords)
 
     if not output_cloud:

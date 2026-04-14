@@ -30,20 +30,42 @@ def _modern_fourbar():
 # ---------------------------------------------------------------------------
 
 
-class TestMechanismAliases:
-    def test_get_num_constraints_matches_get_constraints(self) -> None:
-        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
-        assert m.get_num_constraints() == m.get_constraints()
+class TestDeprecatedNumConstraintsAliases:
+    """``get_num_constraints``/``set_num_constraints`` are deprecated
+    aliases kept for one release for migration; they must still return
+    the correct value but emit ``DeprecationWarning``.
+    """
 
-    def test_get_coords_matches_get_joint_positions(self) -> None:
+    def test_mechanism_get_num_constraints_emits_deprecation(self) -> None:
+        import pytest
+
+        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
+        with pytest.deprecated_call():
+            result = m.get_num_constraints()
+        assert result == m.get_constraints()
+
+    def test_mechanism_set_num_constraints_emits_deprecation(self) -> None:
+        import pytest
+
+        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
+        original = m.get_constraints()
+        with pytest.deprecated_call():
+            m.set_num_constraints(original)
+        assert m.get_constraints() == original
+
+    def test_simulation_linkage_get_num_constraints_emits_deprecation(self) -> None:
+        import pytest
+
+        linkage = _modern_fourbar()
+        with pytest.deprecated_call():
+            result = linkage.get_num_constraints()
+        assert result == linkage.get_constraints()
+
+
+class TestCoordAliases:
+    def test_mechanism_get_coords_matches_get_joint_positions(self) -> None:
         m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
         assert m.get_coords() == m.get_joint_positions()
-
-    def test_set_num_constraints_round_trip(self) -> None:
-        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
-        original = m.get_num_constraints()
-        m.set_num_constraints(original)
-        assert m.get_num_constraints() == original
 
 
 # ---------------------------------------------------------------------------
@@ -62,10 +84,10 @@ class TestSetCompletely:
 
     def test_simulation_linkage_set_completely(self) -> None:
         linkage = _modern_fourbar()
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         positions = linkage.get_coords()
         linkage.set_completely(constraints, [(p[0] or 0.0, p[1] or 0.0) for p in positions])
-        assert linkage.get_num_constraints() == constraints
+        assert linkage.get_constraints() == constraints
 
 
 # ---------------------------------------------------------------------------

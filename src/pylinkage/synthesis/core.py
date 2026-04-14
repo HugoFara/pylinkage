@@ -133,7 +133,7 @@ class SynthesisResult:
 
         template = self.solutions[0]
         n = len(self.solutions)
-        n_constraints = len(template.get_num_constraints())
+        n_constraints = len(template.get_constraints())
         from .._compat import get_parts
 
         n_joints = len(get_parts(template))
@@ -142,7 +142,7 @@ class SynthesisResult:
         positions = np.empty((n, n_joints, 2), dtype=np.float64)
 
         for i, linkage in enumerate(self.solutions):
-            constraints = linkage.get_num_constraints()
+            constraints = linkage.get_constraints()
             dims[i] = [c if c is not None else 0.0 for c in constraints]
             for j, (x, y) in enumerate(linkage.get_coords()):
                 positions[i, j, 0] = x if x is not None else 0.0

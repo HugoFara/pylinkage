@@ -381,7 +381,7 @@ class TestCoords:
 class TestConstraints:
     def test_get_num_constraints(self):
         _, _, crank, rocker, linkage = _four_bar()
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         # Ground has no constraints, crank has 1 (radius), rocker has 2 (dist1, dist2)
         assert len(constraints) == 3
         assert constraints[0] == 1.0  # crank radius
@@ -390,23 +390,23 @@ class TestConstraints:
 
     def test_set_num_constraints(self):
         _, _, crank, rocker, linkage = _four_bar()
-        linkage.set_num_constraints([1.5, 3.0, 2.5])
+        linkage.set_constraints([1.5, 3.0, 2.5])
         assert crank.radius == 1.5
         assert rocker.distance1 == 3.0
         assert rocker.distance2 == 2.5
 
     def test_get_constraints_with_fixed_dyad(self):
         _, _, crank, rocker, coupler, linkage = _four_bar_with_coupler()
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         # crank: 1, rocker: 2, coupler(FixedDyad): 2 (distance, angle)
         assert len(constraints) == 5
 
     def test_round_trip_constraints(self):
         """get then set should preserve values."""
         _, _, _, _, linkage = _four_bar()
-        original = linkage.get_num_constraints()
-        linkage.set_num_constraints(original)
-        assert linkage.get_num_constraints() == original
+        original = linkage.get_constraints()
+        linkage.set_constraints(original)
+        assert linkage.get_constraints() == original
 
 
 # ---------------------------------------------------------------------------
@@ -585,7 +585,7 @@ class TestEdgeCases:
         assert linkage.components == ()
         assert linkage.get_rotation_period() == 1
         assert linkage.get_coords() == []
-        assert linkage.get_num_constraints() == []
+        assert linkage.get_constraints() == []
 
     def test_ground_only_linkage(self):
         O1 = Ground(0.0, 0.0, name="O1")

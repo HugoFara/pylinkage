@@ -547,18 +547,12 @@ class Mechanism:
                 idx += 1
                 # Position update happens during simulation
 
-    # ``simulation.Linkage`` and the legacy ``Linkage`` both use these
-    # names, so we expose them as aliases on Mechanism for parity. The
-    # native ``get_constraints``/``set_constraints``/``get_joint_positions``/
-    # ``set_joint_positions`` accessors below remain the primary API.
-
-    def get_num_constraints(self) -> list[float]:
-        """Alias of :meth:`get_constraints` for cross-API compatibility."""
-        return self.get_constraints()
-
-    def set_num_constraints(self, values: list[float]) -> None:
-        """Alias of :meth:`set_constraints` for cross-API compatibility."""
-        self.set_constraints(values)
+    # Cross-API aliases — ``simulation.Linkage`` and the legacy Linkage
+    # both used the ``*_num_constraints`` / ``*_coords`` spellings, and
+    # we keep them here for portability. (``num_`` stands for "numeric",
+    # but because it reads as "number of", the preferred public names
+    # are the shorter ``get_constraints`` / ``set_constraints`` and
+    # ``get_joint_positions`` / ``set_joint_positions``.)
 
     def get_coords(self) -> list[Coord]:
         """Alias of :meth:`get_joint_positions` for cross-API compatibility."""
@@ -1215,3 +1209,37 @@ class Mechanism:
         """Reset all driver links to initial state."""
         for driver in self._driver_links:
             driver.reset()
+
+    def get_num_constraints(self) -> list[float]:
+        """Deprecated alias for :meth:`get_constraints`.
+
+        .. deprecated:: 0.10.0
+            Use :meth:`get_constraints` instead. Scheduled for removal
+            in a future release.
+        """
+        import warnings
+
+        warnings.warn(
+            "get_num_constraints() is deprecated; use get_constraints() instead. "
+            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_constraints()
+
+    def set_num_constraints(self, values: list[float]) -> None:
+        """Deprecated alias for :meth:`set_constraints`.
+
+        .. deprecated:: 0.10.0
+            Use :meth:`set_constraints` instead. Scheduled for removal
+            in a future release.
+        """
+        import warnings
+
+        warnings.warn(
+            "set_num_constraints() is deprecated; use set_constraints() instead. "
+            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.set_constraints(values)

@@ -18,8 +18,9 @@ from ..exceptions import OptimizationError
 from ..population import Ensemble
 
 if TYPE_CHECKING:
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
     from .._types import JointPositions
-    from ..linkage.linkage import Linkage
 
 
 def _local_best_pso(
@@ -68,7 +69,8 @@ def _local_best_pso(
         # Sample positions concentrated around center within bounds
         half_span = np.minimum(center_arr - lb, ub - center_arr)
         positions = rng.uniform(
-            center_arr - half_span, center_arr + half_span,
+            center_arr - half_span,
+            center_arr + half_span,
             size=(n_particles, dimensions),
         )
         positions = np.clip(positions, lb, ub)
@@ -169,7 +171,7 @@ def particle_swarm_optimization(
     :param center: A list of initial dimensions. If None, dimensions will be generated
         randomly between bounds. The default is None.
     :param dimensions: Number of dimensions of the swarm space, number of parameters.
-        If None, it takes the value len(tuple(linkage.get_num_constraints())).
+        If None, it takes the value len(tuple(linkage.get_constraints())).
         The default is None.
     :param n_particles: Number of particles in the swarm. The default is 100.
     :param inertia: Inertia of each particle. The default is 0.6.
@@ -194,7 +196,7 @@ def particle_swarm_optimization(
     if "iters" in kwargs:
         iterations = kwargs.pop("iters")
     if dimensions is None:
-        dimensions = len(tuple(linkage.get_num_constraints()))
+        dimensions = len(tuple(linkage.get_constraints()))
     if dimensions <= 0:
         raise OptimizationError(f"Dimensions must be positive, got {dimensions}")
     if n_particles <= 0:
@@ -215,9 +217,7 @@ def particle_swarm_optimization(
         # Default bounds: [-10, 10] per dimension
         bounds = ([-10.0] * dimensions, [10.0] * dimensions)
 
-    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        linkage.get_coords()
-    )
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     np_bounds = (np.asarray(bounds[0], dtype=float), np.asarray(bounds[1], dtype=float))
 

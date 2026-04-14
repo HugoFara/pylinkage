@@ -22,8 +22,9 @@ from ..population import Ensemble
 from .utils import generate_bounds
 
 if TYPE_CHECKING:
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
     from .._types import JointPositions
-    from ..linkage.linkage import Linkage
 
 
 def _check_pymoo_available() -> None:
@@ -175,7 +176,7 @@ def multi_objective_optimization(
 
         # Get best compromise solution
         best = pareto.best_compromise()
-        my_linkage.set_num_constraints(best.dimensions)
+        my_linkage.set_constraints(best.dimensions)
     """
     _check_pymoo_available()
 
@@ -195,7 +196,7 @@ def multi_objective_optimization(
         raise OptimizationError(f"pop_size must be positive, got {pop_size}")
 
     # Get constraints and generate bounds if needed
-    raw_constraints = tuple(linkage.get_num_constraints())
+    raw_constraints = tuple(linkage.get_constraints())
     constraints = tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float)))
     dimensions = len(constraints)
 
@@ -218,9 +219,7 @@ def multi_objective_optimization(
         )
 
     # Store initial joint positions
-    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        linkage.get_coords()
-    )
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     # Create the optimization problem
     problem = LinkageProblem(linkage, objectives, bounds, joint_pos)

@@ -428,11 +428,11 @@ class TestLinkage:
         linkage = Linkage([origin1, origin2, crank, rocker])
 
         # Get constraints (crank radius + rocker distances)
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         assert constraints == [1.0, 2.0, 1.5]
 
         # Set new constraints
-        linkage.set_num_constraints([0.8, 2.2, 1.7])
+        linkage.set_constraints([0.8, 2.2, 1.7])
 
         assert crank.radius == 0.8
         assert rocker.distance1 == 2.2
@@ -832,7 +832,7 @@ class TestPointTracker:
         linkage = Linkage([origin1, origin2, crank, coupler, tracker], name="Tracked-Four-Bar")
 
         # Tracker should not contribute to constraints
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         # Should only have crank radius and coupler distances
         assert len(constraints) == 3  # crank.radius, coupler.distance1, coupler.distance2
 

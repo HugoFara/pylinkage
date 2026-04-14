@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Deprecated
+
+- **`get_num_constraints` / `set_num_constraints`** on both
+  `simulation.Linkage` and `Mechanism`. The ``num_`` prefix stood for
+  "numeric" but reads as "number of", which is misleading — the
+  methods return / accept the constraint **values**, not a count. Use
+  ``get_constraints`` / ``set_constraints`` instead. The aliases still
+  work but emit ``DeprecationWarning`` and are scheduled for removal
+  in a future release.
+
 ### Added
 
 - **Modern-container parity with the legacy `Linkage`.** Both
@@ -36,12 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `indeterminacy()` — planar Gruebler-Kutzbach mobility (a standard
     Grashof four-bar returns `1`).
 
-- **`Mechanism` cross-API aliases.** `get_num_constraints` /
-  `set_num_constraints` and `get_coords` / `set_coords` now work on a
-  `Mechanism` as well, delegating to the native `get_constraints` /
-  `set_constraints` / `get_joint_positions` / `set_joint_positions`.
-  Use the `*_num_constraints` / `*_coords` names for code that should
-  run against either backend.
+- **`Mechanism` cross-API aliases.** `get_coords` / `set_coords` now
+  work on a `Mechanism` as well, delegating to the native
+  `get_joint_positions` / `set_joint_positions`.
 
 - **`Mechanism.rebuild(initial_positions=None)`** — matches
   `simulation.Linkage.rebuild`. Optionally writes new joint positions

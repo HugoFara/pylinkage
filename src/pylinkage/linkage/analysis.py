@@ -11,7 +11,7 @@ from .._types import BoundingBox, Coord, JointPositions
 from ..exceptions import UnbuildableError
 
 if TYPE_CHECKING:
-    from .linkage import Linkage
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
 
 def kinematic_default_test(
@@ -44,7 +44,7 @@ def kinematic_default_test(
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
-        linkage.set_num_constraints(params)
+        linkage.set_constraints(params)
         try:
             points = 12
             n = linkage.get_rotation_period()
@@ -137,19 +137,11 @@ def extract_trajectories(
     if linkage is None:
         keys = list(range(n_joints))
     else:
-        candidates = (
-            getattr(linkage, "joints", None)
-            or getattr(linkage, "components", None)
-            or ()
-        )
+        candidates = getattr(linkage, "joints", None) or getattr(linkage, "components", None) or ()
         if len(candidates) != n_joints:
-            msg = (
-                f"linkage has {len(candidates)} joints but frames have "
-                f"{n_joints} entries"
-            )
+            msg = f"linkage has {len(candidates)} joints but frames have {n_joints} entries"
             raise ValueError(msg)
-        keys = [getattr(j, "name", None) or getattr(j, "id", i)
-                for i, j in enumerate(candidates)]
+        keys = [getattr(j, "name", None) or getattr(j, "id", i) for i, j in enumerate(candidates)]
 
     xs_lists: list[list[float]] = [[] for _ in range(n_joints)]
     ys_lists: list[list[float]] = [[] for _ in range(n_joints)]
@@ -161,19 +153,14 @@ def extract_trajectories(
             ys_lists[i].append(point[1])
 
     return {
-        keys[i]: (np.asarray(xs_lists[i], dtype=float),
-                  np.asarray(ys_lists[i], dtype=float))
+        keys[i]: (np.asarray(xs_lists[i], dtype=float), np.asarray(ys_lists[i], dtype=float))
         for i in range(n_joints)
     }
 
 
 def _resolve_joint_index(linkage: "Any", joint: "Any") -> int:
     """Return the frame index of ``joint`` within ``linkage``'s iteration order."""
-    candidates = (
-        getattr(linkage, "joints", None)
-        or getattr(linkage, "components", None)
-        or ()
-    )
+    candidates = getattr(linkage, "joints", None) or getattr(linkage, "components", None) or ()
     for i, candidate in enumerate(candidates):
         if candidate is joint or getattr(candidate, "name", None) == joint:
             return i

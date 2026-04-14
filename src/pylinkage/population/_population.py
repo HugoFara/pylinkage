@@ -125,6 +125,7 @@ class Population:
         cannot form a single Ensemble.  If *key* is not found on a
         member but the member has exactly one score, that score is used.
         """
+
         def _sort_key(m: Member) -> float:
             if key in m.scores:
                 return m.scores[key]
@@ -233,7 +234,7 @@ class Population:
         for topo_id, group in groups.items():
             template = group[0].linkage
             n = len(group)
-            n_constraints = len(template.get_num_constraints())
+            n_constraints = len(template.get_constraints())
             from .._compat import get_parts
 
             n_joints = len(get_parts(template))
@@ -243,10 +244,8 @@ class Population:
 
             for i, tsol in enumerate(group):
                 lk = tsol.linkage
-                constraints = lk.get_num_constraints()
-                dims[i] = [
-                    c if c is not None else 0.0 for c in constraints
-                ]
+                constraints = lk.get_constraints()
+                dims[i] = [c if c is not None else 0.0 for c in constraints]
                 for j, (x, y) in enumerate(lk.get_coords()):
                     positions[i, j, 0] = x if x is not None else 0.0
                     positions[i, j, 1] = y if y is not None else 0.0
@@ -254,20 +253,24 @@ class Population:
             # Carry QualityMetrics as score columns
             scores: dict[str, np.ndarray] = {
                 "path_accuracy": np.array(
-                    [s.metrics.path_accuracy for s in group], dtype=np.float64,
+                    [s.metrics.path_accuracy for s in group],
+                    dtype=np.float64,
                 ),
                 "min_transmission_angle": np.array(
                     [s.metrics.min_transmission_angle for s in group],
                     dtype=np.float64,
                 ),
                 "link_ratio": np.array(
-                    [s.metrics.link_ratio for s in group], dtype=np.float64,
+                    [s.metrics.link_ratio for s in group],
+                    dtype=np.float64,
                 ),
                 "compactness": np.array(
-                    [s.metrics.compactness for s in group], dtype=np.float64,
+                    [s.metrics.compactness for s in group],
+                    dtype=np.float64,
                 ),
                 "overall_score": np.array(
-                    [s.metrics.overall_score for s in group], dtype=np.float64,
+                    [s.metrics.overall_score for s in group],
+                    dtype=np.float64,
                 ),
             }
 

@@ -21,7 +21,7 @@ from .collections import MutableAgent
 from .utils import generate_bounds
 
 if TYPE_CHECKING:
-    from ..linkage.linkage import Linkage
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
 
 def sequential_variator(
@@ -103,7 +103,7 @@ def trials_and_errors_optimization(
         Output: score (float).
     :param linkage: Linkage to evaluate.
     :param parameters: Parameters that will be modified. Geometric constraints.
-                       If not, it will be assigned tuple(linkage.get_num_constraints()).
+                       If not, it will be assigned tuple(linkage.get_constraints()).
                        The default is None.
     :param n_results: Number of the best candidates to return. The default is 10.
     :param divisions: Number of subdivisions between bounds. The default is 5.
@@ -128,7 +128,7 @@ def trials_and_errors_optimization(
     if divisions <= 0:
         raise OptimizationError(f"Number of divisions must be positive, got {divisions}")
     center: NDArray[np.floating] = (
-        np.array(linkage.get_num_constraints()) if parameters is None else np.array(parameters)
+        np.array(linkage.get_constraints()) if parameters is None else np.array(parameters)
     )
     if "bounds" not in kwargs or kwargs["bounds"] is None:
         bounds = generate_bounds(center)

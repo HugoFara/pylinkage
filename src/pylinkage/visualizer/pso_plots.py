@@ -22,12 +22,12 @@ from .static import plot_static_linkage
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage
 
     # Agent type: (score, dimensions, initial_positions)
     Agent = tuple[float, Sequence[float], Sequence[Coord]]
@@ -390,14 +390,14 @@ def dashboard_layout(
 
     # Configure and simulate linkage
     if dimension_func is None:
-        linkage.set_num_constraints(best_agent[1])
+        linkage.set_constraints(best_agent[1])
     else:
-        linkage.set_num_constraints(dimension_func(np.array(best_agent[1])))
+        linkage.set_constraints(dimension_func(np.array(best_agent[1])))
     linkage.set_coords(best_agent[2])
 
     try:
         loci = tuple(tuple(pos) for pos in linkage.step(iterations=50, dt=1))
-        plot_static_linkage(linkage, ax_linkage, loci)  # type: ignore[arg-type]
+        plot_static_linkage(linkage, ax_linkage, loci)
         ax_linkage.set_title(f"Best Linkage (score: {best_agent[0]:.4f})")
     except UnbuildableError:
         ax_linkage.text(0.5, 0.5, "Unbuildable", ha="center", va="center", fontsize=14)

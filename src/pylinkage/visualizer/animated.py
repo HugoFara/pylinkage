@@ -23,6 +23,7 @@ from .symbols import get_link_color, is_ground_joint
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
 
     import numpy as np
     from matplotlib.axes import Axes
@@ -30,7 +31,6 @@ if TYPE_CHECKING:
     from matplotlib.lines import Line2D
 
     from .._types import Coord
-    from ..linkage.linkage import Linkage
 
 # List of animations
 ANIMATIONS: list[Any] = []
@@ -159,14 +159,14 @@ def show_linkage(
         accepts_iterations = step_params is not None and "iterations" in step_params.co_varnames
         if accepts_iterations:
             loci = tuple(
-                tuple(pos)  # type: ignore[arg-type]
+                tuple(pos)
                 for pos in linkage.step(
                     iterations=int(points * iteration_factor), dt=1 / iteration_factor
                 )
             )
         else:
             # Mechanism.step(dt) — yields one full rotation period
-            loci = tuple(tuple(pos) for pos in linkage.step(dt=1 / iteration_factor))  # type: ignore[arg-type]
+            loci = tuple(tuple(pos) for pos in linkage.step(dt=1 / iteration_factor))
 
     fig = plt.figure("Result " + title, figsize=(14, 7))
     fig.clear()
@@ -223,9 +223,9 @@ def swarm_tiled_repr(
     for i, agent in enumerate(swarm[1]):
         dimensions = agent[1]
         if dimension_func is None:
-            linkage.set_num_constraints(dimensions)
+            linkage.set_constraints(dimensions)
         else:
-            linkage.set_num_constraints(dimension_func(dimensions))
+            linkage.set_constraints(dimension_func(dimensions))
         linkage.set_coords(agent[2])
         try:
             loci = tuple(
@@ -238,4 +238,4 @@ def swarm_tiled_repr(
             continue
         ax = axes.flatten()[i]
         ax.clear()
-        plot_static_linkage(linkage, ax, loci)  # type: ignore[arg-type]
+        plot_static_linkage(linkage, ax, loci)

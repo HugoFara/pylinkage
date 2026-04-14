@@ -38,11 +38,17 @@ class TestMechanismSetConstraintsInvalidatesCache:
         m.set_constraints(m.get_constraints())
         assert m._solver_data is None
 
-    def test_set_num_constraints_alias_drops_solver_data(self) -> None:
+    def test_set_num_constraints_deprecated_alias_still_drops_solver_data(
+        self,
+    ) -> None:
+        """The deprecated alias still clears the cache — but emits a warning."""
+        import pytest
+
         m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
         m.compile()
         assert m._solver_data is not None
-        m.set_num_constraints(m.get_num_constraints())
+        with pytest.deprecated_call():
+            m.set_num_constraints(m.get_constraints())
         assert m._solver_data is None
 
     def test_step_fast_recompiles_after_invalidation(self) -> None:
@@ -59,12 +65,12 @@ class TestMechanismSetConstraintsInvalidatesCache:
         assert m._solver_data is not first_data
 
 
-class TestSimulationLinkageSetNumConstraintsInvalidatesCache:
+class TestSimulationLinkageSetConstraintsInvalidatesCache:
     def test_drops_solver_data(self) -> None:
         linkage = _modern_fourbar()
         linkage.compile()
         assert linkage._solver_data is not None
-        linkage.set_num_constraints(linkage.get_num_constraints())
+        linkage.set_constraints(linkage.get_constraints())
         assert linkage._solver_data is None
 
     def test_step_fast_picks_up_new_radius(self) -> None:
@@ -72,9 +78,9 @@ class TestSimulationLinkageSetNumConstraintsInvalidatesCache:
         traj_a = linkage.step_fast(iterations=10)
 
         # Replace the crank radius via the constraint vector.
-        constraints = list(linkage.get_num_constraints())
+        constraints = list(linkage.get_constraints())
         # constraints layout: crank radius first, then dyad d1/d2.
         constraints[0] = 1.5
-        linkage.set_num_constraints(constraints)
+        linkage.set_constraints(constraints)
         traj_b = linkage.step_fast(iterations=10)
         assert not np.allclose(traj_a, traj_b)

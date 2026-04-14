@@ -150,7 +150,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.x = None
             self_crank.y = None
 
-        with patch.object(type(crank), 'reload', patched_reload):
+        with patch.object(type(crank), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Crank velocity should be None since position is None
                 assert vel[2] is None
@@ -163,7 +163,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-
         original_reload = type(rocker).reload
 
         def patched_reload(self_rocker):
@@ -171,7 +170,7 @@ class TestStepWithDerivativesNonePositions:
             self_rocker.x = None
             self_rocker.y = None
 
-        with patch.object(type(rocker), 'reload', patched_reload):
+        with patch.object(type(rocker), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[3] is None
                 assert acc[3] is None
@@ -186,7 +185,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-
         original_reload = type(crank).reload
 
         def patched_reload(self_crank, dt=1):
@@ -194,7 +192,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.x = None
             self_crank.y = None
 
-        with patch.object(type(crank), 'reload', patched_reload):
+        with patch.object(type(crank), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Rocker's anchor (crank output) has None position
                 # This triggers lines 440-442
@@ -215,7 +213,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=5.0)
         linkage._find_solve_order()
 
-
         original_reload = type(slider).reload
 
         def patched_reload(self_slider):
@@ -223,7 +220,7 @@ class TestStepWithDerivativesNonePositions:
             self_slider.x = None
             self_slider.y = None
 
-        with patch.object(type(slider), 'reload', patched_reload):
+        with patch.object(type(slider), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[4] is None
                 assert acc[4] is None
@@ -234,7 +231,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=5.0)
         linkage._find_solve_order()
 
-
         original_reload = type(crank).reload
 
         def patched_reload(self_crank, dt=1):
@@ -242,7 +238,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.x = None
             self_crank.y = None
 
-        with patch.object(type(crank), 'reload', patched_reload):
+        with patch.object(type(crank), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Slider's revolute anchor (crank output) has None position
                 assert vel[4] is None
@@ -266,7 +262,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-
         original_reload = type(coupler).reload
 
         def patched_reload(self_coupler):
@@ -274,7 +269,7 @@ class TestStepWithDerivativesNonePositions:
             self_coupler.x = None
             self_coupler.y = None
 
-        with patch.object(type(coupler), 'reload', patched_reload):
+        with patch.object(type(coupler), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 assert vel[4] is None
                 assert acc[4] is None
@@ -285,7 +280,6 @@ class TestStepWithDerivativesNonePositions:
         linkage.set_input_velocity(crank, omega=10.0)
         linkage._find_solve_order()
 
-
         # Patch the crank reload to set None positions, which cascades
         original_reload = type(crank).reload
 
@@ -294,7 +288,7 @@ class TestStepWithDerivativesNonePositions:
             self_crank.x = None
             self_crank.y = None
 
-        with patch.object(type(crank), 'reload', patched_reload):
+        with patch.object(type(crank), "reload", patched_reload):
             for _pos, vel, acc in linkage.step_with_derivatives(iterations=1):
                 # Coupler's anchor1 (crank output) has None position
                 assert vel[4] is None
@@ -346,7 +340,7 @@ class TestConstraintsExtended:
     def test_get_set_constraints_with_rrp(self):
         """RRPDyad has 1 constraint (distance)."""
         O1, L1, L2, crank, slider, linkage = _slider_crank()
-        constraints = linkage.get_num_constraints()
+        constraints = linkage.get_constraints()
         # crank: 1 (radius), slider: 1 (distance)
         assert len(constraints) == 2
         assert constraints[0] == 1.0
@@ -354,9 +348,9 @@ class TestConstraintsExtended:
 
     def test_round_trip_constraints_with_rrp(self):
         O1, L1, L2, crank, slider, linkage = _slider_crank()
-        original = linkage.get_num_constraints()
-        linkage.set_num_constraints(original)
-        assert linkage.get_num_constraints() == original
+        original = linkage.get_constraints()
+        linkage.set_constraints(original)
+        assert linkage.get_constraints() == original
 
 
 # ---------------------------------------------------------------------------
@@ -368,9 +362,7 @@ class TestRotationPeriodExtended:
     def test_zero_speed_linear_actuator(self):
         """LinearActuator with zero speed."""
         O1 = Ground(0.0, 0.0, name="O1")
-        act = LinearActuator(
-            anchor=O1, angle=0.0, stroke=2.0, speed=0.0, name="act"
-        )
+        act = LinearActuator(anchor=O1, angle=0.0, stroke=2.0, speed=0.0, name="act")
         linkage = Linkage([O1, act], name="test")
         # Zero speed means no movement; period should be 1
         assert linkage.get_rotation_period() == 1
@@ -379,8 +371,7 @@ class TestRotationPeriodExtended:
         """ArcCrank with zero velocity."""
         O1 = Ground(0.0, 0.0, name="O1")
         arc = ArcCrank(
-            anchor=O1, radius=1.0, angular_velocity=0.0,
-            arc_start=0.0, arc_end=math.pi, name="arc"
+            anchor=O1, radius=1.0, angular_velocity=0.0, arc_start=0.0, arc_end=math.pi, name="arc"
         )
         linkage = Linkage([O1, arc], name="test")
         assert linkage.get_rotation_period() == 1
@@ -390,9 +381,7 @@ class TestRotationPeriodExtended:
         O1 = Ground(0.0, 0.0, name="O1")
         O2 = Ground(3.0, 0.0, name="O2")
         crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1, name="crank")
-        act = LinearActuator(
-            anchor=O2, angle=0.0, stroke=2.0, speed=0.1, name="act"
-        )
+        act = LinearActuator(anchor=O2, angle=0.0, stroke=2.0, speed=0.1, name="act")
         linkage = Linkage([O1, O2, crank, act], name="mixed")
         period = linkage.get_rotation_period()
         # Should be LCM of crank period and actuator period

@@ -39,9 +39,11 @@ def _make_ensemble(
         scores={"score": np.array([best_score])},
     )
 
+
 if TYPE_CHECKING:
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
     from .._types import JointPositions
-    from ..linkage.linkage import Linkage
 
 
 def differential_evolution_optimization(
@@ -113,7 +115,7 @@ def differential_evolution_optimization(
         )
         best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
-    raw_constraints = tuple(linkage.get_num_constraints())
+    raw_constraints = tuple(linkage.get_constraints())
     # Filter to get only float values for bounds generation
     constraints = cast(
         tuple[float, ...],
@@ -148,9 +150,7 @@ def differential_evolution_optimization(
     scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
 
     # Store initial joint positions
-    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        linkage.get_coords()
-    )
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     def objective(x: np.ndarray) -> float:
         """Objective function wrapper for scipy."""
@@ -245,7 +245,7 @@ def dual_annealing_optimization(
         )
         best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
-    raw_constraints = tuple(linkage.get_num_constraints())
+    raw_constraints = tuple(linkage.get_constraints())
     constraints = cast(
         tuple[float, ...],
         tuple(c for c in raw_constraints if c is not None and isinstance(c, (int, float))),
@@ -273,9 +273,7 @@ def dual_annealing_optimization(
 
     scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
 
-    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        linkage.get_coords()
-    )
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     def objective(x: np.ndarray) -> float:
         score = eval_func(linkage, x.tolist(), joint_pos)
@@ -382,7 +380,7 @@ def minimize_linkage(
         )
         best = result[0]  # Member with .score, .dimensions, .initial_positions
     """
-    raw_constraints = tuple(linkage.get_num_constraints())
+    raw_constraints = tuple(linkage.get_constraints())
     # Filter to get only float values
     constraints = cast(
         tuple[float, ...],
@@ -415,9 +413,7 @@ def minimize_linkage(
         scipy_bounds = list(zip(bounds[0], bounds[1], strict=True))
 
     # Store initial joint positions
-    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(
-        linkage.get_coords()
-    )
+    joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     def objective(x: np.ndarray) -> float:
         """Objective function wrapper for scipy."""

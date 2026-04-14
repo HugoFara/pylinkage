@@ -264,10 +264,13 @@ class Linkage:
         for component, coord in zip(self.components, coords, strict=True):
             component.set_coord(coord[0], coord[1])
 
-    def get_num_constraints(self) -> list[float]:
-        """Return all constraints as a flat list.
+    def get_constraints(self) -> list[float]:
+        """Return all geometric constraints as a flat list.
 
-        Used for optimization.
+        Used for optimization. Aliased as :meth:`get_num_constraints`
+        for cross-API compatibility with the legacy Linkage (where the
+        ``num_`` prefix indicated "numeric"; it does **not** return the
+        *number* of constraints).
 
         Returns:
             Flat list of all constraint values.
@@ -279,11 +282,12 @@ class Linkage:
                     constraints.append(c)
         return constraints
 
-    def set_num_constraints(self, values: list[float]) -> None:
+    def set_constraints(self, values: list[float]) -> None:
         """Set constraints from a flat list.
 
         Used to apply optimization results. Invalidates any cached
-        SolverData so the next :meth:`step_fast` recompiles.
+        SolverData so the next :meth:`step_fast` recompiles. Aliased as
+        :meth:`set_num_constraints`.
 
         Args:
             values: Flat list of constraint values.
@@ -296,6 +300,40 @@ class Linkage:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
 
+    def get_num_constraints(self) -> list[float]:
+        """Deprecated alias for :meth:`get_constraints`.
+
+        .. deprecated:: 0.10.0
+            Use :meth:`get_constraints` instead. Scheduled for removal
+            in a future release.
+        """
+        import warnings
+
+        warnings.warn(
+            "get_num_constraints() is deprecated; use get_constraints() instead. "
+            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.get_constraints()
+
+    def set_num_constraints(self, values: list[float]) -> None:
+        """Deprecated alias for :meth:`set_constraints`.
+
+        .. deprecated:: 0.10.0
+            Use :meth:`set_constraints` instead. Scheduled for removal
+            in a future release.
+        """
+        import warnings
+
+        warnings.warn(
+            "set_num_constraints() is deprecated; use set_constraints() instead. "
+            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.set_constraints(values)
+
     def set_completely(
         self,
         constraints: list[float],
@@ -304,11 +342,11 @@ class Linkage:
         """Apply both constraints and initial positions in one call.
 
         Args:
-            constraints: Flat list (as accepted by :meth:`set_num_constraints`).
+            constraints: Flat list (as accepted by :meth:`set_constraints`).
             positions: Per-component ``(x, y)`` positions
                 (as accepted by :meth:`set_coords`).
         """
-        self.set_num_constraints(constraints)
+        self.set_constraints(constraints)
         self.set_coords(positions)
 
     def simulation(

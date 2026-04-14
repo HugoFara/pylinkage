@@ -20,8 +20,9 @@ from typing import TYPE_CHECKING, Any
 from ..population import Ensemble
 
 if TYPE_CHECKING:
+    from typing import Any as Linkage  # accepts legacy/sim Linkage and Mechanism
+
     from .._types import JointPositions
-    from ..linkage.linkage import Linkage
 
 
 @dataclass
@@ -83,7 +84,7 @@ async def particle_swarm_optimization_async(
     :param center: A list of initial dimensions. If None, dimensions will be
         generated randomly between bounds. The default is None.
     :param dimensions: Number of dimensions of the swarm space.
-        If None, it takes len(tuple(linkage.get_num_constraints())).
+        If None, it takes len(tuple(linkage.get_constraints())).
     :param n_particles: Number of particles in the swarm. The default is 100.
     :param inertia: Inertia of each particle. The default is 0.6.
     :param leader: Learning coefficient of each particle. The default is 3.0.
@@ -196,7 +197,7 @@ async def trials_and_errors_optimization_async(
         Output: score (float).
     :param linkage: Linkage to evaluate.
     :param parameters: Parameters that will be modified. If None, uses
-        tuple(linkage.get_num_constraints()).
+        tuple(linkage.get_constraints()).
     :param n_results: Number of best candidates to return. The default is 10.
     :param divisions: Number of subdivisions between bounds. The default is 5.
     :param on_progress: Optional callback function called with progress updates.
@@ -229,10 +230,9 @@ async def trials_and_errors_optimization_async(
     loop = asyncio.get_running_loop()
 
     # Calculate total iterations for progress
-    if parameters is None:
-        num_params = len(tuple(linkage.get_num_constraints()))
-    else:
-        num_params = len(parameters)
+    num_params = (
+        len(tuple(linkage.get_constraints())) if parameters is None else len(parameters)
+    )
     total_iterations = divisions**num_params
 
     # Signal progress at start
