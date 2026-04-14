@@ -7,6 +7,80 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Modern-container parity with the legacy `Linkage`.** Both
+  `pylinkage.simulation.Linkage` and `pylinkage.mechanism.Mechanism`
+  now carry the full kinematic and analysis surface the legacy class
+  used to expose:
+  - `compile()` + `step_fast()` — pre-compile the numba SolverData once
+    and reuse it across calls (via `pylinkage.bridge`).
+  - `step_fast_with_kinematics()` — batched numba simulation returning
+    `(positions, velocities, accelerations)` trajectory arrays.
+  - `set_input_velocity(driver_or_crank, omega, alpha=0.0)` +
+    `get_velocities()` / `get_accelerations()` — per-joint
+    velocity/acceleration accessors.
+  - `step_with_derivatives()` — per-step Python path that computes
+    velocities and accelerations via `solver.velocity` /
+    `solver.acceleration`.
+  - `analyze_transmission()` / `analyze_stroke()` /
+    `analyze_sensitivity()` / `analyze_tolerance()` — bound-method
+    shims over the free functions in `pylinkage.linkage`.
+  - `transmission_angle()` / `stroke_position()` — single-shot
+    accessors at the current pose.
+  - `set_completely(constraints, positions)` — apply a flat constraint
+    vector and joint positions in one call.
+  - `simulation(iterations=None, dt=1.0)` — context manager that
+    restores the initial joint positions on exit (new helper in
+    `pylinkage._simulation_context.Simulation`).
+  - `indeterminacy()` — planar Gruebler-Kutzbach mobility (a standard
+    Grashof four-bar returns `1`).
+
+- **`Mechanism` cross-API aliases.** `get_num_constraints` /
+  `set_num_constraints` and `get_coords` / `set_coords` now work on a
+  `Mechanism` as well, delegating to the native `get_constraints` /
+  `set_constraints` / `get_joint_positions` / `set_joint_positions`.
+  Use the `*_num_constraints` / `*_coords` names for code that should
+  run against either backend.
+
+- **`Mechanism.rebuild(initial_positions=None)`** — matches
+  `simulation.Linkage.rebuild`. Optionally writes new joint positions
+  and always clears the cached SolverData so the next `step_fast()`
+  recompiles.
+
+- **`Mechanism.step(iterations=None, dt=1.0)`** — accepts an
+  `iterations` keyword (matching both legacy and modern Linkage).
+
+- **`Joint.velocity` / `Joint.acceleration`** (runtime state,
+  `compare=False`) on all `Mechanism` joints — populated by
+  `step_with_derivatives` and `step_fast_with_kinematics`.
+
+### Changed
+
+- **`pylinkage._compat`**: `is_ground` now recognises a Mechanism
+  `GroundJoint`; `is_driver` recognises a `RevoluteJoint` that sits as
+  the output of a `DriverLink`/`ArcDriverLink`; `is_dyad` recognises a
+  non-ground, non-driver `RevoluteJoint`/`PrismaticJoint`. The
+  container-agnostic analysis helpers in `pylinkage.linkage.*` now
+  auto-detect four-bar joints on a `Mechanism` without additional
+  hints.
+- **`pylinkage.bridge.solver_conversion.linkage_to_solver_data`** gains
+  a `_mechanism_to_solver_data` dispatch path. `Mechanism`'s
+  Links-on-constraints data model is now translated to `SolverData`
+  for numba simulation (driver outputs become `JOINT_CRANK` with
+  radius/angular-velocity pulled from the owning `DriverLink`; driven
+  revolute joints become `JOINT_REVOLUTE` with anchor distances
+  walked from the joint's `_links`).
+
+### Fixed
+
+- **Solver-cache invalidation on constraint mutation.**
+  `simulation.Linkage.set_num_constraints` and
+  `Mechanism.set_constraints` now clear `_solver_data` before applying
+  the new constraints, so a subsequent `step_fast()` rebuilds the
+  numba arrays. Without this, optimizers that round-tripped candidate
+  constraints would silently keep simulating the previous parameters.
+
 ### Removed
 
 - **`pylinkage.joints` module** (legacy joint API — `Static`, `Crank`,
