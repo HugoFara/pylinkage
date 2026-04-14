@@ -15,9 +15,8 @@ import matplotlib.pyplot as plt
 from ..exceptions import UnbuildableError
 from ..linkage.analysis import movement_bounding_box
 from .core import (
+    build_connections,
     get_components,
-    get_parent_pairs,
-    resolve_component,
 )
 from .static import plot_static_linkage
 from .symbols import get_link_color, is_ground_joint
@@ -45,7 +44,7 @@ def update_animated_plot(
 ) -> "list[Line2D]":
     """Modify im, instead of recreating it to make the animation run faster.
 
-    Works with both legacy Linkage and modern SimLinkage.
+    Works with legacy Linkage, modern SimLinkage, and Mechanism.
 
     Args:
         linkage: The linkage being animated.
@@ -57,24 +56,16 @@ def update_animated_plot(
         Updated version of images.
     """
     components = get_components(linkage)
+    connections = build_connections(linkage, components)
     frame = loci[index]
-    image = iter(images)
 
-    for j, comp in enumerate(components):
-        parents = get_parent_pairs(comp)
-        for parent in parents:
-            p = resolve_component(parent, components)
-            if p is None:
-                # Static parent — use its own coordinates
-                par_pos = (getattr(parent, "x", None), getattr(parent, "y", None))
-            else:
-                par_pos = frame[p]
-            im = next(image)
-            pos = frame[j]
-            im.set_data(
-                [par_pos[0], pos[0]],  # type: ignore[arg-type]
-                [par_pos[1], pos[1]],  # type: ignore[arg-type]
-            )
+    for im, (p, j) in zip(images, connections, strict=False):
+        par_pos = frame[p]
+        pos = frame[j]
+        im.set_data(
+            [par_pos[0], pos[0]],  # type: ignore[arg-type]
+            [par_pos[1], pos[1]],  # type: ignore[arg-type]
+        )
     return images
 
 
@@ -102,20 +93,20 @@ def plot_kinematic_linkage(
     axis.set_aspect("equal")
     axis.set_title("Animation")
 
-    images: list[Line2D] = []
     components = get_components(linkage)
-    for link_idx, comp in enumerate(components):
-        parents = get_parent_pairs(comp)
-        for _parent in parents:
-            color = get_link_color(link_idx)
-            images.append(
-                axis.plot(
-                    [], [],
-                    c=color,
-                    linewidth=2,
-                    animated=is_ground_joint(comp),
-                )[0]
-            )
+    connections = build_connections(linkage, components)
+    images: list[Line2D] = []
+    for bar_idx, (p, j) in enumerate(connections):
+        color = get_link_color(bar_idx)
+        both_ground = is_ground_joint(components[p]) and is_ground_joint(components[j])
+        images.append(
+            axis.plot(
+                [], [],
+                c=color,
+                linewidth=2,
+                animated=both_ground,
+            )[0]
+        )
 
     animation = anim.FuncAnimation(
         fig=fig,
@@ -159,15 +150,22 @@ def show_linkage(
     """
     if title is None:
         title = str(len(ANIMATIONS))
-    # Define initial positions
-    linkage.rebuild(prev)
+    # Define initial positions (legacy Linkage only — Mechanism has no rebuild)
+    if hasattr(linkage, "rebuild"):
+        linkage.rebuild(prev)
     if loci is None:
-        loci = tuple(
-            tuple(pos)  # type: ignore[arg-type]
-            for pos in linkage.step(
-                iterations=int(points * iteration_factor), dt=1 / iteration_factor
+        step_params = getattr(linkage.step, "__code__", None)
+        accepts_iterations = step_params is not None and "iterations" in step_params.co_varnames
+        if accepts_iterations:
+            loci = tuple(
+                tuple(pos)  # type: ignore[arg-type]
+                for pos in linkage.step(
+                    iterations=int(points * iteration_factor), dt=1 / iteration_factor
+                )
             )
-        )
+        else:
+            # Mechanism.step(dt) — yields one full rotation period
+            loci = tuple(tuple(pos) for pos in linkage.step(dt=1 / iteration_factor))  # type: ignore[arg-type]
 
     fig = plt.figure("Result " + title, figsize=(14, 7))
     fig.clear()

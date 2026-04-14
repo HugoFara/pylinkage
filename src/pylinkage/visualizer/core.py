@@ -119,3 +119,39 @@ def resolve_component(
     if actual is not None and actual in components:
         return components.index(actual)
     return None
+
+
+def build_connections(linkage: Any, components: list[Any]) -> list[tuple[int, int]]:
+    """Return ``(parent_idx, child_idx)`` pairs for every bar to draw.
+
+    Three cases:
+
+    - ``Mechanism`` (has ``.links``): iterate each link and emit all pairwise
+      combinations of its joint indices. A ternary link with three joints
+      yields three bars (the full triangle); a simple binary link yields one.
+    - Legacy ``Linkage`` / modern ``SimLinkage`` (joint-/component-centric):
+      fall back to per-component :func:`get_parent_pairs`.
+    """
+    from itertools import combinations
+
+    # Mechanism: derive bars from Link.joints
+    links = getattr(linkage, "links", None)
+    if links is not None:
+        pairs: list[tuple[int, int]] = []
+        for link in links:
+            link_joints = getattr(link, "joints", None)
+            if not link_joints or len(link_joints) < 2:
+                continue
+            idxs = [components.index(j) for j in link_joints if j in components]
+            for a, b in combinations(idxs, 2):
+                pairs.append((a, b))
+        return pairs
+
+    # Legacy / SimLinkage path
+    pairs = []
+    for j, comp in enumerate(components):
+        for parent in get_parent_pairs(comp):
+            p = resolve_component(parent, components)
+            if p is not None:
+                pairs.append((p, j))
+    return pairs

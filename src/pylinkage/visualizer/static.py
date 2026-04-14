@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from .core import get_components, get_parent_pairs, resolve_component
+from .core import build_connections, get_components
 from .symbols import LINK_COLORS, is_ground_joint
 
 if TYPE_CHECKING:
@@ -58,13 +58,8 @@ def plot_static_linkage(
     components = get_components(linkage)
     n_joints = len(components)
 
-    # --- Build connection list: (parent_idx, child_idx, link_index) ---
-    connections: list[tuple[int, int]] = []
-    for j, comp in enumerate(components):
-        for parent in get_parent_pairs(comp):
-            p = resolve_component(parent, components)
-            if p is not None:
-                connections.append((p, j))
+    # --- Build connection list: (parent_idx, child_idx) ---
+    connections = build_connections(linkage, components)
 
     # --- Draw joint trajectories (faded) ---
     if show_loci and loci_list:
