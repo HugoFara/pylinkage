@@ -23,7 +23,7 @@ Path Generation (most common use case)::
     precision_points = [(0, 1), (1, 2), (2, 1.5), (3, 0)]
     result = path_generation(precision_points)
 
-    print(f"Found {len(result)} solutions")
+    print(f"Found {len(result.solutions)} solutions")
     for linkage in result.solutions:
         linkage.show()
 
@@ -40,8 +40,8 @@ Function Generation::
     ]
     result = function_generation(angle_pairs)
 
-    if result:
-        linkage = result[0]
+    if result.solutions:
+        linkage = result.solutions[0]
         print(f"Crank length: {linkage.joints[2].r:.3f}")
 
 Motion Generation::
@@ -64,11 +64,11 @@ All synthesis functions return a ``SynthesisResult`` object::
     result = path_generation(points)
 
     # Check if solutions were found
-    if result:
-        print(f"Found {len(result)} solutions")
+    if result.solutions:
+        print(f"Found {len(result.solutions)} solutions")
 
     # Iterate over solutions
-    for linkage in result:
+    for linkage in result.solutions:
         linkage.show()
 
     # Access warnings

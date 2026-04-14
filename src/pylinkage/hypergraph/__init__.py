@@ -53,9 +53,7 @@ from ._types import (
 )
 
 # Conversion functions
-# Legacy (deprecated): to_linkage, from_linkage
-# Preferred: to_mechanism, from_mechanism
-from .conversion import from_linkage, to_linkage
+from .conversion import from_linkage
 
 # Core graph elements
 from .core import Edge, Hyperedge, Node
@@ -98,11 +96,8 @@ __all__ = [
     "Connection",
     "HierarchicalLinkage",
     # Conversion
-    # Preferred (new Mechanism model):
     "to_mechanism",
     "from_mechanism",
-    # Legacy (deprecated, converts to Linkage):
-    "to_linkage",
     "from_linkage",
     # Serialization
     "graph_to_dict",

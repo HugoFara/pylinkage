@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- **`pylinkage.optimization.grid_search.tqdm_verbosity()`**: overdue since
+  0.7.0. Use `tqdm.tqdm(iterable, disable=not verbose)` directly.
+- **`SynthesisResult.__len__` / `__iter__` / `__getitem__` / `__bool__`**:
+  deprecated in 0.9.0. Access `result.solutions` (or `result.ensemble` for
+  batch operations) instead — e.g. `len(result.solutions)`,
+  `for linkage in result.solutions`, `result.solutions[i]`.
+- **`pylinkage.hypergraph.to_linkage()`**: deprecated in 0.8.0. Use
+  `pylinkage.hypergraph.to_mechanism()` for conversion to the current
+  `Mechanism` model.
+- **`pylinkage.assur.graph_to_linkage()`**: deprecated in 0.8.0. Use
+  `pylinkage.assur.graph_to_mechanism()` for conversion to the current
+  `Mechanism` model.
+
 ## [0.9.0] - 2026-04-14
 
 ### Added

@@ -229,7 +229,7 @@ def motion_generation(
         ...     Pose(2, 0.5, 1.0),
         ... ]
         >>> result = motion_generation(poses)
-        >>> print(f"Found {len(result)} solutions")
+        >>> print(f"Found {len(result.solutions)} solutions")
     """
     problem = SynthesisProblem(
         synthesis_type=SynthesisType.MOTION,

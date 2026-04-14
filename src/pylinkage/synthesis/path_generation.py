@@ -426,7 +426,7 @@ def path_generation(
     Example:
         >>> points = [(0, 1), (1, 2), (2, 1.5), (3, 0)]
         >>> result = path_generation(points)
-        >>> print(f"Found {len(result)} solutions")
+        >>> print(f"Found {len(result.solutions)} solutions")
         >>> for linkage in result.solutions:
         ...     linkage.show()
     """

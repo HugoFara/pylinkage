@@ -9,7 +9,6 @@ from pylinkage.synthesis.core import (
     BurmesterCurves,
     Dyad,
     SynthesisProblem,
-    SynthesisResult,
 )
 
 
@@ -48,52 +47,6 @@ class TestSynthesisProblemNumPrecision(unittest.TestCase):
             synthesis_type=SynthesisType.FUNCTION,
         )
         self.assertEqual(problem.num_precision_positions, 0)
-
-
-class TestSynthesisResultProtocol(unittest.TestCase):
-    """Test SynthesisResult __len__, __iter__, __getitem__, __bool__ (lines 99, 103, 107, 111)."""
-
-    def _make_result(self, n_solutions=0):
-        """Helper to create a SynthesisResult with mock solutions."""
-        # Use None as placeholder since we're testing container protocol
-        solutions = [None] * n_solutions  # type: ignore
-        return SynthesisResult(
-            solutions=solutions,
-            raw_solutions=[],
-            problem=SynthesisProblem(synthesis_type=SynthesisType.FUNCTION),
-        )
-
-    def test_len_zero(self):
-        """len() should return 0 for empty results (line 99)."""
-        result = self._make_result(0)
-        self.assertEqual(len(result), 0)
-
-    def test_len_nonzero(self):
-        """len() should return count of solutions."""
-        result = self._make_result(3)
-        self.assertEqual(len(result), 3)
-
-    def test_iter(self):
-        """__iter__ should iterate over solutions (line 103)."""
-        result = self._make_result(2)
-        items = list(result)
-        self.assertEqual(len(items), 2)
-
-    def test_getitem(self):
-        """__getitem__ should return solution by index (line 107)."""
-        result = self._make_result(3)
-        item = result[1]
-        self.assertIsNone(item)  # We used None as placeholder
-
-    def test_bool_false(self):
-        """__bool__ should be False for empty results (line 111)."""
-        result = self._make_result(0)
-        self.assertFalse(result)
-
-    def test_bool_true(self):
-        """__bool__ should be True for non-empty results (line 111)."""
-        result = self._make_result(1)
-        self.assertTrue(result)
 
 
 class TestDyad(unittest.TestCase):

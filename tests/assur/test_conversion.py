@@ -2,14 +2,9 @@
 
 import pylinkage as pl
 from pylinkage.assur import (
-    Edge,
-    LinkageGraph,
-    Node,
     NodeRole,
-    graph_to_linkage,
     linkage_to_graph,
 )
-from pylinkage.dimensions import Dimensions
 
 
 class TestLinkageToGraph:
@@ -81,109 +76,6 @@ class TestLinkageToGraph:
         # Check positions stored in dimensions
         assert "anchor0" in dimensions.node_positions
         assert "anchor1" in dimensions.node_positions
-
-
-class TestGraphToLinkage:
-    """Tests for the graph_to_linkage function."""
-
-    def test_convert_simple_graph(self):
-        """Test converting a simple graph to linkage."""
-        # Topology only
-        graph = LinkageGraph(name="Four-bar")
-
-        # Ground points
-        graph.add_node(Node("A", role=NodeRole.GROUND))
-        graph.add_node(Node("D", role=NodeRole.GROUND))
-
-        # Driver
-        graph.add_node(Node("B", role=NodeRole.DRIVER))
-
-        # Driven
-        graph.add_node(Node("C", role=NodeRole.DRIVEN))
-
-        # Edges
-        graph.add_edge(Edge("AB", source="A", target="B"))
-        graph.add_edge(Edge("BC", source="B", target="C"))
-        graph.add_edge(Edge("CD", source="C", target="D"))
-
-        # Dimensions separate
-        from pylinkage.dimensions import DriverAngle
-
-        dimensions = Dimensions(
-            node_positions={
-                "A": (0.0, 0.0),
-                "D": (3.0, 0.0),
-                "B": (0.0, 1.0),
-                "C": (3.0, 2.0),
-            },
-            driver_angles={"B": DriverAngle(angular_velocity=0.1, initial_angle=0.31)},
-            edge_distances={"AB": 1.0, "BC": 3.0, "CD": 1.0},
-        )
-
-        linkage = graph_to_linkage(graph, dimensions)
-
-        assert linkage.name == "Four-bar"
-
-        # Check we have the right joint types
-        joint_names = [j.name for j in linkage.joints]
-        assert "A" in joint_names or "D" in joint_names  # At least one ground
-
-    def test_roundtrip_conversion(self):
-        """Test that linkage -> graph -> linkage preserves structure."""
-        # Create original linkage
-        crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1, name="B")
-        pin = pl.Revolute(3, 2, joint0=crank, joint1=(3, 0), distance0=3, distance1=1, name="C")
-        original = pl.Linkage(joints=[crank, pin], order=[crank, pin], name="Test")
-
-        # Convert to graph (returns topology + dimensions)
-        graph, dimensions = linkage_to_graph(original)
-
-        # Convert back to linkage (requires dimensions)
-        restored = graph_to_linkage(graph, dimensions)
-
-        # Check name preserved
-        assert restored.name == original.name
-
-        # Check joint count (may differ due to implicit anchors becoming explicit)
-        assert len(restored.joints) >= len(original.joints)
-
-    def test_converted_linkage_can_simulate(self):
-        """Test that converted linkage can run simulation."""
-        # Topology only
-        graph = LinkageGraph(name="Four-bar")
-
-        graph.add_node(Node("A", role=NodeRole.GROUND))
-        graph.add_node(Node("D", role=NodeRole.GROUND))
-        graph.add_node(Node("B", role=NodeRole.DRIVER))
-        graph.add_node(Node("C", role=NodeRole.DRIVEN))
-
-        graph.add_edge(Edge("AB", source="A", target="B"))
-        graph.add_edge(Edge("BC", source="B", target="C"))
-        graph.add_edge(Edge("CD", source="C", target="D"))
-
-        # Dimensions separate
-        from pylinkage.dimensions import DriverAngle
-
-        dimensions = Dimensions(
-            node_positions={
-                "A": (0.0, 0.0),
-                "D": (3.0, 0.0),
-                "B": (0.0, 1.0),
-                "C": (3.0, 2.0),
-            },
-            driver_angles={"B": DriverAngle(angular_velocity=0.1, initial_angle=0.31)},
-            edge_distances={"AB": 1.0, "BC": 3.0, "CD": 1.0},
-        )
-
-        linkage = graph_to_linkage(graph, dimensions)
-
-        # Should be able to step without error
-        step_count = 0
-        for coords in linkage.step(iterations=10):
-            step_count += 1
-            assert len(coords) == len(linkage.joints)
-
-        assert step_count == 10
 
 
 class TestLinkageToGraphFixed:

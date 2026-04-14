@@ -1,224 +1,25 @@
 """Conversion between hypergraph and Linkage representations.
 
-This module provides functions to convert between the hypergraph
-representation and the joint-based Linkage class.
+This module provides ``from_linkage()`` — converting a joint-based
+``Linkage`` into the hypergraph representation plus a ``Dimensions``
+object. For conversion in the other direction, use ``to_mechanism()``
+from ``hypergraph.mechanism_conversion``.
 
-.. deprecated:: 0.8.0
-    The ``to_linkage()`` function converts to the legacy Linkage class.
-    For new code, use ``to_mechanism()`` from ``hypergraph.mechanism_conversion``
-    which converts directly to the new Mechanism model.
-
-The hypergraph is the foundational mathematical layer. Conversion to
-Linkage enables simulation. For conversion to/from Assur graph
-representation, use the assur.hypergraph_conversion module.
+The hypergraph is the foundational mathematical layer. For conversion
+to/from the Assur graph representation, use the
+``assur.hypergraph_conversion`` module.
 """
 
-import warnings
 from math import tau
 from typing import TYPE_CHECKING
 
 from ..dimensions import Dimensions, DriverAngle
-from ..joints.joint import Joint
 from ._types import JointType, NodeId, NodeRole
 from .core import Edge, Node
 from .graph import HypergraphLinkage
 
 if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
-
-
-def to_linkage(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> "Linkage":
-    """Convert a HypergraphLinkage and Dimensions to a joint-based Linkage.
-
-    .. deprecated:: 0.8.0
-        Use ``to_mechanism()`` instead for direct conversion to the new
-        Mechanism model. This function converts to the legacy Linkage class.
-
-        Example migration::
-
-            # Old (deprecated):
-            from pylinkage.hypergraph import to_linkage
-            linkage = to_linkage(hypergraph, dimensions)
-
-            # New (preferred):
-            from pylinkage.hypergraph import to_mechanism
-            mechanism = to_mechanism(hypergraph, dimensions)
-
-    This converts the hypergraph topology plus dimensions directly to a
-    Linkage that can be used for simulation.
-
-    Args:
-        hypergraph: The HypergraphLinkage defining the topology.
-        dimensions: The Dimensions providing positions, distances, angles.
-
-    Returns:
-        A Linkage instance ready for simulation.
-
-    Example:
-        >>> hg = HypergraphLinkage(name="Four-bar")
-        >>> dims = Dimensions(node_positions={"A": (0, 0)}, ...)
-        >>> linkage = to_linkage(hg, dims)
-    """
-    warnings.warn(
-        "to_linkage() is deprecated. Use to_mechanism() from "
-        "pylinkage.hypergraph.mechanism_conversion for direct conversion "
-        "to the new Mechanism model.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    from ..joints.crank import Crank
-    from ..joints.joint import Static
-    from ..joints.prismatic import Prismatic
-    from ..joints.revolute import Revolute
-    from ..linkage.linkage import Linkage as LinkageClass
-
-    # First expand hyperedges to simple graph
-    simple = hypergraph.to_simple_graph()
-
-    joints: list[Joint] = []
-    node_to_joint: dict[NodeId, Joint] = {}
-    solve_order: list[Joint] = []
-
-    # Create ground joints (Static) first
-    for node in simple.ground_nodes():
-        pos = dimensions.get_node_position(node.id)
-        x = pos[0] if pos else 0.0
-        y = pos[1] if pos else 0.0
-
-        joint = Static(x=x, y=y, name=node.name)
-        joints.append(joint)
-        node_to_joint[node.id] = joint
-
-    # Create driver joints (Cranks)
-    for node in simple.driver_nodes():
-        pos = dimensions.get_node_position(node.id)
-        x = pos[0] if pos else 0.0
-        y = pos[1] if pos else 0.0
-
-        # Find ground connection
-        neighbors = simple.neighbors(node.id)
-        parent_joint: Joint | None = None
-        distance: float | None = None
-
-        for neighbor_id in neighbors:
-            neighbor = simple.nodes.get(neighbor_id)
-            if neighbor and neighbor.role == NodeRole.GROUND:
-                parent_joint = node_to_joint.get(neighbor_id)
-                edge = simple.get_edge_between(node.id, neighbor_id)
-                if edge:
-                    distance = dimensions.get_edge_distance(edge.id)
-                break
-
-        driver_angle = dimensions.get_driver_angle(node.id)
-        angle = driver_angle.angular_velocity if driver_angle else tau / 360
-
-        crank_joint = Crank(
-            x=x,
-            y=y,
-            joint0=parent_joint,
-            distance=distance,
-            angle=angle,
-            name=node.name,
-        )
-        joints.append(crank_joint)
-        node_to_joint[node.id] = crank_joint
-        solve_order.append(crank_joint)
-
-    # Create driven joints
-    # Build dependency order based on connections
-    driven = simple.driven_nodes()
-    solved_nodes: set[NodeId] = set()
-    for node in simple.ground_nodes():
-        solved_nodes.add(node.id)
-    for node in simple.driver_nodes():
-        solved_nodes.add(node.id)
-
-    # Iteratively add nodes whose parents are solved
-    remaining = {n.id: n for n in driven}
-    max_iterations = len(remaining) * 2
-
-    for _ in range(max_iterations):
-        if not remaining:
-            break
-
-        for node_id, node in list(remaining.items()):
-            neighbors = simple.neighbors(node_id)
-            parent_ids = [n for n in neighbors if n in solved_nodes]
-
-            # Need at least 2 solved parents for a driven joint
-            if len(parent_ids) >= 2:
-                pos = dimensions.get_node_position(node_id)
-                x = pos[0] if pos else 0.0
-                y = pos[1] if pos else 0.0
-
-                # Determine joint type based on connections
-                if node.joint_type == JointType.PRISMATIC:
-                    # Prismatic joint - needs circle center + line
-                    # Find revolute connection (with distance)
-                    revolute_parent: Joint | None = None
-                    revolute_dist: float | None = None
-                    line_parents: list[Joint] = []
-
-                    for pid in parent_ids:
-                        edge = simple.get_edge_between(node_id, pid)
-                        edge_dist = dimensions.get_edge_distance(edge.id) if edge else None
-                        if edge_dist is not None:
-                            if revolute_parent is None:
-                                revolute_parent = node_to_joint.get(pid)
-                                revolute_dist = edge_dist
-                            else:
-                                line_parents.append(node_to_joint[pid])
-                        else:
-                            line_parents.append(node_to_joint[pid])
-
-                    created_joint: Joint = Prismatic(
-                        x=x,
-                        y=y,
-                        joint0=revolute_parent,
-                        joint1=line_parents[0] if len(line_parents) > 0 else None,
-                        joint2=line_parents[1] if len(line_parents) > 1 else None,
-                        revolute_radius=revolute_dist,
-                        name=node.name,
-                    )
-                else:
-                    # Revolute joint (most common)
-                    parent0 = node_to_joint.get(parent_ids[0])
-                    parent1 = node_to_joint.get(parent_ids[1])
-
-                    edge0 = simple.get_edge_between(node_id, parent_ids[0])
-                    edge1 = simple.get_edge_between(node_id, parent_ids[1])
-
-                    dist0 = dimensions.get_edge_distance(edge0.id) if edge0 else None
-                    dist1 = dimensions.get_edge_distance(edge1.id) if edge1 else None
-
-                    created_joint = Revolute(
-                        x=x,
-                        y=y,
-                        joint0=parent0,
-                        joint1=parent1,
-                        distance0=dist0,
-                        distance1=dist1,
-                        name=node.name,
-                    )
-
-                joints.append(created_joint)
-                node_to_joint[node_id] = created_joint
-                solve_order.append(created_joint)
-                solved_nodes.add(node_id)
-                del remaining[node_id]
-                break
-
-    if remaining:
-        raise ValueError(
-            f"Could not determine solve order for nodes: {list(remaining.keys())}. "
-            "The hypergraph may be underconstrained or have disconnected components."
-        )
-
-    return LinkageClass(
-        joints=joints,
-        order=solve_order,
-        name=hypergraph.name,
-    )
 
 
 def from_linkage(linkage: "Linkage") -> tuple[HypergraphLinkage, Dimensions]:

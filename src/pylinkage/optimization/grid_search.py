@@ -7,8 +7,7 @@ will almost certainly be too big.
 
 import itertools
 import math
-import warnings
-from collections.abc import Callable, Generator, Iterable, Sequence
+from collections.abc import Callable, Generator, Sequence
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -23,32 +22,6 @@ from .utils import generate_bounds
 
 if TYPE_CHECKING:
     from ..linkage.linkage import Linkage
-
-
-def tqdm_verbosity(
-    iterable: Iterable[Any],
-    verbose: bool = True,
-    *args: Any,
-    **kwargs: Any,
-) -> Generator[Any, None, None]:
-    """Wrapper for tqdm, that let you specify if you want verbosity.
-
-    .. deprecated:: 0.6.0
-          `tqdm_verbosity` will be removed in pylinkage 0.7.0, as tqdm can be
-            disabled with the argument disable=True.
-
-    :param iterable: Iterable to wrap.
-    :param verbose: Whether to show progress bar. (Default value = True).
-    :param args: Ordered args to pass to tqdm.
-    :param kwargs: Keyword args for tqdm.
-    """
-    warnings.warn(
-        "tqdm_verbosity is deprecated and will be removed in pylinkage 0.7.0. "
-        "Use tqdm.tqdm with disable=not verbose instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    yield from tqdm.tqdm(iterable, *args, disable=not verbose, **kwargs)
 
 
 def sequential_variator(

@@ -9,8 +9,6 @@ This module provides the fundamental data structures for mechanism synthesis:
 
 from __future__ import annotations
 
-import warnings
-from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -29,7 +27,6 @@ from ._types import (
 )
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
     from ..population import Ensemble
 
 
@@ -86,11 +83,6 @@ class SynthesisResult:
     property, which returns an :class:`~pylinkage.population.Ensemble`
     for batch simulation, ranking, filtering, and visualization.
 
-    .. deprecated:: 0.9.0
-        Iterating, indexing, and calling ``len()`` directly on a
-        ``SynthesisResult`` is deprecated. Use ``.ensemble`` instead.
-        These proxies will be removed in version 1.0.0.
-
     Attributes:
         solutions: List of valid Linkage objects.
         raw_solutions: Raw mathematical solutions before filtering.
@@ -127,71 +119,6 @@ class SynthesisResult:
         if self._ensemble is None:
             self._ensemble = self._build_ensemble()
         return self._ensemble
-
-    # ------------------------------------------------------------------
-    # Deprecated collection protocol
-    # ------------------------------------------------------------------
-
-    def __len__(self) -> int:
-        """Number of valid solutions found.
-
-        .. deprecated:: 0.9.0
-            Use ``len(result.ensemble)`` instead.
-        """
-        warnings.warn(
-            "len(SynthesisResult) is deprecated. "
-            "Use len(result.ensemble) instead. "
-            "Direct len() will be removed in version 1.0.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return len(self.solutions)
-
-    def __iter__(self) -> Iterator[Linkage]:
-        """Iterate over valid solutions.
-
-        .. deprecated:: 0.9.0
-            Use ``result.ensemble`` instead.
-        """
-        warnings.warn(
-            "Iterating over SynthesisResult is deprecated. "
-            "Use result.ensemble instead. "
-            "Direct iteration will be removed in version 1.0.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return iter(self.solutions)
-
-    def __getitem__(self, index: int) -> Linkage:
-        """Get solution by index.
-
-        .. deprecated:: 0.9.0
-            Use ``result.ensemble[index]`` instead.
-        """
-        warnings.warn(
-            "SynthesisResult[i] is deprecated. "
-            "Use result.ensemble[i] instead. "
-            "Direct indexing will be removed in version 1.0.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.solutions[index]  # type: ignore[no-any-return]
-
-    def __bool__(self) -> bool:
-        """True if any solutions were found.
-
-        .. deprecated:: 0.9.0
-            Use ``len(result.solutions) > 0`` or
-            ``len(result.ensemble) > 0`` instead.
-        """
-        warnings.warn(
-            "bool(SynthesisResult) is deprecated. "
-            "Use len(result.solutions) > 0 instead. "
-            "Direct bool() will be removed in version 1.0.0.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return len(self.solutions) > 0
 
     # ------------------------------------------------------------------
     # Internal
