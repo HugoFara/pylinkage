@@ -599,6 +599,11 @@ class TestSimulateWithKinematics:
 
     def test_fourbar_simulation_with_kinematics(self):
         """Simulate a four-bar linkage with full kinematics."""
+        # NB: the link ratios must be unambiguously Grashof (s + L < p + q).
+        # A change-point mechanism (s + L = p + q) passes through singular
+        # configurations where the velocity Jacobian is rank-deficient, which
+        # non-deterministically produces NaN in velocities/accelerations —
+        # this was the cause of a long-standing CI-only flake on this test.
         ground = pl.Static(0, 0, name="ground")
         crank = pl.Crank(1, 0, joint0=ground, distance=1, angle=0.1, omega=5.0, name="crank")
         pin = pl.Revolute(
@@ -607,7 +612,7 @@ class TestSimulateWithKinematics:
             joint0=crank,
             joint1=(3, 0),
             distance0=2,
-            distance1=2,
+            distance1=2.5,
             name="pin",
         )
         linkage = pl.Linkage(
