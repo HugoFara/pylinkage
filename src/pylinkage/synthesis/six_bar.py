@@ -181,20 +181,17 @@ def _watt_synthesis(
                     break
 
                 # Simulate driving four-bar to find intermediate positions
-                intermediate = _find_coupler_positions_at_targets(
-                    fourbar, stage2_points
-                )
+                intermediate = _find_coupler_positions_at_targets(fourbar, stage2_points)
                 if intermediate is None:
                     continue
 
                 # Stage 2: synthesize second dyad
-                second_stage = _synthesize_second_dyad(
-                    intermediate, stage2_points
-                )
+                second_stage = _synthesize_second_dyad(intermediate, stage2_points)
 
                 for second_fourbar in second_stage:
                     nbar = _combine_to_six_bar(
-                        fourbar, second_fourbar,
+                        fourbar,
+                        second_fourbar,
                         precision_points=precision_points,
                         stage1_indices=stage1_indices,
                         stage2_indices=stage2_indices,
@@ -210,10 +207,10 @@ def _watt_synthesis(
     for nbar, raw_fb in zip(all_nbar_solutions, all_raw_fourbars, strict=True):
         linkage = _nbar_to_six_bar_linkage(nbar)
         if linkage is not None and _validate_six_bar(linkage, precision_points):
-                solutions.append(linkage)  # type: ignore[arg-type]
-                valid_raw.append(raw_fb)
-                if len(solutions) >= max_solutions:
-                    break
+            solutions.append(linkage)  # type: ignore[arg-type]
+            valid_raw.append(raw_fb)
+            if len(solutions) >= max_solutions:
+                break
 
     if not solutions and all_nbar_solutions:
         warnings.append(
@@ -287,9 +284,7 @@ def _stephenson_synthesis(
                     break
 
                 # Get intermediate positions from driving four-bar
-                intermediate = _find_coupler_positions_at_targets(
-                    fourbar, stage2_points
-                )
+                intermediate = _find_coupler_positions_at_targets(fourbar, stage2_points)
                 if intermediate is None:
                     continue
 
@@ -479,8 +474,10 @@ def _find_coupler_positions_at_targets(
             if fourbar.coupler_point is not None:
                 # Compute where P would be based on B, C transform
                 mx, my = _compute_coupler_point_from_bc(
-                    b_pos, c_pos,
-                    fourbar.crank_pivot_b, fourbar.coupler_pivot_c,
+                    b_pos,
+                    c_pos,
+                    fourbar.crank_pivot_b,
+                    fourbar.coupler_pivot_c,
                     fourbar.coupler_point,
                 )
             else:
@@ -492,11 +489,13 @@ def _find_coupler_positions_at_targets(
                 best_dist = dist
                 best_idx = i
 
-        results.append((
-            b_trajectory[best_idx],
-            c_trajectory[best_idx],
-            _midpoint(b_trajectory[best_idx], c_trajectory[best_idx]),
-        ))
+        results.append(
+            (
+                b_trajectory[best_idx],
+                c_trajectory[best_idx],
+                _midpoint(b_trajectory[best_idx], c_trajectory[best_idx]),
+            )
+        )
 
     return results
 
@@ -565,9 +564,7 @@ def _synthesize_second_dyad(
     # Construct poses for second stage:
     # Position = target point, orientation = angle of B→C at that config
     poses: list[Pose] = []
-    for (b_pos, c_pos, _mid), (tx, ty) in zip(
-        intermediate_positions, target_points, strict=True
-    ):
+    for (b_pos, c_pos, _mid), (tx, ty) in zip(intermediate_positions, target_points, strict=True):
         angle = math.atan2(c_pos[1] - b_pos[1], c_pos[0] - b_pos[0])
         poses.append(Pose(x=tx, y=ty, angle=angle))
 
@@ -709,7 +706,8 @@ def _nbar_to_six_bar_linkage(
         # Crank
         angular_velocity = 2 * math.pi / iterations
         initial_angle = math.atan2(
-            pos["B"][1] - pos["A"][1], pos["B"][0] - pos["A"][0],
+            pos["B"][1] - pos["A"][1],
+            pos["B"][0] - pos["A"][0],
         )
         crank_b = Crank(
             anchor=ground_a,
@@ -738,7 +736,12 @@ def _nbar_to_six_bar_linkage(
         )
 
         components: list[object] = [
-            ground_a, ground_d, ground_e, crank_b, joint_c, joint_f,
+            ground_a,
+            ground_d,
+            ground_e,
+            crank_b,
+            joint_c,
+            joint_f,
         ]
 
         # Add coupler point tracker if available
@@ -747,7 +750,9 @@ def _nbar_to_six_bar_linkage(
             from .conversion import _compute_coupler_point_params
 
             dist_cp, angle_cp = _compute_coupler_point_params(
-                pos["C"], pos["F"], p,
+                pos["C"],
+                pos["F"],
+                p,
             )
             joint_p = FixedDyad(
                 anchor1=joint_c,
@@ -853,9 +858,14 @@ def _optimize_stephenson_triad(
         ):
             # Solve for F given C position, E position, distances
             from ..geometry.secants import circle_intersect
+
             n_int, x1, y1, x2, y2 = circle_intersect(
-                c_pos_i[0], c_pos_i[1], d_cf,
-                ex, ey, d_ef,
+                c_pos_i[0],
+                c_pos_i[1],
+                d_cf,
+                ex,
+                ey,
+                d_ef,
             )
             if n_int == 0:
                 errs.extend([10.0, 10.0])
@@ -873,9 +883,9 @@ def _optimize_stephenson_triad(
 
     try:
         result = scipy_least_squares(
-            residuals, x0,
-            bounds=([x0[0] - 5, x0[1] - 5, 0.1, 0.1],
-                    [x0[0] + 5, x0[1] + 5, 20.0, 20.0]),
+            residuals,
+            x0,
+            bounds=([x0[0] - 5, x0[1] - 5, 0.1, 0.1], [x0[0] + 5, x0[1] + 5, 20.0, 20.0]),
             max_nfev=200,
         )
     except Exception:

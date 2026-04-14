@@ -137,18 +137,17 @@ def _generate_orientation_candidates(
                     break
 
     # Uniform perturbations (original strategy, still useful)
-    deltas = np.linspace(-perturbation_range, perturbation_range,
-                         max(6, n_samples // 3), endpoint=True)
+    deltas = np.linspace(
+        -perturbation_range, perturbation_range, max(6, n_samples // 3), endpoint=True
+    )
     for delta in deltas:
         if abs(delta) < 1e-10:
             continue
         yield [o + delta for o in base_orientations]
 
     # Progressive rotation
-    for total_rotation in [math.pi / 4, math.pi / 2, math.pi,
-                           -math.pi / 4, -math.pi / 2]:
-        yield [base_orientations[i] + total_rotation * i / max(n - 1, 1)
-               for i in range(n)]
+    for total_rotation in [math.pi / 4, math.pi / 2, math.pi, -math.pi / 4, -math.pi / 2]:
+        yield [base_orientations[i] + total_rotation * i / max(n - 1, 1) for i in range(n)]
 
 
 def _points_to_poses(
@@ -497,7 +496,9 @@ def path_generation(
 
             for dyad_left, dyad_right in dyad_pairs:
                 solution = _dyads_to_fourbar(
-                    dyad_left, dyad_right, coupler_point_world=coupler_pt,
+                    dyad_left,
+                    dyad_right,
+                    coupler_point_world=coupler_pt,
                 )
                 if solution is None:
                     continue

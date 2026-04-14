@@ -129,9 +129,7 @@ class SynthesisResult:
         from ..population import Ensemble
 
         if not self.solutions:
-            raise ValueError(
-                "Cannot build Ensemble from empty SynthesisResult"
-            )
+            raise ValueError("Cannot build Ensemble from empty SynthesisResult")
 
         template = self.solutions[0]
         n = len(self.solutions)
@@ -155,16 +153,20 @@ class SynthesisResult:
         if self.raw_solutions and len(self.raw_solutions) >= n:
             raw = self.raw_solutions[:n]
             scores["crank_length"] = np.array(
-                [s.crank_length for s in raw], dtype=np.float64,
+                [s.crank_length for s in raw],
+                dtype=np.float64,
             )
             scores["coupler_length"] = np.array(
-                [s.coupler_length for s in raw], dtype=np.float64,
+                [s.coupler_length for s in raw],
+                dtype=np.float64,
             )
             scores["rocker_length"] = np.array(
-                [s.rocker_length for s in raw], dtype=np.float64,
+                [s.rocker_length for s in raw],
+                dtype=np.float64,
             )
             scores["ground_length"] = np.array(
-                [s.ground_length for s in raw], dtype=np.float64,
+                [s.ground_length for s in raw],
+                dtype=np.float64,
             )
 
         return Ensemble(
