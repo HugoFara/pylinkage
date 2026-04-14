@@ -505,11 +505,13 @@ class Mechanism:
         """Set distance constraints from a flat list.
 
         Used for optimization. Applies constraints in the same order
-        as get_constraints().
+        as :meth:`get_constraints`. Invalidates any cached SolverData
+        so the next :meth:`step_fast` recompiles.
 
         Args:
             values: List of constraint values to apply.
         """
+        self._solver_data = None
         idx = 0
 
         for link in self.links:

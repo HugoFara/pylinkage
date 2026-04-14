@@ -282,11 +282,13 @@ class Linkage:
     def set_num_constraints(self, values: list[float]) -> None:
         """Set constraints from a flat list.
 
-        Used to apply optimization results.
+        Used to apply optimization results. Invalidates any cached
+        SolverData so the next :meth:`step_fast` recompiles.
 
         Args:
             values: Flat list of constraint values.
         """
+        self._solver_data = None
         idx = 0
         for component in self.components:
             n_constraints = len([c for c in component.get_constraints() if c is not None])
