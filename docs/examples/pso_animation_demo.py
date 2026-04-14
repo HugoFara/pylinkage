@@ -19,20 +19,25 @@ from pylinkage.visualizer.pso_plots import (
     parallel_coordinates_plot,
 )
 
-# Simulation parameters
-LAP_POINTS = 10
+# Reuse the strider builder / evaluator migrated to the modern API.
+import importlib.util
+import pathlib as _pathlib
 
-# Dimension names and types
-DIM_NAMES = (
-    "triangle",
-    "aperture",
-    "femur",
-    "rockerL",
-    "rockerS",
-    "phi",
-    "tibia",
-    "f",
+_strider_spec = importlib.util.spec_from_file_location(
+    "_strider_demo", _pathlib.Path(__file__).with_name("strider.py"),
 )
+assert _strider_spec is not None and _strider_spec.loader is not None
+_strider = importlib.util.module_from_spec(_strider_spec)
+_strider_spec.loader.exec_module(_strider)
+
+BOUNDS = _strider.BOUNDS
+DIM_NAMES = _strider.DIM_NAMES
+DIMENSIONS = _strider.DIMENSIONS
+INIT_COORD = _strider.INIT_COORD
+complete_strider = _strider.complete_strider
+history_saver = _strider.history_saver
+param2dimensions = _strider.param2dimensions
+sym_stride_evaluator = _strider.sym_stride_evaluator
 
 DIM_TYPES = (
     "length",
@@ -44,119 +49,6 @@ DIM_TYPES = (
     "length",
     "length",
 )
-
-DIMENSIONS = (
-    2,
-    np.pi / 4,
-    1.8,
-    2.6,
-    1.4,
-    np.pi + 0.2,
-    2.5,
-    1.8,
-)
-
-BOUNDS = (
-    (0, 0, 0, 0, 0, 0, 0, 0),
-    (8, 2 * np.pi, 7.2, 10.4, 5.6, 2 * np.pi, 10, 7.6),
-)
-
-INIT_COORD = (
-    (0, 0),
-    (0, 1),
-    (1.41, 1.41),
-    (-1.41, 1.41),
-    (0, -1),
-    (-2.25, 0),
-    (2.25, 0),
-    (-1.4, -1.2),
-    (1.4, -1.2),
-    (-2.7, -2.7),
-    (2.7, -2.7),
-)
-
-
-def param2dimensions(param=DIMENSIONS, flat=False):
-    """Expand dimensions to fit in strider.set_num_constraints."""
-    out = (
-        (),
-        (),
-        (param[0], -param[1]),
-        (param[0], param[1]),
-        (1,),
-        (param[2], param[3]),
-        (param[2], param[3]),
-        (param[4], -param[5]),
-        (param[4], param[5]),
-        (param[6], param[7]),
-        (param[6], param[7]),
-    )
-    if not flat:
-        return out
-    flat_dims = []
-    for constraint in out[2:]:
-        flat_dims.extend(constraint)
-    return tuple(flat_dims)
-
-
-def complete_strider(constraints, prev):
-    """Create a strider linkage."""
-    linkage = {
-        "A": pl.Static(x=0, y=0, name="A"),
-        "Y": pl.Static(0, 1, name="Point (0, 1)"),
-    }
-    linkage["Y"].joint0 = linkage["A"]
-    linkage.update(
-        {
-            "B": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"),
-            "B_p": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"),
-            "C": pl.Crank(
-                joint0=linkage["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)"
-            ),
-        }
-    )
-    linkage.update(
-        {
-            "D": pl.Revolute(joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"),
-            "E": pl.Revolute(joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"),
-        }
-    )
-    linkage.update(
-        {
-            "F": pl.Fixed(joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"),
-            "G": pl.Fixed(joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"),
-        }
-    )
-    linkage.update(
-        {
-            "H": pl.Revolute(joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"),
-            "I": pl.Revolute(joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"),
-        }
-    )
-    strider = pl.Linkage(joints=linkage.values(), order=linkage.values(), name="Strider")
-    strider.set_coords(prev)
-    strider.set_num_constraints(constraints, flat=False)
-    return strider
-
-
-def sym_stride_evaluator(linkage, dimensions, initial_positions):
-    """Evaluate the stride length of the linkage."""
-    linkage.set_completely(param2dimensions(dimensions, flat=True), initial_positions)
-    points = 12
-    try:
-        loci = tuple(map(tuple, linkage.step(iterations=points, dt=LAP_POINTS / points)))
-    except pl.UnbuildableError:
-        return 0
-    foot_locus = tuple(x[-2] for x in loci)
-    score = max(k[0] for k in foot_locus) - min(k[0] for k in foot_locus)
-    return score
-
-
-def history_saver(evaluator, history, linkage, dims, pos):
-    """Save optimization history."""
-    score = evaluator(linkage, dims, pos)
-    history.append((score, list(dims), pos))
-    return score
 
 
 def run_optimization(linkage, n_particles=50, n_iterations=40):

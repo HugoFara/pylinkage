@@ -1,5 +1,4 @@
-"""
-Kinematic Strider linkage, a type of walking linkage.
+"""Kinematic Strider linkage, a type of walking linkage.
 
 The original linkage can be found at
 https://www.diywalkers.com/strider-linkage-plans.html
@@ -10,46 +9,43 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import pylinkage as pl
+from pylinkage.actuators import Crank
+from pylinkage.components import Ground
+from pylinkage.dyads import FixedDyad, RRRDyad
+from pylinkage.simulation import Linkage
 
-# Simulation parameters
-# Number of points for crank complete turn
+# --- Simulation parameters --------------------------------------------------
+# Number of points for a crank complete turn
 LAP_POINTS = 10
 # Time (in seconds) for a crank revolution
 LAP_PER_SECOND = 100
 
-"""
-Parameters that can change without changing joints between objects.
-
-Can be distance between joints, or an angle.
-Units are given relative to crank length, which is normalized to 1.
-"""
+# Design parameters — can change without changing the connectivity.
 DIM_NAMES = ("triangle", "aperture", "femur", "rockerL", "rockerS", "f", "tibia", "phi")
 
 DIMENSIONS = (
-    # AB distance (=AB_p) "triangle":
+    # AB = AB_p distance (triangle)
     2,
-    # "aperture":
+    # aperture
     np.pi / 4,
-    # femur = 3 for higher steps, 2 for the standard size, but 1.8 is good enough
+    # femur (3 for higher steps, 2 for standard, 1.8 is good enough)
     1.8,
-    # "rockerL":
+    # rockerL
     2.6,
-    # "rockerS":
+    # rockerS
     1.4,
-    # "phi":
+    # phi
     np.pi + 0.2,
-    # "tibia":
+    # tibia
     2.5,
-    # "f":
+    # f
     1.8,
 )
-# Optimized but useless strider with a step of size 5.05
-# param = (2.62484195, 1.8450077, 2.41535873, 2.83669735, 2.75235715,
-#         4.60386788, 3.49814371, 3.51517851)
-# Limits for parameters, will be used in optimizers
+
+# Limits for the design parameters, passed to the optimizer.
 BOUNDS = ((0, 0, 0, 0, 0, 0, 0, 0), (8, 2 * np.pi, 7.2, 10.4, 5.6, 2 * np.pi, 10, 7.6))
 
-# Initial coordinates according to previous dimensions
+# Initial coordinates for (A, Y, B, B_p, C, D, E, F, G, H, I).
 INIT_COORD = (
     (0, 0),
     (0, 1),
@@ -65,161 +61,167 @@ INIT_COORD = (
 )
 
 
-def param2dimensions(param=DIMENSIONS, flat=False):
-    """Expand dimensions them to fit in strider.set_num_constraints.
+def param2dimensions(param=DIMENSIONS, *, flat: bool = False):
+    """Expand the symmetric design vector into a full constraint list.
 
-    Dimensions parameters are written in short form due to symmetry.
+    The mechanism is symmetric so only half the parameters are exposed;
+    this helper mirrors them back out in the order each component
+    consumes its constraints.
 
-    :param param: Short form for dimensions (Default value = DIMENSIONS)
-    :param flat: If the output should be a flat list (Default value = False)
-
-    :return: Expanded dimensions
+    :param param: Short form of the design vector.
+    :param flat: If ``True`` return a flat tuple of all constraint
+        values; if ``False`` return a per-component tuple-of-tuples.
     """
     out = (
-        # Static joints (A and Y)
+        # Static joints (A, Y) carry no constraints
         (),
         (),
-        # B, B_p
+        # B, B_p — (distance, angle) on FixedDyad
         (param[0], -param[1]),
         (param[0], param[1]),
-        # Crank (C)
+        # Crank C — (radius,)
         (1,),
-        # D and E
+        # D and E — RRR dyads (distance1, distance2)
         (param[2], param[3]),
         (param[2], param[3]),
-        # F and G
+        # F and G — FixedDyads (distance, angle)
         (param[4], -param[5]),
         (param[4], param[5]),
-        # H and I
+        # H and I — RRR dyads (distance1, distance2)
         (param[6], param[7]),
         (param[6], param[7]),
     )
     if not flat:
         return out
-    flat_dims = []
-    for constraint in out[2:]:
+    flat_dims: list[float] = []
+    for constraint in out:
         flat_dims.extend(constraint)
     return tuple(flat_dims)
 
 
+def _constraints_by_joint(dimensions):
+    """Normalize *dimensions* into a per-joint tuple-of-tuples."""
+    if dimensions and isinstance(dimensions[0], tuple):
+        return dimensions
+    return param2dimensions(dimensions)
+
+
 def complete_strider(constraints, prev):
-    """
-    Take two sequences to define strider linkage.
+    """Build a Strider linkage from a per-joint constraint tuple.
 
-    :param constraints: The sequence of geometrical constraints.
-    :type constraints: tuple[float] | tuple[tuple[float]]
-    :param prev: Coordinates to set by default.
-    :type prev: tuple[tuple[float, float]]
+    :param constraints: Per-joint constraint values (tuple-of-tuples)
+        or a flat design vector.
+    :param prev: Initial coordinates for each component
+        (tuple of ``(x, y)`` pairs, in the same order as
+        ``INIT_COORD``).
 
-    :return pylinkage.Linkage: A strider linkage
+    :return: A strider ``Linkage``.
     """
-    linkage = {
-        # Fixed points (mechanism body)
-        # A is the origin
-        "A": pl.Static(x=0, y=0, name="A"),
-        # Vertical axis for convenience
-        "Y": pl.Static(0, 1, name="Point (0, 1)"),
-    }
-    # For drawing only
-    linkage["Y"].joint0 = linkage["A"]
-    linkage.update(
-        {
-            # Not fixed because we will optimize this position
-            "B": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame right (B)"),
-            "B_p": pl.Fixed(joint0=linkage["A"], joint1=linkage["Y"], name="Frame left (B_p)"),
-            # Pivot joints, explicitly defined to be modified later
-            # Joint linked to crank. Coordinates are chosen in each frame
-            "C": pl.Crank(
-                joint0=linkage["A"], angle=-2 * np.pi / LAP_POINTS, name="Crank link (C)"
-            ),
-        }
+    c = _constraints_by_joint(constraints)
+    # c[0] and c[1] are empty — A and Y contribute no constraints.
+    B_d, B_a = c[2]
+    Bp_d, Bp_a = c[3]
+    (crank_r,) = c[4]
+    D_d1, D_d2 = c[5]
+    E_d1, E_d2 = c[6]
+    F_d, F_a = c[7]
+    G_d, G_a = c[8]
+    H_d1, H_d2 = c[9]
+    I_d1, I_d2 = c[10]
+
+    parts: list = []
+
+    # Mechanism frame — A is the origin, Y is the vertical reference.
+    A = Ground(*prev[0], name="A")
+    Y = Ground(*prev[1], name="Point (0, 1)")
+    parts += [A, Y]
+
+    # Frame-side fixed dyads
+    B = FixedDyad(anchor1=A, anchor2=Y, distance=B_d, angle=B_a, name="Frame right (B)")
+    B_p = FixedDyad(
+        anchor1=A, anchor2=Y, distance=Bp_d, angle=Bp_a, name="Frame left (B_p)",
     )
-    linkage.update(
-        {
-            "D": pl.Revolute(joint0=linkage["B_p"], joint1=linkage["C"], name="Left knee link (D)"),
-            "E": pl.Revolute(joint0=linkage["B"], joint1=linkage["C"], name="Right knee link (E)"),
-        }
+    parts += [B, B_p]
+
+    # Crank
+    C = Crank(
+        anchor=A,
+        radius=crank_r,
+        angular_velocity=-2 * np.pi / LAP_POINTS,
+        name="Crank link (C)",
     )
-    linkage.update(
-        {
-            # F is fixed relative to C and E
-            "F": pl.Fixed(joint0=linkage["C"], joint1=linkage["E"], name="Left ankle link (F)"),
-            # G fixed to C and D
-            "G": pl.Fixed(joint0=linkage["C"], joint1=linkage["D"], name="Right ankle link (G)"),
-        }
+    parts.append(C)
+
+    # Knee links
+    D = RRRDyad(
+        anchor1=B_p,
+        anchor2=C.output,
+        distance1=D_d1,
+        distance2=D_d2,
+        name="Left knee link (D)",
     )
-    linkage.update(
-        {
-            "H": pl.Revolute(joint0=linkage["D"], joint1=linkage["F"], name="Left foot (H)"),
-            "I": pl.Revolute(joint0=linkage["E"], joint1=linkage["G"], name="Right foot (I)"),
-        }
+    E = RRRDyad(
+        anchor1=B,
+        anchor2=C.output,
+        distance1=E_d1,
+        distance2=E_d2,
+        name="Right knee link (E)",
     )
-    # Mechanism definition
-    strider = pl.Linkage(joints=linkage.values(), order=linkage.values(), name="Strider")
-    strider.set_coords(prev)
-    strider.set_num_constraints(constraints, flat=False)
+    parts += [D, E]
+
+    # Ankle fixed dyads (F fixed to C/E, G fixed to C/D)
+    F = FixedDyad(
+        anchor1=C.output, anchor2=E, distance=F_d, angle=F_a, name="Left ankle link (F)",
+    )
+    G = FixedDyad(
+        anchor1=C.output, anchor2=D, distance=G_d, angle=G_a, name="Right ankle link (G)",
+    )
+    parts += [F, G]
+
+    # Feet
+    H = RRRDyad(
+        anchor1=D, anchor2=F, distance1=H_d1, distance2=H_d2, name="Left foot (H)",
+    )
+    I_ = RRRDyad(
+        anchor1=E, anchor2=G, distance1=I_d1, distance2=I_d2, name="Right foot (I)",
+    )
+    parts += [H, I_]
+
+    strider = Linkage(parts, name="Strider")
+    # Initial coordinates are in the same order as INIT_COORD.
+    strider.set_coords(list(prev))
     return strider
 
 
 def sym_stride_evaluator(linkage, dimensions, initial_positions):
-    """Give score to each dimension set for symmetric strider.
-
-    :param linkage: Input linkage
-    :type linkage: pylinkage.Linkage
-    :param dimensions: Dimensions
-    :type dimensions: tuple
-    :param initial_positions: Initial positions
-    :type initial_positions: tuple
-
-    :return: Score
-    :rtype: float
-    """
-    linkage.set_completely(param2dimensions(dimensions, flat=True), initial_positions)
+    """Score a set of dimensions by horizontal foot-stride length."""
+    linkage.set_completely(
+        list(param2dimensions(dimensions, flat=True)),
+        list(initial_positions),
+    )
     points = 12
     try:
-        # Complete revolution with 12 points
-        loci = tuple(map(tuple, linkage.step(iterations=points, dt=LAP_POINTS / points)))
+        loci = tuple(
+            map(tuple, linkage.step(iterations=points, dt=LAP_POINTS / points))
+        )
     except pl.UnbuildableError:
         return 0
+    # The foot (second-to-last component = H)
     foot_locus = tuple(x[-2] for x in loci)
-    # Constraints check
-    # Performances evaluation
-    score = max(k[0] for k in foot_locus) - min(k[0] for k in foot_locus)
-    return score
+    return max(k[0] for k in foot_locus) - min(k[0] for k in foot_locus)
 
 
 def history_saver(evaluator, history, linkage, dims, pos):
-    """
-    Save the history to a list.
-
-    :param evaluator: Evaluation function
-    :param history: History list
-    :param linkage: Input linkage
-    :param dims: Dimensions
-    :param pos: Initial positions
-
-    """
+    """Record each evaluation for animation/plotting."""
     score = evaluator(linkage, dims, pos)
     history.append((score, list(dims), pos))
     return score
 
 
 def view_swarm_polar(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, n_iterations=400):
-    """Draw an animation of the swarm in a polar graph.
-
-    :param linkage: Input linkage
-    :type linkage: pylinkage.Linkage
-    :param dimensions: Dimensions (Default value = DIMENSIONS)
-    :type dimensions: Sized
-    :param save_each: To save the linkage state (Default value = 0)
-    :type save_each: int | None
-    :param n_agents: Number of agents (Default value = 300)
-    :type n_agents: int
-    :param n_iterations: NUmber of iterations (Default value = 400)
-    :type n_iterations: int
-    """
-    history = []
-    out = pl.particle_swarm_optimization(
+    """Animate the swarm as a polar graph over the design parameters."""
+    history: list = []
+    ensemble = pl.particle_swarm_optimization(
         lambda *x: history_saver(sym_stride_evaluator, history, *x),
         linkage,
         center=dimensions,
@@ -228,14 +230,14 @@ def view_swarm_polar(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, 
         bounds=BOUNDS,
         dimensions=len(dimensions),
     )
+    best_score = ensemble[0].scores.get("score", 0.0)
 
     fig = plt.figure("Swarm in polar graph")
-    fig.suptitle(f"Final best score: {-out[0][0]:.2f}")
+    fig.suptitle(f"Final best score: {-best_score:.2f}")
     formatted_history = [history[i : i + n_agents] for i in range(0, len(history), n_agents)]
-    artists = []
+    artists: list = []
 
     def init_polar_repr():
-        """Set the axis for the polar representation."""
         ax = fig.add_subplot(111, projection="polar")
         artists.extend(ax.plot([], [], lw=0.5, animated=False)[0] for _ in range(n_agents))
         ax.set_rmax(7)
@@ -246,18 +248,13 @@ def view_swarm_polar(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, 
         return artists
 
     def repr_polar_swarm(current_swarm):
-        """Represent a swarm in a polar graph.
-
-        :param current_swarm: Swarm of agents
-
-        """
         t = np.linspace(0, 2 * np.pi, len(current_swarm[1][0][1]) + 2)[:-1]
         for line, agent in zip(artists, current_swarm[1], strict=False):
             line.set_data(t, agent[1] + [agent[0]])
         artists[-1].set_text(
-            f"Best score: {max(x[0] for x in current_swarm[1]):.2f}\nIteration: {current_swarm[0]}"
+            f"Best score: {max(x[0] for x in current_swarm[1]):.2f}\n"
+            f"Iteration: {current_swarm[0]}"
         )
-
         return artists
 
     animation = anim.FuncAnimation(
@@ -278,34 +275,20 @@ def view_swarm_polar(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, 
             metadata={
                 "title": "Particle swarm looking for R^8 in R application maximum",
                 "comment": "Made with Python and Matplotlib",
-                "description": "The swarm tries to find best dimension"
-                " set for Strider legged mechanism",
+                "description": "The swarm tries to find the best dimension "
+                "set for the Strider legged mechanism",
             },
         )
-        animation.save(r"Particle Swarm Optimization of Strider linkage.mp4", writer=writer)
-    # Prevent the garbage-collection of the animation
-    if animation:
-        pass
-    return out
+        animation.save("Particle Swarm Optimization of Strider linkage.mp4", writer=writer)
+    # Keep a reference so matplotlib doesn't garbage-collect the animation.
+    _ = animation
+    return ensemble
 
 
 def view_swarm_tiled(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, n_iterations=400):
-    """Represent the final state of the best linkages.
-
-    :param linkage: Linkage to edit
-    :type linkage: Linkage
-    :param dimensions: Dimensions (Default value = DIMENSIONS)
-    :type dimensions: Sized
-    :param save_each: Period of state save (Default value = 0)
-    :type save_each: int | None
-    :param n_agents: Number of agents (Default value = 300)
-    :type n_agents: int
-    :param n_iterations: NUmber of iterations (Default value = 400)
-    :type n_iterations: int
-    """
-    history = []
-
-    out = pl.particle_swarm_optimization(
+    """Render the swarm as a grid of small linkage previews."""
+    history: list = []
+    ensemble = pl.particle_swarm_optimization(
         lambda *x: history_saver(sym_stride_evaluator, history, *x),
         linkage,
         center=dimensions,
@@ -327,7 +310,7 @@ def view_swarm_tiled(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, 
             swarm=frame,
             fig=fig,
             axes=axes,
-            dimension_func=lambda dim: param2dimensions(dim, flat=True),
+            dimension_func=lambda dim: list(param2dimensions(dim, flat=True)),
         ),
         frames=enumerate(formatted_history),
         blit=False,
@@ -343,16 +326,13 @@ def view_swarm_tiled(linkage, dimensions=DIMENSIONS, save_each=0, n_agents=300, 
             metadata={
                 "title": "Particle swarm looking for R^8 in R application maximum",
                 "comment": "Made with Python and Matplotlib",
-                "description": "The swarm looks for best dimension "
-                "set for Strider legged mechanism",
+                "description": "The swarm looks for the best dimension "
+                "set for the Strider legged mechanism",
             },
         )
-
         animation.save("Strider linkage - Particle swarm optimization.mp4", writer=writer)
-    # Prevent the garbage-collection of the animation
-    if animation:
-        pass
-    return out
+    _ = animation
+    return ensemble
 
 
 def swarm_optimizer(
@@ -364,101 +344,61 @@ def swarm_optimizer(
     n_iterations=400,
     *args,
 ):
-    """Optimize linkage geometrically using PSO.
+    """Optimise a strider geometry with PSO.
 
-    :param linkage: The linkage to optimize.
-    :type linkage: pylinkage.linkage.Linkage
-    :param dimensions: The dimensions that should vary. Default value = DIMENSIONS.
-    :type dimensions: list[float]
-    :param show: Type of visualization. The default is 0.
-        - 0 to avoid any visualization
-        - 1 for polar graph
-        - 2 for tiled 2D representation
-    :type show: int
-    :param save_each: If show is 0, save the image each {save_each} frame. The default is 0.
-    :type save_each: int
-    :param n_agents: Number of agents to simulate. The default is 300.
-    :type n_agents: int
-    :param n_iterations: Number of iterations to run through. The default is 400.
-    :type n_iterations: int
-    :param args: Arguments to pass to the particle swarm optimization.
-    :type args: list
-
-    :return: List of fittest linkages.
-    :rtype: list
+    :param linkage: The linkage to optimise.
+    :param dimensions: Starting design vector.
+    :param show: ``0`` no visualisation, ``1`` polar graph, ``2`` tiled preview.
+    :param save_each: If non-zero, save every ``save_each`` iterations.
+    :param n_agents: Number of particles.
+    :param n_iterations: Iterations to run.
     """
     print("Initial dimensions:", dimensions)
 
     if show == 1:
         return view_swarm_polar(linkage, dimensions, save_each, n_agents, n_iterations)
-    elif show == 2:
-        # Tiled representation of swarm
+    if show == 2:
         return view_swarm_tiled(linkage, dimensions, save_each, n_agents, n_iterations)
 
-    if save_each:
-        for dim, i in pl.particle_swarm_optimization(
-            sym_stride_evaluator,
-            linkage,
-            dimensions=len(dimensions),
-            n_particles=n_agents,
-            iters=n_iterations,
-            bounds=BOUNDS,
-        ):
-            if not i % save_each:
-                with open("PSO optimizer.txt", "w") as f:
-                    # We only keep the best results
-                    dim.sort(key=lambda x: x[1], reverse=True)
-                    for j in range(min(10, len(dim))):
-                        par = {}
-                        for k in range(len(dim[j][0])):
-                            par[DIM_NAMES[k]] = dim[j][0][k]
-                        f.write(f"{par}\n{dim[j][1]}\n{dim[j][2]}\n")
-                        f.write("----\n")
-    else:
-        out = pl.particle_swarm_optimization(
-            sym_stride_evaluator,
-            linkage,
-            *args,
-            n_particles=n_agents,
-            bounds=BOUNDS,
-            dimensions=len(dimensions),
-            iters=n_iterations,
-        )
-        return tuple(out)
+    return pl.particle_swarm_optimization(
+        sym_stride_evaluator,
+        linkage,
+        *args,
+        n_particles=n_agents,
+        bounds=BOUNDS,
+        dimensions=len(dimensions),
+        iters=n_iterations,
+    )
 
 
-def show_optimized(linkage, data, n_show=10, duration=5, symmetric=True):
-    """Show the optimized linkages.
-
-    :param linkage: Linkage to modify.
-    :param data: Linkage data
-    :param n_show: Number of linkages to show (Default value = 10)
-    :param duration: Duration of each animation (Default value = 5)
-    :param symmetric: If the input dimensions should be symmetric (Default value = True)
-
-    """
-    for datum in data[: min(len(data), n_show)]:
-        if datum[0] <= 0:
+def show_optimized(linkage, ensemble, n_show=10, duration=5):
+    """Display the top members of an optimization ensemble."""
+    for i in range(min(n_show, ensemble.n_members)):
+        member = ensemble[i]
+        score = member.scores.get("score", 0.0)
+        if score <= 0:
             continue
-        if symmetric:
-            linkage.set_num_constraints(param2dimensions(datum[1]), flat=False)
-        else:
-            linkage.set_num_constraints(datum[1], flat=False)
-        pl.show_linkage(linkage, prev=INIT_COORD, title=str(datum[0]), duration=duration)
+        linkage.set_constraints(list(param2dimensions(member.dimensions, flat=True)))
+        pl.show_linkage(
+            linkage,
+            prev=list(INIT_COORD),
+            title=str(score),
+            duration=duration,
+        )
 
 
-def main():
-    """Build and optimize a strider linkage.
-
-    You can find it at https://www.diywalkers.com/strider-linkage-plans.html
-    """
+def main() -> None:
+    """Build a strider and run a quick PSO over its geometry."""
     strider = complete_strider(param2dimensions(DIMENSIONS), INIT_COORD)
     print("Initial striding score:", sym_stride_evaluator(strider, DIMENSIONS, INIT_COORD))
     pl.show_linkage(strider, iteration_factor=10)
 
-    # Particle swarm optimization
-    optimized_striders = swarm_optimizer(strider, show=1, save_each=0, n_agents=40, n_iterations=40)
-    print("Striding score after particle swarm optimization:", optimized_striders[0][0])
+    ensemble = swarm_optimizer(strider, show=1, save_each=0, n_agents=40, n_iterations=40)
+    if ensemble.n_members:
+        print(
+            "Striding score after particle swarm optimization:",
+            ensemble[0].scores.get("score", 0.0),
+        )
 
 
 if __name__ == "__main__":

@@ -5,23 +5,37 @@ See: https://en.wikipedia.org/wiki/Four-stroke_engine for details
 """
 
 import pylinkage as pl
+from pylinkage.actuators import Crank
+from pylinkage.components import Ground
+from pylinkage.dyads import RRPDyad
+from pylinkage.simulation import Linkage
 
 
-def create_stroke_engine_linkage():
+def create_stroke_engine_linkage() -> Linkage:
     """Create an inverted stroke engine linkage."""
-    crank = pl.Crank(x=0, y=0, joint0=(0, 0), distance=1, angle=0.1, name="Crank")
+    anchor = Ground(0.0, 0.0, name="Crank anchor")
+    line_a = Ground(0.0, 0.0, name="Line A")
+    line_b = Ground(1.0, 0.0, name="Line B")
 
-    slider = pl.Prismatic(
-        x=2, y=0, joint0=crank, joint1=(0, 0), joint2=(1, 0), revolute_radius=1.5, name="Slider"
+    crank = Crank(
+        anchor=anchor, radius=1.0, angular_velocity=0.1, name="Crank",
+    )
+    slider = RRPDyad(
+        revolute_anchor=crank.output,
+        line_anchor1=line_a,
+        line_anchor2=line_b,
+        distance=1.5,
+        name="Slider",
     )
 
-    return pl.Linkage(
-        joints=(crank, slider), order=(crank, slider), name="Simple four-stroke engine"
+    return Linkage(
+        [anchor, line_a, line_b, crank, slider],
+        name="Simple four-stroke engine",
     )
 
 
-def view_linkage():
-    """View a stroke engine linkage in action"""
+def view_linkage() -> None:
+    """View a stroke engine linkage in action."""
     stroke_engine = create_stroke_engine_linkage()
     pl.show_linkage(stroke_engine, duration=5)
 

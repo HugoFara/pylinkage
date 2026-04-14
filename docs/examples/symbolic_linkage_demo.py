@@ -52,7 +52,6 @@ from pylinkage.symbolic import (
     compute_trajectory_numeric,
     create_trajectory_functions,
     fourbar_symbolic,
-    linkage_to_symbolic,
     solve_linkage_symbolically,
     symbolic_gradient,
     theta,
@@ -98,22 +97,7 @@ def demo_creating_symbolic_linkages():
     print(f"Created linkage with custom joint names: {[j.name for j in linkage2.joints]}")
     print(f"Parameters: {[str(p) for p in linkage2.parameters]}")
 
-    # Method 3: Converting from numeric linkage
-    print("\n--- Method 3: Converting from numeric Linkage ---")
-    ground_A = pl.Static(0, 0, name="A")
-    ground_D = pl.Static(4, 0, name="D")
-    crank = pl.Crank(0, 1, joint0=ground_A, angle=0.0, distance=1.0, name="B")
-    revolute = pl.Revolute(
-        3, 2, joint0=crank, joint1=ground_D, distance0=3.0, distance1=3.0, name="C"
-    )
-    numeric = pl.Linkage(joints=(ground_A, ground_D, crank, revolute), order=(crank, revolute))
-
-    linkage3 = linkage_to_symbolic(numeric)
-    print("Converted numeric linkage to symbolic")
-    print(f"Parameters: {[str(p) for p in linkage3.parameters]}")
-    print("  (auto-generated names based on joint names: r_B, r0_C, r1_C)")
-
-    print("\nAll three methods produce equivalent symbolic representations!")
+    print("\nBoth construction paths produce equivalent symbolic representations.")
     return linkage1
 
 
@@ -330,9 +314,19 @@ def demo_performance_comparison():
     )
 
     # Method 3: Numeric (numba) solver for comparison
-    crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.0, distance=1.0)
-    revolute = pl.Revolute(3, 2, joint0=crank, joint1=(4, 0), distance0=3.0, distance1=3.0)
-    numeric_linkage = pl.Linkage(joints=(crank, revolute))
+    from pylinkage.actuators import Crank as _Crank
+    from pylinkage.components import Ground as _Ground
+    from pylinkage.dyads import RRRDyad as _RRRDyad
+    from pylinkage.simulation import Linkage as _SimLinkage
+
+    _A = _Ground(0.0, 0.0, name="A")
+    _D = _Ground(4.0, 0.0, name="D")
+    _crank = _Crank(anchor=_A, radius=1.0, angular_velocity=0.0, name="B")
+    _dyad = _RRRDyad(
+        anchor1=_crank.output, anchor2=_D,
+        distance1=3.0, distance2=3.0, name="C",
+    )
+    numeric_linkage = _SimLinkage([_A, _D, _crank, _dyad])
 
     start = time.perf_counter()
     for _ in range(n_evals):
@@ -802,17 +796,22 @@ def demo_symbolic_vs_pso_comparison():
     pso_bounds_dict = {"L1": (0.5, 1.5), "L2": (2.5, 4.0), "L3": (2.5, 4.0)}
 
     # angle is the rotation step per iteration (2*pi/100 for 100 steps per rotation)
+    from pylinkage.actuators import Crank as _Crank
+    from pylinkage.components import Ground as _Ground
+    from pylinkage.dyads import RRRDyad as _RRRDyad
+    from pylinkage.simulation import Linkage as _SimLinkage
+
     angle_step = 2 * np.pi / 100
-    crank = pl.Crank(0, 1, joint0=(0, 0), angle=angle_step, distance=initial_params["L1"])
-    revolute = pl.Revolute(
-        3,
-        2,
-        joint0=crank,
-        joint1=(4, 0),
-        distance0=initial_params["L2"],
-        distance1=initial_params["L3"],
+    _A = _Ground(0.0, 0.0, name="A")
+    _D = _Ground(4.0, 0.0, name="D")
+    _crank = _Crank(anchor=_A, radius=initial_params["L1"], angular_velocity=angle_step)
+    _dyad = _RRRDyad(
+        anchor1=_crank.output,
+        anchor2=_D,
+        distance1=initial_params["L2"],
+        distance2=initial_params["L3"],
     )
-    numeric_linkage = pl.Linkage(joints=(crank, revolute))
+    numeric_linkage = _SimLinkage([_A, _D, _crank, _dyad])
 
     @pl.kinematic_minimization
     def pso_objective(loci, **kwargs):
