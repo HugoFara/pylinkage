@@ -20,7 +20,7 @@ def _build_user_to_solver_map(
 ) -> tuple[NDArray[np.intp], NDArray[np.float64]]:
     """Build mapping from user constraints to solver constraints.
 
-    The user-facing constraint vector (from ``get_num_constraints()``)
+    The user-facing constraint vector (from ``get_constraints()``)
     omits topology-fixed values like the crank ``angle_rate``. The solver
     needs the full vector. This function returns:
 
@@ -66,7 +66,7 @@ def simulate_batch(
             solve_order) are reused for every member.
         all_constraints: Shape (n_members, n_user_constraints). One
             user-facing constraint vector per member (as returned by
-            ``get_num_constraints()``).
+            ``get_constraints()``).
         all_positions: Shape (n_members, n_joints, 2). Initial positions
             per member.
         iterations: Number of simulation steps per member.

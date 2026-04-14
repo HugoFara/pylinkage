@@ -204,7 +204,7 @@ def benchmark_linkage_step(linkage, n_cycles: int = 1000) -> dict:
 def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
     """Benchmark a typical optimization evaluation loop."""
     period = linkage.get_rotation_period()
-    init_constraints = tuple(linkage.get_num_constraints())
+    init_constraints = tuple(linkage.get_constraints())
     init_coords = linkage.get_coords()
 
     # Generate random constraint variations
@@ -216,13 +216,13 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
 
     # Warmup
     for i in range(min(10, n_evaluations)):
-        linkage.set_num_constraints(variations[i])
+        linkage.set_constraints(variations[i])
         linkage.set_coords(init_coords)
         with contextlib.suppress(Exception):
             list(linkage.step(iterations=period))
 
     # Reset
-    linkage.set_num_constraints(init_constraints)
+    linkage.set_constraints(init_constraints)
     linkage.set_coords(init_coords)
 
     # Benchmark
@@ -230,7 +230,7 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
     successful = 0
     for variation in variations:
         start = time.perf_counter_ns()
-        linkage.set_num_constraints(variation)
+        linkage.set_constraints(variation)
         linkage.set_coords(init_coords)
         try:
             list(linkage.step(iterations=period))
@@ -241,7 +241,7 @@ def benchmark_optimization_loop(linkage, n_evaluations: int = 1000) -> dict:
         times.append(end - start)
 
     # Reset linkage
-    linkage.set_num_constraints(init_constraints)
+    linkage.set_constraints(init_constraints)
     linkage.set_coords(init_coords)
 
     return {

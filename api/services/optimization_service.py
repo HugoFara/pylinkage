@@ -104,7 +104,7 @@ def _build_eval_func(objective: ObjectiveSpec, minimize: bool) -> Any:
 
         if init_pos is not None:
             linkage.set_coords(init_pos)
-        linkage.set_num_constraints(params)
+        linkage.set_constraints(params)
         try:
             points = 12
             n = linkage.get_rotation_period()

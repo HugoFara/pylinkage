@@ -1211,37 +1211,3 @@ class Mechanism:
         """Reset all driver links to initial state."""
         for driver in self._driver_links:
             driver.reset()
-
-    def get_num_constraints(self) -> list[float]:
-        """Deprecated alias for :meth:`get_constraints`.
-
-        .. deprecated:: 0.10.0
-            Use :meth:`get_constraints` instead. Scheduled for removal
-            in a future release.
-        """
-        import warnings
-
-        warnings.warn(
-            "get_num_constraints() is deprecated; use get_constraints() instead. "
-            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_constraints()
-
-    def set_num_constraints(self, values: list[float]) -> None:
-        """Deprecated alias for :meth:`set_constraints`.
-
-        .. deprecated:: 0.10.0
-            Use :meth:`set_constraints` instead. Scheduled for removal
-            in a future release.
-        """
-        import warnings
-
-        warnings.warn(
-            "set_num_constraints() is deprecated; use set_constraints() instead. "
-            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.set_constraints(values)

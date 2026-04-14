@@ -7,7 +7,7 @@ Covers missing lines in linkage.py:
 - step_with_derivatives with FixedDyad None positions (lines 506-512, 530)
 - step_with_derivatives NaN paths (lines 458, 530, 571, 607, 660, 698)
 - step_with_derivatives unknown component type (lines 536, 704)
-- set_num_constraints with FixedDyad and RRPDyad
+- set_constraints with FixedDyad and RRPDyad
 """
 
 from __future__ import annotations

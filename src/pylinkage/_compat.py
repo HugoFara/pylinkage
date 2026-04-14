@@ -1,9 +1,16 @@
-"""Compatibility utilities for legacy and modern linkage APIs.
+"""Container-agnostic accessors for linkage-like objects.
 
-Provides type-agnostic accessors so library code can work with both
-the legacy ``pylinkage.linkage.Linkage`` (joints API) and the modern
-``pylinkage.simulation.Linkage`` (components API) without importing
-either directly.
+The modern linkage surface exposes two container shapes:
+
+- :class:`pylinkage.simulation.Linkage` — a flat tuple of components
+  accessible as ``linkage.components``.
+- :class:`pylinkage.mechanism.Mechanism` — a links+joints model with
+  ``mechanism.joints`` and ``mechanism.links``.
+
+The helpers here let library code (analysis, bridges, visualizers,
+optimizers) classify parts and read positions without depending on a
+specific container. Classification is by ``type(...).__name__`` so no
+import dependency on the concrete classes is required.
 """
 
 from __future__ import annotations
@@ -12,11 +19,14 @@ from typing import Any
 
 
 def get_parts(linkage: Any) -> list[Any]:
-    """Return the ordered list of joints/components from any linkage type.
+    """Return the ordered list of parts from any linkage container.
 
-    Works with:
-    - Legacy ``Linkage`` → ``.joints``
-    - Modern ``SimLinkage`` → ``.components``
+    - :class:`~pylinkage.simulation.Linkage` → ``.components``.
+    - :class:`~pylinkage.mechanism.Mechanism` → ``.joints``.
+
+    The Mechanism branch runs first because a Mechanism has *both*
+    ``.joints`` and ``.links``, and the joints list is the one that
+    matches the simulation-linkage iteration order.
     """
     if hasattr(linkage, "joints"):
         return list(linkage.joints)
@@ -24,46 +34,41 @@ def get_parts(linkage: Any) -> list[Any]:
 
 
 def is_ground(part: Any) -> bool:
-    """Check if a joint/component is a ground (fixed frame) element."""
-    name = type(part).__name__
-    if name in ("Ground", "GroundJoint"):
-        return True
-    if name in ("Static", "_StaticBase"):
-        return getattr(part, "joint0", None) is None
-    return False
+    """True for a fixed-frame element (``Ground`` or ``GroundJoint``)."""
+    return type(part).__name__ in ("Ground", "GroundJoint")
 
 
 def is_driver(part: Any) -> bool:
-    """Check if a joint/component is a driver (motor input).
+    """True for a motor-driven input.
 
     Recognises:
 
-    - the modern component/actuator API by class name
+    - the actuator API by class name
       (``Crank`` / ``ArcCrank`` / ``LinearActuator``);
-    - a ``Mechanism`` joint that sits as the output of a ``DriverLink`` /
-      ``ArcDriverLink`` — looked up via the joint's ``_links`` list.
+    - a ``Mechanism`` ``RevoluteJoint`` that is the output joint of a
+      ``DriverLink`` / ``ArcDriverLink`` — looked up through the
+      joint's ``_links`` list.
     """
     name = type(part).__name__
     if name in ("Crank", "ArcCrank", "LinearActuator"):
         return True
-    links = getattr(part, "_links", None)
-    if links:
-        for link in links:
-            link_name = type(link).__name__
-            if link_name in ("DriverLink", "ArcDriverLink") and (
-                getattr(link, "output_joint", None) is part
-            ):
-                return True
+    for link in getattr(part, "_links", None) or ():
+        if type(link).__name__ in ("DriverLink", "ArcDriverLink") and (
+            getattr(link, "output_joint", None) is part
+        ):
+            return True
     return False
 
 
 def is_dyad(part: Any) -> bool:
-    """Check if a joint/component is a constrained dyad.
+    """True for a constrained dyad.
 
-    Recognises the modern dyad classes by name plus a ``Mechanism``
-    ``RevoluteJoint`` / ``PrismaticJoint`` that is neither ground nor a
-    driver output (those are dependent joints whose position is solved
-    from neighbouring links — i.e. dyad-equivalent).
+    Recognises the modern dyad classes by name
+    (``RRRDyad`` / ``RRPDyad`` / ``PPDyad`` / ``FixedDyad`` /
+    ``BinaryDyad`` / cam-follower variants) plus a ``Mechanism``
+    ``RevoluteJoint`` or ``PrismaticJoint`` that is neither a ground
+    anchor nor a driver output (those are the dependent joints solved
+    from neighbouring links — dyad-equivalent).
     """
     name = type(part).__name__
     if name in (
@@ -72,22 +77,23 @@ def is_dyad(part: Any) -> bool:
         "PPDyad",
         "FixedDyad",
         "BinaryDyad",
-        "Revolute",
-        "Pivot",
-        "Fixed",
-        "Prismatic",
-        "Linear",
         "TranslatingCamFollower",
         "OscillatingCamFollower",
     ):
         return True
-    if name in ("RevoluteJoint", "PrismaticJoint") and not is_ground(part):
-        return not is_driver(part)
+    if name in ("RevoluteJoint", "PrismaticJoint"):
+        return not is_ground(part) and not is_driver(part)
     return False
 
 
 def get_coord(part: Any) -> tuple[float | None, float | None]:
-    """Get (x, y) position of a joint/component."""
+    """Return the ``(x, y)`` position of a part.
+
+    Prefers ``part.coord()`` when available (the canonical accessor on
+    both :class:`~pylinkage.components.Component` and
+    :class:`~pylinkage.mechanism.joint.Joint`); falls back to plain
+    ``.x`` / ``.y`` attribute lookup.
+    """
     if hasattr(part, "coord"):
         return part.coord()  # type: ignore[no-any-return]
     return (getattr(part, "x", None), getattr(part, "y", None))

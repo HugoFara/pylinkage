@@ -251,7 +251,7 @@ def benchmark_optimization_scenario(n_evals: int = 1000) -> dict:
     """Benchmark a realistic optimization scenario with original code."""
     linkage = create_fourbar_linkage()
     period = linkage.get_rotation_period()
-    init_constraints = tuple(linkage.get_num_constraints())
+    init_constraints = tuple(linkage.get_constraints())
     init_coords = linkage.get_coords()
 
     # Generate random constraint variations
@@ -262,19 +262,19 @@ def benchmark_optimization_scenario(n_evals: int = 1000) -> dict:
 
     # Warmup
     for v in variations[:10]:
-        linkage.set_num_constraints(v)
+        linkage.set_constraints(v)
         linkage.set_coords(init_coords)
         with contextlib.suppress(Exception):
             list(linkage.step(iterations=period))
 
-    linkage.set_num_constraints(init_constraints)
+    linkage.set_constraints(init_constraints)
     linkage.set_coords(init_coords)
 
     # Benchmark
     start = time.perf_counter()
     successful = 0
     for v in variations:
-        linkage.set_num_constraints(v)
+        linkage.set_constraints(v)
         linkage.set_coords(init_coords)
         try:
             list(linkage.step(iterations=period))

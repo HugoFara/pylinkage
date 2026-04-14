@@ -267,13 +267,8 @@ class Linkage:
     def get_constraints(self) -> list[float]:
         """Return all geometric constraints as a flat list.
 
-        Used for optimization. Aliased as :meth:`get_num_constraints`
-        for cross-API compatibility with the legacy Linkage (where the
-        ``num_`` prefix indicated "numeric"; it does **not** return the
-        *number* of constraints).
-
         Returns:
-            Flat list of all constraint values.
+            Flat list of all constraint values, used by optimizers.
         """
         constraints: list[float] = []
         for component in self.components:
@@ -286,8 +281,7 @@ class Linkage:
         """Set constraints from a flat list.
 
         Used to apply optimization results. Invalidates any cached
-        SolverData so the next :meth:`step_fast` recompiles. Aliased as
-        :meth:`set_num_constraints`.
+        SolverData so the next :meth:`step_fast` recompiles.
 
         Args:
             values: Flat list of constraint values.
@@ -299,40 +293,6 @@ class Linkage:
             if n_constraints > 0:
                 component.set_constraints(*values[idx : idx + n_constraints])
                 idx += n_constraints
-
-    def get_num_constraints(self) -> list[float]:
-        """Deprecated alias for :meth:`get_constraints`.
-
-        .. deprecated:: 0.10.0
-            Use :meth:`get_constraints` instead. Scheduled for removal
-            in a future release.
-        """
-        import warnings
-
-        warnings.warn(
-            "get_num_constraints() is deprecated; use get_constraints() instead. "
-            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.get_constraints()
-
-    def set_num_constraints(self, values: list[float]) -> None:
-        """Deprecated alias for :meth:`set_constraints`.
-
-        .. deprecated:: 0.10.0
-            Use :meth:`set_constraints` instead. Scheduled for removal
-            in a future release.
-        """
-        import warnings
-
-        warnings.warn(
-            "set_num_constraints() is deprecated; use set_constraints() instead. "
-            "The 'num_' prefix was 'numeric' but reads as 'number of'.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.set_constraints(values)
 
     def set_completely(
         self,

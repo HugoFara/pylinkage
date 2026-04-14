@@ -1,7 +1,7 @@
 """Tests for pylinkage.simulation.linkage.Linkage (component-based API).
 
 Covers: step, step_with_derivatives, rebuild, get/set_coords,
-get/set_num_constraints, get_rotation_period, set_input_velocity,
+get/set_constraints, get_rotation_period, set_input_velocity,
 get_velocities, get_accelerations, dyads property, automatic solve order,
 and error paths.
 """
@@ -374,12 +374,12 @@ class TestCoords:
 
 
 # ---------------------------------------------------------------------------
-# get_num_constraints / set_num_constraints
+# get_constraints / set_constraints
 # ---------------------------------------------------------------------------
 
 
 class TestConstraints:
-    def test_get_num_constraints(self):
+    def test_get_constraints(self):
         _, _, crank, rocker, linkage = _four_bar()
         constraints = linkage.get_constraints()
         # Ground has no constraints, crank has 1 (radius), rocker has 2 (dist1, dist2)
@@ -388,7 +388,7 @@ class TestConstraints:
         assert constraints[1] == 2.5  # rocker distance1
         assert constraints[2] == 2.0  # rocker distance2
 
-    def test_set_num_constraints(self):
+    def test_set_constraints(self):
         _, _, crank, rocker, linkage = _four_bar()
         linkage.set_constraints([1.5, 3.0, 2.5])
         assert crank.radius == 1.5

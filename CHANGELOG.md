@@ -7,15 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Deprecated
+### Removed
 
 - **`get_num_constraints` / `set_num_constraints`** on both
-  `simulation.Linkage` and `Mechanism`. The ``num_`` prefix stood for
-  "numeric" but reads as "number of", which is misleading — the
-  methods return / accept the constraint **values**, not a count. Use
-  ``get_constraints`` / ``set_constraints`` instead. The aliases still
-  work but emit ``DeprecationWarning`` and are scheduled for removal
-  in a future release.
+  `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
+  added to ease the rename to ``get_constraints`` / ``set_constraints``
+  and are now gone. Calling them raises ``AttributeError``.
+
+### Changed
+
+- **`pylinkage._compat`** now targets only the modern surface. The
+  joint-legacy branches (``Static`` / ``_StaticBase`` / ``Revolute`` /
+  ``Pivot`` / ``Fixed`` / ``Prismatic`` / ``Linear`` name matches) were
+  dead after phase 2c; ``is_ground`` / ``is_dyad`` now only recognise
+  the modern component classes and the Mechanism joint types.
 
 ### Added
 

@@ -36,7 +36,7 @@ def kinematic_default_test(
         """Decorated function.
 
         :param linkage: The linkage to optimize.
-        :param params: Geometric constraints to pass to linkage.set_num_constraints.
+        :param params: Geometric constraints to pass to linkage.set_constraints.
         :param init_pos: List of initial positions for the joints. If None it will be
             redefined at each successful iteration. (Default value = None).
 

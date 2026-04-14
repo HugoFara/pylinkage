@@ -38,19 +38,6 @@ class TestMechanismSetConstraintsInvalidatesCache:
         m.set_constraints(m.get_constraints())
         assert m._solver_data is None
 
-    def test_set_num_constraints_deprecated_alias_still_drops_solver_data(
-        self,
-    ) -> None:
-        """The deprecated alias still clears the cache — but emits a warning."""
-        import pytest
-
-        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
-        m.compile()
-        assert m._solver_data is not None
-        with pytest.deprecated_call():
-            m.set_num_constraints(m.get_constraints())
-        assert m._solver_data is None
-
     def test_step_fast_recompiles_after_invalidation(self) -> None:
         """After set_constraints, the next step_fast() rebuilds SolverData."""
         m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)

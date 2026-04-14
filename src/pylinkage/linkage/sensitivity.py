@@ -47,7 +47,7 @@ def _get_constraint_names(linkage: Linkage) -> tuple[str, ...]:
 
     Returns:
         Tuple of constraint names matching the flat constraint order
-        from get_num_constraints().
+        from get_constraints().
     """
     names: list[str] = []
 
@@ -272,7 +272,7 @@ def analyze_sensitivity(
 
     # Get constraint names and nominal values
     constraint_names = _get_constraint_names(linkage)
-    # Note: with flat=True, get_num_constraints returns list[float | None]
+    # Note: with flat=True, get_constraints returns list[float | None]
     # We cast to list[float] since we skip None values in the loop
     nominal_constraints = cast(list[float], list(linkage.get_constraints()))
 
@@ -522,7 +522,7 @@ def analyze_tolerance(
     # Get constraint names and nominal values
     constraint_names = _get_constraint_names(linkage)
     name_to_idx = _name_to_index(linkage, constraint_names)
-    # Note: with flat=True, get_num_constraints returns list[float | None]
+    # Note: with flat=True, get_constraints returns list[float | None]
     # We cast to list[float] since constraints are always set for valid linkages
     nominal_constraints = cast(list[float], list(linkage.get_constraints()))
 

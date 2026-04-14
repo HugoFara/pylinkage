@@ -30,36 +30,31 @@ def _modern_fourbar():
 # ---------------------------------------------------------------------------
 
 
-class TestDeprecatedNumConstraintsAliases:
-    """``get_num_constraints``/``set_num_constraints`` are deprecated
-    aliases kept for one release for migration; they must still return
-    the correct value but emit ``DeprecationWarning``.
+class TestNumConstraintsRemoved:
+    """``get_num_constraints`` / ``set_num_constraints`` were deprecated
+    aliases and have been removed. Accessing them raises ``AttributeError``.
     """
 
-    def test_mechanism_get_num_constraints_emits_deprecation(self) -> None:
+    def test_mechanism_get_num_constraints_gone(self) -> None:
         import pytest
 
         m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
-        with pytest.deprecated_call():
-            result = m.get_num_constraints()
-        assert result == m.get_constraints()
+        with pytest.raises(AttributeError):
+            m.get_num_constraints()
 
-    def test_mechanism_set_num_constraints_emits_deprecation(self) -> None:
+    def test_mechanism_set_num_constraints_gone(self) -> None:
         import pytest
 
         m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
-        original = m.get_constraints()
-        with pytest.deprecated_call():
-            m.set_num_constraints(original)
-        assert m.get_constraints() == original
+        with pytest.raises(AttributeError):
+            m.set_num_constraints([])
 
-    def test_simulation_linkage_get_num_constraints_emits_deprecation(self) -> None:
+    def test_simulation_linkage_get_num_constraints_gone(self) -> None:
         import pytest
 
         linkage = _modern_fourbar()
-        with pytest.deprecated_call():
-            result = linkage.get_num_constraints()
-        assert result == linkage.get_constraints()
+        with pytest.raises(AttributeError):
+            linkage.get_num_constraints()
 
 
 class TestCoordAliases:
