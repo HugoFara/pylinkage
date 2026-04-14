@@ -22,7 +22,10 @@ from ._batch_sim import simulate_batch
 from ._member import Member
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..linkage import Linkage as LegacyLinkage
+    from ..simulation import Linkage as SimLinkage
+
+    Linkage = LegacyLinkage | SimLinkage
 
 
 class Ensemble:
@@ -57,7 +60,8 @@ class Ensemble:
         self._template: SolverData = linkage_to_solver_data(linkage)
         self._dimensions = np.ascontiguousarray(dimensions, dtype=np.float64)
         self._initial_positions = np.ascontiguousarray(
-            initial_positions, dtype=np.float64,
+            initial_positions,
+            dtype=np.float64,
         )
         self._scores: dict[str, NDArray[np.float64]] = (
             {k: np.asarray(v, dtype=np.float64) for k, v in scores.items()}
@@ -138,7 +142,8 @@ class Ensemble:
     def __getitem__(self, idx: slice | NDArray[np.intp] | NDArray[np.bool_]) -> Ensemble: ...
 
     def __getitem__(
-        self, idx: int | slice | NDArray[np.intp] | NDArray[np.bool_],
+        self,
+        idx: int | slice | NDArray[np.intp] | NDArray[np.bool_],
     ) -> Member | Ensemble:
         if isinstance(idx, (int, np.integer)):
             return self._member_at(int(idx))
@@ -194,7 +199,10 @@ class Ensemble:
         return result
 
     def simulate_member(
-        self, idx: int, iterations: int | None = None, dt: float = 1.0,
+        self,
+        idx: int,
+        iterations: int | None = None,
+        dt: float = 1.0,
     ) -> NDArray[np.float64]:
         """Simulate a single member (lazy per-member access).
 
@@ -290,7 +298,9 @@ class Ensemble:
 
     @classmethod
     def from_pareto_front(
-        cls, linkage: Linkage, front: ParetoFront,
+        cls,
+        linkage: Linkage,
+        front: ParetoFront,
     ) -> Ensemble:
         """Create an Ensemble from a multi-objective Pareto front.
 
@@ -320,7 +330,8 @@ class Ensemble:
         scores_dict: dict[str, NDArray[np.float64]] = {}
         for k, name in enumerate(names):
             scores_dict[name] = np.array(
-                [s.scores[k] for s in front.solutions], dtype=np.float64,
+                [s.scores[k] for s in front.solutions],
+                dtype=np.float64,
             )
 
         return cls(
@@ -363,7 +374,7 @@ class Ensemble:
             self.simulate_member(idx, iterations=iterations)
             member = self._member_at(idx)
 
-        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)
+        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)  # type: ignore[arg-type]
 
     def plot_plotly(
         self,
@@ -391,7 +402,9 @@ class Ensemble:
             member = self._member_at(idx)
 
         return plot_linkage_plotly(
-            self._linkage, loci=member.to_loci(), **kwargs,
+            self._linkage,
+            loci=member.to_loci(),
+            **kwargs,
         )
 
     def save_svg(
@@ -418,7 +431,7 @@ class Ensemble:
             self.simulate_member(idx, iterations=iterations)
             member = self._member_at(idx)
 
-        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)
+        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)  # type: ignore[arg-type]
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -436,9 +449,7 @@ class Ensemble:
             return arr
         if len(self._scores) == 1:
             return next(iter(self._scores.values()))
-        raise KeyError(
-            f"No score named {key!r}; available: {list(self._scores)}"
-        )
+        raise KeyError(f"No score named {key!r}; available: {list(self._scores)}")
 
     def _member_at(self, idx: int) -> Member:
         """Build a Member for the given index."""
@@ -452,7 +463,8 @@ class Ensemble:
         )
 
     def _slice(
-        self, idx: slice | NDArray[np.intp] | NDArray[np.bool_],
+        self,
+        idx: slice | NDArray[np.intp] | NDArray[np.bool_],
     ) -> Ensemble:
         """Create a sub-Ensemble from a slice or fancy index."""
         new_dims = self._dimensions[idx]
@@ -465,7 +477,5 @@ class Ensemble:
         ens._dimensions = np.ascontiguousarray(new_dims)
         ens._initial_positions = np.ascontiguousarray(new_pos)
         ens._scores = new_scores
-        ens._trajectories = (
-            self._trajectories[idx] if self._trajectories is not None else None
-        )
+        ens._trajectories = self._trajectories[idx] if self._trajectories is not None else None
         return ens

@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING, Any
 from ._types import FourBarSolution, Point2D, SynthesisType
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
     from ..simulation import Linkage as SimLinkage
     from .topology_types import NBarSolution
 
@@ -218,15 +217,15 @@ def solutions_to_linkages(
 
 
 def linkage_to_synthesis_params(
-    linkage: Linkage | SimLinkage,
+    linkage: SimLinkage,
 ) -> FourBarSolution:
     """Extract synthesis parameters from an existing four-bar linkage.
 
-    Analyzes a Linkage or SimLinkage object to extract the four-bar
-    geometry parameters as a FourBarSolution.
+    Analyzes a SimLinkage object to extract the four-bar geometry
+    parameters as a FourBarSolution.
 
     Args:
-        linkage: A four-bar Linkage (legacy) or SimLinkage (new API).
+        linkage: A four-bar linkage built with the component/actuator/dyad API.
 
     Returns:
         FourBarSolution tuple with geometry parameters.
@@ -234,11 +233,7 @@ def linkage_to_synthesis_params(
     Raises:
         ValueError: If linkage is not a valid four-bar.
     """
-    # Support both new SimLinkage (components) and legacy Linkage (joints)
-    parts: tuple[Any, ...] | list[Any] = (
-        getattr(linkage, "components", None)
-        or linkage.joints  # type: ignore[union-attr]
-    )
+    parts: tuple[Any, ...] | list[Any] = getattr(linkage, "components", None) or ()
 
     from ..actuators import Crank as NewCrank
     from ..components import Ground
@@ -278,98 +273,14 @@ def linkage_to_synthesis_params(
             crank_length=crank_comp.radius,
             coupler_length=dyad_comp.distance1,
             rocker_length=dyad_comp.distance2,
-            ground_length=math.sqrt(
-                (d[0] - a[0]) ** 2 + (d[1] - a[1]) ** 2
-            ),
+            ground_length=math.sqrt((d[0] - a[0]) ** 2 + (d[1] - a[1]) ** 2),
             coupler_point=None,
         )
 
-    # Legacy joints API fallback
-    from ..joints.crank import Crank as LegacyCrank
-    from ..joints.fixed import Fixed
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
-
-    statics: list[Static] = []
-    cranks: list[LegacyCrank] = []
-    revolutes: list[Revolute] = []
-    fixed_joints: list[Fixed] = []
-
-    for joint in parts:
-        if isinstance(joint, LegacyCrank):
-            cranks.append(joint)
-        elif isinstance(joint, Fixed):
-            fixed_joints.append(joint)
-        elif isinstance(joint, Revolute):
-            revolutes.append(joint)
-        elif isinstance(joint, Static):
-            statics.append(joint)
-
-    if len(statics) < 2:
-        raise ValueError(f"Four-bar needs 2 static joints, found {len(statics)}")
-    if len(cranks) < 1:
-        raise ValueError(f"Four-bar needs 1 crank joint, found {len(cranks)}")
-    if len(revolutes) < 1:
-        raise ValueError(f"Four-bar needs 1 revolute joint, found {len(revolutes)}")
-
-    crank = cranks[0]
-    revolute = revolutes[0]
-
-    joint_A = None
-    joint_D = None
-    for static in statics:
-        if crank.joint0 is static:
-            joint_A = static
-        else:
-            joint_D = static
-    if joint_A is None:
-        joint_A = statics[0]
-    if joint_D is None:
-        joint_D = statics[1] if len(statics) > 1 else statics[0]
-
-    assert joint_A.x is not None and joint_A.y is not None
-    assert joint_D.x is not None and joint_D.y is not None
-    assert crank.x is not None and crank.y is not None
-    assert revolute.x is not None and revolute.y is not None
-
-    la: Point2D = (joint_A.x, joint_A.y)
-    ld: Point2D = (joint_D.x, joint_D.y)
-    lb: Point2D = (crank.x, crank.y)
-    lc: Point2D = (revolute.x, revolute.y)
-
-    crank_length_val: float = (
-        crank.r
-        if hasattr(crank, "r") and crank.r is not None
-        else math.sqrt((lb[0] - la[0]) ** 2 + (lb[1] - la[1]) ** 2)
-    )
-    coupler_length_val: float = (
-        revolute.r0
-        if hasattr(revolute, "r0") and revolute.r0 is not None
-        else math.sqrt((lc[0] - lb[0]) ** 2 + (lc[1] - lb[1]) ** 2)
-    )
-    rocker_length_val: float = (
-        revolute.r1
-        if hasattr(revolute, "r1") and revolute.r1 is not None
-        else math.sqrt((lc[0] - ld[0]) ** 2 + (lc[1] - ld[1]) ** 2)
-    )
-    ground_length = math.sqrt((ld[0] - la[0]) ** 2 + (ld[1] - la[1]) ** 2)
-
-    coupler_point: Point2D | None = None
-    for fj in fixed_joints:
-        if fj.name == "P" and fj.x is not None and fj.y is not None:
-            coupler_point = (fj.x, fj.y)
-            break
-
-    return FourBarSolution(
-        ground_pivot_a=la,
-        ground_pivot_d=ld,
-        crank_pivot_b=lb,
-        coupler_pivot_c=lc,
-        crank_length=crank_length_val,
-        coupler_length=coupler_length_val,
-        rocker_length=rocker_length_val,
-        ground_length=ground_length,
-        coupler_point=coupler_point,
+    raise ValueError(
+        "linkage_to_synthesis_params requires a four-bar built with the "
+        "component/actuator/dyad API (Ground + Crank + RRR dyad). The legacy "
+        "joints-based Linkage is no longer supported."
     )
 
 
@@ -428,13 +339,10 @@ def fourbar_from_lengths(
     # Verify the mechanism can be assembled at the initial angle
     bx = ax + crank_length * math.cos(initial_crank_angle)
     by = ay + crank_length * math.sin(initial_crank_angle)
-    n_intersections, *_ = circle_intersect(
-        bx, by, coupler_length, dx, dy, rocker_length
-    )
+    n_intersections, *_ = circle_intersect(bx, by, coupler_length, dx, dy, rocker_length)
     if n_intersections == 0:
         raise ValueError(
-            f"Cannot assemble four-bar with given lengths "
-            f"at angle {initial_crank_angle}"
+            f"Cannot assemble four-bar with given lengths at angle {initial_crank_angle}"
         )
 
     ground_a = Ground(ax, ay, name="A")
@@ -694,7 +602,7 @@ def nbar_solution_to_linkage(
     solution: NBarSolution,
     name: str = "synthesized",
     iterations: int = 360,
-) -> Linkage:
+) -> SimLinkage:
     """Convert an NBarSolution to a Linkage object.
 
     Loads the topology from the catalog, decomposes it to determine
@@ -726,7 +634,7 @@ def nbar_solution_to_linkage(
                 "Joint positions may be invalid."
             )
         linkage.name = name
-        return linkage  # type: ignore[return-value]
+        return linkage
 
     # For four-bar, convert via FourBarSolution if possible
     if solution.topology_id == "four-bar":
@@ -745,7 +653,7 @@ def nbar_solution_to_linkage(
             ground_length=lengths.get("ground_AD", 1.0),
             coupler_point=solution.coupler_point,
         )
-        return solution_to_linkage(fb, name=name, iterations=iterations)  # type: ignore[return-value]
+        return solution_to_linkage(fb, name=name, iterations=iterations)
 
     # General case: build linkage from joint positions and topology
     # For eight-bars and beyond, use a generic construction approach
@@ -756,21 +664,17 @@ def _generic_nbar_to_linkage(
     solution: NBarSolution,
     name: str = "synthesized",
     iterations: int = 360,
-) -> Linkage:
+) -> SimLinkage:
     """Generic converter for N-bar solutions of any topology.
 
     Uses the topology catalog to get the graph structure, decomposes
-    into Assur groups, and builds joints in solving order.
-
-    The first ground node becomes the crank anchor. The first driver
-    node becomes the crank. All subsequent driven nodes become
-    Revolute joints connecting to their Assur group anchors.
+    into Assur groups, and builds components in solving order using
+    the component/actuator/dyad API.
     """
-    from ..joints.crank import Crank
-    from ..joints.fixed import Fixed
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
-    from ..linkage import Linkage
+    from ..actuators import Crank as CrankActuator
+    from ..components import Ground
+    from ..dyads import FixedDyad, RRRDyad
+    from ..simulation import Linkage as SimLinkageClass
     from ..topology.catalog import load_catalog
 
     catalog = load_catalog()
@@ -781,122 +685,108 @@ def _generic_nbar_to_linkage(
     graph = entry.to_graph()
     pos = solution.joint_positions
 
-    # Build joints for ground nodes
-    joint_map: dict[str, Static | Crank | Revolute | Fixed] = {}
+    parts_map: dict[str, Any] = {}
     ground_nodes = [n.id for n in graph.nodes.values() if n.role.name == "GROUND"]
     driver_nodes = [n.id for n in graph.nodes.values() if n.role.name == "DRIVER"]
 
+    # Ground nodes → Ground components
     for node_id in ground_nodes:
         if node_id in pos:
             p = pos[node_id]
-            joint_map[node_id] = Static(x=p[0], y=p[1], name=node_id)
+            parts_map[node_id] = Ground(p[0], p[1], name=node_id)
 
-    # Build crank for driver nodes
+    # Driver nodes → Crank actuators
     angle_step = 2 * math.pi / iterations
-    order: list[Static | Crank | Revolute | Fixed] = []
     for node_id in driver_nodes:
-        if node_id in pos and node_id in joint_map:
+        if node_id in parts_map:
             continue
-        p = pos.get(node_id, (0, 0))
-        # Find the ground node this driver connects to
+        p = pos.get(node_id, (0.0, 0.0))
+        # Find the ground anchor this driver connects to
         anchor = None
         for edge in graph.edges.values():
-            if edge.source == node_id and edge.target in joint_map:
-                anchor = joint_map[edge.target]
+            if edge.source == node_id and edge.target in parts_map:
+                anchor = parts_map[edge.target]
                 break
-            if edge.target == node_id and edge.source in joint_map:
-                anchor = joint_map[edge.source]
+            if edge.target == node_id and edge.source in parts_map:
+                anchor = parts_map[edge.source]
                 break
-
         if anchor is None and ground_nodes:
-            anchor = joint_map.get(ground_nodes[0])
+            anchor = parts_map.get(ground_nodes[0])
+        if anchor is None:
+            continue
 
-        if anchor is not None:
-            dist = _point_dist(p, (anchor.x or 0, anchor.y or 0))
-            crank = Crank(
-                x=p[0], y=p[1],
-                joint0=anchor,
-                distance=dist,
-                angle=angle_step,
-                name=node_id,
-            )
-            joint_map[node_id] = crank
-            order.append(crank)
+        dist = _point_dist(p, (anchor.x or 0.0, anchor.y or 0.0))
+        parts_map[node_id] = CrankActuator(
+            anchor=anchor,
+            radius=dist,
+            angular_velocity=angle_step,
+            name=node_id,
+        )
 
-    # Build revolute joints for driven nodes (in topology order)
+    # Driven nodes → RRR dyads (in topology order)
     driven_nodes = [
-        n.id for n in graph.nodes.values()
-        if n.role.name == "DRIVEN" and n.id not in joint_map
+        n.id for n in graph.nodes.values() if n.role.name == "DRIVEN" and n.id not in parts_map
     ]
-
     for node_id in driven_nodes:
         if node_id not in pos:
             continue
         p = pos[node_id]
 
-        # Find two connected anchors (parents)
         parents: list[tuple[str, float]] = []
         for edge in graph.edges.values():
             other = None
-            if edge.source == node_id and edge.target in joint_map:
+            if edge.source == node_id and edge.target in parts_map:
                 other = edge.target
-            elif edge.target == node_id and edge.source in joint_map:
+            elif edge.target == node_id and edge.source in parts_map:
                 other = edge.source
             if other is not None and other not in [pid for pid, _ in parents]:
-                parent_joint = joint_map[other]
-                dist = _point_dist(p, (parent_joint.x or 0, parent_joint.y or 0))
+                parent_comp = parts_map[other]
+                dist = _point_dist(p, (parent_comp.x or 0.0, parent_comp.y or 0.0))
                 parents.append((other, dist))
 
         if len(parents) >= 2:
-            rev = Revolute(
-                x=p[0], y=p[1],
-                joint0=joint_map[parents[0][0]],
-                joint1=joint_map[parents[1][0]],
-                distance0=parents[0][1],
-                distance1=parents[1][1],
+            parts_map[node_id] = RRRDyad(
+                anchor1=parts_map[parents[0][0]],
+                anchor2=parts_map[parents[1][0]],
+                distance1=parents[0][1],
+                distance2=parents[1][1],
                 name=node_id,
             )
-            joint_map[node_id] = rev
-            order.append(rev)
 
-    # Add coupler point tracker
-    all_joints = list(joint_map.values())
+    all_parts: list[Any] = list(parts_map.values())
+
+    # Coupler point tracker
     if solution.coupler_point is not None and solution.coupler_node is not None:
         cn = solution.coupler_node
-        if cn in joint_map:
-            # Find another joint connected to the coupler node
+        if cn in parts_map:
             parent2 = None
             for edge in graph.edges.values():
                 other = None
-                if edge.source == cn and edge.target in joint_map:
+                if edge.source == cn and edge.target in parts_map:
                     other = edge.target
-                elif edge.target == cn and edge.source in joint_map:
+                elif edge.target == cn and edge.source in parts_map:
                     other = edge.source
                 if other is not None and other != cn:
-                    parent2 = joint_map[other]
+                    parent2 = parts_map[other]
                     break
 
             if parent2 is not None:
                 cp = solution.coupler_point
                 cn_pos = pos[cn]
-                p2_pos = (parent2.x or 0, parent2.y or 0)
+                p2_pos = (parent2.x or 0.0, parent2.y or 0.0)
                 dist_cp, angle_cp = _compute_coupler_point_params(cn_pos, p2_pos, cp)
-                joint_P = Fixed(
-                    x=cp[0], y=cp[1],
-                    joint0=joint_map[cn],
-                    joint1=parent2,
-                    distance=dist_cp,
-                    angle=angle_cp,
-                    name="P",
+                all_parts.append(
+                    FixedDyad(
+                        anchor1=parts_map[cn],
+                        anchor2=parent2,
+                        distance=dist_cp,
+                        angle=angle_cp,
+                        name="P",
+                    )
                 )
-                all_joints.append(joint_P)
-                order.append(joint_P)
 
-    return Linkage(
-        joints=all_joints,
-        order=order,
-        name=name,
-    )
+    linkage = SimLinkageClass(all_parts, name=name)
+    return linkage
 
 
 def _point_dist(a: Point2D, b: Point2D) -> float:

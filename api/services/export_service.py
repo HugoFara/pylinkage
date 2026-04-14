@@ -8,7 +8,6 @@ import tempfile
 from typing import Any
 
 from pylinkage.mechanism import Mechanism
-from pylinkage.mechanism.conversion import mechanism_to_linkage
 from pylinkage.mechanism.joint import GroundJoint, PrismaticJoint
 from pylinkage.mechanism.link import ArcDriverLink, DriverLink, GroundLink
 
@@ -216,9 +215,8 @@ def export_svg(mechanism: Mechanism) -> str:
     """
     from pylinkage.visualizer import plot_linkage_svg
 
-    linkage = mechanism_to_linkage(mechanism)
-    loci = list(linkage.step())
-    drawing = plot_linkage_svg(linkage, loci)
+    loci = list(mechanism.step())
+    drawing = plot_linkage_svg(mechanism, loci)
     return drawing.as_svg()
 
 
@@ -233,9 +231,8 @@ def export_dxf(mechanism: Mechanism) -> bytes:
     """
     from pylinkage.visualizer import plot_linkage_dxf
 
-    linkage = mechanism_to_linkage(mechanism)
-    loci = list(linkage.step())
-    doc = plot_linkage_dxf(linkage, loci)
+    loci = list(mechanism.step())
+    doc = plot_linkage_dxf(mechanism, loci)
 
     stream = io.StringIO()
     doc.write(stream)
@@ -253,9 +250,8 @@ def export_step(mechanism: Mechanism) -> bytes:
     """
     from pylinkage.visualizer import build_linkage_3d
 
-    linkage = mechanism_to_linkage(mechanism)
-    loci = list(linkage.step())
-    model = build_linkage_3d(linkage, loci)
+    loci = list(mechanism.step())
+    model = build_linkage_3d(mechanism, loci)
 
     with tempfile.NamedTemporaryFile(suffix=".step", delete=True) as tmp:
         model.export_step(tmp.name)

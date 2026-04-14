@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 from ._types import Point2D
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
     from ..topology.catalog import CatalogEntry
     from .core import Dyad
 

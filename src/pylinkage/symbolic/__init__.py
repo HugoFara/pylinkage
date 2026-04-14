@@ -93,8 +93,6 @@ __all__ = [
     "symbolic_hessian",
     "generate_symbolic_bounds",
     # Conversion functions
-    "linkage_to_symbolic",
-    "symbolic_to_linkage",
     "get_numeric_parameters",
     "fourbar_symbolic",
 ]
@@ -103,8 +101,6 @@ from ._types import SymCoord, theta
 from .conversion import (
     fourbar_symbolic,
     get_numeric_parameters,
-    linkage_to_symbolic,
-    symbolic_to_linkage,
 )
 from .geometry import (
     symbolic_circle_intersect,

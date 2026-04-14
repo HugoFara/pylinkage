@@ -8,13 +8,13 @@ metrics (path accuracy, transmission angle, link ratios, etc.).
 from __future__ import annotations
 
 import math
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ._types import PrecisionPoint
 from .topology_types import QualityMetrics
 
 if TYPE_CHECKING:
-    from ..linkage import Linkage
+    from ..simulation import Linkage
 
 
 def compute_metrics(
@@ -70,24 +70,27 @@ def compute_path_accuracy(
     Returns:
         RMS distance (0.0 = perfect).
     """
+    from .._compat import get_parts
     from ..exceptions import UnbuildableError
 
     if not precision_points:
         return 0.0
 
+    parts = get_parts(linkage)
+
     # Find coupler point joint (named "P" by convention)
     coupler_joint = None
-    for joint in linkage.joints:
+    for joint in parts:
         if getattr(joint, "name", None) == "P":
             coupler_joint = joint
             break
     if coupler_joint is None:
-        coupler_joint = linkage.joints[-1]
+        coupler_joint = parts[-1]
 
     # Simulate
     try:
         trajectory: list[tuple[float, float]] = []
-        coupler_idx = linkage.joints.index(coupler_joint)
+        coupler_idx = parts.index(coupler_joint)
         for positions in linkage.step():
             px, py = positions[coupler_idx]
             if px is not None and py is not None:
@@ -101,10 +104,7 @@ def compute_path_accuracy(
     # RMS of minimum distances
     sum_sq = 0.0
     for px, py in precision_points:
-        min_dist = min(
-            math.sqrt((tx - px) ** 2 + (ty - py) ** 2)
-            for tx, ty in trajectory
-        )
+        min_dist = min(math.sqrt((tx - px) ** 2 + (ty - py) ** 2) for tx, ty in trajectory)
         sum_sq += min_dist * min_dist
 
     return math.sqrt(sum_sq / len(precision_points))
@@ -125,31 +125,36 @@ def compute_transmission_angle(linkage: Linkage) -> float:
     Returns:
         Minimum transmission angle in degrees (0-90 range).
     """
+    from .._compat import get_parts
     from ..exceptions import UnbuildableError
-    from ..joints.revolute import Revolute
 
-    # Find the first Revolute joint (coupler-rocker connection)
+    parts = get_parts(linkage)
+    # Find the first RRR-like dyad (coupler-rocker connection)
     revolute = None
-    for joint in linkage.joints:
-        if isinstance(joint, Revolute):
-            revolute = joint
+    for part in parts:
+        if type(part).__name__ in ("RRRDyad", "Revolute"):
+            revolute = part
             break
 
     if revolute is None:
         return 0.0
 
-    # We need the coupler joint (B) and the rocker ground (D)
-    joint_b = revolute.joint0  # parent 0 = coupler side
-    joint_d = revolute.joint1  # parent 1 = ground side
+    # We need the coupler-side anchor (B) and the rocker-side anchor (D)
+    joint_b = getattr(revolute, "anchor1", None) or getattr(revolute, "joint0", None)
+    joint_d = getattr(revolute, "anchor2", None) or getattr(revolute, "joint1", None)
 
     if joint_b is None or joint_d is None:
         return 0.0
 
+    # Resolve AnchorProxy to its parent component
+    joint_b = getattr(joint_b, "_parent", joint_b)
+    joint_d = getattr(joint_d, "_parent", joint_d)
+
     min_angle = 180.0
     try:
-        rev_idx = linkage.joints.index(revolute)
-        b_idx = linkage.joints.index(joint_b)
-        d_idx = linkage.joints.index(joint_d)
+        rev_idx = parts.index(revolute)
+        b_idx = parts.index(joint_b)
+        d_idx = parts.index(joint_d)
 
         for positions in linkage.step():
             bx, by = positions[b_idx]
@@ -197,23 +202,25 @@ def compute_link_ratio(linkage: Linkage) -> float:
     Returns:
         Ratio >= 1.0 (lower is better). Returns inf if any length is 0.
     """
+    from .._compat import get_parts
+
     lengths: list[float] = []
 
-    for joint in linkage.joints:
-        # Crank: has 'r' attribute (distance to parent)
-        r = getattr(joint, "r", None)
+    for joint in get_parts(linkage):
+        # Crank: radius to the ground anchor
+        r = getattr(joint, "radius", None) or getattr(joint, "r", None)
         if r is not None and r > 0:
             lengths.append(r)
 
-        # Revolute/Pivot: has 'r0', 'r1' (distances to two parents)
-        r0 = getattr(joint, "r0", None)
-        if r0 is not None and r0 > 0:
-            lengths.append(r0)
-        r1 = getattr(joint, "r1", None)
-        if r1 is not None and r1 > 0:
-            lengths.append(r1)
+        # Dyad distances to both anchors
+        d1 = getattr(joint, "distance1", None) or getattr(joint, "r0", None)
+        if d1 is not None and d1 > 0:
+            lengths.append(d1)
+        d2 = getattr(joint, "distance2", None) or getattr(joint, "r1", None)
+        if d2 is not None and d2 > 0:
+            lengths.append(d2)
 
-        # Fixed: has 'distance' attribute
+        # Fixed dyad: explicit distance
         d = getattr(joint, "distance", None)
         if d is not None and isinstance(d, (int, float)) and d > 0:
             lengths.append(d)
@@ -328,39 +335,38 @@ def score_solution(
 
 def _check_grashof_driver(linkage: Linkage) -> bool:
     """Check if the driving four-bar loop satisfies Grashof criterion."""
-    # Extract link lengths from the first crank and revolute
-    from ..joints.crank import Crank
-    from ..joints.joint import Static
-    from ..joints.revolute import Revolute
+    from .._compat import get_parts
     from .utils import is_grashof
+
+    parts = get_parts(linkage)
 
     crank = None
     revolute = None
-    statics: list[Static] = []
+    grounds: list[Any] = []
 
-    for joint in linkage.joints:
-        if isinstance(joint, Crank) and crank is None:
-            crank = joint
-        elif isinstance(joint, Revolute) and revolute is None:
-            revolute = joint
-        elif isinstance(joint, Static):
-            statics.append(joint)
+    for part in parts:
+        name = type(part).__name__
+        if name == "Crank" and crank is None:
+            crank = part
+        elif name in ("RRRDyad", "Revolute") and revolute is None:
+            revolute = part
+        elif name in ("Ground", "Static", "_StaticBase"):
+            grounds.append(part)
 
-    if crank is None or revolute is None or len(statics) < 2:
+    if crank is None or revolute is None or len(grounds) < 2:
         return False
 
-    crank_len = getattr(crank, "r", None)
-    coupler_len = getattr(revolute, "r0", None)
-    rocker_len = getattr(revolute, "r1", None)
+    crank_len = getattr(crank, "radius", None) or getattr(crank, "r", None)
+    coupler_len = getattr(revolute, "distance1", None) or getattr(revolute, "r0", None)
+    rocker_len = getattr(revolute, "distance2", None) or getattr(revolute, "r1", None)
 
     if crank_len is None or coupler_len is None or rocker_len is None:
         return False
 
-    # Ground length between statics[0] and statics[1]
-    ax = getattr(statics[0], "x", 0.0) or 0.0
-    ay = getattr(statics[0], "y", 0.0) or 0.0
-    dx = getattr(statics[1], "x", 0.0) or 0.0
-    dy = getattr(statics[1], "y", 0.0) or 0.0
+    ax = getattr(grounds[0], "x", 0.0) or 0.0
+    ay = getattr(grounds[0], "y", 0.0) or 0.0
+    dx = getattr(grounds[1], "x", 0.0) or 0.0
+    dy = getattr(grounds[1], "y", 0.0) or 0.0
     ground_len = math.sqrt((dx - ax) ** 2 + (dy - ay) ** 2)
 
     if ground_len < 1e-12:

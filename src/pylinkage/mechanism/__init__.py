@@ -34,9 +34,6 @@ Classes:
     MechanismBuilder: Links-first builder for creating mechanisms
 
 Conversion:
-    mechanism_from_linkage: Convert legacy Linkage to Mechanism
-    mechanism_to_linkage: Convert Mechanism to legacy Linkage
-
 Serialization:
     mechanism_to_dict: Serialize to dictionary
     mechanism_from_dict: Deserialize from dictionary
@@ -52,12 +49,6 @@ See Also:
 from .builder import MechanismBuilder
 
 # Conversion utilities
-from .conversion import (
-    convert_legacy_dict,
-    mechanism_from_linkage,
-    mechanism_to_linkage,
-)
-
 # Factory functions for common mechanisms
 from .factories import (
     fourbar,
@@ -118,10 +109,6 @@ __all__ = [
     # Factories
     "fourbar",
     "slider_crank",
-    # Conversion
-    "mechanism_from_linkage",
-    "mechanism_to_linkage",
-    "convert_legacy_dict",
     # Serialization
     "mechanism_to_dict",
     "mechanism_from_dict",

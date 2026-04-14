@@ -9,6 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **`pylinkage.joints` module** (legacy joint API — `Static`, `Crank`,
+  `Revolute`, `Pivot`, `Fixed`, `Prismatic`, `Joint`). Deprecated since
+  0.7.0 (Pivot since 0.6.0). Use the component/actuator/dyad API:
+  `pylinkage.components.Ground`, `pylinkage.actuators.Crank`,
+  `pylinkage.dyads.RRRDyad` / `FixedDyad` / `RRPDyad`. Top-level
+  re-exports (`pl.Static`, `pl.Crank`, …) are gone.
+- **`pylinkage.linkage.Linkage.to_dict/from_dict/to_json/from_json`**:
+  serialization of legacy joint-based linkages is no longer supported.
+  Use `pylinkage.mechanism.mechanism_to_dict/from_dict` on a `Mechanism`
+  instead.
+- **`pylinkage.linkage.serialization`**: module removed — served legacy
+  joints only.
+- **`pylinkage.mechanism.mechanism_from_linkage` /
+  `mechanism_to_linkage` / `convert_legacy_dict`**: bridged the legacy
+  `Linkage` ↔ `Mechanism` models, neither of which needs the bridge now
+  that the legacy joint API is gone. Use `pylinkage.mechanism.fourbar`
+  and friends to build a `Mechanism` directly.
+- **`pylinkage.hypergraph.from_linkage`** and
+  **`pylinkage.assur.linkage_to_graph`**: same rationale as the legacy
+  `to_linkage()` / `graph_to_linkage()` removed in 0.9.0. Use
+  `from_mechanism` / `mechanism_to_graph` respectively.
+- **`pylinkage.symbolic.linkage_to_symbolic` /
+  `symbolic_to_linkage`**: removed. Build `SymbolicLinkage` directly
+  with :class:`SymCrank` / :class:`SymRevolute` / :class:`SymStatic`, or
+  use :func:`fourbar_symbolic`.
 - **`pylinkage.optimization.grid_search.tqdm_verbosity()`**: overdue since
   0.7.0. Use `tqdm.tqdm(iterable, disable=not verbose)` directly.
 - **`SynthesisResult.__len__` / `__iter__` / `__getitem__` / `__bool__`**:
@@ -21,6 +46,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`pylinkage.assur.graph_to_linkage()`**: deprecated in 0.8.0. Use
   `pylinkage.assur.graph_to_mechanism()` for conversion to the current
   `Mechanism` model.
+
+### Changed
+
+- **`pylinkage.bridge.solver_conversion`**: collapsed to a single
+  compatibility-agnostic implementation that dispatches through
+  `pylinkage._compat` — no more legacy joint-type dispatch.
+- **`pylinkage.synthesis.nbar_solution_to_linkage` /
+  `_generic_nbar_to_linkage`**: now build a modern
+  `pylinkage.simulation.Linkage` from the component/actuator/dyad API
+  instead of a legacy joint-based `Linkage`.
+- **`pylinkage.synthesis.linkage_to_synthesis_params`**: accepts the
+  component API only; raises `ValueError` for legacy linkages.
 
 ## [0.9.0] - 2026-04-14
 

@@ -74,8 +74,6 @@ __all__ = [
     # Conversion to/from Mechanism (preferred)
     "graph_to_mechanism",
     "mechanism_to_graph",
-    # Conversion from Linkage
-    "linkage_to_graph",
     # Conversion to/from Hypergraph
     "from_hypergraph",
     "to_hypergraph",
@@ -89,7 +87,6 @@ __all__ = [
 from ._types import EdgeId, JointType, NodeId, NodeRole
 from .analysis import MobilityResult, StructuralAnalysis
 from .assur_mechanism import AssurMechanism
-from .conversion import linkage_to_graph
 from .decomposition import (
     DecompositionResult,
     decompose_assur_groups,

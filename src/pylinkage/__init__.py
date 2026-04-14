@@ -41,13 +41,6 @@ __all__ = [
     "intersection",
     "norm",
     "sqr_dist",
-    # Joints (legacy, lazy)
-    "Crank",
-    "Fixed",
-    "Prismatic",
-    "Revolute",
-    "Static",
-    "Pivot",
     # Linkage
     "Linkage",
     "Simulation",
@@ -162,13 +155,6 @@ _LAZY_SUBMODULES = {
 }
 
 _LAZY_ATTRS: dict[str, str] = {
-    # From .joints (legacy, deprecated)
-    "Crank": ".joints",
-    "Fixed": ".joints",
-    "Prismatic": ".joints",
-    "Revolute": ".joints",
-    "Static": ".joints",
-    "Pivot": ".joints.revolute",
     # From .population
     "Ensemble": ".population",
     "Member": ".population",

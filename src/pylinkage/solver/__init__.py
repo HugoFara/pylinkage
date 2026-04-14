@@ -74,7 +74,7 @@ from .velocity import (
 )
 
 # Conversion functions are loaded lazily to avoid circular imports.
-# They are implemented in pylinkage.bridge for architectural reasons
+# They live in pylinkage.bridge for architectural reasons
 # (keeps solver pure, with no Python object dependencies).
 # For new code, prefer importing from pylinkage.bridge directly.
 _conversion_attrs = {
@@ -88,9 +88,9 @@ _conversion_attrs = {
 def __getattr__(name: str) -> object:
     """Lazy import of conversion functions to avoid circular imports."""
     if name in _conversion_attrs:
-        from . import conversion
+        from ..bridge import solver_conversion
 
-        return getattr(conversion, name)
+        return getattr(solver_conversion, name)
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 

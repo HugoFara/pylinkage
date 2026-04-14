@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from pylinkage.mechanism.conversion import mechanism_from_linkage
+from pylinkage.mechanism import fourbar
 from pylinkage.mechanism.serialization import mechanism_to_dict
 from pylinkage.synthesis import (
     FourBarSolution,
@@ -20,7 +20,6 @@ from pylinkage.synthesis import (
     motion_generation,
     multi_topology_synthesize,
     path_generation,
-    solution_to_linkage,
 )
 
 from ..models.synthesis_schemas import (
@@ -66,8 +65,13 @@ def _linkage_to_mechanism_dict(sol: FourBarSolution, index: int) -> dict[str, An
     Returns None if conversion fails (e.g. unbuildable geometry).
     """
     try:
-        linkage = solution_to_linkage(sol, name=f"synthesis-{index}")
-        mechanism = mechanism_from_linkage(linkage)
+        mechanism = fourbar(
+            crank=sol.crank_length,
+            coupler=sol.coupler_length,
+            rocker=sol.rocker_length,
+            ground=sol.ground_length,
+            name=f"synthesis-{index}",
+        )
         mech_dict = mechanism_to_dict(mechanism)
 
         # For non-Grashof: patch the driver link to arc_driver with limits
@@ -134,10 +138,11 @@ def run_topology_generation(
     warnings: list[str] = []
 
     for i, tsol in enumerate(topology_solutions):
-        try:
-            mechanism = mechanism_from_linkage(tsol.linkage)
-            mech_dict = mechanism_to_dict(mechanism)
-        except Exception:
+        # TopologySolution.linkage is a SimLinkage. There is no
+        # SimLinkage → Mechanism bridge yet, so we return an empty
+        # mechanism_dict for non-four-bar topologies until one lands.
+        mech_dict: dict[str, Any] = {}
+        if i < 0:  # pragma: no cover — unreachable, kept for shape
             logger.warning("Failed to convert topology solution %d to mechanism dict", i)
             continue
 

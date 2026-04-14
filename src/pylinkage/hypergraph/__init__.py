@@ -52,9 +52,6 @@ from ._types import (
     PortId,
 )
 
-# Conversion functions
-from .conversion import from_linkage
-
 # Core graph elements
 from .core import Edge, Hyperedge, Node
 
@@ -98,7 +95,6 @@ __all__ = [
     # Conversion
     "to_mechanism",
     "from_mechanism",
-    "from_linkage",
     # Serialization
     "graph_to_dict",
     "graph_from_dict",

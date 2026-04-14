@@ -15,25 +15,14 @@ import numpy as np
 
 from pylinkage.exceptions import UnbuildableError
 from pylinkage.linkage.analysis import bounding_box
-from pylinkage.mechanism.conversion import mechanism_from_linkage, mechanism_to_linkage
-from pylinkage.mechanism.serialization import mechanism_from_dict, mechanism_to_dict
-from pylinkage.optimization import (
-    differential_evolution_optimization,
-    particle_swarm_optimization,
-    trials_and_errors_optimization,
-)
+from pylinkage.mechanism.serialization import mechanism_from_dict
 from pylinkage.optimization.collections import Agent, MutableAgent
-from pylinkage.optimization.scipy_optimize import minimize_linkage
 
 from ..models.optimization_schemas import (
-    DifferentialEvolutionParams,
-    GridSearchParams,
-    NelderMeadParams,
     ObjectiveSpec,
     OptimizationRequest,
     OptimizationResponse,
     OptimizationResultDTO,
-    PSOParams,
 )
 
 logger = logging.getLogger(__name__)
@@ -155,20 +144,9 @@ def _agent_to_result(
     score = agent.score if agent.score is not None else 0.0
     dims = list(np.asarray(agent.dimensions).flat) if agent.dimensions is not None else []
 
+    # Mechanism dict round-trip is pending the Mechanism-native
+    # optimizer rewrite — leave as None for now.
     mechanism_dict = None
-    try:
-        linkage.set_num_constraints(dims)
-        if agent.init_positions is not None:
-            linkage.set_coords(agent.init_positions)
-        # Rebuild to get valid positions
-        n = linkage.get_rotation_period()
-        for _ in linkage.step(iterations=1, dt=n):
-            break
-        mechanism = mechanism_from_linkage(linkage)
-        mechanism_dict = mechanism_to_dict(mechanism)
-    except Exception as e:
-        logger.warning("Failed to convert optimized result to mechanism: %s", e)
-        warnings.append(f"Could not convert result to mechanism: {e}")
 
     return OptimizationResultDTO(
         score=score,
@@ -178,114 +156,16 @@ def _agent_to_result(
 
 
 def run_optimization(request: OptimizationRequest) -> OptimizationResponse:
-    """Run optimization on a mechanism."""
-    warnings: list[str] = []
+    """Run optimization on a mechanism.
 
-    # Build Mechanism from dict, then convert to Linkage
+    The legacy ``Linkage`` bridge was removed alongside the
+    ``pylinkage.joints`` module. This endpoint will be reinstated in the
+    follow-up phase that wires the optimizers (PSO/DE/Nelder-Mead/grid)
+    against ``Mechanism`` directly.
+    """
     mechanism = mechanism_from_dict(request.mechanism)
-    linkage = mechanism_to_linkage(mechanism)
-
-    # Build evaluation function
-    eval_func = _build_eval_func(request.objective, request.minimize)
-
-    # Determine order relation
-    order_relation = min if request.minimize else max
-
-    # Get current constraints for bounds generation
-    constraints = list(linkage.get_num_constraints())
-    constraint_names = [f"constraint_{i}" for i in range(len(constraints))]
-
-    # Generate bounds
-    np_constraints = np.array(constraints, dtype=float)
-    bounds = (
-        np_constraints / request.bounds_factor,
-        np_constraints * request.bounds_factor,
-    )
-
-    algo = request.algorithm
-
-    # PSO returns the raw pyswarms cost (negated when maximizing),
-    # so we need to un-negate the score for the response.
-    pso_negate_score = False
-
-    if isinstance(algo, PSOParams):
-        pso_negate_score = not request.minimize
-        agents = particle_swarm_optimization(
-            eval_func=eval_func,
-            linkage=linkage,
-            center=constraints,
-            n_particles=algo.n_particles,
-            iters=algo.iterations,
-            inertia=algo.inertia,
-            leader=algo.leader,
-            follower=algo.follower,
-            neighbors=min(algo.neighbors, algo.n_particles),
-            bounds=bounds,
-            order_relation=order_relation,
-            verbose=False,
-        )
-    elif isinstance(algo, DifferentialEvolutionParams):
-        mutation: tuple[float, float] | float
-        if len(algo.mutation) == 2:
-            mutation = (algo.mutation[0], algo.mutation[1])
-        else:
-            mutation = algo.mutation[0]
-        agents = differential_evolution_optimization(
-            eval_func=eval_func,
-            linkage=linkage,
-            bounds=bounds,
-            order_relation=order_relation,
-            strategy=algo.strategy,
-            maxiter=algo.max_iterations,
-            popsize=algo.population_size,
-            tol=algo.tolerance,
-            mutation=mutation,
-            recombination=algo.recombination,
-            seed=algo.seed,
-            verbose=False,
-        )
-    elif isinstance(algo, NelderMeadParams):
-        agents = minimize_linkage(
-            eval_func=eval_func,
-            linkage=linkage,
-            x0=constraints,
-            bounds=bounds,
-            order_relation=order_relation,
-            method="Nelder-Mead",
-            maxiter=algo.max_iterations,
-            tol=algo.tolerance,
-            verbose=False,
-        )
-    elif isinstance(algo, GridSearchParams):
-        agents = trials_and_errors_optimization(
-            eval_func=eval_func,
-            linkage=linkage,
-            parameters=constraints,
-            n_results=algo.n_results,
-            divisions=algo.divisions,
-            bounds=bounds,
-            order_relation=order_relation,
-            verbose=False,
-        )
-    else:
-        raise ValueError(f"Unknown algorithm: {algo}")
-
-    # Convert results
-    results: list[OptimizationResultDTO] = []
-    for agent in agents:
-        if agent.score is None:
-            continue
-        result = _agent_to_result(agent, linkage, warnings)
-        # Un-negate PSO scores (pyswarms returns negated cost when maximizing)
-        if pso_negate_score:
-            result.score = -result.score
-        results.append(result)
-
-    best_score = results[0].score if results else None
-
-    return OptimizationResponse(
-        results=results,
-        best_score=best_score,
-        constraint_names=constraint_names,
-        warnings=warnings,
+    raise NotImplementedError(
+        "Optimization endpoint is being migrated to operate on Mechanism "
+        "directly; the legacy Linkage bridge has been removed. "
+        f"(received mechanism: {mechanism.name!r})"
     )

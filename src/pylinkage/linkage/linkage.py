@@ -10,8 +10,7 @@ Created on Fri Apr 16, 16:39:21 2021.
 import warnings
 from collections.abc import Generator, Iterable
 from math import gcd, tau
-from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
@@ -275,9 +274,7 @@ class Linkage:
         if skip_unbuildable:
             from ..exceptions import UnbuildableError
 
-            none_positions = tuple(
-                (None, None) for _ in self.joints
-            )
+            none_positions = tuple((None, None) for _ in self.joints)
             for _ in range(iterations):
                 try:
                     for j in self._solve_order:
@@ -600,72 +597,6 @@ class Linkage:
         """
         self.set_num_constraints(dimensions, flat=flat)
         self.set_coords(positions)
-
-    def to_dict(self) -> dict[str, Any]:
-        """Convert this linkage to a dictionary representation.
-
-        The dictionary can be used for serialization or reconstruction.
-
-        Returns:
-            Dictionary containing the linkage's data including joints and solve order.
-
-        Example:
-            >>> data = linkage.to_dict()
-            >>> new_linkage = Linkage.from_dict(data)
-        """
-        from .serialization import linkage_to_dict
-
-        return linkage_to_dict(self)
-
-    @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Linkage":
-        """Create a linkage from a dictionary representation.
-
-        Args:
-            data: Dictionary containing linkage data (as produced by to_dict()).
-
-        Returns:
-            A new Linkage instance.
-
-        Example:
-            >>> data = linkage.to_dict()
-            >>> new_linkage = Linkage.from_dict(data)
-        """
-        from .serialization import linkage_from_dict
-
-        return linkage_from_dict(data)
-
-    def to_json(self, path: str | Path) -> None:
-        """Save this linkage to a JSON file.
-
-        Args:
-            path: Path to the output JSON file.
-
-        Example:
-            >>> linkage.to_json("my_linkage.json")
-            >>> loaded = Linkage.from_json("my_linkage.json")
-        """
-        from .serialization import save_to_json
-
-        save_to_json(self, path)
-
-    @classmethod
-    def from_json(cls, path: str | Path) -> "Linkage":
-        """Load a linkage from a JSON file.
-
-        Args:
-            path: Path to the JSON file.
-
-        Returns:
-            A new Linkage instance.
-
-        Example:
-            >>> linkage.to_json("my_linkage.json")
-            >>> loaded = Linkage.from_json("my_linkage.json")
-        """
-        from .serialization import load_from_json
-
-        return load_from_json(path)
 
     def simulation(
         self,
