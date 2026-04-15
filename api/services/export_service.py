@@ -8,7 +8,7 @@ import tempfile
 from typing import Any
 
 from pylinkage.mechanism import Mechanism
-from pylinkage.mechanism.joint import GroundJoint, PrismaticJoint
+from pylinkage.mechanism.joint import GroundJoint, PrismaticJoint, TrackerJoint
 from pylinkage.mechanism.link import ArcDriverLink, DriverLink, GroundLink
 
 
@@ -34,8 +34,11 @@ def generate_python_code(mechanism: Mechanism) -> str:
         "# Ground points (fixed frame)",
     ]
 
-    # Track variable names for joints
+    # Track variable names for joints (used to resolve anchor references).
     joint_vars: dict[str, str] = {}
+    # Components actually passed to ``Linkage([...])`` — Ground/Crank/Dyad
+    # objects, but NOT the bare crank.output joints they expose.
+    components: list[str] = []
     var_counter = 0
 
     def _safe_var(prefix: str, name: str | None) -> str:
@@ -48,11 +51,34 @@ def generate_python_code(mechanism: Mechanism) -> str:
         var_counter += 1
         return f"{prefix}_{var_counter}"
 
-    # Pass 1: Ground joints
-    ground_joints = [j for j in mechanism.joints if isinstance(j, GroundJoint)]
+    # Driver output joints are produced by the crank itself; never treat
+    # them as static anchors even if they came in as plain trackers.
+    driver_output_ids: set[str] = set()
+    for link in mechanism.links:
+        if isinstance(link, (DriverLink, ArcDriverLink)):
+            output = getattr(link, "output_joint", None)
+            if output is not None:
+                driver_output_ids.add(output.id)
+
+    # Pass 1: Ground joints. Tracker joints with no ref joints have no
+    # motion constraint, so treat them as static anchors as well — this
+    # mirrors how the editor renders free trackers as fixed pivots.
+    def _is_static_anchor(j: Any) -> bool:
+        if j.id in driver_output_ids:
+            return False
+        if isinstance(j, GroundJoint):
+            return True
+        if isinstance(j, TrackerJoint):
+            return not (
+                getattr(j, "ref_joint1_id", "") and getattr(j, "ref_joint2_id", "")
+            )
+        return False
+
+    ground_joints = [j for j in mechanism.joints if _is_static_anchor(j)]
     for joint in ground_joints:
         var = _safe_var("ground", joint.name)
         joint_vars[joint.id] = var
+        components.append(var)
         x, y = joint.position
         lines.append(f'{var} = Ground({x}, {y}, name="{joint.name or joint.id}")')
 
@@ -74,9 +100,10 @@ def generate_python_code(mechanism: Mechanism) -> str:
 
         anchor_var = joint_vars.get(motor.id, "None")
         crank_var = _safe_var("crank", link.name)
-        joint_vars[link.id + "_crank"] = crank_var
+        components.append(crank_var)
 
-        # The output joint of the crank
+        # The output joint of the crank — exposed so dyads can reference it,
+        # but it is NOT a standalone Linkage component.
         output_var = _safe_var("point", output.name)
         joint_vars[output.id] = output_var
 
@@ -130,6 +157,7 @@ def generate_python_code(mechanism: Mechanism) -> str:
             a2_id, d2 = anchors[1]
             var = _safe_var("dyad", joint.name)
             joint_vars[jid] = var
+            components.append(var)
 
             if isinstance(joint, PrismaticJoint):
                 lines.append(
@@ -166,6 +194,7 @@ def generate_python_code(mechanism: Mechanism) -> str:
                 a2_id, d2 = anchors[1]
                 var = _safe_var("dyad", joint.name)
                 joint_vars[jid] = var
+                components.append(var)
                 lines.append(
                     f"{var} = RRRDyad("
                     f"anchor1={joint_vars[a1_id]}, "
@@ -178,10 +207,10 @@ def generate_python_code(mechanism: Mechanism) -> str:
             break
 
     # Build linkage
-    all_vars = list(dict.fromkeys(joint_vars.values()))  # preserve order, deduplicate
+    component_vars = list(dict.fromkeys(components))  # preserve order, dedupe
     lines.append("")
     lines.append("# Assemble and simulate")
-    components_str = ", ".join(all_vars)
+    components_str = ", ".join(component_vars)
     lines.append(f'linkage = Linkage([{components_str}], name="{mechanism.name or "Unnamed"}")')
     lines.append("")
     lines.append("# Run simulation")
