@@ -171,6 +171,17 @@ class Mechanism:
                 order.append(joint)
                 solved.add(joint.id)
 
+        # Free trackers (no reference joints) carry no kinematic constraint:
+        # they sit at their initial position forever and act as static
+        # anchors for any dyad attached to them. Mark them solved so the
+        # topological sort can use them, but keep them out of the solve
+        # order — _step_joints would otherwise try to move them.
+        for joint in self.joints:
+            if isinstance(joint, TrackerJoint) and not (
+                joint.ref_joint1_id and joint.ref_joint2_id
+            ):
+                solved.add(joint.id)
+
         # Second: driver link outputs (computed from drivers)
         for driver in self._driver_links:
             output = driver.output_joint
