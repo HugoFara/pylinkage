@@ -60,6 +60,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   alias for ``JOINT_PRISMATIC = 4``; the duplicate name has been
   removed. Use ``JOINT_PRISMATIC``.
 
+- **``"Linear"`` entry in ``pylinkage.visualizer.SYMBOL_SPECS``** and
+  the matching ``"Linear"`` branch in the auto-detect path inside
+  ``pylinkage.linkage.transmission``. These matched the legacy
+  ``joints.Linear`` class name, which is gone. Modern prismatic
+  components are resolved through ``"Prismatic"`` / ``"RRPDyad"`` /
+  ``"LinearActuator"``.
+
 - **`get_num_constraints` / `set_num_constraints`** on both
   `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
   added to ease the rename to ``get_constraints`` / ``set_constraints``

@@ -457,7 +457,7 @@ def _auto_detect_prismatic_joint(linkage: Linkage) -> object:
 
     for part in get_parts(linkage):
         name = type(part).__name__
-        if name in ("Prismatic", "Linear", "RRPDyad"):
+        if name in ("Prismatic", "RRPDyad"):
             return part
 
     raise ValueError(

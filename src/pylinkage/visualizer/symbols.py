@@ -52,7 +52,6 @@ SYMBOL_SPECS: dict[str, SymbolSpec] = {
     "Revolute": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 1.0, (0.5, -0.5)),
     "Pivot": SymbolSpec(SymbolType.REVOLUTE, "#E63946", 0.9, (0.5, -0.5)),
     "Fixed": SymbolSpec(SymbolType.FIXED, "#F4A261", 1.0, (0.5, -0.5)),
-    "Linear": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),  # Deprecated
     "Prismatic": SymbolSpec(SymbolType.SLIDER, "#F18F01", 1.1, (0.5, -0.5)),
     # Modern component class names
     "Ground": SymbolSpec(SymbolType.GROUND, "#333333", 1.0, (0, 1.5)),
