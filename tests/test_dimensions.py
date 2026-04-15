@@ -222,3 +222,57 @@ class TestGetHyperedgeDistance:
             hyperedge_constraints={"he1": {("A", "B"): 7.0}}
         )
         assert d.get_hyperedge_distance("he1", "B", "A") == 7.0
+
+
+# ---------------------------------------------------------------------------
+# to_dict / from_dict
+# ---------------------------------------------------------------------------
+
+
+class TestDriverAngleSerialization:
+    def test_round_trip(self):
+        da = DriverAngle(angular_velocity=0.2, initial_angle=1.0)
+        restored = DriverAngle.from_dict(da.to_dict())
+        assert restored == da
+
+    def test_from_dict_missing_initial_angle_defaults_to_zero(self):
+        restored = DriverAngle.from_dict({"angular_velocity": 0.3})
+        assert restored == DriverAngle(angular_velocity=0.3, initial_angle=0.0)
+
+
+class TestDimensionsSerialization:
+    def _sample(self) -> Dimensions:
+        return Dimensions(
+            node_positions={"A": (0.0, 0.0), "B": (1.0, 0.0)},
+            driver_angles={"B": DriverAngle(0.1, 0.5)},
+            edge_distances={"AB": 1.0},
+            hyperedge_constraints={"h1": {("A", "B"): 3.0, ("A", "C"): 4.0}},
+            name="demo",
+        )
+
+    def test_round_trip(self):
+        original = self._sample()
+        restored = Dimensions.from_dict(original.to_dict())
+        assert restored == original
+
+    def test_to_dict_is_json_safe(self):
+        import json
+
+        payload = self._sample().to_dict()
+        # Must be round-trippable through json without custom encoders.
+        reloaded = json.loads(json.dumps(payload))
+        restored = Dimensions.from_dict(reloaded)
+        assert restored == self._sample()
+
+    def test_from_dict_empty(self):
+        restored = Dimensions.from_dict({})
+        assert restored == Dimensions()
+
+    def test_from_dict_accepts_legacy_stringified_hyperedge_keys(self):
+        """Legacy format stored hyperedge keys as ``"('A', 'B')"`` strings."""
+        legacy = {
+            "node_positions": {"A": [0.0, 0.0]},
+            "hyperedge_constraints": {"h1": {"('A', 'B')": 3.0}},
+        }
+        restored = Dimensions.from_dict(legacy)
+        assert restored.hyperedge_constraints == {"h1": {("A", "B"): 3.0}}

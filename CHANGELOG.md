@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Dimensions.to_dict` / `Dimensions.from_dict`** (and matching
+  ``DriverAngle.to_dict`` / ``DriverAngle.from_dict``). Returns a
+  JSON-safe representation so downstream consumers (notably
+  ``leggedsnake.serialization``) can drop their manual hyperedge-key
+  stringification helpers. Hyperedge pairwise constraints are emitted
+  as ``[node_a, node_b, distance]`` triples; ``from_dict`` also
+  accepts the legacy ``"('a', 'b')"`` stringified-tuple form for
+  back-compat with previously saved files.
+
 ### Fixed
 
 - **`multi_objective_optimization` single-objective runs.** pymoo

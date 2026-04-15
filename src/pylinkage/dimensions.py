@@ -8,7 +8,7 @@ The Dimensions class is shared by both the hypergraph and assur modules.
 """
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -25,6 +25,21 @@ class DriverAngle:
 
     angular_velocity: float
     initial_angle: float = 0.0
+
+    def to_dict(self) -> dict[str, float]:
+        """Return a JSON-safe dict representation."""
+        return {
+            "angular_velocity": self.angular_velocity,
+            "initial_angle": self.initial_angle,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "DriverAngle":
+        """Build a :class:`DriverAngle` from a dict produced by :meth:`to_dict`."""
+        return cls(
+            angular_velocity=data["angular_velocity"],
+            initial_angle=data.get("initial_angle", 0.0),
+        )
 
 
 @dataclass
@@ -159,6 +174,69 @@ class Dimensions:
             The DriverAngle, or None if not defined.
         """
         return self.driver_angles.get(node_id)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Return a JSON-safe dict representation.
+
+        Hyperedge constraint keys are tuples of node IDs; to stay within
+        JSON's string-only key model they are serialised as
+        ``[node1, node2]`` lists rather than stringified tuples. The
+        companion :meth:`from_dict` accepts both that canonical shape
+        and the legacy ``"('a', 'b')"`` stringified form for
+        back-compat.
+        """
+        return {
+            "node_positions": {nid: list(pos) for nid, pos in self.node_positions.items()},
+            "driver_angles": {nid: da.to_dict() for nid, da in self.driver_angles.items()},
+            "edge_distances": dict(self.edge_distances),
+            "hyperedge_constraints": {
+                he_id: [[a, b, dist] for (a, b), dist in constraints.items()]
+                for he_id, constraints in self.hyperedge_constraints.items()
+            },
+            "name": self.name,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "Dimensions":
+        """Build a :class:`Dimensions` from a dict produced by :meth:`to_dict`.
+
+        Accepts both the canonical ``[node1, node2, distance]`` triples
+        emitted by :meth:`to_dict` and the legacy
+        ``{"('a', 'b')": distance}`` stringified-tuple form.
+        """
+        node_positions = {
+            nid: (float(pos[0]), float(pos[1]))
+            for nid, pos in data.get("node_positions", {}).items()
+        }
+        driver_angles = {
+            nid: DriverAngle.from_dict(da) for nid, da in data.get("driver_angles", {}).items()
+        }
+        edge_distances = {k: float(v) for k, v in data.get("edge_distances", {}).items()}
+
+        hyperedge_constraints: dict[str, dict[tuple[str, str], float]] = {}
+        for he_id, raw in data.get("hyperedge_constraints", {}).items():
+            parsed: dict[tuple[str, str], float] = {}
+            if isinstance(raw, dict):
+                # Legacy shape: stringified tuples as keys.
+                for key_str, dist in raw.items():
+                    cleaned = key_str.strip("()[]'\" ")
+                    parts = [p.strip().strip("'\"") for p in cleaned.split(",")]
+                    if len(parts) == 2:
+                        parsed[(parts[0], parts[1])] = float(dist)
+            else:
+                for entry in raw:
+                    a, b, dist = entry
+                    parsed[(str(a), str(b))] = float(dist)
+            if parsed:
+                hyperedge_constraints[he_id] = parsed
+
+        return cls(
+            node_positions=node_positions,
+            driver_angles=driver_angles,
+            edge_distances=edge_distances,
+            hyperedge_constraints=hyperedge_constraints,
+            name=data.get("name", ""),
+        )
 
     def get_hyperedge_distance(self, hyperedge_id: str, node1: str, node2: str) -> float | None:
         """Get a pairwise distance constraint from a hyperedge.
