@@ -272,11 +272,27 @@ def mechanism_from_dict(data: dict[str, Any]) -> Mechanism:
     """
     name = data.get("name", "")
 
+    # Pre-pass: any joint referenced as a driver's ``motor_joint`` or member
+    # of a ground link must be deserialized as a GroundJoint, otherwise
+    # link_from_dict drops the motor binding and the crank has no anchor.
+    ground_joint_ids: set[str] = set()
+    for ldata in data.get("links", []):
+        ltype = ldata.get("type")
+        if ltype in ("driver", "arc_driver"):
+            mj = ldata.get("motor_joint")
+            if mj:
+                ground_joint_ids.add(mj)
+        elif ltype == "ground":
+            for jid in ldata.get("joints", []):
+                ground_joint_ids.add(jid)
+
     # First pass: create all joints
     joints: list[Joint] = []
     joint_map: dict[str, Joint] = {}
 
     for jdata in data.get("joints", []):
+        if jdata.get("id") in ground_joint_ids and jdata.get("type") != "ground":
+            jdata = {**jdata, "type": "ground"}
         joint = joint_from_dict(jdata)
         joints.append(joint)
         joint_map[joint.id] = joint
