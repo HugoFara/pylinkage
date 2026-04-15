@@ -19,7 +19,7 @@ import pytest
 from pylinkage.solver import (
     JOINT_CRANK,
     JOINT_FIXED,
-    JOINT_LINEAR,
+    JOINT_PRISMATIC,
     JOINT_REVOLUTE,
     JOINT_STATIC,
     simulate,
@@ -139,7 +139,7 @@ def _fixed_joint_arrays():
 
 
 def _linear_joint_arrays():
-    """Build arrays for a mechanism containing a JOINT_LINEAR.
+    """Build arrays for a mechanism containing a JOINT_PRISMATIC.
 
     Layout:
         Joint 0 (Static):  (0, 0)  -- circle center
@@ -159,7 +159,7 @@ def _linear_joint_arrays():
         dtype=np.float64,
     )
     joint_types = np.array(
-        [JOINT_STATIC, JOINT_CRANK, JOINT_STATIC, JOINT_STATIC, JOINT_LINEAR],
+        [JOINT_STATIC, JOINT_CRANK, JOINT_STATIC, JOINT_STATIC, JOINT_PRISMATIC],
         dtype=np.int32,
     )
     parent_indices = np.array(
@@ -263,7 +263,7 @@ class TestStepSingleFixed:
 
 
 class TestStepSingleLinear:
-    """step_single with a JOINT_LINEAR mechanism."""
+    """step_single with a JOINT_PRISMATIC mechanism."""
 
     def test_linear_on_line(self):
         pos, con, jt, pi, co, so = _linear_joint_arrays()
@@ -350,7 +350,7 @@ class TestSimulateFixed:
 
 
 class TestSimulateLinear:
-    """simulate() with a JOINT_LINEAR mechanism."""
+    """simulate() with a JOINT_PRISMATIC mechanism."""
 
     def test_linear_trajectory_valid(self):
         pos, con, jt, pi, co, so = _linear_joint_arrays()
@@ -525,7 +525,7 @@ class TestStepSingleVelocityFixed:
 
 
 class TestStepSingleVelocityLinear:
-    """step_single_velocity with JOINT_LINEAR."""
+    """step_single_velocity with JOINT_PRISMATIC."""
 
     def test_linear_velocity_with_moving_parent(self):
         pos, con, jt, pi, co, so = _linear_joint_arrays()
@@ -616,7 +616,7 @@ class TestStepSingleAccelerationFixed:
 
 
 class TestStepSingleAccelerationLinear:
-    """step_single_acceleration with JOINT_LINEAR."""
+    """step_single_acceleration with JOINT_PRISMATIC."""
 
     def test_linear_acceleration_with_moving_parent(self):
         pos, con, jt, pi, co, so = _linear_joint_arrays()
@@ -747,7 +747,7 @@ class TestSimulateWithKinematicsFixed:
 
 
 class TestSimulateWithKinematicsLinear:
-    """simulate_with_kinematics with JOINT_LINEAR mechanism."""
+    """simulate_with_kinematics with JOINT_PRISMATIC mechanism."""
 
     def test_linear_kinematics_valid(self):
         pos, con, jt, pi, co, so = _linear_joint_arrays()

@@ -56,6 +56,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (``JointType``, ``NodeRole``, ``NodeId``, …) directly. All internal
   callers have been migrated.
 
+- **`pylinkage.solver.JOINT_LINEAR`** constant. This was always an
+  alias for ``JOINT_PRISMATIC = 4``; the duplicate name has been
+  removed. Use ``JOINT_PRISMATIC``.
+
 - **`get_num_constraints` / `set_num_constraints`** on both
   `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
   added to ease the rename to ``get_constraints`` / ``set_constraints``

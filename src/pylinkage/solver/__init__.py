@@ -60,7 +60,7 @@ from .solve import (
 from .types import (
     JOINT_CRANK,
     JOINT_FIXED,
-    JOINT_LINEAR,
+    JOINT_PRISMATIC,
     JOINT_REVOLUTE,
     JOINT_STATIC,
     MAX_PARENTS,
@@ -101,7 +101,7 @@ __all__ = [
     "JOINT_CRANK",
     "JOINT_REVOLUTE",
     "JOINT_FIXED",
-    "JOINT_LINEAR",
+    "JOINT_PRISMATIC",
     "MAX_PARENTS",
     # Joint solvers (position)
     "solve_crank",

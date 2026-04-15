@@ -17,7 +17,7 @@ from .joints import solve_crank, solve_fixed, solve_linear, solve_revolute
 from .types import (
     JOINT_CRANK,
     JOINT_FIXED,
-    JOINT_LINEAR,
+    JOINT_PRISMATIC,
     JOINT_REVOLUTE,
     JOINT_STATIC,
 )
@@ -103,7 +103,7 @@ def step_single(
             positions[joint_idx, 0] = new_x
             positions[joint_idx, 1] = new_y
 
-        elif joint_type == JOINT_LINEAR:
+        elif joint_type == JOINT_PRISMATIC:
             p0_idx = parent_indices[joint_idx, 0]
             p1_idx = parent_indices[joint_idx, 1]
             p2_idx = parent_indices[joint_idx, 2]
@@ -307,7 +307,7 @@ def step_single_velocity(
             velocities[joint_idx, 0] = vx
             velocities[joint_idx, 1] = vy
 
-        elif joint_type == JOINT_LINEAR:
+        elif joint_type == JOINT_PRISMATIC:
             p0_idx = parent_indices[joint_idx, 0]
             p1_idx = parent_indices[joint_idx, 1]
             p2_idx = parent_indices[joint_idx, 2]
@@ -451,7 +451,7 @@ def step_single_acceleration(
             accelerations[joint_idx, 0] = ax
             accelerations[joint_idx, 1] = ay
 
-        elif joint_type == JOINT_LINEAR:
+        elif joint_type == JOINT_PRISMATIC:
             p0_idx = parent_indices[joint_idx, 0]
             p1_idx = parent_indices[joint_idx, 1]
             p2_idx = parent_indices[joint_idx, 2]
