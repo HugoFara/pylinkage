@@ -43,7 +43,7 @@ Example usage::
 """
 
 # Types
-from ._types import (
+from .._types import (
     EdgeId,
     HyperedgeId,
     JointType,

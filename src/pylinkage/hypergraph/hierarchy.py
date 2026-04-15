@@ -6,7 +6,7 @@ and flattening them to a single HypergraphLinkage for analysis or simulation.
 
 from dataclasses import dataclass, field
 
-from ._types import NodeId, PortId
+from .._types import NodeId, PortId
 from .core import Edge, Hyperedge, Node
 from .graph import HypergraphLinkage
 

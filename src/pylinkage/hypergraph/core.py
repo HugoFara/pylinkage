@@ -10,7 +10,7 @@ in the Dimensions class (see pylinkage.dimensions).
 
 from dataclasses import dataclass, field
 
-from ._types import EdgeId, HyperedgeId, JointType, NodeId, NodeRole
+from .._types import EdgeId, HyperedgeId, JointType, NodeId, NodeRole
 
 
 @dataclass

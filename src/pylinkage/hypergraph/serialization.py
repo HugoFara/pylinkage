@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ._types import JointType, NodeRole
+from .._types import JointType, NodeRole
 from .core import Edge, Hyperedge, Node
 from .graph import HypergraphLinkage
 from .hierarchy import ComponentInstance, Connection, HierarchicalLinkage

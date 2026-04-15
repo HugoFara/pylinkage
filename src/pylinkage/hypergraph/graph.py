@@ -11,7 +11,7 @@ distances, angles) is stored separately in a Dimensions object.
 import copy
 from dataclasses import dataclass, field
 
-from ._types import EdgeId, HyperedgeId, NodeId, NodeRole
+from .._types import EdgeId, HyperedgeId, NodeId, NodeRole
 from .core import Edge, Hyperedge, Node
 
 

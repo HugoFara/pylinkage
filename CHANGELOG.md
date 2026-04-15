@@ -51,6 +51,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- **`pylinkage.hypergraph._types`** re-export module (deprecated since
+  0.8.0). Import the canonical types from ``pylinkage._types``
+  (``JointType``, ``NodeRole``, ``NodeId``, …) directly. All internal
+  callers have been migrated.
+
 - **`get_num_constraints` / `set_num_constraints`** on both
   `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
   added to ease the rename to ``get_constraints`` / ``set_constraints``

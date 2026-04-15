@@ -44,8 +44,8 @@ def from_hypergraph(hypergraph: "HypergraphLinkage") -> LinkageGraph:
         >>> # ... add nodes and edges ...
         >>> assur_graph = from_hypergraph(hg)
     """
-    from ..hypergraph._types import JointType as HyperJointType
-    from ..hypergraph._types import NodeRole as HyperNodeRole
+    from .._types import JointType as HyperJointType
+    from .._types import NodeRole as HyperNodeRole
 
     assur_graph = LinkageGraph(name=hypergraph.name)
 
@@ -130,8 +130,8 @@ def to_hypergraph(assur_graph: LinkageGraph) -> "HypergraphLinkage":
         >>> # ... add nodes and edges ...
         >>> hg = to_hypergraph(assur_graph)
     """
-    from ..hypergraph._types import JointType as HyperJointType
-    from ..hypergraph._types import NodeRole as HyperNodeRole
+    from .._types import JointType as HyperJointType
+    from .._types import NodeRole as HyperNodeRole
     from ..hypergraph.core import Edge as HyperEdge
     from ..hypergraph.core import Hyperedge
     from ..hypergraph.core import Node as HyperNode

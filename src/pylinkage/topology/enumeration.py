@@ -394,7 +394,7 @@ def _link_adjacency_to_hypergraph(
     Returns:
         HypergraphLinkage with joints as nodes and links as edges/hyperedges.
     """
-    from ..hypergraph._types import JointType, NodeRole
+    from .._types import JointType, NodeRole
 
     n = len(adj)
     hg = HypergraphLinkage()
