@@ -19,6 +19,8 @@ from ..exceptions import UnderconstrainedError
 if TYPE_CHECKING:
     from .._simulation_context import Simulation as _SimulationContext
     from ..actuators import ArcCrank, Crank, LinearActuator
+    from ..dimensions import Dimensions
+    from ..hypergraph import HypergraphLinkage
     from ..linkage.sensitivity import SensitivityAnalysis, ToleranceAnalysis
     from ..linkage.transmission import StrokeAnalysis, TransmissionAngleAnalysis
     from ..solver import SolverData
@@ -322,6 +324,16 @@ class Linkage:
         from .._simulation_context import Simulation as _SimulationContext
 
         return _SimulationContext(self, iterations=iterations, dt=dt)
+
+    def to_hypergraph(self) -> tuple[HypergraphLinkage, Dimensions]:
+        """Return a hypergraph view of this linkage.
+
+        Delegates to :func:`pylinkage.hypergraph.from_sim_linkage`. The
+        return is a tuple ``(HypergraphLinkage, Dimensions)``.
+        """
+        from ..hypergraph.sim_conversion import from_sim_linkage
+
+        return from_sim_linkage(self)
 
     def indeterminacy(self) -> int:
         """Mobility (DOF) of the linkage — planar Gruebler-Kutzbach.

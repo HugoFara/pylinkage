@@ -61,6 +61,7 @@ from .graph import HypergraphLinkage
 # Hierarchical composition
 from .hierarchy import ComponentInstance, Connection, HierarchicalLinkage
 from .mechanism_conversion import from_mechanism, to_mechanism
+from .sim_conversion import from_sim_linkage
 
 # Serialization
 from .serialization import (
@@ -95,6 +96,7 @@ __all__ = [
     # Conversion
     "to_mechanism",
     "from_mechanism",
+    "from_sim_linkage",
     # Serialization
     "graph_to_dict",
     "graph_from_dict",

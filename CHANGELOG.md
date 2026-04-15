@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`simulation.Linkage.to_hypergraph()`** (+ the module-level
+  :func:`pylinkage.hypergraph.from_sim_linkage`). Converts a modern
+  ``simulation.Linkage`` (the object produced by synthesis and
+  ``co_optimize``) into a ``(HypergraphLinkage, Dimensions)`` pair so
+  downstream hypergraph-native consumers (notably
+  ``leggedsnake.Walker.from_synthesis``) can ingest synthesis output
+  directly without a local shim. Covers ``Ground``, ``Crank``,
+  ``ArcCrank``, ``LinearActuator``, ``RRRDyad``, ``FixedDyad``,
+  ``RRPDyad`` and ``PPDyad``; unknown component types raise
+  ``NotImplementedError`` instead of silently dropping topology.
+
 - **`Dimensions.to_dict` / `Dimensions.from_dict`** (and matching
   ``DriverAngle.to_dict`` / ``DriverAngle.from_dict``). Returns a
   JSON-safe representation so downstream consumers (notably
