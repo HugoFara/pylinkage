@@ -2,12 +2,12 @@
 
 import unittest
 
+from pylinkage._types import JointType as HyperJointType
+from pylinkage._types import NodeRole as HyperNodeRole
 from pylinkage.assur.graph import Edge as AssurEdge
 from pylinkage.assur.graph import JointType, LinkageGraph, NodeRole
 from pylinkage.assur.graph import Node as AssurNode
 from pylinkage.assur.hypergraph_conversion import from_hypergraph, to_hypergraph
-from pylinkage._types import JointType as HyperJointType
-from pylinkage._types import NodeRole as HyperNodeRole
 from pylinkage.hypergraph.core import Edge as HyperEdge
 from pylinkage.hypergraph.core import Node as HyperNode
 from pylinkage.hypergraph.graph import HypergraphLinkage
