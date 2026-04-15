@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`multi_objective_optimization` parallel evaluation.** New
+  ``n_workers`` and ``linkage_factory`` keyword arguments route
+  candidate evaluation through a
+  ``concurrent.futures.ProcessPoolExecutor`` when ``n_workers > 1``.
+  ``linkage_factory`` is an escape hatch for linkages that are not
+  picklable (e.g. carry cached numba ``SolverData``): each worker
+  builds its own linkage via the factory instead of receiving a
+  pickled copy. This unblocks downstream packages (notably
+  ``leggedsnake``) dropping their custom parallel NSGA problem
+  wrappers.
+
 - **`simulation.Linkage.to_hypergraph()`** (+ the module-level
   :func:`pylinkage.hypergraph.from_sim_linkage`). Converts a modern
   ``simulation.Linkage`` (the object produced by synthesis and

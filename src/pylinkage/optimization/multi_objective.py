@@ -38,6 +38,36 @@ def _check_pymoo_available() -> None:
         ) from e
 
 
+def _evaluate_candidate(
+    objectives: Sequence[Callable[..., float]],
+    linkage: Linkage,
+    constraints: list[float],
+    joint_pos: JointPositions,
+) -> list[float]:
+    """Top-level per-candidate evaluator.
+
+    Kept as a module-level function so it is picklable for
+    ``ProcessPoolExecutor`` workers.
+    """
+    return [obj(linkage, constraints, joint_pos) for obj in objectives]
+
+
+def _evaluate_candidate_factory(
+    objectives: Sequence[Callable[..., float]],
+    linkage_factory: Callable[[], Linkage],
+    constraints: list[float],
+    joint_pos: JointPositions,
+) -> list[float]:
+    """Top-level per-candidate evaluator that builds a fresh linkage.
+
+    Use this path when the linkage (or its cached numba ``SolverData``)
+    is not picklable: each worker calls ``linkage_factory()`` once per
+    candidate.
+    """
+    linkage = linkage_factory()
+    return [obj(linkage, constraints, joint_pos) for obj in objectives]
+
+
 class LinkageProblem:
     """Pymoo Problem wrapper for linkage optimization.
 
@@ -51,6 +81,8 @@ class LinkageProblem:
         objectives: Sequence[Callable[..., float]],
         bounds: tuple[Sequence[float], Sequence[float]],
         joint_pos: JointPositions,
+        n_workers: int = 1,
+        linkage_factory: Callable[[], Linkage] | None = None,
     ) -> None:
         """Initialize the linkage optimization problem.
 
@@ -60,17 +92,25 @@ class LinkageProblem:
                 (linkage, constraints, joint_positions) and returns a float.
             bounds: Tuple of (lower_bounds, upper_bounds) for constraints.
             joint_pos: Initial joint positions.
+            n_workers: Number of worker processes. ``1`` (default) runs
+                serially; anything higher spawns a ``ProcessPoolExecutor``.
+            linkage_factory: Optional zero-arg callable building a fresh
+                linkage. Used instead of shipping ``linkage`` to workers
+                when the linkage is not picklable.
         """
         from pymoo.core.problem import Problem
 
         self.linkage = linkage
         self.objectives = objectives
         self.joint_pos = joint_pos
+        self._n_workers = max(1, n_workers)
+        self._linkage_factory = linkage_factory
 
         n_var = len(bounds[0])
         n_obj = len(objectives)
 
-        # Create the problem class dynamically
+        outer = self
+
         class _Problem(Problem):  # type: ignore[misc]
             def __init__(inner_self) -> None:
                 super().__init__(
@@ -88,13 +128,56 @@ class LinkageProblem:
                 *args: Any,
                 **kwargs: Any,
             ) -> None:
-                F = np.zeros((len(X), n_obj))
-                for i, x in enumerate(X):
-                    for j, obj in enumerate(self.objectives):
-                        F[i, j] = obj(self.linkage, x.tolist(), self.joint_pos)
-                out["F"] = F
+                out["F"] = outer._evaluate_batch(X)
 
         self._problem = _Problem()
+
+    def _evaluate_batch(self, X: NDArray[np.floating[Any]]) -> NDArray[np.float64]:
+        n_pop = len(X)
+        n_obj = len(self.objectives)
+        F = np.full((n_pop, n_obj), np.inf, dtype=np.float64)
+
+        if self._n_workers <= 1:
+            for i, x in enumerate(X):
+                F[i] = _evaluate_candidate(
+                    self.objectives, self.linkage, x.tolist(), self.joint_pos
+                )
+            return F
+
+        import contextlib
+        from concurrent.futures import ProcessPoolExecutor, as_completed
+
+        candidates = [X[i].tolist() for i in range(n_pop)]
+        use_factory = self._linkage_factory is not None
+        with ProcessPoolExecutor(max_workers=self._n_workers) as pool:
+            futures = {}
+            for idx, candidate in enumerate(candidates):
+                if use_factory:
+                    assert self._linkage_factory is not None  # for mypy
+                    fut = pool.submit(
+                        _evaluate_candidate_factory,
+                        self.objectives,
+                        self._linkage_factory,
+                        candidate,
+                        self.joint_pos,
+                    )
+                else:
+                    fut = pool.submit(
+                        _evaluate_candidate,
+                        self.objectives,
+                        self.linkage,
+                        candidate,
+                        self.joint_pos,
+                    )
+                futures[fut] = idx
+
+            for future in as_completed(futures):
+                idx = futures[future]
+                # Leave +inf on failure so the candidate is dominated and the
+                # caller can filter non-finite scores afterwards.
+                with contextlib.suppress(Exception):
+                    F[idx] = future.result()
+        return F
 
     @property
     def problem(self) -> Any:
@@ -112,6 +195,8 @@ def multi_objective_optimization(
     pop_size: int = 100,
     seed: int | None = None,
     verbose: bool = True,
+    n_workers: int = 1,
+    linkage_factory: Callable[[], Linkage] | None = None,
     **kwargs: Any,
 ) -> Ensemble:
     """Multi-objective optimization using NSGA-II or NSGA-III.
@@ -136,6 +221,16 @@ def multi_objective_optimization(
         pop_size: Population size. Default is 100.
         seed: Random seed for reproducibility.
         verbose: Print progress if True. Default is True.
+        n_workers: Parallel evaluation worker count. ``1`` (default)
+            evaluates candidates serially in the calling process; anything
+            higher spawns a ``concurrent.futures.ProcessPoolExecutor`` and
+            evaluates one candidate per worker. The ``linkage`` and the
+            objective functions must be picklable when ``n_workers > 1``.
+        linkage_factory: Optional zero-arg callable that returns a fresh
+            linkage. When supplied *and* ``n_workers > 1``, each worker
+            builds its own linkage via this callable instead of receiving
+            a pickled copy. Use this escape hatch when the linkage itself
+            is not picklable (e.g. holds cached numba ``SolverData``).
         **kwargs: Additional arguments passed to the algorithm.
 
     Returns:
@@ -222,7 +317,14 @@ def multi_objective_optimization(
     joint_pos: tuple[tuple[float | None, float | None], ...] = tuple(linkage.get_coords())
 
     # Create the optimization problem
-    problem = LinkageProblem(linkage, objectives, bounds, joint_pos)
+    problem = LinkageProblem(
+        linkage,
+        objectives,
+        bounds,
+        joint_pos,
+        n_workers=n_workers,
+        linkage_factory=linkage_factory,
+    )
 
     # Select and configure the algorithm
     n_obj = len(objectives)

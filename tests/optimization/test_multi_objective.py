@@ -49,6 +49,45 @@ class TestSingleObjectiveShape:
         assert ensemble.scores["score"].shape[0] == len(ensemble.dimensions)
 
 
+def _linkage_factory():
+    return _make_linkage()
+
+
+class TestParallel:
+    """``n_workers > 1`` routes through ``ProcessPoolExecutor``."""
+
+    def test_n_workers_two_runs(self) -> None:
+        linkage = _make_linkage()
+        ensemble = multi_objective_optimization(
+            objectives=[_single_objective, _pair_objective],
+            linkage=linkage,
+            objective_names=["a", "b"],
+            n_generations=2,
+            pop_size=8,
+            seed=0,
+            verbose=False,
+            n_workers=2,
+        )
+        assert np.isfinite(ensemble.scores["a"]).all()
+        assert np.isfinite(ensemble.scores["b"]).all()
+
+    def test_linkage_factory_bypasses_pickling(self) -> None:
+        """``linkage_factory`` lets workers rebuild the linkage locally."""
+        linkage = _make_linkage()
+        ensemble = multi_objective_optimization(
+            objectives=[_single_objective, _pair_objective],
+            linkage=linkage,
+            objective_names=["a", "b"],
+            n_generations=2,
+            pop_size=8,
+            seed=0,
+            verbose=False,
+            n_workers=2,
+            linkage_factory=_linkage_factory,
+        )
+        assert len(ensemble.dimensions) > 0
+
+
 class TestTwoObjectives:
     def test_two_objectives_runs(self) -> None:
         linkage = _make_linkage()
