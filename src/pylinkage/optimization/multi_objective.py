@@ -264,7 +264,16 @@ def multi_objective_optimization(
             scores={name: np.empty(0, dtype=np.float64) for name in objective_names},
         )
 
-    n_solutions = len(result.F)
+    # Single-objective pymoo runs return the single best solution with
+    # F shape (n_obj,) and X shape (n_var,); multi-objective runs return
+    # the Pareto front with F shape (n_pop, n_obj) and X shape (n_pop, n_var).
+    # Normalize both to 2-D so the same Ensemble-building code path works.
+    F = np.atleast_2d(np.asarray(result.F))
+    X = np.atleast_2d(np.asarray(result.X))
+    if F.shape[1] != n_obj and F.shape[0] == n_obj:
+        F = F.T
+
+    n_solutions = len(F)
     joint_pos_arr = np.array(
         [(x if x is not None else 0.0, y if y is not None else 0.0) for x, y in joint_pos],
         dtype=np.float64,
@@ -273,11 +282,11 @@ def multi_objective_optimization(
 
     scores_dict: dict[str, NDArray[np.float64]] = {}
     for k, name in enumerate(objective_names):
-        scores_dict[name] = result.F[:, k].astype(np.float64)
+        scores_dict[name] = F[:, k].astype(np.float64)
 
     return Ensemble(
         linkage=linkage,
-        dimensions=result.X.astype(np.float64),
+        dimensions=X.astype(np.float64),
         initial_positions=all_positions,
         scores=scores_dict,
     )

@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **`multi_objective_optimization` single-objective runs.** pymoo
+  returns the single best solution with ``F`` shape ``(n_obj,)`` and
+  ``X`` shape ``(n_var,)`` when ``n_obj == 1``, not ``(n_pop, n_obj)``.
+  The previous code indexed ``result.F[:, k]`` unconditionally and
+  crashed. Results are now normalised to 2-D before building the
+  Ensemble so ``n_obj == 1`` works uniformly.
+
 ### Removed
 
 - **`get_num_constraints` / `set_num_constraints`** on both
