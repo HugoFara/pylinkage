@@ -132,78 +132,88 @@ def generate_python_code(mechanism: Mechanism) -> str:
             joint_connections.setdefault(j1.id, []).append((j2.id, dist))
             joint_connections.setdefault(j2.id, []).append((j1.id, dist))
 
-    # Find joints that have exactly 2 connections (dyad pattern)
-    dyad_joints: list[str] = []
-    for joint in mechanism.joints:
-        if joint.id in joint_vars:
-            continue  # Already handled (ground or crank output)
-        conns = joint_connections.get(joint.id, [])
-        if len(conns) >= 2:
-            dyad_joints.append(joint.id)
+    joint_by_id = {j.id: j for j in mechanism.joints}
+    dyad_header_emitted = False
 
-    if dyad_joints:
-        lines.append("")
-        lines.append("# Dyads (constrained connections)")
+    def _emit_dyad(jid: str, anchors: list[tuple[str, float]]) -> None:
+        nonlocal dyad_header_emitted
+        if not dyad_header_emitted:
+            lines.append("")
+            lines.append("# Dyads (constrained connections)")
+            dyad_header_emitted = True
+        joint = joint_by_id[jid]
+        a1_id, d1 = anchors[0]
+        a2_id, d2 = anchors[1]
+        var = _safe_var("dyad", joint.name)
+        joint_vars[jid] = var
+        components.append(var)
+        if isinstance(joint, PrismaticJoint):
+            lines.append(
+                f"{var} = RRPDyad("
+                f"anchor1={joint_vars[a1_id]}, "
+                f"anchor2={joint_vars[a2_id]}, "
+                f"distance1={d1:.6g}, "
+                f"slide_direction=({joint.axis[0]:.6g}, {joint.axis[1]:.6g}))"
+            )
+        else:
+            lines.append(
+                f"{var} = RRRDyad("
+                f"anchor1={joint_vars[a1_id]}, "
+                f"anchor2={joint_vars[a2_id]}, "
+                f"distance1={d1:.6g}, "
+                f"distance2={d2:.6g})"
+            )
 
-    for jid in dyad_joints:
-        joint = next(j for j in mechanism.joints if j.id == jid)
-        conns = joint_connections[jid]
-
-        # Find two anchor connections where the anchors are already defined
-        anchors = [(cid, dist) for cid, dist in conns if cid in joint_vars]
-
-        if len(anchors) >= 2:
-            a1_id, d1 = anchors[0]
-            a2_id, d2 = anchors[1]
-            var = _safe_var("dyad", joint.name)
-            joint_vars[jid] = var
-            components.append(var)
-
-            if isinstance(joint, PrismaticJoint):
-                lines.append(
-                    f"{var} = RRPDyad("
-                    f"anchor1={joint_vars[a1_id]}, "
-                    f"anchor2={joint_vars[a2_id]}, "
-                    f"distance1={d1:.6g}, "
-                    f"slide_direction=({joint.axis[0]:.6g}, {joint.axis[1]:.6g}))"
-                )
-            else:
-                lines.append(
-                    f"{var} = RRRDyad("
-                    f"anchor1={joint_vars[a1_id]}, "
-                    f"anchor2={joint_vars[a2_id]}, "
-                    f"distance1={d1:.6g}, "
-                    f"distance2={d2:.6g})"
-                )
-
-    # Handle remaining joints (those with only 1 known anchor so far)
-    # Iterate until no more can be resolved
-    max_iterations = len(mechanism.joints)
-    for _ in range(max_iterations):
-        resolved_any = False
+    def _resolve_dyads_pass() -> bool:
+        progress = False
         for jid in list(joint_connections.keys()):
             if jid in joint_vars:
                 continue
-            joint = next((j for j in mechanism.joints if j.id == jid), None)
-            if joint is None:
-                continue
-            conns = joint_connections[jid]
-            anchors = [(cid, dist) for cid, dist in conns if cid in joint_vars]
+            anchors = [
+                (cid, dist)
+                for cid, dist in joint_connections[jid]
+                if cid in joint_vars
+            ]
             if len(anchors) >= 2:
-                a1_id, d1 = anchors[0]
-                a2_id, d2 = anchors[1]
-                var = _safe_var("dyad", joint.name)
-                joint_vars[jid] = var
-                components.append(var)
-                lines.append(
-                    f"{var} = RRRDyad("
-                    f"anchor1={joint_vars[a1_id]}, "
-                    f"anchor2={joint_vars[a2_id]}, "
-                    f"distance1={d1:.6g}, "
-                    f"distance2={d2:.6g})"
-                )
-                resolved_any = True
-        if not resolved_any:
+                _emit_dyad(jid, anchors)
+                progress = True
+        return progress
+
+    def _pin_one_static_fallback() -> bool:
+        """Promote one unresolved joint to a Ground anchor and return True.
+
+        Picks the lowest-degree unresolved joint — a leaf revolute on the
+        outer edge of the chain is almost always a fixed pivot, and pinning
+        it lets the adjacent coupler resolve on the next pass. Couplers
+        (high degree) are intentionally left for the dyad resolver.
+        """
+        candidate: tuple[int, str] | None = None
+        for jid, conns in joint_connections.items():
+            if jid in joint_vars or not conns:
+                continue
+            degree = len(conns)
+            if candidate is None or degree < candidate[0]:
+                candidate = (degree, jid)
+        if candidate is None:
+            return False
+        jid = candidate[1]
+        joint = joint_by_id[jid]
+        x, y = joint.position
+        if x is None or y is None:
+            x, y = 0.0, 0.0
+        var = _safe_var("ground", joint.name)
+        joint_vars[jid] = var
+        components.append(var)
+        lines.append(f'{var} = Ground({x}, {y}, name="{joint.name or jid}")')
+        return True
+
+    # Alternate dyad resolution and static-fallback pinning until quiescent.
+    safety_limit = max(len(mechanism.joints) * 2, 1)
+    for _ in range(safety_limit):
+        progress = _resolve_dyads_pass()
+        if progress:
+            continue
+        if not _pin_one_static_fallback():
             break
 
     # Build linkage
