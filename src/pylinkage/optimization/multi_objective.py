@@ -105,6 +105,11 @@ class LinkageProblem:
         self.joint_pos = joint_pos
         self._n_workers = max(1, n_workers)
         self._linkage_factory = linkage_factory
+        # Lazy-created on first parallel batch and reused across
+        # generations. Pool startup forks N worker processes — doing
+        # that per generation wastes ~50–500 ms on top of every batch.
+        # ``close()`` shuts it down.
+        self._pool: Any = None
 
         n_var = len(bounds[0])
         n_obj = len(objectives)
@@ -145,39 +150,66 @@ class LinkageProblem:
             return F
 
         import contextlib
-        from concurrent.futures import ProcessPoolExecutor, as_completed
+        from concurrent.futures import as_completed
 
+        pool = self._get_pool()
         candidates = [X[i].tolist() for i in range(n_pop)]
         use_factory = self._linkage_factory is not None
-        with ProcessPoolExecutor(max_workers=self._n_workers) as pool:
-            futures = {}
-            for idx, candidate in enumerate(candidates):
-                if use_factory:
-                    assert self._linkage_factory is not None  # for mypy
-                    fut = pool.submit(
-                        _evaluate_candidate_factory,
-                        self.objectives,
-                        self._linkage_factory,
-                        candidate,
-                        self.joint_pos,
-                    )
-                else:
-                    fut = pool.submit(
-                        _evaluate_candidate,
-                        self.objectives,
-                        self.linkage,
-                        candidate,
-                        self.joint_pos,
-                    )
-                futures[fut] = idx
+        futures = {}
+        for idx, candidate in enumerate(candidates):
+            if use_factory:
+                assert self._linkage_factory is not None  # for mypy
+                fut = pool.submit(
+                    _evaluate_candidate_factory,
+                    self.objectives,
+                    self._linkage_factory,
+                    candidate,
+                    self.joint_pos,
+                )
+            else:
+                fut = pool.submit(
+                    _evaluate_candidate,
+                    self.objectives,
+                    self.linkage,
+                    candidate,
+                    self.joint_pos,
+                )
+            futures[fut] = idx
 
-            for future in as_completed(futures):
-                idx = futures[future]
-                # Leave +inf on failure so the candidate is dominated and the
-                # caller can filter non-finite scores afterwards.
-                with contextlib.suppress(Exception):
-                    F[idx] = future.result()
+        for future in as_completed(futures):
+            idx = futures[future]
+            # Leave +inf on failure so the candidate is dominated and the
+            # caller can filter non-finite scores afterwards.
+            with contextlib.suppress(Exception):
+                F[idx] = future.result()
         return F
+
+    def _get_pool(self) -> Any:
+        """Return the shared process pool, creating it on first use."""
+        if self._pool is None:
+            from concurrent.futures import ProcessPoolExecutor
+
+            self._pool = ProcessPoolExecutor(max_workers=self._n_workers)
+        return self._pool
+
+    def close(self) -> None:
+        """Shut down the shared process pool, if one was created.
+
+        Safe to call repeatedly. :func:`multi_objective_optimization`
+        invokes this in a ``finally`` block so workers don't outlive
+        the optimization call.
+        """
+        if self._pool is not None:
+            self._pool.shutdown(wait=True)
+            self._pool = None
+
+    def __del__(self) -> None:  # pragma: no cover — best-effort cleanup
+        # Defensive cleanup if the caller forgot ``close()``. Pool
+        # workers otherwise linger until the parent process exits.
+        import contextlib
+
+        with contextlib.suppress(Exception):
+            self.close()
 
     @property
     def problem(self) -> Any:
@@ -344,13 +376,16 @@ def multi_objective_optimization(
         raise OptimizationError(f"Unknown algorithm: {algorithm}. Use 'nsga2' or 'nsga3'.")
 
     # Run optimization
-    result = minimize(
-        problem.problem,
-        algo,
-        ("n_gen", n_generations),
-        seed=seed,
-        verbose=verbose,
-    )
+    try:
+        result = minimize(
+            problem.problem,
+            algo,
+            ("n_gen", n_generations),
+            seed=seed,
+            verbose=verbose,
+        )
+    finally:
+        problem.close()
 
     # Generate objective names if not provided
     if objective_names is None:
