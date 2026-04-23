@@ -84,8 +84,8 @@ moo = [
 ]
 
 [project.urls]
-Homepage = "https://pylinkage.readthedocs.io/en/stable/"
-Documentation = "https://pylinkage.readthedocs.io/en/stable/"
+Homepage = "https://pylinkage.readthedocs.io/en/latest/"
+Documentation = "https://pylinkage.readthedocs.io/en/latest/"
 Repository = "https://github.com/HugoFara/pylinkage"
 Changelog = "https://github.com/hugofara/pylinkage/blob/main/CHANGELOG.md"
 
