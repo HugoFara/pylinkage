@@ -89,15 +89,6 @@ uv run task docs-clean               # Clean documentation artifacts
   - Conversion: `mechanism_from_linkage()`, `mechanism_to_linkage()`
   - Serialization: `mechanism_to_json()`, `mechanism_from_json()`
 
-- **src/pylinkage/joints/**: Joint types (legacy, use `dyads` for new code)
-  - `Static`: Fixed point in space (base class for all joints)
-  - `Crank`: Rotating motor joint (creates a motor + pin joint)
-  - `Revolute`: Pin joint connecting two parents
-    (creates 3 internal pin joints forming a deformable triangle)
-  - `Pivot`: Low-level pin joint (used internally by Revolute)
-  - `Fixed`: Static joint with fixed distance constraints
-  - `Prismatic`: Joint constrained to move along a line (`Linear` is deprecated alias)
-
 - **src/pylinkage/linkage/**: Linkage class that orchestrates joint collections
   - `Linkage`: Main class managing joints, solving order, and simulation
     via `step()` method
@@ -175,14 +166,7 @@ uv run task docs-clean               # Clean documentation artifacts
 4. Wrap in `Linkage` and call `step()` to simulate (from `pylinkage.simulation`)
 5. Use `show_linkage()` to visualize
 
-Note: For backwards compatibility, all classes can still be imported from `pylinkage.dyads`.
-
-**Legacy Linkage Definition Flow:**
-
-1. Create joint instances (Crank, Revolute, etc.) with parent references
-2. Wrap joints in a `Linkage(joints=..., order=...)`
-3. Call `linkage.step()` to simulate one full rotation cycle
-4. Use `show_linkage()` to visualize
+Note: For backwards compatibility, `Ground`, `Crank`, `LinearActuator`, and `Linkage` are also re-exported from `pylinkage.dyads`.
 
 **Alternative Definition via Hypergraph:**
 
@@ -244,20 +228,17 @@ Note: For backwards compatibility, all classes can still be imported from `pylin
 3. Call `tolerance_analysis(linkage, tolerances, n_samples)` for Monte Carlo simulation
 4. Results include mean/std deviation of output paths and statistical distributions
 
-**API Migration (joints → components/actuators/dyads):**
+**Historical note — legacy `pylinkage.joints` removal:**
 
-The `pylinkage.joints` module is deprecated. Use the new modular structure:
+The legacy `pylinkage.joints` module (with `Static`, `Revolute`, `Linear`, `Fixed`, and the old `Crank` signature) was removed in commit `9c1515f`. All code now uses the components/actuators/dyads API. If you encounter old snippets elsewhere, the mapping was:
 
 - `Static(x, y)` → `Ground(x, y)` from `pylinkage.components`
 - `Crank(joint0=A, distance=r, angle=v)` → `Crank(anchor=A, radius=r, angular_velocity=v)` from `pylinkage.actuators`
 - `Revolute(joint0=A, joint1=B, distance0=d0, distance1=d1)` → `RRRDyad(anchor1=A, anchor2=B, distance1=d0, distance2=d1)` from `pylinkage.dyads`
 - `Linear(...)` → `RRPDyad(...)` from `pylinkage.dyads`
 - `Fixed(...)` → `FixedDyad(...)` from `pylinkage.dyads`
-- New: `LinearActuator(anchor=A, angle=θ, stroke=s, velocity=v)` from `pylinkage.actuators`
-- New: `ArcCrank(anchor=A, radius=r, start_angle=θ₀, end_angle=θ₁, angular_velocity=ω)` from `pylinkage.actuators`
-- New: `TranslatingCamFollower`, `OscillatingCamFollower` from `pylinkage.dyads`
 
-All classes are also re-exported from `pylinkage.dyads` for backwards compatibility.
+Note: the local submodules `src/pylinkage/solver/joints.py` and `src/pylinkage/symbolic/joints.py` are unrelated internal helpers (numba joint solvers and symbolic joint classes) — they are not the deprecated API.
 
 ## Dependencies
 
