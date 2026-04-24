@@ -2,7 +2,7 @@
 
 [![PyPI version fury.io](https://badge.fury.io/py/pylinkage.svg)](https://pypi.python.org/pypi/pylinkage/)
 [![Downloads](https://static.pepy.tech/personalized-badge/pylinkage?period=total&units=international_system&left_color=grey&right_color=green&left_text=Downloads)](https://pepy.tech/project/pylinkage)
-[![Coverage](https://img.shields.io/badge/coverage-87%25-brightgreen)](https://codecov.io/gh/HugoFara/pylinkage)
+[![Coverage](https://img.shields.io/badge/coverage-92%25-brightgreen)](https://codecov.io/gh/HugoFara/pylinkage)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg )](https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst)
 
 Pylinkage lets you design [planar linkage mechanisms](https://en.wikipedia.org/wiki/Linkage_(mechanical)) by specifying the motion you need. Tell it where you want a coupler point to go, and it finds mechanism dimensions automatically using classical synthesis theory ([Burmester](https://en.wikipedia.org/wiki/Burmester_theory), [Freudenstein](https://en.wikipedia.org/wiki/Ferdinand_Freudenstein)) and metaheuristic optimization ([PSO](https://en.wikipedia.org/wiki/Particle_swarm_optimization), [differential evolution](https://en.wikipedia.org/wiki/Differential_evolution)). You can then simulate, analyze, visualize, and export to DXF or STEP for fabrication.
