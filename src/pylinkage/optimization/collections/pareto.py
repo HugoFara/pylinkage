@@ -123,8 +123,12 @@ class ParetoFront:
             The hypervolume indicator value.
 
         Raises:
-            ImportError: If pymoo is not installed.
+            ImportError: If pymoo is not installed (only when the front
+                is non-empty; an empty front returns 0.0 without pymoo).
         """
+        if not self.solutions:
+            return 0.0
+
         try:
             from pymoo.indicators.hv import HV
         except ImportError as e:
@@ -132,9 +136,6 @@ class ParetoFront:
                 "pymoo is required for hypervolume calculation. "
                 "Install with: pip install pylinkage[moo]"
             ) from e
-
-        if not self.solutions:
-            return 0.0
 
         scores = self.scores_array()
         ref = np.array(reference_point)
