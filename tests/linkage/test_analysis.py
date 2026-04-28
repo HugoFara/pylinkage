@@ -17,7 +17,6 @@ import pytest
 from pylinkage.actuators import Crank
 from pylinkage.components import Ground
 from pylinkage.dyads import RRRDyad
-from pylinkage.exceptions import UnbuildableError
 from pylinkage.linkage.analysis import (
     bounding_box,
     extract_trajectories,
@@ -26,7 +25,6 @@ from pylinkage.linkage.analysis import (
     movement_bounding_box,
 )
 from pylinkage.simulation import Linkage
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -166,7 +164,7 @@ def test_extract_trajectory_by_name_with_linkage():
     xs, ys = extract_trajectory(loci, joint="crank", linkage=lk)
     assert len(xs) == 3
     # Crank pivots around origin on a circle of radius 1.0
-    for x, y in zip(xs, ys):
+    for x, y in zip(xs, ys, strict=False):
         assert math.isclose(math.hypot(x, y), 1.0, rel_tol=1e-6)
 
 

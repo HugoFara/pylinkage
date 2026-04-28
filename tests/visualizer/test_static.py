@@ -96,6 +96,9 @@ class TestPlotStaticLinkage:
         # Inject None to exercise None skipping paths
         first = loci[0]
         mutated = list(loci)
-        mutated[1] = tuple((None, None) if i == len(first) - 1 else first[i] for i in range(len(first)))
+        mutated[1] = tuple(
+            (None, None) if i == len(first) - 1 else first[i]
+            for i in range(len(first))
+        )
         fig, ax = plt.subplots()
         plot_static_linkage(lk, ax, mutated, n_ghosts=2)

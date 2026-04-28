@@ -35,7 +35,6 @@ from pylinkage.linkage.sensitivity import (
 )
 from pylinkage.simulation import Linkage
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -263,7 +262,7 @@ def test_analyze_sensitivity_restores_state():
     analyze_sensitivity(lk, iterations=8)
     assert list(lk.get_constraints()) == nominal
     # Coords restored too
-    for (x0, _), (x1, _) in zip(initial, lk.get_coords()):
+    for (x0, _), (x1, _) in zip(initial, lk.get_coords(), strict=False):
         if x0 is None or x1 is None:
             continue
         assert math.isclose(x0, x1, abs_tol=1e-9)
@@ -311,7 +310,7 @@ def test_sensitivity_to_dataframe_raises_without_pandas(monkeypatch):
 
 
 def test_sensitivity_to_dataframe_with_transmission():
-    pd = pytest.importorskip("pandas")
+    pytest.importorskip("pandas")
     lk = _make_fourbar()
     result = analyze_sensitivity(lk, iterations=8, include_transmission=True)
     df = result.to_dataframe()
@@ -384,7 +383,7 @@ def test_analyze_tolerance_restores_state():
         lk, {"crank_radius": 0.01}, iterations=6, n_samples=3, seed=1
     )
     assert list(lk.get_constraints()) == nominal
-    for (x0, _), (x1, _) in zip(initial, lk.get_coords()):
+    for (x0, _), (x1, _) in zip(initial, lk.get_coords(), strict=False):
         if x0 is None or x1 is None:
             continue
         assert math.isclose(x0, x1, abs_tol=1e-9)

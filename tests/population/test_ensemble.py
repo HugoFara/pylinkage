@@ -54,7 +54,7 @@ def test_ensemble_topology_key_is_hashable(
     key = ens.topology_key
     assert isinstance(key, tuple)
     # Hashable
-    {key: 1}
+    hash(key)
 
 
 def test_ensemble_indexing_returns_member(

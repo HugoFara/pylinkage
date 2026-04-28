@@ -14,7 +14,6 @@ import matplotlib
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pytest
 
 from pylinkage.actuators import Crank
@@ -34,7 +33,6 @@ from pylinkage.linkage.transmission import (
     transmission_angle_at_position,
 )
 from pylinkage.simulation import Linkage
-
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -272,7 +270,7 @@ def test_analyze_transmission_restores_state_after_run():
     initial = lk.get_coords()
     analyze_transmission(lk, iterations=8)
     restored = lk.get_coords()
-    for (x0, y0), (x1, y1) in zip(initial, restored):
+    for (x0, y0), (x1, y1) in zip(initial, restored, strict=False):
         if x0 is None or x1 is None:
             continue
         assert math.isclose(x0, x1, abs_tol=1e-9)
@@ -396,7 +394,7 @@ class _MockLinkage:
         return [(getattr(p, "x", None), getattr(p, "y", None)) for p in self.components]
 
     def set_coords(self, coords):
-        for p, c in zip(self.components, coords):
+        for p, c in zip(self.components, coords, strict=False):
             if hasattr(p, "x"):
                 p.x = c[0]
                 p.y = c[1]
@@ -409,7 +407,7 @@ class _MockLinkage:
         for i in range(n):
             frame = self._frames[i % len(self._frames)]
             # Apply positions to parts so _get_joint_coord works
-            for part, pos in zip(self.components, frame):
+            for part, pos in zip(self.components, frame, strict=False):
                 if hasattr(part, "x"):
                     part.x = pos[0]
                     part.y = pos[1]

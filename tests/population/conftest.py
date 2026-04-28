@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import pytest
-
-import math
 
 from pylinkage.actuators import Crank
 from pylinkage.components import Ground

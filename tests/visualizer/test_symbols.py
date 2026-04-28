@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import dataclasses
 import math
 
 import pytest
 
 from pylinkage.actuators import Crank
 from pylinkage.components import Ground
-from pylinkage.dyads import FixedDyad, RRPDyad, RRRDyad
+from pylinkage.dyads import FixedDyad, RRRDyad
 from pylinkage.visualizer.symbols import (
     LINK_COLORS,
     SYMBOL_SPECS,
@@ -38,7 +39,7 @@ class TestLinkStyle:
 class TestSymbolSpec:
     def test_frozen_dataclass(self):
         spec = SymbolSpec(SymbolType.GROUND, "#000000", 1.0, (0.0, 0.0))
-        with pytest.raises(Exception):
+        with pytest.raises(dataclasses.FrozenInstanceError):
             spec.color = "#ffffff"  # type: ignore[misc]
 
     def test_fields(self):

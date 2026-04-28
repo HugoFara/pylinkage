@@ -17,16 +17,8 @@ from pylinkage.components import Ground
 from pylinkage.dyads import FixedDyad, RRPDyad, RRRDyad  # noqa: F401
 from pylinkage.simulation import Linkage
 from pylinkage.solver import (
-    JOINT_CRANK,
-    JOINT_FIXED,
-    JOINT_PRISMATIC,
-    JOINT_REVOLUTE,
-    JOINT_STATIC,
     simulate,
     simulate_with_kinematics,
-    step_single,
-    step_single_acceleration,
-    step_single_velocity,
 )
 from pylinkage.solver.acceleration import (
     solve_crank_acceleration,
@@ -49,7 +41,6 @@ from pylinkage.solver.simulation import first_nan_step, has_nan_positions
 from pylinkage.solver.velocity import (
     solve_crank_velocity,
     solve_fixed_velocity,
-    solve_prismatic_velocity,
     solve_revolute_velocity,
 )
 

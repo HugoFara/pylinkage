@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import math
-
 from pylinkage.actuators import Crank
 from pylinkage.components import Ground
-from pylinkage.dyads import FixedDyad, RRPDyad, RRRDyad
+from pylinkage.dyads import RRPDyad, RRRDyad
 from pylinkage.simulation import Linkage
 from pylinkage.visualizer.core import (
     COLOR_SWITCHER,

@@ -12,7 +12,6 @@ from pylinkage.cam._numba_core import (
     PROFILE_HARMONIC,
     PROFILE_MODIFIED_TRAPEZOIDAL,
     PROFILE_POLYNOMIAL,
-    PROFILE_SPLINE,
     compute_pitch_radius,
     evaluate_cubic_spline,
     evaluate_cubic_spline_derivative,
