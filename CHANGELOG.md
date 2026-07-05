@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-05
+
 ### Added
 
 - **`multi_objective_optimization` parallel evaluation.** New
@@ -173,7 +175,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ``pylinkage.linkage.Linkage`` have been repointed to
   ``pylinkage.simulation.Linkage``. User code that built linkages via
   ``pl.Linkage(joints=[...])`` must migrate to the component API —
-  see the migration notes in the 0.10.0 notebooks and tutorials.
+  see the migration notes in the 1.0.0 notebooks and tutorials.
 - **`pylinkage.joints` module** (legacy joint API — `Static`, `Crank`,
   `Revolute`, `Pivot`, `Fixed`, `Prismatic`, `Joint`). Deprecated since
   0.7.0 (Pivot since 0.6.0). Use the component/actuator/dyad API:
