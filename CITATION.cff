@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "pylinkage: Co-optimization of Linkage Topology and Dimensions in Python"
+authors:
+  - family-names: Farajallah
+    given-names: Hugo
+    orcid: "https://orcid.org/0009-0001-0769-4434"
+    affiliation: "Independent Researcher, France"
+version: 1.0.0
+date-released: "2026-07-05"
+license: MIT
+repository-code: "https://github.com/HugoFara/pylinkage"
+repository-artifact: "https://pypi.org/project/pylinkage/"
+url: "https://pylinkage.readthedocs.io/en/latest/"
+abstract: >-
+  pylinkage is a Python library for designing, simulating, and optimizing
+  planar linkages. It provides both classical kinematic synthesis and
+  modern metaheuristic solvers, treating linkage topology and dimensions
+  as a single co-optimization problem.
+keywords:
+  - mechanical engineering
+  - linkage
+  - kinematic synthesis
+  - particle swarm optimization
+  - metaheuristics
+  - kinematic analysis
