@@ -8,7 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0] - 2026-07-05
-
 ### Added
 
 - **`multi_objective_optimization` parallel evaluation.** New
@@ -41,59 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   as ``[node_a, node_b, distance]`` triples; ``from_dict`` also
   accepts the legacy ``"('a', 'b')"`` stringified-tuple form for
   back-compat with previously saved files.
-
-### Fixed
-
-- **`multi_objective_optimization` single-objective runs.** pymoo
-  returns the single best solution with ``F`` shape ``(n_obj,)`` and
-  ``X`` shape ``(n_var,)`` when ``n_obj == 1``, not ``(n_pop, n_obj)``.
-  The previous code indexed ``result.F[:, k]`` unconditionally and
-  crashed. Results are now normalised to 2-D before building the
-  Ensemble so ``n_obj == 1`` works uniformly.
-
-### Removed
-
-- **`pylinkage.hypergraph._types`** re-export module (deprecated since
-  0.8.0). Import the canonical types from ``pylinkage._types``
-  (``JointType``, ``NodeRole``, ``NodeId``, …) directly. All internal
-  callers have been migrated.
-
-- **`pylinkage.solver.JOINT_LINEAR`** constant. This was always an
-  alias for ``JOINT_PRISMATIC = 4``; the duplicate name has been
-  removed. Use ``JOINT_PRISMATIC``.
-
-- **``"Linear"`` entry in ``pylinkage.visualizer.SYMBOL_SPECS``** and
-  the matching ``"Linear"`` branch in the auto-detect path inside
-  ``pylinkage.linkage.transmission``. These matched the legacy
-  ``joints.Linear`` class name, which is gone. Modern prismatic
-  components are resolved through ``"Prismatic"`` / ``"RRPDyad"`` /
-  ``"LinearActuator"``.
-
-- **`get_num_constraints` / `set_num_constraints`** on both
-  `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
-  added to ease the rename to ``get_constraints`` / ``set_constraints``
-  and are now gone. Calling them raises ``AttributeError``.
-
-### Changed
-
-- **`LinkageProblem` reuses one process pool across generations.**
-  ``LinkageProblem`` now creates the ``ProcessPoolExecutor`` lazily on
-  the first parallel batch and reuses it for every subsequent batch.
-  ``multi_objective_optimization`` calls ``problem.close()`` in a
-  ``finally`` block so workers don't outlive the optimization. The
-  previous code forked N workers per generation, taxing every batch
-  with ~50–500 ms of pool startup (heavier still when worker imports
-  are large). Apples-to-apples savings scale with generation count;
-  expect 15–25 % wall-time wins at ``n_workers ≥ 4`` on multi-gen
-  runs. Behaviour is unchanged for ``n_workers == 1``.
-
-- **`pylinkage._compat`** now targets only the modern surface. The
-  joint-legacy branches (``Static`` / ``_StaticBase`` / ``Revolute`` /
-  ``Pivot`` / ``Fixed`` / ``Prismatic`` / ``Linear`` name matches) were
-  dead after phase 2c; ``is_ground`` / ``is_dyad`` now only recognise
-  the modern component classes and the Mechanism joint types.
-
-### Added
 
 - **Modern-container parity with the legacy `Linkage`.** Both
   `pylinkage.simulation.Linkage` and `pylinkage.mechanism.Mechanism`
@@ -140,6 +86,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **`LinkageProblem` reuses one process pool across generations.**
+  ``LinkageProblem`` now creates the ``ProcessPoolExecutor`` lazily on
+  the first parallel batch and reuses it for every subsequent batch.
+  ``multi_objective_optimization`` calls ``problem.close()`` in a
+  ``finally`` block so workers don't outlive the optimization. The
+  previous code forked N workers per generation, taxing every batch
+  with ~50–500 ms of pool startup (heavier still when worker imports
+  are large). Apples-to-apples savings scale with generation count;
+  expect 15–25 % wall-time wins at ``n_workers ≥ 4`` on multi-gen
+  runs. Behaviour is unchanged for ``n_workers == 1``.
+
+- **`pylinkage._compat`** now targets only the modern surface. The
+  joint-legacy branches (``Static`` / ``_StaticBase`` / ``Revolute`` /
+  ``Pivot`` / ``Fixed`` / ``Prismatic`` / ``Linear`` name matches) were
+  dead after phase 2c; ``is_ground`` / ``is_dyad`` now only recognise
+  the modern component classes and the Mechanism joint types.
+
 - **`pylinkage._compat`**: `is_ground` now recognises a Mechanism
   `GroundJoint`; `is_driver` recognises a `RevoluteJoint` that sits as
   the output of a `DriverLink`/`ArcDriverLink`; `is_dyad` recognises a
@@ -147,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   container-agnostic analysis helpers in `pylinkage.linkage.*` now
   auto-detect four-bar joints on a `Mechanism` without additional
   hints.
+
 - **`pylinkage.bridge.solver_conversion.linkage_to_solver_data`** gains
   a `_mechanism_to_solver_data` dispatch path. `Mechanism`'s
   Links-on-constraints data model is now translated to `SolverData`
@@ -155,16 +119,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   revolute joints become `JOINT_REVOLUTE` with anchor distances
   walked from the joint's `_links`).
 
-### Fixed
+- **`pylinkage.bridge.solver_conversion`**: collapsed to a single
+  compatibility-agnostic implementation that dispatches through
+  `pylinkage._compat` — no more legacy joint-type dispatch.
 
-- **Solver-cache invalidation on constraint mutation.**
-  `simulation.Linkage.set_num_constraints` and
-  `Mechanism.set_constraints` now clear `_solver_data` before applying
-  the new constraints, so a subsequent `step_fast()` rebuilds the
-  numba arrays. Without this, optimizers that round-tripped candidate
-  constraints would silently keep simulating the previous parameters.
+- **`pylinkage.synthesis.nbar_solution_to_linkage` /
+  `_generic_nbar_to_linkage`**: now build a modern
+  `pylinkage.simulation.Linkage` from the component/actuator/dyad API
+  instead of a legacy joint-based `Linkage`.
+
+- **`pylinkage.synthesis.linkage_to_synthesis_params`**: accepts the
+  component API only; raises `ValueError` for legacy linkages.
 
 ### Removed
+
+- **`pylinkage.hypergraph._types`** re-export module (deprecated since
+  0.8.0). Import the canonical types from ``pylinkage._types``
+  (``JointType``, ``NodeRole``, ``NodeId``, …) directly. All internal
+  callers have been migrated.
+
+- **`pylinkage.solver.JOINT_LINEAR`** constant. This was always an
+  alias for ``JOINT_PRISMATIC = 4``; the duplicate name has been
+  removed. Use ``JOINT_PRISMATIC``.
+
+- **``"Linear"`` entry in ``pylinkage.visualizer.SYMBOL_SPECS``** and
+  the matching ``"Linear"`` branch in the auto-detect path inside
+  ``pylinkage.linkage.transmission``. These matched the legacy
+  ``joints.Linear`` class name, which is gone. Modern prismatic
+  components are resolved through ``"Prismatic"`` / ``"RRPDyad"`` /
+  ``"LinearActuator"``.
+
+- **`get_num_constraints` / `set_num_constraints`** on both
+  `simulation.Linkage` and `Mechanism`. These deprecated wrappers were
+  added to ease the rename to ``get_constraints`` / ``set_constraints``
+  and are now gone. Calling them raises ``AttributeError``.
 
 - **`pylinkage.linkage.Linkage` and `pylinkage.linkage.Simulation`**:
   the legacy ``Linkage`` class is gone. ``pl.Linkage`` now points at
@@ -176,55 +164,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ``pylinkage.simulation.Linkage``. User code that built linkages via
   ``pl.Linkage(joints=[...])`` must migrate to the component API —
   see the migration notes in the 1.0.0 notebooks and tutorials.
+
 - **`pylinkage.joints` module** (legacy joint API — `Static`, `Crank`,
   `Revolute`, `Pivot`, `Fixed`, `Prismatic`, `Joint`). Deprecated since
   0.7.0 (Pivot since 0.6.0). Use the component/actuator/dyad API:
   `pylinkage.components.Ground`, `pylinkage.actuators.Crank`,
   `pylinkage.dyads.RRRDyad` / `FixedDyad` / `RRPDyad`. Top-level
   re-exports (`pl.Static`, `pl.Crank`, …) are gone.
+
 - **`pylinkage.linkage.Linkage.to_dict/from_dict/to_json/from_json`**:
   serialization of legacy joint-based linkages is no longer supported.
   Use `pylinkage.mechanism.mechanism_to_dict/from_dict` on a `Mechanism`
   instead.
+
 - **`pylinkage.linkage.serialization`**: module removed — served legacy
   joints only.
+
 - **`pylinkage.mechanism.mechanism_from_linkage` /
   `mechanism_to_linkage` / `convert_legacy_dict`**: bridged the legacy
   `Linkage` ↔ `Mechanism` models, neither of which needs the bridge now
   that the legacy joint API is gone. Use `pylinkage.mechanism.fourbar`
   and friends to build a `Mechanism` directly.
+
 - **`pylinkage.hypergraph.from_linkage`** and
   **`pylinkage.assur.linkage_to_graph`**: same rationale as the legacy
   `to_linkage()` / `graph_to_linkage()` removed in 0.9.0. Use
   `from_mechanism` / `mechanism_to_graph` respectively.
+
 - **`pylinkage.symbolic.linkage_to_symbolic` /
   `symbolic_to_linkage`**: removed. Build `SymbolicLinkage` directly
   with :class:`SymCrank` / :class:`SymRevolute` / :class:`SymStatic`, or
   use :func:`fourbar_symbolic`.
+
 - **`pylinkage.optimization.grid_search.tqdm_verbosity()`**: overdue since
   0.7.0. Use `tqdm.tqdm(iterable, disable=not verbose)` directly.
+
 - **`SynthesisResult.__len__` / `__iter__` / `__getitem__` / `__bool__`**:
   deprecated in 0.9.0. Access `result.solutions` (or `result.ensemble` for
   batch operations) instead — e.g. `len(result.solutions)`,
   `for linkage in result.solutions`, `result.solutions[i]`.
+
 - **`pylinkage.hypergraph.to_linkage()`**: deprecated in 0.8.0. Use
   `pylinkage.hypergraph.to_mechanism()` for conversion to the current
   `Mechanism` model.
+
 - **`pylinkage.assur.graph_to_linkage()`**: deprecated in 0.8.0. Use
   `pylinkage.assur.graph_to_mechanism()` for conversion to the current
   `Mechanism` model.
 
-### Changed
+### Fixed
 
-- **`pylinkage.bridge.solver_conversion`**: collapsed to a single
-  compatibility-agnostic implementation that dispatches through
-  `pylinkage._compat` — no more legacy joint-type dispatch.
-- **`pylinkage.synthesis.nbar_solution_to_linkage` /
-  `_generic_nbar_to_linkage`**: now build a modern
-  `pylinkage.simulation.Linkage` from the component/actuator/dyad API
-  instead of a legacy joint-based `Linkage`.
-- **`pylinkage.synthesis.linkage_to_synthesis_params`**: accepts the
-  component API only; raises `ValueError` for legacy linkages.
+- **`multi_objective_optimization` single-objective runs.** pymoo
+  returns the single best solution with ``F`` shape ``(n_obj,)`` and
+  ``X`` shape ``(n_var,)`` when ``n_obj == 1``, not ``(n_pop, n_obj)``.
+  The previous code indexed ``result.F[:, k]`` unconditionally and
+  crashed. Results are now normalised to 2-D before building the
+  Ensemble so ``n_obj == 1`` works uniformly.
+
+- **Solver-cache invalidation on constraint mutation.**
+  `simulation.Linkage.set_num_constraints` and
+  `Mechanism.set_constraints` now clear `_solver_data` before applying
+  the new constraints, so a subsequent `step_fast()` rebuilds the
+  numba arrays. Without this, optimizers that round-tripped candidate
+  constraints would silently keep simulating the previous parameters.
 
 ## [0.9.0] - 2026-04-14
 
