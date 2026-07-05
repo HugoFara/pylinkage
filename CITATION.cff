@@ -9,6 +9,10 @@ authors:
     affiliation: "Independent Researcher, France"
 version: 1.0.0
 date-released: "2026-07-05"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21207487"
+    description: "Zenodo archive of pylinkage v1.0.0"
 license: MIT
 repository-code: "https://github.com/HugoFara/pylinkage"
 repository-artifact: "https://pypi.org/project/pylinkage/"
