@@ -180,6 +180,12 @@ class PPDyad(ConnectedDyad):
         if any(pos[0] is None or pos[1] is None for pos in [l1_p1, l1_p2, l2_p1, l2_p2]):
             return  # Parents not positioned yet
 
+        # Type assertions since we just checked for None above
+        assert l1_p1[0] is not None and l1_p2[0] is not None
+        assert l2_p1[0] is not None and l2_p2[0] is not None
+        assert l1_p1[1] is not None and l1_p2[1] is not None
+        assert l2_p1[1] is not None and l2_p2[1] is not None
+
         new_x, new_y = solve_line_line(
             l1_p1[0],
             l1_p1[1],

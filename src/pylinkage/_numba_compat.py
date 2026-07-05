@@ -17,7 +17,7 @@ try:
 except ImportError:
     HAS_NUMBA = False
 
-    def njit(*args: Any, **kwargs: Any) -> Any:  # noqa: E501
+    def njit(*args: Any, **kwargs: Any) -> Any:  # type: ignore[no-redef]  # noqa: E501
         """No-op decorator mimicking :func:`numba.njit`."""
         if len(args) == 1 and callable(args[0]):
             return args[0]

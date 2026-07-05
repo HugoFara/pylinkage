@@ -13,7 +13,7 @@ import math
 from .._numba_compat import njit
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_crank_acceleration(
     x: float,
     y: float,
@@ -69,7 +69,7 @@ def solve_crank_acceleration(
     return (ax, ay)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_revolute_acceleration(
     x: float,
     y: float,
@@ -150,7 +150,7 @@ def solve_revolute_acceleration(
     return (ax, ay)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_fixed_acceleration(
     x: float,
     y: float,
@@ -252,7 +252,7 @@ def solve_fixed_acceleration(
     return (ax, ay)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_prismatic_acceleration(
     x: float,
     y: float,

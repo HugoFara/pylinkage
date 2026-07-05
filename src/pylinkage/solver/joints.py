@@ -17,7 +17,7 @@ from ..geometry.secants import (
 )
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_crank(
     current_x: float,
     current_y: float,
@@ -45,10 +45,10 @@ def solve_crank(
     """
     current_angle = math.atan2(current_y - anchor_y, current_x - anchor_x)
     new_angle = current_angle + angle_rate * dt
-    return cyl_to_cart(radius, new_angle, anchor_x, anchor_y)  # type: ignore[no-any-return]
+    return cyl_to_cart(radius, new_angle, anchor_x, anchor_y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_revolute(
     current_x: float,
     current_y: float,
@@ -89,12 +89,12 @@ def solve_revolute(
         return (result[1], result[2])
 
     # Two or more solutions - pick nearest to current position
-    return get_nearest_point(  # type: ignore[no-any-return]
+    return get_nearest_point(
         current_x, current_y, result[1], result[2], result[3], result[4]
     )
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_fixed(
     p0_x: float,
     p0_y: float,
@@ -120,10 +120,10 @@ def solve_fixed(
         New (x, y) position (always deterministic).
     """
     base_angle = math.atan2(p1_y - p0_y, p1_x - p0_x)
-    return cyl_to_cart(radius, angle + base_angle, p0_x, p0_y)  # type: ignore[no-any-return]
+    return cyl_to_cart(radius, angle + base_angle, p0_x, p0_y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_linear_actuator(
     current_extension: float,
     direction: float,
@@ -177,7 +177,7 @@ def solve_linear_actuator(
     return (new_x, new_y, new_extension, new_direction)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_arc_crank(
     current_angle: float,
     direction: float,
@@ -233,7 +233,7 @@ def solve_arc_crank(
     return (new_x, new_y, new_angle, new_direction)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_linear(
     current_x: float,
     current_y: float,
@@ -279,12 +279,12 @@ def solve_linear(
         return (result[1], result[2])
 
     # Two solutions - pick nearest to current position
-    return get_nearest_point(  # type: ignore[no-any-return]
+    return get_nearest_point(
         current_x, current_y, result[1], result[2], result[3], result[4]
     )
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_line_line(
     line1_p1_x: float,
     line1_p1_y: float,
@@ -334,7 +334,7 @@ def solve_line_line(
     return (result[1], result[2])
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_translating_cam_follower(
     guide_x: float,
     guide_y: float,
@@ -360,7 +360,7 @@ def solve_translating_cam_follower(
     return (new_x, new_y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def solve_oscillating_cam_follower(
     pivot_x: float,
     pivot_y: float,

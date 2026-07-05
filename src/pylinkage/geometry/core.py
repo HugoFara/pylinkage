@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     pass
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def dist(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Distance between two points.
@@ -27,7 +27,7 @@ def dist(x1: float, y1: float, x2: float, y2: float) -> float:
     return math.sqrt(dx * dx + dy * dy)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def sqr_dist(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Square of the distance between two points.
@@ -45,7 +45,7 @@ def sqr_dist(x1: float, y1: float, x2: float, y2: float) -> float:
     return dx * dx + dy * dy
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def get_nearest_point(
     ref_x: float,
     ref_y: float,
@@ -72,7 +72,7 @@ def get_nearest_point(
     return (p2_x, p2_y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def norm(x: float, y: float) -> float:
     """
     Return the norm of a 2-dimensional vector.
@@ -84,7 +84,7 @@ def norm(x: float, y: float) -> float:
     return math.sqrt(x * x + y * y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def cyl_to_cart(
     radius: float,
     theta: float,

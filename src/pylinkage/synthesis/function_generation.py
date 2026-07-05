@@ -503,6 +503,7 @@ def verify_function_generation(
         joint_A, joint_D = joint_D, joint_A
 
     # Get fixed parameters (handle both legacy and modern attribute names)
+    assert joint_A is not None and joint_D is not None
     assert joint_A.x is not None and joint_A.y is not None
     assert joint_D.x is not None and joint_D.y is not None
 

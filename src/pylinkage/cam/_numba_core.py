@@ -21,7 +21,7 @@ PROFILE_MODIFIED_TRAPEZOIDAL = 3
 PROFILE_SPLINE = 4
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_harmonic(u: float) -> float:
     """Evaluate simple harmonic motion law.
 
@@ -38,7 +38,7 @@ def evaluate_harmonic(u: float) -> float:
     return (1.0 - math.cos(math.pi * u)) / 2.0
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_harmonic_velocity(u: float) -> float:
     """Evaluate simple harmonic motion law velocity.
 
@@ -53,7 +53,7 @@ def evaluate_harmonic_velocity(u: float) -> float:
     return (math.pi / 2.0) * math.sin(math.pi * u)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_harmonic_acceleration(u: float) -> float:
     """Evaluate simple harmonic motion law acceleration.
 
@@ -68,7 +68,7 @@ def evaluate_harmonic_acceleration(u: float) -> float:
     return (math.pi**2 / 2.0) * math.cos(math.pi * u)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_cycloidal(u: float) -> float:
     """Evaluate cycloidal motion law.
 
@@ -85,7 +85,7 @@ def evaluate_cycloidal(u: float) -> float:
     return u - math.sin(2.0 * math.pi * u) / (2.0 * math.pi)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_cycloidal_velocity(u: float) -> float:
     """Evaluate cycloidal motion law velocity.
 
@@ -100,7 +100,7 @@ def evaluate_cycloidal_velocity(u: float) -> float:
     return 1.0 - math.cos(2.0 * math.pi * u)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_cycloidal_acceleration(u: float) -> float:
     """Evaluate cycloidal motion law acceleration.
 
@@ -115,7 +115,7 @@ def evaluate_cycloidal_acceleration(u: float) -> float:
     return 2.0 * math.pi * math.sin(2.0 * math.pi * u)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_polynomial(u: float, coeffs: np.ndarray) -> float:
     """Evaluate polynomial motion law.
 
@@ -136,7 +136,7 @@ def evaluate_polynomial(u: float, coeffs: np.ndarray) -> float:
     return result
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_polynomial_velocity(u: float, coeffs: np.ndarray) -> float:
     """Evaluate polynomial motion law velocity (derivative).
 
@@ -157,7 +157,7 @@ def evaluate_polynomial_velocity(u: float, coeffs: np.ndarray) -> float:
     return result
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_modified_trapezoidal(u: float) -> float:
     """Evaluate modified trapezoidal motion law.
 
@@ -191,7 +191,7 @@ def evaluate_modified_trapezoidal(u: float) -> float:
         return 3.0 / 4.0 + u / 4.0 + math.sin(4.0 * math.pi * u) / (8.0 * math.pi)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_modified_trapezoidal_velocity(u: float) -> float:
     """Evaluate modified trapezoidal motion law velocity.
 
@@ -214,7 +214,7 @@ def evaluate_modified_trapezoidal_velocity(u: float) -> float:
         return 0.25 * (1.0 - math.cos(4.0 * math.pi * u))
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_cubic_spline(
     angle: float,
     angles: np.ndarray,
@@ -273,7 +273,7 @@ def evaluate_cubic_spline(
     return a + t * (b + t * (c + t * d))  # type: ignore[no-any-return]
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_cubic_spline_derivative(
     angle: float,
     angles: np.ndarray,
@@ -332,7 +332,7 @@ def evaluate_cubic_spline_derivative(
     return dr_dt / h  # type: ignore[no-any-return]
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_profile_displacement(
     angle: float,
     profile_type: int,
@@ -386,7 +386,7 @@ def evaluate_profile_displacement(
             s = evaluate_modified_trapezoidal(u)
         else:
             s = 0.0
-        return base_radius + lift * s  # type: ignore[no-any-return]
+        return base_radius + lift * s
 
     elif angle < dwell_high_end:
         # Dwell high
@@ -405,10 +405,10 @@ def evaluate_profile_displacement(
             s = 1.0 - evaluate_modified_trapezoidal(u)
         else:
             s = 1.0
-        return base_radius + lift * s  # type: ignore[no-any-return]
+        return base_radius + lift * s
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_spline_profile_displacement(
     angle: float,
     spline_angles: np.ndarray,
@@ -424,10 +424,10 @@ def evaluate_spline_profile_displacement(
     Returns:
         Cam radius at the given angle.
     """
-    return evaluate_cubic_spline(angle, spline_angles, spline_coeffs)  # type: ignore[no-any-return]
+    return evaluate_cubic_spline(angle, spline_angles, spline_coeffs)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_spline_profile_derivative(
     angle: float,
     spline_angles: np.ndarray,
@@ -443,10 +443,10 @@ def evaluate_spline_profile_derivative(
     Returns:
         Derivative dr/dtheta at the given angle.
     """
-    return evaluate_cubic_spline_derivative(angle, spline_angles, spline_coeffs)  # type: ignore[no-any-return]
+    return evaluate_cubic_spline_derivative(angle, spline_angles, spline_coeffs)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def evaluate_profile_derivative(
     angle: float,
     profile_type: int,
@@ -500,7 +500,7 @@ def evaluate_profile_derivative(
         else:
             ds_du = 0.0
         # Chain rule: dr/dtheta = lift * ds/du * du/dtheta
-        return lift * ds_du / delta  # type: ignore[no-any-return]
+        return lift * ds_du / delta
 
     elif angle < dwell_high_end:
         # Dwell high
@@ -520,10 +520,10 @@ def evaluate_profile_derivative(
             ds_du = -evaluate_modified_trapezoidal_velocity(u)
         else:
             ds_du = 0.0
-        return lift * ds_du / delta  # type: ignore[no-any-return]
+        return lift * ds_du / delta
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def compute_pitch_radius(
     cam_radius: float,
     cam_derivative: float,

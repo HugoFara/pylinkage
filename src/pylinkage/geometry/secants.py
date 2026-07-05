@@ -18,7 +18,7 @@ INTERSECTION_TWO = 2
 INTERSECTION_SAME = 3
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def circle_intersect(
     x1: float,
     y1: float,
@@ -96,7 +96,7 @@ def circle_intersect(
     return (INTERSECTION_TWO, inter1_x, inter1_y, inter2_x, inter2_y)
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def circle_line_from_points_intersection(
     cx: float,
     cy: float,
@@ -187,7 +187,7 @@ def circle_line_intersection(
         p1_x, p1_y = -c / a, 0.0
         p2_x, p2_y = -(c + b) / a, 1.0
 
-    return circle_line_from_points_intersection(cx, cy, r, p1_x, p1_y, p2_x, p2_y)  # type: ignore[no-any-return]
+    return circle_line_from_points_intersection(cx, cy, r, p1_x, p1_y, p2_x, p2_y)
 
 
 def intersection(
@@ -238,7 +238,7 @@ def intersection(
     return None
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def line_line_intersection(
     p1_x: float,
     p1_y: float,

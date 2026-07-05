@@ -282,7 +282,7 @@ def animate_parallel_coordinates(
 
     animation = anim.FuncAnimation(
         fig,
-        update,  # type: ignore[arg-type]
+        update,
         frames=len(history),
         interval=interval,
         repeat=True,
@@ -595,7 +595,7 @@ def animate_dashboard(
 
     animation = anim.FuncAnimation(
         fig,
-        update,  # type: ignore[arg-type]
+        update,
         frames=len(history),
         interval=interval,
         repeat=True,

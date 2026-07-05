@@ -29,7 +29,7 @@ from .velocity import (
 )
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def step_single(
     positions: np.ndarray,
     constraints: np.ndarray,
@@ -122,7 +122,7 @@ def step_single(
             positions[joint_idx, 1] = new_y
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def simulate(
     positions: np.ndarray,
     constraints: np.ndarray,
@@ -175,7 +175,7 @@ def simulate(
     return trajectory
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def has_nan_positions(trajectory: np.ndarray) -> bool:
     """Check if trajectory contains any NaN positions.
 
@@ -192,7 +192,7 @@ def has_nan_positions(trajectory: np.ndarray) -> bool:
     return False
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def first_nan_step(trajectory: np.ndarray) -> int:
     """Find the first step with NaN positions.
 
@@ -209,7 +209,7 @@ def first_nan_step(trajectory: np.ndarray) -> int:
     return -1
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def step_single_velocity(
     positions: np.ndarray,
     velocities: np.ndarray,
@@ -332,7 +332,7 @@ def step_single_velocity(
             velocities[joint_idx, 1] = vy
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def step_single_acceleration(
     positions: np.ndarray,
     velocities: np.ndarray,
@@ -484,7 +484,7 @@ def step_single_acceleration(
             accelerations[joint_idx, 1] = ay
 
 
-@njit(cache=True)  # type: ignore[untyped-decorator]
+@njit(cache=True)
 def simulate_with_kinematics(
     positions: np.ndarray,
     velocities: np.ndarray,
