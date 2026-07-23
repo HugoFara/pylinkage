@@ -7,6 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Velocities and accelerations no longer treat an unknown anchor as a
+  stationary one.** ``Mechanism.step_with_derivatives`` read each
+  anchor's kinematics as ``anchor.velocity or (0.0, 0.0)``. A joint
+  solved against an anchor whose own velocity was undefined was
+  therefore solved against one wrongly assumed at rest, and returned a
+  plausible number instead of ``None`` — so a single unresolved joint
+  quietly corrupted everything downstream of it rather than announcing
+  itself. Checked against finite differences of the position stream,
+  one leggedsnake walker had a foot reporting ~5x its true speed and
+  another ~0.3x. Unknown kinematics now propagate: if an anchor's
+  velocity or acceleration is undefined, so is the dependent joint's.
+
+  Ground joints are unaffected — their zero velocity is a fact about
+  the frame, not a stand-in for a missing value.
+
+- **A joint collinear with its two anchors is no longer mistaken for a
+  dead centre.** ``solve_revolute_velocity`` intersects the two
+  differentiated distance constraints, whose Jacobian is singular when
+  the joint lies on the line through its anchors. That test conflated
+  two unrelated situations: a genuine toggle of an RRR dyad, where the
+  velocity really is indeterminate, and a joint riding on a rigid body
+  together with both its anchors, where the motion is fully determined
+  and only the formulation degenerates. The second is a normal design —
+  a ternary link carrying its coupler point on the line through its
+  other two ports, as in the Chebyshev and Hoeken straight-line
+  linkages — and it silently produced no derivative at all.
+
+  Such joints are now resolved by propagating the body's motion. The
+  two cases are told apart structurally rather than numerically: the
+  fallback applies only when a link holds the two anchors at a fixed
+  distance, so a real dead centre still yields ``None``.
+
+### Added
+
+- **``solve_rigid_body_velocity`` / ``solve_rigid_body_acceleration``**
+  in ``pylinkage.solver``. Given two points of a planar rigid body and
+  their kinematics, these return the velocity and acceleration of any
+  third point on that body. They agree with the constraint-intersection
+  solvers wherever both apply, and stay well-conditioned for collinear
+  points, where those are singular — they need two *distinct* points on
+  the body rather than two *independent* constraint directions.
+
 ## [1.0.0] - 2026-07-05
 ### Added
 

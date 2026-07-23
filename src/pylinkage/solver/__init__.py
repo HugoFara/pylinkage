@@ -29,6 +29,7 @@ from .acceleration import (
     solve_fixed_acceleration,
     solve_prismatic_acceleration,
     solve_revolute_acceleration,
+    solve_rigid_body_acceleration,
 )
 
 # Group solvers (standalone functions for Assur groups)
@@ -71,6 +72,7 @@ from .velocity import (
     solve_fixed_velocity,
     solve_prismatic_velocity,
     solve_revolute_velocity,
+    solve_rigid_body_velocity,
 )
 
 # Conversion functions are loaded lazily to avoid circular imports.
@@ -113,11 +115,13 @@ __all__ = [
     "solve_revolute_velocity",
     "solve_fixed_velocity",
     "solve_prismatic_velocity",
+    "solve_rigid_body_velocity",
     # Joint solvers (acceleration)
     "solve_crank_acceleration",
     "solve_revolute_acceleration",
     "solve_fixed_acceleration",
     "solve_prismatic_acceleration",
+    "solve_rigid_body_acceleration",
     # Group solvers
     "solve_rrr_dyad",
     "solve_rrp_dyad",

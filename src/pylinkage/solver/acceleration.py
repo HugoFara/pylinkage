@@ -151,6 +151,78 @@ def solve_revolute_acceleration(
 
 
 @njit(cache=True)
+def solve_rigid_body_acceleration(
+    x: float,
+    y: float,
+    p0_x: float,
+    p0_y: float,
+    p0_vx: float,
+    p0_vy: float,
+    p0_ax: float,
+    p0_ay: float,
+    p1_x: float,
+    p1_y: float,
+    p1_vx: float,
+    p1_vy: float,
+    p1_ax: float,
+    p1_ay: float,
+) -> tuple[float, float]:
+    """Compute the acceleration of a third point on a rigid body.
+
+    The acceleration counterpart of
+    :func:`~pylinkage.solver.velocity.solve_rigid_body_velocity`. Two
+    points of a planar rigid body fix both its angular velocity and its
+    angular acceleration:
+
+        a1 = a0 + α ẑ × d - ω² d
+        ⟹ α = [dx * (p1_ay - p0_ay) - dy * (p1_ax - p0_ax)] / d²
+
+    with ``d = p1 - p0`` (the centripetal term drops out of the cross
+    product). The queried point then follows:
+
+        a = a0 + α ẑ × (p - p0) - ω² (p - p0)
+
+    Well-conditioned for collinear points, where intersecting the two
+    differentiated distance constraints is singular.
+
+    Args:
+        x: Current X position of the queried point.
+        y: Current Y position of the queried point.
+        p0_x, p0_y: Position of the first body point.
+        p0_vx, p0_vy: Velocity of the first body point.
+        p0_ax, p0_ay: Acceleration of the first body point.
+        p1_x, p1_y: Position of the second body point.
+        p1_vx, p1_vy: Velocity of the second body point.
+        p1_ax, p1_ay: Acceleration of the second body point.
+
+    Returns:
+        Acceleration (ax, ay) of the queried point, or (NaN, NaN) if the
+        two body points coincide.
+    """
+    if math.isnan(x) or math.isnan(y):
+        return (math.nan, math.nan)
+
+    dx = p1_x - p0_x
+    dy = p1_y - p0_y
+    d_sq = dx * dx + dy * dy
+
+    # The reference points must be distinct to fix the body's rotation.
+    if d_sq < 1e-24:
+        return (math.nan, math.nan)
+
+    omega = (dx * (p1_vy - p0_vy) - dy * (p1_vx - p0_vx)) / d_sq
+    alpha = (dx * (p1_ay - p0_ay) - dy * (p1_ax - p0_ax)) / d_sq
+
+    rx = x - p0_x
+    ry = y - p0_y
+    omega_sq = omega * omega
+    return (
+        p0_ax - alpha * ry - omega_sq * rx,
+        p0_ay + alpha * rx - omega_sq * ry,
+    )
+
+
+@njit(cache=True)
 def solve_fixed_acceleration(
     x: float,
     y: float,

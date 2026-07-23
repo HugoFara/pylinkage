@@ -969,11 +969,13 @@ class Mechanism:
             solve_crank_acceleration,
             solve_prismatic_acceleration,
             solve_revolute_acceleration,
+            solve_rigid_body_acceleration,
         )
         from ..solver.velocity import (
             solve_crank_velocity,
             solve_prismatic_velocity,
             solve_revolute_velocity,
+            solve_rigid_body_velocity,
         )
 
         if iterations is None:
@@ -1002,6 +1004,20 @@ class Mechanism:
                     seen.add(other.id)
             return anchors
 
+        def _rigidly_tied(first: Joint, second: Joint) -> bool:
+            """True if a link holds *first* and *second* at a fixed distance.
+
+            Used to tell a genuine dead centre apart from a joint that
+            simply shares a rigid body with both its anchors. In the
+            second case the constraint-intersection Jacobian is singular
+            but the motion is fully determined, so the rigid-body
+            solvers apply.
+            """
+            for link in first._links:
+                if second in link.joints and link.get_distance(first, second) is not None:
+                    return True
+            return False
+
         for _ in range(iterations):
             # 1. Positions
             self._step_once(dt)
@@ -1024,8 +1040,15 @@ class Mechanism:
                     if mj.x is None or mj.y is None or driver.radius is None:
                         joint.velocity = None
                         continue
+                    # An unknown anchor velocity is not a zero one: solving
+                    # against an anchor wrongly assumed stationary yields a
+                    # plausible but incorrect result, so the unknown has to
+                    # propagate.
+                    if mj.velocity is None:
+                        joint.velocity = None
+                        continue
                     omega = float(getattr(driver, "_omega", 0.0))
-                    mv = mj.velocity or (0.0, 0.0)
+                    mv = mj.velocity
                     vx, vy = solve_crank_velocity(
                         jx,
                         jy,
@@ -1045,10 +1068,10 @@ class Mechanism:
                     # Prismatic: 1 revolute anchor + sliding line. Until the
                     # mechanism model exposes a line constraint API for
                     # prismatic joints we fall back to None.
-                    if len(anchors) >= 1 and anchors[0][0].velocity is not None:
+                    av = anchors[0][0].velocity if anchors else None
+                    if av is not None:
                         a, dist = anchors[0]
                         ax_, ay_ = a.position
-                        av = a.velocity or (0.0, 0.0)
                         # No second line anchor available → leave undefined.
                         if ax_ is None or ay_ is None:
                             joint.velocity = None
@@ -1084,8 +1107,13 @@ class Mechanism:
                 if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
                     joint.velocity = None
                     continue
-                v1 = a1.velocity or (0.0, 0.0)
-                v2 = a2.velocity or (0.0, 0.0)
+                # Unknown anchor velocities propagate rather than reading
+                # as zero — see the crank branch above.
+                if a1.velocity is None or a2.velocity is None:
+                    joint.velocity = None
+                    continue
+                v1 = a1.velocity
+                v2 = a2.velocity
                 vx, vy = solve_revolute_velocity(
                     jx,
                     jy,
@@ -1098,6 +1126,23 @@ class Mechanism:
                     v2[0],
                     v2[1],
                 )
+                if (math.isnan(vx) or math.isnan(vy)) and _rigidly_tied(a1, a2):
+                    # The two constraint directions are parallel. That is a
+                    # dead centre only when the anchors can move relative to
+                    # each other; if they are rigidly tied, the joint rides
+                    # on their body and its motion is fully determined.
+                    vx, vy = solve_rigid_body_velocity(
+                        jx,
+                        jy,
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                    )
                 joint.velocity = None if math.isnan(vx) or math.isnan(vy) else (vx, vy)
 
             # 3. Accelerations
@@ -1118,10 +1163,13 @@ class Mechanism:
                     if mj.x is None or mj.y is None or driver.radius is None:
                         joint.acceleration = None
                         continue
+                    if mj.velocity is None or mj.acceleration is None:
+                        joint.acceleration = None
+                        continue
                     omega = float(getattr(driver, "_omega", 0.0))
                     alpha = float(getattr(driver, "_alpha", 0.0))
-                    mv = mj.velocity or (0.0, 0.0)
-                    ma = mj.acceleration or (0.0, 0.0)
+                    mv = mj.velocity
+                    ma = mj.acceleration
                     ax, ay = solve_crank_acceleration(
                         jx,
                         jy,
@@ -1142,11 +1190,11 @@ class Mechanism:
 
                 anchors = _anchors_with_distance(joint)
                 if isinstance(joint, PrismaticJoint):
-                    if len(anchors) >= 1 and anchors[0][0].velocity is not None:
+                    av = anchors[0][0].velocity if anchors else None
+                    aa = anchors[0][0].acceleration if anchors else None
+                    if av is not None and aa is not None:
                         a, dist = anchors[0]
                         ax_, ay_ = a.position
-                        av = a.velocity or (0.0, 0.0)
-                        aa = a.acceleration or (0.0, 0.0)
                         if ax_ is None or ay_ is None:
                             joint.acceleration = None
                             continue
@@ -1188,10 +1236,18 @@ class Mechanism:
                 if a1.x is None or a1.y is None or a2.x is None or a2.y is None:
                     joint.acceleration = None
                     continue
-                v1 = a1.velocity or (0.0, 0.0)
-                v2 = a2.velocity or (0.0, 0.0)
-                acc1 = a1.acceleration or (0.0, 0.0)
-                acc2 = a2.acceleration or (0.0, 0.0)
+                if (
+                    a1.velocity is None
+                    or a2.velocity is None
+                    or a1.acceleration is None
+                    or a2.acceleration is None
+                ):
+                    joint.acceleration = None
+                    continue
+                v1 = a1.velocity
+                v2 = a2.velocity
+                acc1 = a1.acceleration
+                acc2 = a2.acceleration
                 ax, ay = solve_revolute_acceleration(
                     jx,
                     jy,
@@ -1210,6 +1266,25 @@ class Mechanism:
                     acc2[0],
                     acc2[1],
                 )
+                if (math.isnan(ax) or math.isnan(ay)) and _rigidly_tied(a1, a2):
+                    # Collinear with rigidly tied anchors — propagate the
+                    # body's motion instead. See the velocity pass above.
+                    ax, ay = solve_rigid_body_acceleration(
+                        jx,
+                        jy,
+                        a1.x,
+                        a1.y,
+                        v1[0],
+                        v1[1],
+                        acc1[0],
+                        acc1[1],
+                        a2.x,
+                        a2.y,
+                        v2[0],
+                        v2[1],
+                        acc2[0],
+                        acc2[1],
+                    )
                 joint.acceleration = None if math.isnan(ax) or math.isnan(ay) else (ax, ay)
 
             yield (

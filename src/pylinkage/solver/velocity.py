@@ -122,6 +122,74 @@ def solve_revolute_velocity(
 
 
 @njit(cache=True)
+def solve_rigid_body_velocity(
+    x: float,
+    y: float,
+    p0_x: float,
+    p0_y: float,
+    p0_vx: float,
+    p0_vy: float,
+    p1_x: float,
+    p1_y: float,
+    p1_vx: float,
+    p1_vy: float,
+) -> tuple[float, float]:
+    """Compute the velocity of a third point on a rigid body.
+
+    Where :func:`solve_revolute_velocity` intersects two distance
+    constraints, this propagates the motion of the body the point sits
+    on. Two points of a planar rigid body fix its angular velocity:
+
+        v1 = v0 + ω ẑ × (p1 - p0)
+        ⟹ ω = [dx * (p1_vy - p0_vy) - dy * (p1_vx - p0_vx)] / d²
+
+    with ``d = p1 - p0``. The queried point then follows directly:
+
+        v = v0 + ω ẑ × (p - p0)
+
+    Both formulations agree wherever both apply. This one stays
+    well-conditioned when the three points are collinear — the case that
+    makes the constraint-intersection Jacobian singular — because it
+    needs two *distinct* points on the body rather than two
+    *independent* constraint directions. A ternary link carrying a
+    coupler point on the line through its other two ports is the common
+    example, and is a normal design rather than a degenerate one.
+
+    Args:
+        x: Current X position of the queried point.
+        y: Current Y position of the queried point.
+        p0_x: X position of the first body point.
+        p0_y: Y position of the first body point.
+        p0_vx: X velocity of the first body point.
+        p0_vy: Y velocity of the first body point.
+        p1_x: X position of the second body point.
+        p1_y: Y position of the second body point.
+        p1_vx: X velocity of the second body point.
+        p1_vy: Y velocity of the second body point.
+
+    Returns:
+        Velocity (vx, vy) of the queried point, or (NaN, NaN) if the two
+        body points coincide.
+    """
+    if math.isnan(x) or math.isnan(y):
+        return (math.nan, math.nan)
+
+    dx = p1_x - p0_x
+    dy = p1_y - p0_y
+    d_sq = dx * dx + dy * dy
+
+    # The reference points must be distinct to fix the body's rotation.
+    if d_sq < 1e-24:
+        return (math.nan, math.nan)
+
+    omega = (dx * (p1_vy - p0_vy) - dy * (p1_vx - p0_vx)) / d_sq
+
+    rx = x - p0_x
+    ry = y - p0_y
+    return (p0_vx - omega * ry, p0_vy + omega * rx)
+
+
+@njit(cache=True)
 def solve_fixed_velocity(
     x: float,
     y: float,
