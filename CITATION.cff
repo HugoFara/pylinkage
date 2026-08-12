@@ -7,8 +7,8 @@ authors:
     given-names: Hugo
     orcid: "https://orcid.org/0009-0001-0769-4434"
     affiliation: "Independent Researcher, France"
-version: 1.0.0
-date-released: "2026-07-05"
+version: 1.1.0
+date-released: "2026-08-12"
 identifiers:
   - type: doi
     value: "10.5281/zenodo.21207487"
