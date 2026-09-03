@@ -18,10 +18,8 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           version: "latest"
-      - name: Set up Python
-        run: uv python install 3.12
       - name: Install dependencies
-        run: uv sync --python 3.12 --extra full
+        run: uv sync --extra full
       - name: Execute notebooks
         env:
           MPLBACKEND: Agg
@@ -29,7 +27,13 @@ jobs:
           status=0
           for nb in docs/notebooks/*.ipynb; do
             name=$(basename "$nb")
-            if uv run jupyter nbconvert --to notebook --execute "$nb" \
+            # --extra full must match the sync above: a bare `uv run` re-syncs
+            # without extras and silently drops pymoo.
+            # kernel_name is forced so a notebook's recorded kernelspec cannot
+            # send execution to an interpreter that is not this project's venv.
+            if uv run --extra full jupyter nbconvert \
+                 --to notebook --execute "$nb" \
+                 --ExecutePreprocessor.kernel_name=python3 \
                  --output-dir /tmp/nbexec >"/tmp/${name}.log" 2>&1; then
               echo "::notice::PASS $name"
             else
