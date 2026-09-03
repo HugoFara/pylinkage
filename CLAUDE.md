@@ -86,7 +86,9 @@ uv run task docs-clean               # Clean documentation artifacts
   - `Joint`, `RevoluteJoint`, `PrismaticJoint`, `GroundJoint`: Joint classes
   - `Link`, `DriverLink`, `GroundLink`: Rigid body classes
   - `Mechanism`: Main orchestrator class
-  - Conversion: `mechanism_from_linkage()`, `mechanism_to_linkage()`
+  - Conversion: `pylinkage.dyads.to_mechanism()` builds a `Mechanism` from a
+    component `Linkage`. The reverse direction does not exist: `mechanism_to_linkage()`
+    and `mechanism_from_linkage()` were deleted in `b0cbc3b` with the legacy joints module.
   - Serialization: `mechanism_to_json()`, `mechanism_from_json()`
 
 - **src/pylinkage/linkage/**: Linkage class that orchestrates joint collections

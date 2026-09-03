@@ -1,0 +1,41 @@
+# Executes every tutorial notebook so a breaking API change cannot silently
+# leave the docs teaching a signature that no longer exists.
+name: Notebooks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --python 3.12 --extra full --extra moo
+      - name: Execute notebooks
+        env:
+          MPLBACKEND: Agg
+        run: |
+          status=0
+          for nb in docs/notebooks/*.ipynb; do
+            name=$(basename "$nb")
+            if uv run jupyter nbconvert --to notebook --execute "$nb" \
+                 --output-dir /tmp/nbexec >"/tmp/${name}.log" 2>&1; then
+              echo "::notice::PASS $name"
+            else
+              status=1
+              echo "::error::FAIL $name"
+              tail -40 "/tmp/${name}.log"
+            fi
+          done
+          exit $status

@@ -77,6 +77,7 @@ from ..components import _AnchorProxy as _AnchorProxy
 # Linkage container
 from ..simulation import Linkage as Linkage
 from ._base import BinaryDyad as BinaryDyad
+from ._conversion import to_mechanism as to_mechanism
 from .factory import create_dyad as create_dyad
 from .factory import get_isomer_geometry as get_isomer_geometry
 from .factory import get_required_anchors as get_required_anchors
@@ -100,6 +101,8 @@ __all__ = [
     "OscillatingCamFollower",
     # Factory function for creating dyads from isomer signatures
     "create_dyad",
+    # Conversion to the low-level Joint/Link mechanism model
+    "to_mechanism",
     "get_isomer_geometry",
     "get_required_anchors",
     "get_required_constraints",
