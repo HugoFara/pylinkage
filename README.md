@@ -10,11 +10,11 @@ Pylinkage lets you design [planar linkage mechanisms](https://en.wikipedia.org/w
 
 ```python
 from pylinkage.synthesis import path_generation
-from pylinkage.visualizer import plot_kinematic_linkage
+from pylinkage.visualizer import show_linkage
 
 # "I need a coupler that passes through these four points"
 result = path_generation([(0, 0), (1, 1), (2, 1), (3, 0)])
-plot_kinematic_linkage(result.solutions[0])
+show_linkage(result.solutions[0])
 ```
 
 ![Path generation result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/synthesis_path_generation.gif)
@@ -58,7 +58,7 @@ from pylinkage.components import Ground
 from pylinkage.actuators import Crank
 from pylinkage.dyads import RRRDyad
 from pylinkage.simulation import Linkage
-from pylinkage.visualizer import plot_kinematic_linkage
+from pylinkage.visualizer import show_linkage
 
 # Define ground pivots
 O1 = Ground(0, 0, name="O1")
@@ -77,7 +77,7 @@ rocker = RRRDyad(
 )
 
 my_linkage = Linkage([O1, O2, crank, rocker], name="Four-Bar")
-plot_kinematic_linkage(my_linkage)
+show_linkage(my_linkage)
 ```
 
 ![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif)
@@ -119,12 +119,12 @@ def fitness(loci, **_):
     tip_locus = tuple(x[-1] for x in loci)
     return pl.bounding_box(tip_locus)[0]  # Minimize min_y
 
-bounds = pl.generate_bounds(my_linkage.get_num_constraints())
+bounds = pl.generate_bounds(my_linkage.get_constraints())
 ensemble = pl.particle_swarm_optimization(
     eval_func=fitness, linkage=my_linkage, bounds=bounds, order_relation=min
 )
 best = ensemble.top(1)[0]
-my_linkage.set_num_constraints(best.dimensions)
+my_linkage.set_constraints(best.dimensions)
 ```
 
 ![PSO optimization result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/pso_optimization.png)
