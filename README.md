@@ -36,6 +36,7 @@ Install only what you need:
 | `viz` | Matplotlib visualization and animation |
 | `plotly` | Interactive HTML visualization |
 | `svg` | Publication-quality SVG export via drawsvg |
+| `moo` | Multi-objective optimization (NSGA-II/III via pymoo) |
 
 Extras can be combined: `pip install pylinkage[viz,scipy,numba]`
 
