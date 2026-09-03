@@ -1,0 +1,45 @@
+# Executes every tutorial notebook so a breaking API change cannot silently
+# leave the docs teaching a signature that no longer exists.
+name: Notebooks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+      - name: Install dependencies
+        run: uv sync --extra full
+      - name: Execute notebooks
+        env:
+          MPLBACKEND: Agg
+        run: |
+          status=0
+          for nb in docs/notebooks/*.ipynb; do
+            name=$(basename "$nb")
+            # --extra full must match the sync above: a bare `uv run` re-syncs
+            # without extras and silently drops pymoo.
+            # kernel_name is forced so a notebook's recorded kernelspec cannot
+            # send execution to an interpreter that is not this project's venv.
+            if uv run --extra full jupyter nbconvert \
+                 --to notebook --execute "$nb" \
+                 --ExecutePreprocessor.kernel_name=python3 \
+                 --output-dir /tmp/nbexec >"/tmp/${name}.log" 2>&1; then
+              echo "::notice::PASS $name"
+            else
+              status=1
+              echo "::error::FAIL $name"
+              tail -40 "/tmp/${name}.log"
+            fi
+          done
+          exit $status

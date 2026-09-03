@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `pylinkage.dyads.to_mechanism()` is now public. It converts a component
+  `Linkage` into a `Mechanism`, and previously existed only as
+  `pylinkage.dyads._conversion.to_mechanism`, so it could not be used or
+  documented without reaching into a private module. The conversion remains
+  one-way: there is no `Mechanism` to `Linkage` direction, the old
+  `mechanism_to_linkage()` having been removed with the legacy joints module.
+
+### Changed
+
+- The `full` extra now includes `pymoo`, so `pip install pylinkage[full]`
+  covers multi-objective optimization as the README's "all optional backends"
+  description promises. `moo` remains available on its own, and is now listed
+  in the README's extras table.
+
+### Fixed
+
+- **Broken examples on the PyPI landing page.** Both README visualization
+  snippets called `plot_kinematic_linkage(linkage)`, but that function takes
+  `(linkage, fig, axis, loci)` and always has — the signature is identical in
+  1.0.0, so these examples never ran. They now call `show_linkage()`, which
+  builds the figure and runs the simulation itself. The PSO snippet separately
+  used `get_num_constraints()` / `set_num_constraints()`, removed earlier in
+  the 1.x line; it now uses `get_constraints()` / `set_constraints()`.
+
+- **Tutorial notebooks failing to execute.** Seven of the fifteen notebooks
+  raised on execution, against removed API: `get_num_constraints()` /
+  `set_num_constraints()` (notebooks 02, 03, 09, 10, 11, 13),
+  `SymbolicLinkage.components` in place of `.joints` (05), and
+  `mechanism_to_linkage()` (10). Notebook 10 additionally described the
+  component/dyad `Linkage` as a "legacy" API throughout; the legacy API was
+  `pylinkage.joints`, which no longer exists. A `Notebooks` CI workflow now
+  executes every notebook on push and pull request.
+
 ## [1.1.0] - 2026-08-12
 
 ### Fixed

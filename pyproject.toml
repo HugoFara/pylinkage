@@ -53,6 +53,7 @@ full = [
     "ipywidgets>=8.0.0",
     "anywidget>=0.9.0",
     "drawsvg>=2.4.0",
+    "pymoo>=0.6.0",
 ]
 dev = [
     "pytest>=7.0.0",
