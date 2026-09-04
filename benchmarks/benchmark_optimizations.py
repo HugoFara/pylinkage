@@ -2,6 +2,14 @@
 """
 Benchmarks comparing original vs optimized geometry solvers.
 
+DEVELOPMENT EXPLORATION -- NOT A PUBLISHED FIGURE.
+
+The "optimized" variants here are reimplementations local to this file, kept
+to explore whether an approach was worth adopting. They are not the code
+pylinkage ships, so their numbers must not be quoted as library performance.
+For published figures see docs/source/benchmarks.md, produced by
+benchmarks/run_benchmarks.py.
+
 This script measures performance improvements from:
 1. Numba JIT compilation
 2. NumPy vectorization

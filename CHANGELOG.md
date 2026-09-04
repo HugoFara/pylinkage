@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Public benchmarks.** `docs/source/benchmarks.md` reports figures for the
+  numba solver, PSO throughput, and the three synthesis entry points, together
+  with the hardware they came from and the command that reproduces them. The
+  harness behind it is `benchmarks/run_benchmarks.py`, which measures the public
+  API only, takes the median of repeated runs, and discards warmup so numba's
+  one-off JIT compilation is not charged to steady-state figures. The
+  pre-existing scripts in `benchmarks/` are now marked as development
+  explorations, since two of them benchmark reimplementations and a
+  hypothetical joint rather than shipped code.
+
 - `pylinkage.dyads.to_mechanism()` is now public. It converts a component
   `Linkage` into a `Mechanism`, and previously existed only as
   `pylinkage.dyads._conversion.to_mechanism`, so it could not be used or

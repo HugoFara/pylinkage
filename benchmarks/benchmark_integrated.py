@@ -2,6 +2,13 @@
 """
 Integrated benchmarks showing real-world impact of optimizations.
 
+DEVELOPMENT EXPLORATION -- NOT A PUBLISHED FIGURE.
+
+This script benchmarks a *hypothetical* numba-optimized joint written inline
+below, not the joint pylinkage actually ships. Its numbers must not be quoted
+as library performance. For published figures see docs/source/benchmarks.md,
+produced by benchmarks/run_benchmarks.py.
+
 This script:
 1. Simulates what a numba-optimized Revolute joint would look like
 2. Compares optimization throughput with different approaches

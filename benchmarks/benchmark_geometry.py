@@ -2,6 +2,12 @@
 """
 Benchmarks for pylinkage geometry solvers.
 
+DEVELOPMENT EXPLORATION -- NOT A PUBLISHED FIGURE.
+
+Useful for spotting regressions in geometry primitives while working on them,
+but not curated for publication. For published figures see
+docs/source/benchmarks.md, produced by benchmarks/run_benchmarks.py.
+
 This script measures performance of:
 1. Individual geometry functions (circle_intersect, cyl_to_cart, etc.)
 2. Full linkage simulation
