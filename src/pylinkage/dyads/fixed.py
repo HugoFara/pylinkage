@@ -7,7 +7,7 @@ is deterministic (no ambiguity).
 
 from __future__ import annotations
 
-from ._base import BinaryDyad, Dyad, _AnchorProxy
+from ._base import BinaryDyad, Component, _AnchorProxy
 
 
 class FixedDyad(BinaryDyad):
@@ -46,8 +46,8 @@ class FixedDyad(BinaryDyad):
 
     def __init__(
         self,
-        anchor1: Dyad | _AnchorProxy,
-        anchor2: Dyad | _AnchorProxy,
+        anchor1: Component | _AnchorProxy,
+        anchor2: Component | _AnchorProxy,
         distance: float,
         angle: float,
         name: str | None = None,

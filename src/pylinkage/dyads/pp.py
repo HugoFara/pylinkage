@@ -10,10 +10,10 @@ from __future__ import annotations
 import math
 
 from .. import exceptions as pl_exceptions
-from ._base import ConnectedDyad, Dyad, _AnchorProxy
+from ._base import Component, ConnectedComponent, _AnchorProxy
 
 
-class PPDyad(ConnectedDyad):
+class PPDyad(ConnectedComponent):
     """PP Dyad - line-line intersection.
 
     Positions a joint at the intersection of two lines:
@@ -45,17 +45,17 @@ class PPDyad(ConnectedDyad):
 
     __slots__ = ("line1_anchor1", "line1_anchor2", "line2_anchor1", "line2_anchor2")
 
-    line1_anchor1: Dyad | _AnchorProxy
-    line1_anchor2: Dyad | _AnchorProxy
-    line2_anchor1: Dyad | _AnchorProxy
-    line2_anchor2: Dyad | _AnchorProxy
+    line1_anchor1: Component | _AnchorProxy
+    line1_anchor2: Component | _AnchorProxy
+    line2_anchor1: Component | _AnchorProxy
+    line2_anchor2: Component | _AnchorProxy
 
     def __init__(
         self,
-        line1_anchor1: Dyad | _AnchorProxy,
-        line1_anchor2: Dyad | _AnchorProxy,
-        line2_anchor1: Dyad | _AnchorProxy,
-        line2_anchor2: Dyad | _AnchorProxy,
+        line1_anchor1: Component | _AnchorProxy,
+        line1_anchor2: Component | _AnchorProxy,
+        line2_anchor1: Component | _AnchorProxy,
+        line2_anchor2: Component | _AnchorProxy,
         x: float | None = None,
         y: float | None = None,
         name: str | None = None,
@@ -82,7 +82,7 @@ class PPDyad(ConnectedDyad):
             self._initialize_position()
 
     @property
-    def anchors(self) -> tuple[Dyad, Dyad, Dyad, Dyad]:
+    def anchors(self) -> tuple[Component, Component, Component, Component]:
         """Return the parent dyads (four line anchors)."""
         return (
             self._resolve_anchor(self.line1_anchor1),
@@ -91,14 +91,14 @@ class PPDyad(ConnectedDyad):
             self._resolve_anchor(self.line2_anchor2),
         )
 
-    def _resolve_anchor(self, anchor: Dyad | _AnchorProxy) -> Dyad:
-        """Resolve an anchor reference to its Dyad."""
+    def _resolve_anchor(self, anchor: Component | _AnchorProxy) -> Component:
+        """Resolve an anchor reference to its Component."""
         if isinstance(anchor, _AnchorProxy):
             return anchor._parent
         return anchor
 
     def _get_anchor_position(
-        self, anchor: Dyad | _AnchorProxy
+        self, anchor: Component | _AnchorProxy
     ) -> tuple[float | None, float | None]:
         """Get the position of an anchor."""
         if isinstance(anchor, _AnchorProxy):
