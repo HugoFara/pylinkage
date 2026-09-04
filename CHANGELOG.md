@@ -46,6 +46,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Broken README links, on three surfaces at once.** The README linked to the
+  15 tutorial notebooks, `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` with
+  repository-relative paths. Those resolve only on GitHub: on the PyPI landing
+  page and in the rendered documentation they were dead. They are now absolute
+  GitHub URLs, matching how the README already linked its images. The in-page
+  `[tutorials](#tutorials)` link is fixed by enabling `myst_heading_anchors`,
+  so heading anchors resolve in the docs as they do on GitHub.
+
+- **The README was rendered twice in the documentation.** `index.rst` listed it
+  in the toctree *and* pulled it in again with `.. include::`, so the front page
+  duplicated the entire README and every warning it produced was counted twice.
+  The inline include is removed; the README remains as its own page, linked
+  first under Introduction. Docs build warnings drop from 76 to 38.
+
 - **Docstrings rendered wrongly in the API reference.** The codebase writes
   Google-style docstrings (`Args:`, `Returns:`, `Raises:`), but the docs never
   enabled `sphinx.ext.napoleon`, so every one of them was parsed as a

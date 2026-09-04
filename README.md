@@ -147,25 +147,25 @@ trajectories = compute_trajectory_numeric(linkage, params, np.linspace(0, 2*np.p
 
 ## Tutorials
 
-The [`docs/notebooks/`](docs/notebooks/) directory contains hands-on tutorials that walk through each major feature:
+The [`docs/notebooks/`](https://github.com/HugoFara/pylinkage/tree/main/docs/notebooks) directory contains hands-on tutorials that walk through each major feature:
 
 | # | Notebook | What you'll learn |
 |---|----------|-------------------|
-| 01 | [Straight-Line Synthesis](docs/notebooks/01_straight_line_synthesis.ipynb) | Design a mechanism that traces a straight line from scratch |
-| 02 | [Optimize a Coupler Curve](docs/notebooks/02_optimize_coupler_curve.ipynb) | Use PSO to shape a four-bar coupler path |
-| 03 | [Tolerance Analysis](docs/notebooks/03_tolerance_analysis.ipynb) | Monte Carlo analysis for manufacturing variation |
-| 04 | [Cam-Follower Timing](docs/notebooks/04_cam_follower_timing.ipynb) | Design cam profiles with motion laws |
-| 05 | [Symbolic Coupler Curve](docs/notebooks/05_symbolic_coupler_curve.ipynb) | Closed-form trajectory expressions with SymPy |
-| 06 | [Function Generation](docs/notebooks/06_function_generation.ipynb) | Match input/output angle relationships ([Freudenstein](https://en.wikipedia.org/wiki/Ferdinand_Freudenstein)) |
-| 07 | [Motion Generation](docs/notebooks/07_motion_generation.ipynb) | Guide a rigid body through specified poses ([Burmester](https://en.wikipedia.org/wiki/Burmester_theory)) |
-| 08 | [Velocity & Acceleration](docs/notebooks/08_velocity_acceleration.ipynb) | Compute joint velocities and accelerations |
-| 09 | [Transmission Angle & DOF](docs/notebooks/09_transmission_angle_and_dof.ipynb) | Evaluate mechanism quality and [mobility](https://en.wikipedia.org/wiki/Degree_of_freedom_(mechanics)) |
-| 10 | [Mechanism Builder](docs/notebooks/10_mechanism_builder.ipynb) | Link-first definition with `MechanismBuilder` |
-| 11 | [Multi-Objective Optimization](docs/notebooks/11_multi_objective_and_scipy_optimization.ipynb) | Pareto-optimal design with NSGA-II and scipy |
-| 12 | [Three Synthesis Problems](docs/notebooks/12_three_synthesis_problems.ipynb) | Side-by-side comparison of path, function, and motion synthesis |
-| 13 | [Population Abstractions](docs/notebooks/13_population_abstractions.ipynb) | Batch simulation, ranking, and filtering of mechanism families |
-| 14 | [Topology Enumeration](docs/notebooks/14_topology_enumeration_and_synthesis.ipynb) | Enumerate and synthesize across all valid topologies |
-| 15 | [Hypergraph Composition](docs/notebooks/15_hypergraph_composition.ipynb) | Compose mechanisms hierarchically from reusable hypergraph components |
+| 01 | [Straight-Line Synthesis](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/01_straight_line_synthesis.ipynb) | Design a mechanism that traces a straight line from scratch |
+| 02 | [Optimize a Coupler Curve](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/02_optimize_coupler_curve.ipynb) | Use PSO to shape a four-bar coupler path |
+| 03 | [Tolerance Analysis](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/03_tolerance_analysis.ipynb) | Monte Carlo analysis for manufacturing variation |
+| 04 | [Cam-Follower Timing](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/04_cam_follower_timing.ipynb) | Design cam profiles with motion laws |
+| 05 | [Symbolic Coupler Curve](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/05_symbolic_coupler_curve.ipynb) | Closed-form trajectory expressions with SymPy |
+| 06 | [Function Generation](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/06_function_generation.ipynb) | Match input/output angle relationships ([Freudenstein](https://en.wikipedia.org/wiki/Ferdinand_Freudenstein)) |
+| 07 | [Motion Generation](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/07_motion_generation.ipynb) | Guide a rigid body through specified poses ([Burmester](https://en.wikipedia.org/wiki/Burmester_theory)) |
+| 08 | [Velocity & Acceleration](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/08_velocity_acceleration.ipynb) | Compute joint velocities and accelerations |
+| 09 | [Transmission Angle & DOF](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/09_transmission_angle_and_dof.ipynb) | Evaluate mechanism quality and [mobility](https://en.wikipedia.org/wiki/Degree_of_freedom_(mechanics)) |
+| 10 | [Mechanism Builder](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/10_mechanism_builder.ipynb) | Link-first definition with `MechanismBuilder` |
+| 11 | [Multi-Objective Optimization](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/11_multi_objective_and_scipy_optimization.ipynb) | Pareto-optimal design with NSGA-II and scipy |
+| 12 | [Three Synthesis Problems](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/12_three_synthesis_problems.ipynb) | Side-by-side comparison of path, function, and motion synthesis |
+| 13 | [Population Abstractions](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/13_population_abstractions.ipynb) | Batch simulation, ranking, and filtering of mechanism families |
+| 14 | [Topology Enumeration](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/14_topology_enumeration_and_synthesis.ipynb) | Enumerate and synthesize across all valid topologies |
+| 15 | [Hypergraph Composition](https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/15_hypergraph_composition.ipynb) | Compose mechanisms hierarchically from reusable hypergraph components |
 
 ## What Else Can It Do?
 
@@ -216,4 +216,4 @@ Level 4: Applications   → Optimization, Synthesis, Symbolic, Visualization
 
 ## Contributing
 
-Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) and respect the [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+Contributions welcome! Please see [CONTRIBUTING.md](https://github.com/HugoFara/pylinkage/blob/main/CONTRIBUTING.md) and respect the [CODE_OF_CONDUCT.md](https://github.com/HugoFara/pylinkage/blob/main/CODE_OF_CONDUCT.md).

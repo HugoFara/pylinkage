@@ -36,8 +36,6 @@ Welcome to pylinkage's documentation!
    Get Support <https://github.com/HugoFara/pylinkage/issues>
    Code of Conduct <code_of_conductlink.rst>
 
-.. include:: readmelink.rst
-
 Indices and tables
 ==================
 
