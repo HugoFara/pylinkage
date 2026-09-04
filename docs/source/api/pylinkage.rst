@@ -7,28 +7,48 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pylinkage.collections
+   pylinkage.actuators
+   pylinkage.assur
+   pylinkage.bridge
+   pylinkage.cam
+   pylinkage.components
+   pylinkage.dyads
    pylinkage.geometry
-   pylinkage.joints
+   pylinkage.hypergraph
    pylinkage.linkage
+   pylinkage.mechanism
    pylinkage.optimization
+   pylinkage.population
+   pylinkage.simulation
+   pylinkage.solver
+   pylinkage.symbolic
+   pylinkage.synthesis
+   pylinkage.topology
    pylinkage.visualizer
 
 Submodules
 ----------
+
+pylinkage.dimensions module
+---------------------------
+
+.. automodule:: pylinkage.dimensions
+   :members:
+   :show-inheritance:
+   :undoc-members:
 
 pylinkage.exceptions module
 ---------------------------
 
 .. automodule:: pylinkage.exceptions
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: pylinkage
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

@@ -25,6 +25,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Stale API reference.** `docs/source/api/` was checked-in `sphinx-apidoc`
+  output that had not been regenerated since before 1.0. It documented three
+  modules that no longer exist — the legacy `pylinkage.joints` package removed
+  with the joints API, plus `pylinkage.collections` and
+  `pylinkage.linkage.linkage` — which failed to import on every docs build. More
+  importantly it covered only 6 of the package's 18 subpackages, so
+  `synthesis`, `mechanism`, `hypergraph`, `cam`, `symbolic`, `solver`,
+  `components`, `actuators`, `dyads`, `simulation`, `assur`, `bridge`,
+  `population` and `topology` had no API reference at all. Regenerated against
+  the current package.
+
 - **Type information was not exposed to users.** The package is fully
   annotated and passes `mypy --strict` on all 133 source files, but shipped no
   PEP 561 `py.typed` marker, so type checkers and editors in downstream
