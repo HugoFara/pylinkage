@@ -81,7 +81,7 @@ Classical synthesis entry points, timed end to end.
 | Measurement | Median | Unit | Spread | Notes |
 |---|---:|---|---:|---|
 | `function_generation()` | 0.09 | ms | 27.8% | 3 angle pairs (Freudenstein); 1 solution |
-| `path_generation()` | 1778.63 | ms | 8.2% | 4 precision points, 36 orientation samples; 10 solutions |
+| `path_generation()` | 1778.63 | ms | 8.2% | 4 precision points, `max_solutions=10`; 10 solutions |
 | `motion_generation()` | 0.69 | ms | 6.3% | 3 poses; 10 solutions |
 
 The three differ by four orders of magnitude, and the reason is structural
@@ -92,13 +92,58 @@ rather than incidental:
 - **`motion_generation()`** applies Burmester theory to a fixed set of poses. The
   work is bounded by the number of poses.
 - **`path_generation()`** has no prescribed timing, so coupler orientation at
-  each precision point is a free variable. It searches over
-  `n_orientation_samples` candidate orientations (36 by default) and runs
-  Burmester synthesis for each, which is why it costs **well over a second**.
+  each precision point is a free variable. It searches candidate orientations,
+  runs Burmester synthesis for each, and then **verifies every surviving
+  candidate by simulating it**, which is why it costs **well over a second**.
 
-That last figure is worth knowing before you call `path_generation()` in a loop
-or behind an interactive control. If you need it faster, lowering
-`n_orientation_samples` trades solution coverage for time roughly linearly.
+### Where `path_generation()` spends its time
+
+Cost depends strongly on *which* points you ask for, not just how many. Both of
+these are four precision points returning ten solutions:
+
+| Precision points | Time |
+|---|---:|
+| `[(0,0), (1,1), (2,1), (3,0)]` (the README example) | 336 ms |
+| `[(0,1), (1,2), (2,1.5), (3,0)]` (benchmarked above) | 1676 ms |
+
+Points that admit solutions early are found early, and the search stops. The
+table at the top of this section reports the slower of the two, so treat it as
+an upper bound rather than a typical figure.
+
+Profiled on the README's points, the time splits as:
+
+| Stage | Share |
+|---|---:|
+| Verifying candidates by simulation (`step()`, 300 steps each) | 67% |
+| Burmester synthesis | 21% |
+
+Verification dominates. The search itself is comparatively cheap.
+
+That is also why **`max_solutions`** (default 10) is the knob that controls the
+cost — the search stops as soon as it has that many confirmed solutions.
+Measured on the README's points:
+
+| `max_solutions` | Time | Solutions |
+|---|---:|---:|
+| 1 | 124 ms | 1 |
+| 5 | 284 ms | 5 |
+| 10 (default) | 338 ms | 10 |
+| 20 | 1181 ms | 20 |
+| `None` | 2316 ms | 79 |
+
+If you need `path_generation()` faster — in a loop, or behind an interactive
+control — lower `max_solutions`. Asking for one solution instead of ten is
+roughly a third of the cost.
+
+```{note}
+`n_orientation_samples` is **not** an effective control, despite its name and
+what earlier versions of this page claimed. Measured on the four precision
+points above, the values 6, 12, 36 and 72 all take the same time and return the
+same ten solutions; on other point sets, lowering it returns *fewer* solutions
+without being faster. The parameter sets a per-axis grid resolution that is
+floored at 6, so it has no effect across most of its useful range. This is
+tracked in [#29](https://github.com/HugoFara/pylinkage/issues/29).
+```
 
 ## What is not benchmarked here
 
