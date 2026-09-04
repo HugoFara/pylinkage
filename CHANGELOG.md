@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`step_fast()` silently returned NaN for every dyad except `RRRDyad`.**
+  `linkage_to_solver_data()` typed every dyad as `JOINT_REVOLUTE` and read
+  `distance1` / `distance2` off it. Only `RRRDyad` has those attributes, so a
+  `FixedDyad` — which has `distance` and `angle` — reached the solver as two
+  zero-radius circles that never intersect, and the joint plus everything
+  downstream of it came out `NaN`. No exception was raised: callers got a
+  full-shaped array of `NaN` where positions should be, while `step()`
+  computed the same mechanism correctly. Since a `FixedDyad` is how a traced
+  point is rigidly attached to a coupler link, this covered most mechanisms
+  worth simulating quickly, including everything `pylinkage.synthesis` emits.
+  The conversion now dispatches on the actual dyad class: `JOINT_FIXED` with
+  `(distance, angle)` for `FixedDyad`, `JOINT_PRISMATIC` with three parents for
+  `RRPDyad`, `JOINT_REVOLUTE` only for `RRRDyad`. Both were already implemented
+  in `solver/simulation.py` and simply unreachable. `PPDyad` and the cam
+  followers, which the solver cannot represent, now raise `NotImplementedError`
+  naming `step()` as the alternative rather than producing a wrong answer.
+  `update_solver_constraints()` shares the same table, so the two cannot drift.
+  `step()` and `step_fast()` now agree bit for bit on all three supported dyad
+  types, and are tested to.
+
+### Fixed
+
 - **The benchmarks page gave wrong advice about `path_generation()`.** It
   attributed the cost to the orientation sweep and said lowering
   `n_orientation_samples` trades coverage for time roughly linearly. Profiling
