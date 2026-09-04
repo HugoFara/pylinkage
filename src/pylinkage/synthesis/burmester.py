@@ -10,6 +10,7 @@ linkages that pass through a set of precision positions. The key concepts:
   fixed pivots (ground joints) of the linkage.
 
 For exact synthesis:
+
 - 3 positions: Every body-frame point is a valid circle point (∞ solutions)
 - 4 positions: Circle points form a curve (circular cubic); we find points
   where all 4 world positions are concyclic

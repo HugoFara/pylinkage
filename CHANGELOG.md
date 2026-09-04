@@ -35,6 +35,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Docstrings rendered wrongly in the API reference.** The codebase writes
+  Google-style docstrings (`Args:`, `Returns:`, `Raises:`), but the docs never
+  enabled `sphinx.ext.napoleon`, so every one of them was parsed as a
+  definition list: parameter descriptions were swallowed as stray indentation,
+  and `*args` / `**kwargs` were read as emphasis markup. Enabling napoleon
+  renders them as proper parameter tables. `napoleon_use_ivar` is set alongside
+  it so a documented attribute does not collide with the entry autodoc already
+  generates for the same dataclass field, and package-level `automodule`
+  directives are marked `:no-index:` so each object is indexed once rather than
+  once per re-export. Nine genuinely malformed docstrings were fixed by hand:
+  bullet lists and formula blocks missing their preceding blank line, isomer
+  signatures such as `RRT_` that RST read as link targets, and an empty
+  `Conversion:` section in `pylinkage.mechanism` left behind when the
+  mechanism/linkage conversion helpers were removed. Docs build warnings drop
+  from 496 to 76, with none remaining from docstrings.
+
 - **Stale API reference.** `docs/source/api/` was checked-in `sphinx-apidoc`
   output that had not been regenerated since before 1.0. It documented three
   modules that no longer exist — the legacy `pylinkage.joints` package removed

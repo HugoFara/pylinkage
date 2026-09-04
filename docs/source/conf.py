@@ -36,10 +36,19 @@ extensions = [
     # Use docstrings
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
+    # Parse Google-style docstrings ("Args:", "Returns:", "Raises:").
+    # Without this they are read as definition lists, and "*args"/"**kwargs"
+    # are read as emphasis markup.
+    "sphinx.ext.napoleon",
     # Useful for markdown integration
     "myst_parser",
     "sphinx.ext.githubpages",
 ]
+
+# Render "Attributes:" as :ivar: fields rather than standalone .. attribute::
+# directives. Without this, a documented attribute collides with the entry
+# autodoc already generates for the same dataclass field.
+napoleon_use_ivar = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

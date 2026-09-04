@@ -87,6 +87,7 @@ def symbolic_circle_intersect(
     which intersection point to return.
 
     Algorithm (Paul Bourke, 1997):
+
     - d = distance between centers
     - a = (r1^2 - r2^2 + d^2) / (2*d) : distance from center1 to radical line
     - h = sqrt(r1^2 - a^2) : half-chord length

@@ -167,7 +167,8 @@ def coefficients_to_link_lengths(
     Given R1, R2, R3 and choosing ground length d, solve for the
     link lengths a (crank), b (coupler), c (rocker).
 
-    The relationships are:
+    The relationships are::
+
         R1 = d/a  =>  a = d/R1
         R2 = d/c  =>  c = d/R2
         R3 = (a^2 - b^2 + c^2 + d^2) / (2*a*c)
