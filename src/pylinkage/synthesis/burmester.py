@@ -36,7 +36,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from ._types import ComplexPoint, Point2D, Pose
-from .core import BurmesterCurves, Dyad
+from .core import BurmesterCurves, BurmesterDyad
 
 if TYPE_CHECKING:
     pass
@@ -510,7 +510,7 @@ def select_compatible_dyads(
     ground_constraint: tuple[Point2D, Point2D] | None = None,
     ground_tolerance: float = 0.1,
     max_pairs: int | None = None,
-) -> list[tuple[Dyad, Dyad]]:
+) -> list[tuple[BurmesterDyad, BurmesterDyad]]:
     """Select pairs of dyads that form valid four-bar linkages.
 
     Two dyads form a valid four-bar if:
@@ -530,7 +530,7 @@ def select_compatible_dyads(
     Returns:
         List of (dyad_left, dyad_right) pairs forming valid 4-bars.
     """
-    dyad_pairs: list[tuple[Dyad, Dyad]] = []
+    dyad_pairs: list[tuple[BurmesterDyad, BurmesterDyad]] = []
 
     n = len(curves)
     if n < 2:

@@ -135,8 +135,10 @@ __all__ = [
     # Core classes
     "SynthesisProblem",
     "SynthesisResult",
-    "Dyad",
+    "BurmesterDyad",
     "BurmesterCurves",
+    # Deprecated alias, served by __getattr__ below.
+    "Dyad",
     # Main synthesis functions
     "function_generation",
     "verify_function_generation",
@@ -178,6 +180,7 @@ __all__ = [
 ]
 
 # Type definitions
+from .._deprecation import DeprecatedAlias, deprecated_getattr
 from ._types import (
     AnglePair,
     ComplexPoint,
@@ -213,7 +216,7 @@ from .conversion import (
 # Core classes
 from .core import (
     BurmesterCurves,
-    Dyad,
+    BurmesterDyad,
     SynthesisProblem,
     SynthesisResult,
 )
@@ -243,3 +246,18 @@ from .utils import (
     is_grashof,
     validate_fourbar,
 )
+
+_DEPRECATED = {
+    "Dyad": DeprecatedAlias(
+        value=BurmesterDyad,
+        replacement="pylinkage.synthesis.BurmesterDyad",
+        removed_in="2.0.0",
+        reason=(
+            "The class is a Burmester dyad specifically, and the bare name "
+            "collided with pylinkage.assur.Dyad, an Assur group, so "
+            "documentation cross-references resolved to the wrong class."
+        ),
+    ),
+}
+
+__getattr__ = deprecated_getattr(__name__, _DEPRECATED)

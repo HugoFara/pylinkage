@@ -15,7 +15,7 @@ from ._types import Point2D
 if TYPE_CHECKING:
     from ..simulation import Linkage
     from ..topology.catalog import CatalogEntry
-    from .core import Dyad
+    from .core import BurmesterDyad
 
 # A partition of precision point indices across Assur groups.
 # E.g., ((0, 1, 2), (3, 4)) assigns points 0-2 to group 0 and 3-4 to group 1.
@@ -37,7 +37,7 @@ class GroupSynthesisResult:
 
     group_index: int
     group_signature: str
-    dyads: tuple[Dyad, Dyad] | None = None
+    dyads: tuple[BurmesterDyad, BurmesterDyad] | None = None
     joint_positions: dict[str, Point2D] = field(default_factory=dict)
     precision_indices: tuple[int, ...] = ()
     residual: float = 0.0

@@ -212,8 +212,3 @@ class _AnchorProxy:
     def acceleration(self) -> tuple[float, float] | None:
         """Return the parent's acceleration."""
         return self._parent.acceleration
-
-
-# Backwards compatibility aliases
-Dyad = Component
-ConnectedDyad = ConnectedComponent

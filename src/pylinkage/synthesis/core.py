@@ -3,7 +3,7 @@
 This module provides the fundamental data structures for mechanism synthesis:
 - SynthesisProblem: Definition of a synthesis problem
 - SynthesisResult: Container for synthesis solutions
-- Dyad: A kinematic dyad from Burmester theory
+- BurmesterDyad: A kinematic dyad from Burmester theory
 - BurmesterCurves: Circle point and center point curves
 """
 
@@ -15,6 +15,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from numpy.typing import NDArray
 
+from .._deprecation import DeprecatedAlias, deprecated_getattr
 from ._types import (
     AnglePair,
     ComplexPoint,
@@ -178,7 +179,7 @@ class SynthesisResult:
 
 
 @dataclass(frozen=True, slots=True)
-class Dyad:
+class BurmesterDyad:
     """A kinematic dyad (two-link chain) from Burmester theory.
 
     In Burmester theory, a dyad connects a moving point on the coupler
@@ -256,25 +257,25 @@ class BurmesterCurves:
         """True if curves contain any points."""
         return len(self.circle_curve) > 0
 
-    def get_dyad(self, index: int) -> Dyad:
+    def get_dyad(self, index: int) -> BurmesterDyad:
         """Get dyad at specific parameter index.
 
         Args:
             index: Index into the curve arrays.
 
         Returns:
-            Dyad at the specified index.
+            BurmesterDyad at the specified index.
         """
-        return Dyad(
+        return BurmesterDyad(
             circle_point=self.circle_curve[index],
             center_point=self.center_curve[index],
         )
 
-    def get_all_dyads(self) -> list[Dyad]:
+    def get_all_dyads(self) -> list[BurmesterDyad]:
         """Get all dyads from the curves.
 
         Returns:
-            List of Dyad objects, one per curve point.
+            List of BurmesterDyad objects, one per curve point.
         """
         return [self.get_dyad(i) for i in range(len(self))]
 
@@ -313,3 +314,19 @@ class BurmesterCurves:
             parameter=self.parameter[finite_mask],
             is_discrete=self.is_discrete,
         )
+
+
+_DEPRECATED = {
+    "Dyad": DeprecatedAlias(
+        value=BurmesterDyad,
+        replacement="pylinkage.synthesis.BurmesterDyad",
+        removed_in="2.0.0",
+        reason=(
+            "The class is a Burmester dyad specifically, and the bare name "
+            "collided with pylinkage.assur.Dyad, an Assur group, so "
+            "documentation cross-references resolved to the wrong class."
+        ),
+    ),
+}
+
+__getattr__ = deprecated_getattr(__name__, _DEPRECATED)

@@ -13,6 +13,7 @@ Welcome to pylinkage's documentation!
    Readme <readmelink>
    changeloglink
    benchmarks
+   deprecations
 
 .. toctree::
    :maxdepth: 2
