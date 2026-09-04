@@ -48,6 +48,10 @@ extensions = [
 # Render "Attributes:" as :ivar: fields rather than standalone .. attribute::
 # directives. Without this, a documented attribute collides with the entry
 # autodoc already generates for the same dataclass field.
+# Generate anchors for h1-h3 headings, so in-page README links such as
+# "[tutorials](#tutorials)" resolve here as they do on GitHub.
+myst_heading_anchors = 3
+
 napoleon_use_ivar = True
 
 # Add any paths that contain templates here, relative to this directory.
