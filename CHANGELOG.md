@@ -105,6 +105,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   needed, since `[tool.hatch.build.targets.wheel]` already covers the whole
   package directory.
 
+- **The front-page example did not say what to install.** The first snippet in
+  the README — the one PyPI shows above the fold, and the one reported in #25 —
+  calls `path_generation()` and `show_linkage()`, which live behind the `scipy`
+  and `viz` extras. Every other example needing an extra said so; this one did
+  not, so after a plain `pip install pylinkage` it raised `ModuleNotFoundError`
+  before reaching any pylinkage code. It now names the install line it needs.
+
 - **Broken examples on the PyPI landing page.** Both README visualization
   snippets called `plot_kinematic_linkage(linkage)`, but that function takes
   `(linkage, fig, axis, loci)` and always has — the signature is identical in
