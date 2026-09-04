@@ -9,9 +9,11 @@ Notation:
     _ = Guide (rail/slot that slider moves along)
 
 The 12 isomers map to 3 geometry types:
-    - RRR: circle-circle intersection
-    - Circle-line isomers (RR_T, RRT_, RT_R, R_T_T, RT_T_, R_TT_, RT__T): RRPDyad
-    - Line-line isomers (T_R_T, T_RT_, _TRT_): PPDyad
+
+- ``RRR``: circle-circle intersection
+- Circle-line isomers (``RR_T``, ``RRT_``, ``RT_R``, ``R_T_T``, ``RT_T_``,
+  ``R_TT_``, ``RT__T``): RRPDyad
+- Line-line isomers (``T_R_T``, ``T_RT_``, ``_TRT_``): PPDyad
 """
 
 from __future__ import annotations

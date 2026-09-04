@@ -153,7 +153,7 @@ def solve_pp_dyad(
     A PP dyad consists of one internal node constrained to lie at the
     intersection of two lines. Each line is defined by two points.
 
-    This is used for isomers like T_R_T, T_RT_, _TRT_.
+    This is used for isomers like ``T_R_T``, ``T_RT_`` and ``_TRT_``.
 
     Args:
         line1_pos1: Position (x, y) of the first point on line 1.

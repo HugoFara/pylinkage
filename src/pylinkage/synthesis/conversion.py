@@ -122,6 +122,7 @@ def solution_to_linkage(
     """Convert a single FourBarSolution to a Linkage object.
 
     Creates a four-bar linkage with:
+
     - Two Ground components as ground pivots
     - One Crank as motor input
     - One RRRDyad connecting crank to rocker

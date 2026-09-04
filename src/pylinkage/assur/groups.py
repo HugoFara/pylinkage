@@ -136,6 +136,7 @@ class Dyad(AssurGroup):
         (joint_0)               (joint_1)                 (joint_2)
 
     For prismatic variants, additional line-defining nodes are stored:
+
     - RRP/RPR/PRR: one line defined by (line_node1, line_node2)
     - PP: two lines defined by (line_node1, line_node2) and
       (line2_node1, line2_node2)

@@ -33,7 +33,6 @@ Classes:
     Mechanism: The main orchestrator class
     MechanismBuilder: Links-first builder for creating mechanisms
 
-Conversion:
 Serialization:
     mechanism_to_dict: Serialize to dictionary
     mechanism_from_dict: Deserialize from dictionary

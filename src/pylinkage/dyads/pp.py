@@ -1,7 +1,8 @@
 """PPDyad - line-line intersection.
 
 A PP dyad consists of two prismatic constraints, positioning a joint
-at the intersection of two lines. This covers isomers like T_R_T, T_RT_, _TRT_.
+at the intersection of two lines. This covers isomers like ``T_R_T``,
+``T_RT_`` and ``_TRT_``.
 """
 
 from __future__ import annotations
