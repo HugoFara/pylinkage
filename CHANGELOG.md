@@ -25,6 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Type information was not exposed to users.** The package is fully
+  annotated and passes `mypy --strict` on all 133 source files, but shipped no
+  PEP 561 `py.typed` marker, so type checkers and editors in downstream
+  projects silently ignored every annotation and treated `pylinkage` as
+  untyped. The marker is now included in the wheel; no packaging change was
+  needed, since `[tool.hatch.build.targets.wheel]` already covers the whole
+  package directory.
+
 - **Broken examples on the PyPI landing page.** Both README visualization
   snippets called `plot_kinematic_linkage(linkage)`, but that function takes
   `(linkage, fig, axis, loci)` and always has — the signature is identical in
