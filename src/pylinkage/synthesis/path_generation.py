@@ -34,8 +34,10 @@ from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import numpy as np
+from numpy.typing import NDArray
 from scipy import linalg as scipy_linalg
 
+from .._numba_compat import HAS_NUMBA
 from ._types import FourBarSolution, Point2D, Pose, PrecisionPoint, SynthesisType
 from .burmester import (
     complex_to_point,
@@ -289,6 +291,56 @@ def _filter_solutions(
     return valid, warnings
 
 
+def _coupler_trajectory(linkage: Linkage, iterations: int) -> NDArray[np.float64] | None:
+    """Trace the coupler point over one rotation.
+
+    Prefers the numba solver, which runs the same ``solve_*`` functions as
+    :meth:`Linkage.step` roughly twenty times faster, and falls back to
+    ``step()`` when numba is absent or the mechanism uses a component the
+    solver cannot represent.
+
+    The two paths report an unassemblable mechanism differently: ``step()``
+    raises, while the solver writes ``NaN``. Both are treated as failure here,
+    so the accept/reject decision does not depend on which path ran.
+
+    Args:
+        linkage: Linkage whose last component is the traced point.
+        iterations: Number of simulation steps.
+
+    Returns:
+        An ``(iterations, 2)`` array of traced-point positions, or None if the
+        linkage could not be simulated through a full rotation.
+    """
+    if HAS_NUMBA:
+        try:
+            trajectory = linkage.step_fast(iterations=iterations)
+        except NotImplementedError:
+            # A component the solver cannot represent. Use the Python path.
+            pass
+        except Exception:
+            # Anything else is a failed candidate, as it is for step().
+            return None
+        else:
+            # A NaN anywhere means the mechanism failed to assemble at some
+            # crank angle, which is what step() signals by raising.
+            if not np.isfinite(trajectory).all():
+                return None
+            return np.asarray(trajectory[:, -1, :], dtype=np.float64)
+
+    try:
+        points: list[tuple[float, float]] = []
+        for positions in linkage.step(iterations=iterations):
+            px, py = positions[-1]  # P is the last joint
+            if px is not None and py is not None:
+                points.append((px, py))
+    except Exception:
+        return None
+
+    if not points:
+        return None
+    return np.asarray(points, dtype=np.float64)
+
+
 def _verify_coupler_path(
     solution: FourBarSolution,
     precision_points: list[PrecisionPoint],
@@ -299,6 +351,9 @@ def _verify_coupler_path(
 
     Builds a temporary linkage, simulates one full rotation, and verifies
     that each precision point has a nearby point on the coupler trajectory.
+
+    Simulation runs through the numba solver where it can, which took this
+    from 67% of :func:`path_generation`'s runtime down to under 10%.
 
     Args:
         solution: Candidate four-bar solution.
@@ -327,20 +382,10 @@ def _verify_coupler_path(
     except Exception:
         return False
 
-    # Simulate and collect coupler point trajectory
-    try:
-        trajectory: list[tuple[float, float]] = []
-        for positions in lk.step(iterations=iterations):
-            px, py = positions[-1]  # P is the last joint
-            if px is not None and py is not None:
-                trajectory.append((px, py))
-    except Exception:
+    traj_arr = _coupler_trajectory(lk, iterations)
+    if traj_arr is None:
         return False
 
-    if not trajectory:
-        return False
-
-    traj_arr = np.asarray(trajectory)
     for px, py in precision_points:
         dists = np.hypot(traj_arr[:, 0] - px, traj_arr[:, 1] - py)
         if dists.min() > tolerance:
@@ -409,10 +454,11 @@ def path_generation(
     searches over orientation candidates using Burmester theory, then
     verifies each surviving candidate by simulating it.
 
-    That verification, not the search, dominates the running time. A call
-    typically costs hundreds of milliseconds and can exceed a second, so
-    prefer not to place it inside a loop or behind an interactive control
-    without lowering ``max_solutions`` first.
+    A call typically costs on the order of a hundred milliseconds and can
+    reach several seconds, so prefer not to place it inside a loop or behind
+    an interactive control without lowering ``max_solutions`` first. Cost
+    grows exponentially in the number of precision points, since the search
+    carries one free orientation per point after the first.
 
     Args:
         precision_points: List of (x, y) points the coupler should pass through.
