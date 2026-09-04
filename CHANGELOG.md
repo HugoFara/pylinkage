@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The cited DOI pointed at 1.0.0 and would have gone stale every release.**
+  `CITATION.cff` and the README badge carried `10.5281/zenodo.21207487`, the
+  *version* DOI Zenodo minted for 1.0.0. Zenodo also mints a *concept* DOI per
+  project — `10.5281/zenodo.21207486` here — which never changes and always
+  resolves to the newest version. Both now cite that instead, so neither needs
+  touching at release time; the 1.0.0 version DOI is kept as a second
+  identifier, since anything already citing it should keep resolving.
+
+- **`CITATION.cff` was bumped by hand.** Its `version` and `date-released` were
+  not in the bump-my-version file list, so every release depended on
+  remembering to edit them. They are now bumped automatically, the date from
+  `{now}`. `CONTRIBUTING.md`'s release section is corrected to match, and gains
+  the `uv lock` step it was missing — `uv.lock` records the project version and
+  bump-my-version does not touch it.
+
 ### Added
 
 - **`pylinkage.synthesis.BurmesterDyad`**, the new name for what was

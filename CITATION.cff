@@ -11,6 +11,9 @@ version: 1.1.1
 date-released: "2026-09-04"
 identifiers:
   - type: doi
+    value: "10.5281/zenodo.21207486"
+    description: "Concept DOI, always resolving to the latest released version"
+  - type: doi
     value: "10.5281/zenodo.21207487"
     description: "Zenodo archive of pylinkage v1.0.0"
 license: MIT
