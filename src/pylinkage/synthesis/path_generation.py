@@ -406,7 +406,13 @@ def path_generation(
 
     For path generation without prescribed timing, the coupler
     orientation at each point is a free variable. This function
-    searches over orientation candidates using Burmester theory.
+    searches over orientation candidates using Burmester theory, then
+    verifies each surviving candidate by simulating it.
+
+    That verification, not the search, dominates the running time. A call
+    typically costs hundreds of milliseconds and can exceed a second, so
+    prefer not to place it inside a loop or behind an interactive control
+    without lowering ``max_solutions`` first.
 
     Args:
         precision_points: List of (x, y) points the coupler should pass through.
@@ -414,8 +420,15 @@ def path_generation(
         coupler_point_offset: Offset of traced point from coupler reference.
         ground_pivot_a: Optional fixed position for left ground pivot.
         ground_pivot_d: Optional fixed position for right ground pivot.
-        n_orientation_samples: Number of orientation samples to try.
+        n_orientation_samples: Requested resolution of the orientation search.
+            Note that this is currently a weak control: it sets a per-axis grid
+            resolution that is floored at 6, so values across most of its range
+            produce the same search. Prefer ``max_solutions`` to trade time
+            against coverage. See issue #29.
         max_solutions: Maximum number of solutions to return (None for all).
+            This is what governs the running time, since the search stops as
+            soon as it has this many *verified* solutions. Lowering it is the
+            effective way to make this function faster.
         require_grashof: If True, reject non-Grashof solutions.
         require_crank_rocker: If True, only accept crank-rocker type.
 

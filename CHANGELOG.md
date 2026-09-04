@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The benchmarks page gave wrong advice about `path_generation()`.** It
+  attributed the cost to the orientation sweep and said lowering
+  `n_orientation_samples` trades coverage for time roughly linearly. Profiling
+  shows neither is true: verifying candidates by simulation is 67% of the
+  runtime and Burmester synthesis only 21%, and `n_orientation_samples` is
+  close to inert — the values 6, 12, 36 and 72 take the same time and return
+  the same ten solutions on the README's points, because the per-axis grid
+  resolution it feeds is floored at 6. The real control is `max_solutions`,
+  measured from 124 ms at 1 solution to 2316 ms for all 79. The page and the
+  `path_generation()` docstring now say so, and the page notes that cost
+  depends heavily on which points are asked for: two four-point problems
+  returning ten solutions each measured 336 ms and 1676 ms. Tracked in #29.
+
+### Fixed
+
 - **The cited DOI pointed at 1.0.0 and would have gone stale every release.**
   `CITATION.cff` and the README badge carried `10.5281/zenodo.21207487`, the
   *version* DOI Zenodo minted for 1.0.0. Zenodo also mints a *concept* DOI per
