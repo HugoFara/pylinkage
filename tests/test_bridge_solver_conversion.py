@@ -15,10 +15,12 @@ from pylinkage.bridge import (
     update_solver_positions,
 )
 from pylinkage.components import Ground
-from pylinkage.dyads import FixedDyad, RRRDyad
+from pylinkage.dyads import FixedDyad, PPDyad, RRPDyad, RRRDyad
 from pylinkage.simulation import Linkage
 from pylinkage.solver.types import (
     JOINT_CRANK,
+    JOINT_FIXED,
+    JOINT_PRISMATIC,
     JOINT_REVOLUTE,
     JOINT_STATIC,
     SolverData,
@@ -58,6 +60,21 @@ def make_fourbar_with_fixed():
         name="fixed",
     )
     return Linkage([O1, O2, crank, rocker, fixed], name="FourBarFixed")
+
+
+def make_crank_slider():
+    A = Ground(0.0, 0.0, name="A")
+    L1 = Ground(0.0, -2.0, name="L1")
+    L2 = Ground(5.0, -2.0, name="L2")
+    crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="crank")
+    slider = RRPDyad(
+        revolute_anchor=crank.output,
+        line_anchor1=L1,
+        line_anchor2=L2,
+        distance=3.5,
+        name="slider",
+    )
+    return Linkage([A, L1, L2, crank, slider], name="CrankSlider")
 
 
 class TestLinkageToSolverData:
@@ -106,6 +123,60 @@ class TestLinkageToSolverData:
         linkage = make_fourbar_with_fixed()
         data = linkage_to_solver_data(linkage)
         assert data.positions.shape == (5, 2)
+
+    def test_fixed_dyad_keeps_its_own_joint_type(self):
+        """A FixedDyad is a polar projection, not a circle-circle intersection.
+
+        Typing it as JOINT_REVOLUTE made the solver intersect two circles of
+        radius zero, which never meet, so the joint came out NaN.
+        """
+        linkage = make_fourbar_with_fixed()
+        data = linkage_to_solver_data(linkage)
+        assert data.joint_types[4] == JOINT_FIXED
+
+    def test_fixed_dyad_carries_distance_and_angle(self):
+        """Its constraints are (distance, angle), not (distance1, distance2)."""
+        linkage = make_fourbar_with_fixed()
+        data = linkage_to_solver_data(linkage)
+        offset = data.constraint_offsets[4]
+        assert data.constraints[offset] == pytest.approx(0.5)
+        assert data.constraints[offset + 1] == pytest.approx(math.pi / 4)
+
+    def test_rrp_dyad_is_prismatic_with_three_parents(self):
+        """A slider needs a circle centre plus two points defining the line."""
+        linkage = make_crank_slider()
+        data = linkage_to_solver_data(linkage)
+        assert data.joint_types[4] == JOINT_PRISMATIC
+        assert (data.parent_indices[4] >= 0).sum() == 3
+
+    def test_rrp_dyad_carries_one_constraint(self):
+        linkage = make_crank_slider()
+        data = linkage_to_solver_data(linkage)
+        offset = data.constraint_offsets[4]
+        assert data.constraint_counts[4] == 1
+        assert data.constraints[offset] == pytest.approx(3.5)
+
+    def test_unsupported_dyad_raises(self):
+        """PPDyad has four anchors; MAX_PARENTS is three.
+
+        Emitting a wrong joint type for it would be silently wrong, so the
+        conversion refuses instead.
+        """
+        A = Ground(0.0, 0.0)
+        B = Ground(4.0, 0.0)
+        C = Ground(0.0, 1.0)
+        D = Ground(4.0, 3.0)
+        crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1)
+        pp = PPDyad(
+            line1_anchor1=crank.output,
+            line1_anchor2=B,
+            line2_anchor1=C,
+            line2_anchor2=D,
+        )
+        linkage = Linkage([A, B, C, D, crank, pp])
+
+        with pytest.raises(NotImplementedError, match="PPDyad"):
+            linkage_to_solver_data(linkage)
 
 
 class TestSolverDataToLinkage:
@@ -174,6 +245,14 @@ class TestUpdateSolverConstraints:
         offset = data.constraint_offsets[4]
         assert data.constraints[offset] == pytest.approx(0.75)
         assert data.constraints[offset + 1] == pytest.approx(1.0)
+
+    def test_update_rrp_dyad(self):
+        linkage = make_crank_slider()
+        data = linkage_to_solver_data(linkage)
+        linkage.components[4].distance = 4.25
+        update_solver_constraints(data, linkage)
+        offset = data.constraint_offsets[4]
+        assert data.constraints[offset] == pytest.approx(4.25)
 
 
 class TestUpdateSolverPositions:

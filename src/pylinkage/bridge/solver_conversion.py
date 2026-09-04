@@ -13,11 +13,56 @@ import numpy as np
 
 from ..solver.types import (
     JOINT_CRANK,
+    JOINT_FIXED,
+    JOINT_PRISMATIC,
     JOINT_REVOLUTE,
     JOINT_STATIC,
     MAX_PARENTS,
     SolverData,
 )
+
+# How each dyad class maps onto the solver's numeric representation:
+# the joint type, the attributes holding its anchors (in the parent order the
+# solver expects), and the attributes holding its constraint values.
+#
+# Every dyad recognised by ``_compat.is_dyad`` must either appear here or be
+# rejected by ``_dyad_spec`` below. Silently treating one as another produces a
+# trajectory of NaN rather than an error, which is how ``FixedDyad`` went
+# unnoticed: it has ``distance``/``angle``, so reading ``distance1``/
+# ``distance2`` off it yielded two zero-radius circles that never intersect.
+_DYAD_SOLVER_SPECS: dict[str, tuple[int, tuple[str, ...], tuple[str, ...]]] = {
+    "RRRDyad": (JOINT_REVOLUTE, ("anchor1", "anchor2"), ("distance1", "distance2")),
+    "BinaryDyad": (JOINT_REVOLUTE, ("anchor1", "anchor2"), ("distance1", "distance2")),
+    "FixedDyad": (JOINT_FIXED, ("anchor1", "anchor2"), ("distance", "angle")),
+    "RRPDyad": (
+        JOINT_PRISMATIC,
+        ("revolute_anchor", "line_anchor1", "line_anchor2"),
+        ("distance",),
+    ),
+}
+
+
+def _dyad_spec(part: Any) -> tuple[int, tuple[str, ...], tuple[str, ...]]:
+    """Return the solver representation for a dyad.
+
+    Args:
+        part: The dyad component to represent.
+
+    Returns:
+        Its ``(joint_type, anchor_attrs, constraint_attrs)`` triple.
+
+    Raises:
+        NotImplementedError: If the numba solver cannot represent this dyad.
+    """
+    name = type(part).__name__
+    spec = _DYAD_SOLVER_SPECS.get(name)
+    if spec is None:
+        raise NotImplementedError(
+            f"The numba solver cannot represent {name}. Use Linkage.step() "
+            f"instead of step_fast() for this mechanism. Supported dyads: "
+            f"{', '.join(sorted(_DYAD_SOLVER_SPECS))}."
+        )
+    return spec
 
 
 def linkage_to_solver_data(linkage: Any) -> SolverData:
@@ -84,8 +129,9 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
             counts.append(2)
 
         elif is_dyad(part):
-            joint_types[i] = JOINT_REVOLUTE
-            for p_idx, attr in enumerate(("anchor1", "anchor2")):
+            joint_type, anchor_attrs, constraint_attrs = _dyad_spec(part)
+            joint_types[i] = joint_type
+            for p_idx, attr in enumerate(anchor_attrs):
                 parent = getattr(part, attr, None)
                 if parent is None:
                     continue
@@ -94,11 +140,10 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
                 idx = part_to_idx.get(id(actual))
                 if idx is not None:
                     parent_indices[i, p_idx] = idx
-            d1 = getattr(part, "distance1", 0.0)
-            d2 = getattr(part, "distance2", 0.0)
-            constraints_list.append(d1)
-            constraints_list.append(d2)
-            counts.append(2)
+            for attr in constraint_attrs:
+                value = getattr(part, attr, None)
+                constraints_list.append(float(value) if value is not None else 0.0)
+            counts.append(len(constraint_attrs))
 
         else:
             joint_types[i] = JOINT_STATIC
@@ -297,21 +342,12 @@ def update_solver_constraints(data: SolverData, linkage: Any) -> None:
             data.constraints[offset] = radius if radius is not None else 0.0
             data.constraints[offset + 1] = omega if omega is not None else 0.0
 
-        elif name == "RRRDyad":
-            d1 = getattr(part, "distance1", 0.0)
-            d2 = getattr(part, "distance2", 0.0)
-            data.constraints[offset] = d1 if d1 is not None else 0.0
-            data.constraints[offset + 1] = d2 if d2 is not None else 0.0
-
-        elif name == "FixedDyad":
-            r = getattr(part, "distance", 0.0)
-            a = getattr(part, "angle", 0.0)
-            data.constraints[offset] = r if r is not None else 0.0
-            data.constraints[offset + 1] = a if a is not None else 0.0
-
-        elif name == "RRPDyad":
-            rr = getattr(part, "distance1", 0.0)
-            data.constraints[offset] = rr if rr is not None else 0.0
+        elif name in _DYAD_SOLVER_SPECS:
+            # Same spec as linkage_to_solver_data, so the two cannot drift.
+            _, _, constraint_attrs = _DYAD_SOLVER_SPECS[name]
+            for k, attr in enumerate(constraint_attrs):
+                value = getattr(part, attr, None)
+                data.constraints[offset + k] = float(value) if value is not None else 0.0
 
 
 def update_solver_positions(data: SolverData, linkage: Any) -> None:
