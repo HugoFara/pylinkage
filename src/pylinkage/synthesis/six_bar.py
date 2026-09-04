@@ -36,6 +36,7 @@ from .path_generation import (
     _dyads_to_fourbar,
     _filter_solutions,
     _generate_orientation_candidates,
+    _legacy_orientation_args,
     _points_to_poses,
     _remove_duplicate_solutions,
 )
@@ -159,8 +160,14 @@ def _watt_synthesis(
         stage2_points = [precision_points[i] for i in stage2_indices]
 
         # Try multiple orientation candidates for stage 1
+        # This caller uses n_orientation_samples as a candidate budget, which
+        # it enforces with its own counter below; the translation preserves the
+        # grid it used to search.
+        _resolution, _perturbations = _legacy_orientation_args(
+            n_orientation_samples, len(stage1_points)
+        )
         orientation_gen = _generate_orientation_candidates(
-            stage1_points, n_samples=n_orientation_samples
+            stage1_points, resolution=_resolution, n_perturbations=_perturbations
         )
 
         orientations_tried = 0
@@ -269,8 +276,11 @@ def _stephenson_synthesis(
         stage1_points = [precision_points[i] for i in stage1_indices]
         stage2_points = [precision_points[i] for i in stage2_indices]
 
+        _resolution, _perturbations = _legacy_orientation_args(
+            min(n_orientation_samples, 12), len(stage1_points)
+        )
         for orientations in _generate_orientation_candidates(
-            stage1_points, n_samples=min(n_orientation_samples, 12)
+            stage1_points, resolution=_resolution, n_perturbations=_perturbations
         ):
             if len(all_solutions) >= max_solutions:
                 break

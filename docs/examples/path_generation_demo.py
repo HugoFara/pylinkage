@@ -121,7 +121,7 @@ def demo_walking_mechanism():
         precision_points,
         max_solutions=10,
         require_grashof=True,
-        n_orientation_samples=48,  # More samples for better coverage
+        orientation_resolution=8,  # Finer orientation grid, for coverage
     )
 
     print(f"\nFound {len(result)} walking mechanism solution(s)")
@@ -169,7 +169,7 @@ def demo_straight_line_approximation():
         precision_points,
         max_solutions=5,
         require_grashof=False,  # Accept all Grashof types
-        n_orientation_samples=72,
+        orientation_resolution=8,
     )
 
     print(f"\nFound {len(result)} straight-line approximation(s)")

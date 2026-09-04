@@ -31,7 +31,9 @@ from __future__ import annotations
 
 import math
 from collections.abc import Generator
+from itertools import product
 from typing import TYPE_CHECKING
+from warnings import warn
 
 import numpy as np
 from numpy.typing import NDArray
@@ -49,6 +51,15 @@ from .utils import GrashofType, grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
     from ..simulation import Linkage
+
+#: Angles sampled per free orientation. The grid holds this many raised to the
+#: power of (precision points - 1), so raising it is expensive quickly.
+DEFAULT_ORIENTATION_RESOLUTION = 6
+
+#: Hard ceiling on grid candidates, so that six or more precision points cannot
+#: run unbounded. It does not bind for three to five points at the default
+#: resolution, which is the documented working range.
+MAX_ORIENTATION_CANDIDATES = 1296
 
 
 def _estimate_orientations_from_path(
@@ -83,9 +94,30 @@ def _estimate_orientations_from_path(
     return orientations
 
 
+def _legacy_orientation_args(n_samples: int, n_points: int) -> tuple[int, int]:
+    """Translate the retired ``n_orientation_samples`` into its real effect.
+
+    ``n_orientation_samples`` never denoted a number of samples. It was fed
+    through ``max(6, round(n_samples ** (1 / free)))`` to obtain a per-axis grid
+    resolution, and separately through ``max(6, n_samples // 3)`` to size the
+    perturbation sweep. This reproduces both exactly, so a caller passing the
+    old argument gets the search it always got.
+
+    Args:
+        n_samples: The legacy ``n_orientation_samples`` value.
+        n_points: Number of precision points in the problem.
+
+    Returns:
+        The equivalent ``(resolution, n_perturbations)`` pair.
+    """
+    free = max(n_points - 1, 1)
+    return max(6, int(round(n_samples ** (1.0 / free)))), max(6, n_samples // 3)
+
+
 def _generate_orientation_candidates(
     points: list[PrecisionPoint],
-    n_samples: int = 36,
+    resolution: int = DEFAULT_ORIENTATION_RESOLUTION,
+    n_perturbations: int = 12,
     perturbation_range: float = math.pi / 3,
 ) -> Generator[list[float], None, None]:
     """Generate candidate orientation sequences for precision points.
@@ -96,11 +128,15 @@ def _generate_orientation_candidates(
 
     The search fixes the first orientation (a reference frame choice)
     and varies the remaining orientations independently, since each
-    precision point can have a completely different coupler angle.
+    precision point can have a completely different coupler angle. The grid
+    therefore holds ``resolution ** (len(points) - 1)`` candidates: cost grows
+    exponentially in the number of precision points.
 
     Args:
         points: List of precision points.
-        n_samples: Number of samples per point.
+        resolution: Number of angles sampled per free orientation.
+        n_perturbations: Size of the uniform perturbation sweep around the
+            base estimate.
         perturbation_range: Range of perturbation around base estimate.
 
     Yields:
@@ -113,34 +149,23 @@ def _generate_orientation_candidates(
     yield base_orientations
 
     # --- Independent orientation search ---
-    # Fix first orientation (reference) and search the rest over
-    # the full circle.  For 3 points this is a 2-D grid; for more
-    # points the grid grows, so we use a coarser per-axis resolution.
+    # Fix the first orientation (a reference frame choice) and sweep the rest
+    # over the full circle. Enumeration order does not matter: coarse-to-fine
+    # and shuffled orderings were measured against this one and found neither
+    # faster nor more productive, so solutions are spread evenly through the
+    # grid rather than clustered.
     free = n - 1  # number of free orientations (first is fixed)
     if free > 0:
-        per_axis = max(6, int(round(n_samples ** (1.0 / free))))
-        angle_grid = np.linspace(-math.pi, math.pi, per_axis, endpoint=False)
+        angle_grid = np.linspace(-math.pi, math.pi, resolution, endpoint=False)
 
-        if free == 1:
-            for a in angle_grid:
-                yield [base_orientations[0], a]
-        elif free == 2:
-            for a in angle_grid:
-                for b in angle_grid:
-                    yield [base_orientations[0], a, b]
-        else:
-            # For 4+ points, combine a coarse independent grid with
-            # random samples to keep the count manageable.
-            from itertools import product as _product
-
-            for count, combo in enumerate(_product(angle_grid, repeat=free)):
-                yield [base_orientations[0], *combo]
-                if count + 1 >= n_samples * n_samples:
-                    break
+        for count, combo in enumerate(product(angle_grid, repeat=free)):
+            yield [base_orientations[0], *combo]
+            if count + 1 >= MAX_ORIENTATION_CANDIDATES:
+                break
 
     # Uniform perturbations (original strategy, still useful)
     deltas = np.linspace(
-        -perturbation_range, perturbation_range, max(6, n_samples // 3), endpoint=True
+        -perturbation_range, perturbation_range, n_perturbations, endpoint=True
     )
     for delta in deltas:
         if abs(delta) < 1e-10:
@@ -439,10 +464,12 @@ def path_generation(
     coupler_point_offset: tuple[float, float] = (0.0, 0.0),
     ground_pivot_a: Point2D | None = None,
     ground_pivot_d: Point2D | None = None,
-    n_orientation_samples: int = 36,
+    n_orientation_samples: int | None = None,
     max_solutions: int | None = 10,
     require_grashof: bool = True,
     require_crank_rocker: bool = False,
+    *,
+    orientation_resolution: int = DEFAULT_ORIENTATION_RESOLUTION,
 ) -> SynthesisResult:
     """Synthesize a four-bar for path generation.
 
@@ -466,17 +493,20 @@ def path_generation(
         coupler_point_offset: Offset of traced point from coupler reference.
         ground_pivot_a: Optional fixed position for left ground pivot.
         ground_pivot_d: Optional fixed position for right ground pivot.
-        n_orientation_samples: Requested resolution of the orientation search.
-            Note that this is currently a weak control: it sets a per-axis grid
-            resolution that is floored at 6, so values across most of its range
-            produce the same search. Prefer ``max_solutions`` to trade time
-            against coverage. See issue #29.
+        n_orientation_samples: Deprecated, removed in 2.0.0. It never denoted
+            a number of samples; use ``orientation_resolution`` instead. A
+            value given here is translated to the search it used to produce.
         max_solutions: Maximum number of solutions to return (None for all).
             This is what governs the running time, since the search stops as
             soon as it has this many *verified* solutions. Lowering it is the
             effective way to make this function faster.
         require_grashof: If True, reject non-Grashof solutions.
         require_crank_rocker: If True, only accept crank-rocker type.
+        orientation_resolution: Angles sampled per free orientation. The grid
+            holds ``orientation_resolution ** (len(precision_points) - 1)``
+            candidates, so raising this is exponentially expensive. Lowering it
+            is rarely a good trade: a coarser grid tends to return no solutions
+            at all rather than fewer. Use ``max_solutions`` to control cost.
 
     Returns:
         SynthesisResult containing valid linkages.
@@ -497,6 +527,20 @@ def path_generation(
 
     warnings: list[str] = []
     raw_solutions: list[FourBarSolution] = []
+
+    n_perturbations = 12
+    if n_orientation_samples is not None:
+        warn(
+            "n_orientation_samples is deprecated and will be removed in "
+            "pylinkage 2.0.0; use orientation_resolution instead. It never "
+            "denoted a number of samples: it was folded into a per-axis grid "
+            "resolution floored at 6, so most values produced the same search.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        orientation_resolution, n_perturbations = _legacy_orientation_args(
+            n_orientation_samples, len(precision_points)
+        )
 
     n_points = len(precision_points)
 
@@ -521,9 +565,27 @@ def path_generation(
     if ground_pivot_a is not None and ground_pivot_d is not None:
         ground_constraint = (ground_pivot_a, ground_pivot_d)
 
+    # Cost is exponential in the number of precision points: one free
+    # orientation per point after the first. Five points already reach a
+    # four-dimensional grid, which can run for seconds and still find nothing,
+    # and nothing in the signature hints at that.
+    grid_size = orientation_resolution ** max(n_points - 1, 1)
+    if grid_size >= 1000:
+        cost = (
+            f"Path generation over {n_points} precision points searches up to "
+            f"{min(grid_size, MAX_ORIENTATION_CANDIDATES)} orientation "
+            f"candidates and may take several seconds. Cost grows "
+            f"exponentially with the number of precision points; three or four "
+            f"is the practical range."
+        )
+        warn(cost, UserWarning, stacklevel=2)
+        warnings.append(cost)
+
     # Search over orientation candidates
     orientation_gen = _generate_orientation_candidates(
-        precision_points, n_samples=n_orientation_samples
+        precision_points,
+        resolution=orientation_resolution,
+        n_perturbations=n_perturbations,
     )
 
     # The coupler point is the first precision point — it's the

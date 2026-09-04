@@ -19,6 +19,7 @@ from .path_generation import (
     _dyads_to_fourbar,
     _filter_solutions,
     _generate_orientation_candidates,
+    _legacy_orientation_args,
     _points_to_poses,
 )
 from .topology_types import GroupSynthesisResult, NBarSolution, PointPartition
@@ -93,8 +94,11 @@ def generalized_synthesis(
 
         # Try a few orientation candidates
         first_group_points = [precision_points[i] for i in partition[0]]
+        _resolution, _perturbations = _legacy_orientation_args(
+            min(n_orientation_samples, 12), len(first_group_points)
+        )
         orientations_gen = _generate_orientation_candidates(
-            first_group_points, n_samples=min(n_orientation_samples, 12)
+            first_group_points, resolution=_resolution, n_perturbations=_perturbations
         )
 
         for orientations_tried, orientations in enumerate(orientations_gen):
@@ -500,10 +504,13 @@ def _synthesize_fourbar_as_nbar(
 
     # Use a higher internal search limit — path_generation's max_solutions
     # controls the search breadth, not just the output count.
+    _resolution, _perturbations = _legacy_orientation_args(
+        n_orientation_samples, len(precision_points)
+    )
     result = path_generation(
         precision_points,
         max_solutions=max(max_solutions, 10),
-        n_orientation_samples=n_orientation_samples,
+        orientation_resolution=_resolution,
     )
 
     nbar_solutions: list[NBarSolution] = []

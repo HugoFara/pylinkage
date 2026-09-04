@@ -7,7 +7,7 @@ import numpy as np
 from pylinkage.synthesis._types import DyadSolution, SynthesisType
 from pylinkage.synthesis.core import (
     BurmesterCurves,
-    Dyad,
+    BurmesterDyad,
     SynthesisProblem,
 )
 
@@ -50,23 +50,23 @@ class TestSynthesisProblemNumPrecision(unittest.TestCase):
 
 
 class TestDyad(unittest.TestCase):
-    """Test Dyad dataclass (lines 137, 145, 152)."""
+    """Test BurmesterDyad dataclass (lines 137, 145, 152)."""
 
     def test_link_length(self):
         """link_length should return distance between circle and center (line 137)."""
-        dyad = Dyad(circle_point=complex(3, 4), center_point=complex(0, 0))
+        dyad = BurmesterDyad(circle_point=complex(3, 4), center_point=complex(0, 0))
         self.assertAlmostEqual(dyad.link_length, 5.0)
 
     def test_to_cartesian(self):
         """to_cartesian should convert to (x,y) tuples (line 145)."""
-        dyad = Dyad(circle_point=complex(1, 2), center_point=complex(3, 4))
+        dyad = BurmesterDyad(circle_point=complex(1, 2), center_point=complex(3, 4))
         cp, cenp = dyad.to_cartesian()
         self.assertEqual(cp, (1.0, 2.0))
         self.assertEqual(cenp, (3.0, 4.0))
 
     def test_to_dyad_solution(self):
         """to_dyad_solution should return DyadSolution (line 152)."""
-        dyad = Dyad(circle_point=complex(1, 2), center_point=complex(3, 4))
+        dyad = BurmesterDyad(circle_point=complex(1, 2), center_point=complex(3, 4))
         sol = dyad.to_dyad_solution()
         self.assertIsInstance(sol, DyadSolution)
         self.assertEqual(sol.circle_point, complex(1, 2))
@@ -90,7 +90,7 @@ class TestBurmesterCurves(unittest.TestCase):
         curves = self._make_curves(5)
         dyads = curves.get_all_dyads()
         self.assertEqual(len(dyads), 5)
-        self.assertIsInstance(dyads[0], Dyad)
+        self.assertIsInstance(dyads[0], BurmesterDyad)
 
     def test_sample_continuous_downsamples(self):
         """sample() on continuous curve should downsample (lines 226-230)."""
@@ -141,10 +141,10 @@ class TestBurmesterCurves(unittest.TestCase):
         self.assertFalse(curves)
 
     def test_get_dyad(self):
-        """get_dyad should return a single Dyad."""
+        """get_dyad should return a single BurmesterDyad."""
         curves = self._make_curves(5)
         dyad = curves.get_dyad(2)
-        self.assertIsInstance(dyad, Dyad)
+        self.assertIsInstance(dyad, BurmesterDyad)
         self.assertEqual(dyad.circle_point, curves.circle_curve[2])
         self.assertEqual(dyad.center_point, curves.center_curve[2])
 
