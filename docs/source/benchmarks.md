@@ -31,8 +31,8 @@ Treat the ratios as meaningful and the absolute values as indicative.
 |---|---|
 | pylinkage | 1.1.0 |
 | python | 3.11.14 |
-| platform | Linux-7.1.12-200.fc44.x86_64-x86_64-with-glibc2.43 |
-| cpu | AMD Ryzen 7 7840U w/ Radeon 780M Graphics |
+| platform | Linux-7.1 |
+| cpu | AMD Ryzen 7 7840U |
 | numpy | 2.4.6 |
 | numba | 0.66.0 |
 | scipy | 1.17.1 |

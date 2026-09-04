@@ -318,13 +318,41 @@ def bench_synthesis(repeats: int) -> Suite:
 
 
 def _cpu_model() -> str:
-    """Best-effort CPU model name, since platform.processor() is often empty."""
+    """Coarse CPU model name.
+
+    Deliberately imprecise: enough to interpret a figure, not enough to
+    fingerprint the machine it came from. Integrated-graphics and clock-speed
+    suffixes are dropped, since they identify a specific unit without helping a
+    reader judge the numbers.
+    """
+    raw = ""
     cpuinfo = Path("/proc/cpuinfo")
     if cpuinfo.exists():
         for line in cpuinfo.read_text().splitlines():
             if line.startswith("model name"):
-                return line.split(":", 1)[1].strip()
-    return platform.processor() or "unknown"
+                raw = line.split(":", 1)[1].strip()
+                break
+    raw = raw or platform.processor()
+    if not raw:
+        return "unknown"
+
+    # "AMD Ryzen 7 7840U w/ Radeon 780M Graphics" -> "AMD Ryzen 7 7840U"
+    # "Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz" -> "Intel Core i7-9750H CPU"
+    raw = raw.split(" w/ ")[0].split(" @ ")[0]
+    raw = raw.replace("(R)", "").replace("(TM)", "")
+    return " ".join(raw.split())
+
+
+def _platform_summary() -> str:
+    """Coarse OS identifier, e.g. ``Linux-7.1``.
+
+    ``platform.platform()`` embeds the full kernel build, distribution tag and
+    libc version, which pins down a specific installation. The major.minor
+    kernel version carries the part a reader actually needs.
+    """
+    release = platform.release()
+    short = ".".join(release.split(".")[:2])
+    return f"{platform.system()}-{short}" if short else platform.system()
 
 
 def _version(package: str) -> str:
@@ -335,12 +363,33 @@ def _version(package: str) -> str:
         return "not installed"
 
 
+def _pylinkage_version() -> str:
+    """Version of the pylinkage actually imported.
+
+    Deliberately not ``metadata.version("pylinkage")``. Distribution metadata is
+    resolved along ``sys.path``, so a stale ``pylinkage.egg-info`` left in the
+    working directory by an old build shadows the installed distribution and
+    reports its version instead -- which would silently mislabel every figure on
+    the published page. ``__version__`` comes from the module that was imported
+    and therefore benchmarked.
+    """
+    import pylinkage
+
+    version = getattr(pylinkage, "__version__", "")
+    return str(version) if version else _version("pylinkage")
+
+
 def describe_environment() -> dict[str, str]:
-    """Capture everything needed to interpret or reproduce the numbers."""
+    """Capture what is needed to interpret or reproduce the numbers.
+
+    Host details are reported coarsely on purpose: this output is pasted into
+    published documentation, so it should not carry more about the machine than
+    a reader needs.
+    """
     return {
-        "pylinkage": _version("pylinkage"),
+        "pylinkage": _pylinkage_version(),
         "python": platform.python_version(),
-        "platform": platform.platform(),
+        "platform": _platform_summary(),
         "cpu": _cpu_model(),
         "numpy": _version("numpy"),
         "numba": _version("numba"),
