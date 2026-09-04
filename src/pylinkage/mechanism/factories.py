@@ -30,22 +30,25 @@ def fourbar(
     Ground pivots are placed at ``A = (0, 0)`` and ``D = (ground, 0)``.
     The crank rotates about ``A`` and the rocker oscillates about ``D``.
 
-    :param crank: Crank length (link a, ``A``-``B``).
-    :param coupler: Coupler length (link b, ``B``-``C``).
-    :param rocker: Rocker length (link c, ``C``-``D``).
-    :param ground: Ground link length (link d, ``A``-``D``).
-    :param omega: Driver angular velocity, in rad/step.
-    :param initial_angle: Starting crank angle, in radians.
-    :param branch: ``0`` or ``1`` — which of the two circle-circle
-        intersections to pick for the coupler-rocker joint. Branch
-        ``1`` (default) is the upper (positive y) configuration,
-        matching ``synthesis.fourbar_from_lengths``.
-    :param name: Name of the resulting mechanism.
+    Args:
+        crank: Crank length (link a, ``A``-``B``).
+        coupler: Coupler length (link b, ``B``-``C``).
+        rocker: Rocker length (link c, ``C``-``D``).
+        ground: Ground link length (link d, ``A``-``D``).
+        omega: Driver angular velocity, in rad/step.
+        initial_angle: Starting crank angle, in radians.
+        branch: ``0`` or ``1`` — which of the two circle-circle
+            intersections to pick for the coupler-rocker joint. Branch
+            ``1`` (default) is the upper (positive y) configuration,
+            matching ``synthesis.fourbar_from_lengths``.
+        name: Name of the resulting mechanism.
 
-    :returns: An assembled :class:`Mechanism`.
+    Returns:
+        An assembled :class:`Mechanism`.
 
-    :raises pylinkage.exceptions.UnbuildableError: if the link lengths
-        cannot form a closed loop at ``initial_angle``.
+    Raises:
+        pylinkage.exceptions.UnbuildableError: if the link lengths
+            cannot form a closed loop at ``initial_angle``.
 
     Example:
         >>> from pylinkage.mechanism import fourbar
@@ -82,15 +85,17 @@ def slider_crank(
     of length ``rod`` whose far end slides along the line through
     ``slide_through`` in direction ``slide_direction``.
 
-    :param crank: Crank length.
-    :param rod: Connecting rod length.
-    :param omega: Driver angular velocity, in rad/step.
-    :param initial_angle: Starting crank angle, in radians.
-    :param slide_through: A point the slide axis passes through.
-    :param slide_direction: Direction vector of the slide axis.
-    :param name: Name of the resulting mechanism.
+    Args:
+        crank: Crank length.
+        rod: Connecting rod length.
+        omega: Driver angular velocity, in rad/step.
+        initial_angle: Starting crank angle, in radians.
+        slide_through: A point the slide axis passes through.
+        slide_direction: Direction vector of the slide axis.
+        name: Name of the resulting mechanism.
 
-    :returns: An assembled :class:`Mechanism`.
+    Returns:
+        An assembled :class:`Mechanism`.
 
     Example:
         >>> from pylinkage.mechanism import slider_crank

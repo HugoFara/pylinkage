@@ -27,15 +27,17 @@ def generate_bounds(
 ) -> tuple[NDArray[np.floating], NDArray[np.floating]]:
     """Simple function to generate bounds from a linkage.
 
-    :param center: 1-D sequence, often in the form of ``linkage.get_constraints()``.
-    :param min_ratio: Minimal compression ratio for the bounds. Minimal bounds will be of the
-        shape center[x] / min_ratio.
-        (Default value = 5).
-    :param max_factor: Dilation factor for the upper bounds. Maximal bounds will be of the
-        shape center[x] * max_factor.
-        (Default value = 5).
+    Args:
+        center: 1-D sequence, often in the form of ``linkage.get_constraints()``.
+        min_ratio: Minimal compression ratio for the bounds. Minimal bounds will be of the
+            shape center[x] / min_ratio.
+            (Default value = 5).
+        max_factor: Dilation factor for the upper bounds. Maximal bounds will be of the
+            shape center[x] * max_factor.
+            (Default value = 5).
 
-    :raises OptimizationError: If min_ratio or max_factor are not positive.
+    Raises:
+        OptimizationError: If min_ratio or max_factor are not positive.
     """
     if min_ratio <= 0:
         raise OptimizationError(f"min_ratio must be positive, got {min_ratio}")
@@ -53,7 +55,8 @@ def kinematic_maximization(
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is -float('inf').
 
-    :param func: Fitness function to be decorated.
+    Args:
+        func: Fitness function to be decorated.
     """
     return kinematic_default_test(func, -float("inf"))
 
@@ -66,6 +69,7 @@ def kinematic_minimization(
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function. In case of error, the penalty value is float('inf').
 
-    :param func: Fitness function to be decorated.
+    Args:
+        func: Fitness function to be decorated.
     """
     return kinematic_default_test(func, float("inf"))

@@ -16,11 +16,14 @@ def dist(x1: float, y1: float, x2: float, y2: float) -> float:
     """
     Distance between two points.
 
-    :param x1: X coordinate of first point.
-    :param y1: Y coordinate of first point.
-    :param x2: X coordinate of second point.
-    :param y2: Y coordinate of second point.
-    :return: Euclidean distance.
+    Args:
+        x1: X coordinate of first point.
+        y1: Y coordinate of first point.
+        x2: X coordinate of second point.
+        y2: Y coordinate of second point.
+
+    Returns:
+        Euclidean distance.
     """
     dx = x1 - x2
     dy = y1 - y2
@@ -34,11 +37,14 @@ def sqr_dist(x1: float, y1: float, x2: float, y2: float) -> float:
 
     Faster than dist when only comparing distances.
 
-    :param x1: X coordinate of first point.
-    :param y1: Y coordinate of first point.
-    :param x2: X coordinate of second point.
-    :param y2: Y coordinate of second point.
-    :return: Squared distance.
+    Args:
+        x1: X coordinate of first point.
+        y1: Y coordinate of first point.
+        x2: X coordinate of second point.
+        y2: Y coordinate of second point.
+
+    Returns:
+        Squared distance.
     """
     dx = x1 - x2
     dy = y1 - y2
@@ -57,13 +63,16 @@ def get_nearest_point(
     """
     Return the point closer to the reference.
 
-    :param ref_x: X coordinate of reference point.
-    :param ref_y: Y coordinate of reference point.
-    :param p1_x: X coordinate of first candidate.
-    :param p1_y: Y coordinate of first candidate.
-    :param p2_x: X coordinate of second candidate.
-    :param p2_y: Y coordinate of second candidate.
-    :return: Coordinates of the nearest point.
+    Args:
+        ref_x: X coordinate of reference point.
+        ref_y: Y coordinate of reference point.
+        p1_x: X coordinate of first candidate.
+        p1_y: Y coordinate of first candidate.
+        p2_x: X coordinate of second candidate.
+        p2_y: Y coordinate of second candidate.
+
+    Returns:
+        Coordinates of the nearest point.
     """
     d1 = sqr_dist(ref_x, ref_y, p1_x, p1_y)
     d2 = sqr_dist(ref_x, ref_y, p2_x, p2_y)
@@ -77,9 +86,12 @@ def norm(x: float, y: float) -> float:
     """
     Return the norm of a 2-dimensional vector.
 
-    :param x: X component.
-    :param y: Y component.
-    :return: Vector magnitude.
+    Args:
+        x: X component.
+        y: Y component.
+
+    Returns:
+        Vector magnitude.
     """
     return math.sqrt(x * x + y * y)
 
@@ -93,11 +105,14 @@ def cyl_to_cart(
 ) -> tuple[float, float]:
     """Convert polar coordinates into cartesian.
 
-    :param radius: Distance from origin.
-    :param theta: Angle starting from abscissa axis.
-    :param ori_x: Origin X coordinate (Default value = 0.0).
-    :param ori_y: Origin Y coordinate (Default value = 0.0).
-    :return: Cartesian coordinates (x, y).
+    Args:
+        radius: Distance from origin.
+        theta: Angle starting from abscissa axis.
+        ori_x: Origin X coordinate (Default value = 0.0).
+        ori_y: Origin Y coordinate (Default value = 0.0).
+
+    Returns:
+        Cartesian coordinates (x, y).
     """
     return (radius * math.cos(theta) + ori_x, radius * math.sin(theta) + ori_y)
 
@@ -111,11 +126,14 @@ def line_from_points(
     """
     A cartesian equation of the line joining two points.
 
-    :param first_x: X coordinate of first point.
-    :param first_y: Y coordinate of first point.
-    :param second_x: X coordinate of second point.
-    :param second_y: Y coordinate of second point.
-    :return: A cartesian equation of this line (a, b, c) where ax + by + c = 0.
+    Args:
+        first_x: X coordinate of first point.
+        first_y: Y coordinate of first point.
+        second_x: X coordinate of second point.
+        second_y: Y coordinate of second point.
+
+    Returns:
+        A cartesian equation of this line (a, b, c) where ax + by + c = 0.
     """
     if first_x == second_x and first_y == second_y:
         return (0.0, 0.0, 0.0)

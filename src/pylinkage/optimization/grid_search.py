@@ -39,10 +39,13 @@ def sequential_variator(
     The coefficient is in order: middle → min (step 2), min → middle (step 2),
     middle → max (step 1), so that there is no huge variation.
 
-    :param center: Elements that should vary.
-    :param divisions: Number of subdivisions between `bounds`.
-    :param bounds: 2-uple of minimal then maximal bounds.
-    :returns: An iterable of all the dimension combinations.
+    Args:
+        center: Elements that should vary.
+        divisions: Number of subdivisions between `bounds`.
+        bounds: 2-uple of minimal then maximal bounds.
+
+    Returns:
+        An iterable of all the dimension combinations.
     """
     # In the first place, we go in decreasing order to lower bound
     fall = np.linspace(center, bounds[0], int(divisions / 2))
@@ -73,9 +76,12 @@ def fast_variator(
 
     Here the order in the variations is not important.
 
-    :param divisions: Number of subdivisions between `bounds`.
-    :param bounds: 2-uple of minimal then maximal bounds.
-    :returns: An iterable of all the dimension combinations.
+    Args:
+        divisions: Number of subdivisions between `bounds`.
+        bounds: 2-uple of minimal then maximal bounds.
+
+    Returns:
+        An iterable of all the dimension combinations.
     """
     lists = (
         iter(np.linspace(low, high, divisions))
@@ -98,30 +104,34 @@ def trials_and_errors_optimization(
     Each dimension set has a score. The returned Ensemble contains up to
     *n_results* members with the best scores (maximization by default).
 
-    :param eval_func: Evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-    :param linkage: Linkage to evaluate.
-    :param parameters: Parameters that will be modified. Geometric constraints.
-                       If not, it will be assigned tuple(linkage.get_constraints()).
-                       The default is None.
-    :param n_results: Number of the best candidates to return. The default is 10.
-    :param divisions: Number of subdivisions between bounds. The default is 5.
-    :param kwargs:
-        - Extra arguments for the optimization.
-        - bounds : A 2-uple (tuple of two elements), containing the minimal and maximal bounds.
-            If None, we will use parameters as a center.
-            (Default value = None).
-        - order_relation : A function of two arguments, should return the best score of two
-            scores. Common examples are `min`, `max`, `abs`.
-            (Default value = :func:`max`).
-        - verbose : The number of combinations will be printed in console if `True`.
-            (Default value = True).
-        - sequential : If True, two consecutive linkages will have a small variation.
+    Args:
+        eval_func: Evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+        linkage: Linkage to evaluate.
+        parameters: Parameters that will be modified. Geometric constraints.
+            If not, it will be assigned tuple(linkage.get_constraints()).
+            The default is None.
+        n_results: Number of the best candidates to return. The default is 10.
+        divisions: Number of subdivisions between bounds. The default is 5.
+        kwargs: Extra arguments for the optimization:
 
-    :returns: Ensemble with up to *n_results* members.
+            - ``bounds``: A 2-uple containing the minimal and maximal bounds.
+              If None, we will use parameters as a center.
+              (Default value = None).
+            - ``order_relation``: A function of two arguments, should return the
+              best score of two scores. Common examples are ``min``, ``max``,
+              ``abs``. (Default value = :func:`max`).
+            - ``verbose``: The number of combinations will be printed in console
+              if ``True``. (Default value = True).
+            - ``sequential``: If True, two consecutive linkages will have a
+              small variation.
 
-    :raises OptimizationError: If parameters are invalid or no valid solution is found.
+    Returns:
+        Ensemble with up to *n_results* members.
+
+    Raises:
+        OptimizationError: If parameters are invalid or no valid solution is found.
     """
     if n_results <= 0:
         raise OptimizationError(f"Number of results must be positive, got {n_results}")

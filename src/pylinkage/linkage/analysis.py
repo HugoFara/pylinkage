@@ -23,8 +23,9 @@ def kinematic_default_test(
     This decorator makes a kinematic simulation, before passing the loci to the
     decorated function.
 
-    :param func: Fitness function to be decorated.
-    :param error_penalty: Penalty value for unbuildable linkage. Common values include
+    Args:
+        func: Fitness function to be decorated.
+        error_penalty: Penalty value for unbuildable linkage. Common values include
             float('inf') and 0.
     """
 
@@ -35,12 +36,14 @@ def kinematic_default_test(
     ) -> float:
         """Decorated function.
 
-        :param linkage: The linkage to optimize.
-        :param params: Geometric constraints to pass to linkage.set_constraints.
-        :param init_pos: List of initial positions for the joints. If None it will be
-            redefined at each successful iteration. (Default value = None).
+        Args:
+            linkage: The linkage to optimize.
+            params: Geometric constraints to pass to linkage.set_constraints.
+            init_pos: List of initial positions for the joints. If None it will be
+                redefined at each successful iteration. (Default value = None).
 
-        :return: Fitness score.
+        Returns:
+            Fitness score.
         """
         if init_pos is not None:
             linkage.set_coords(init_pos)
@@ -74,19 +77,22 @@ def extract_trajectory(
     Frames where the joint position is ``None`` (unbuildable configuration) are
     silently skipped.
 
-    :param loci: Sequence of frames as produced by ``Linkage.step()`` or
-        ``Mechanism.step()``. Each frame is a sequence of ``(x, y)`` tuples,
-        one per joint/component in the linkage's iteration order.
-    :param joint: Which joint's trajectory to extract. Can be:
+    Args:
+        loci: Sequence of frames as produced by ``Linkage.step()`` or
+            ``Mechanism.step()``. Each frame is a sequence of ``(x, y)`` tuples,
+            one per joint/component in the linkage's iteration order.
+        joint: Which joint's trajectory to extract. Can be:
 
         - an integer index into each frame (default ``-1`` = last joint),
         - a joint/component name (requires ``linkage``),
         - a joint/component instance (requires ``linkage``).
 
-    :param linkage: The ``Linkage`` or ``Mechanism`` the loci come from.
-        Required when ``joint`` is a name or instance.
+    Args:
+        linkage: The ``Linkage`` or ``Mechanism`` the loci come from.
+            Required when ``joint`` is a name or instance.
 
-    :returns: Pair ``(xs, ys)`` of ``numpy.ndarray`` with the same length.
+    Returns:
+        Pair ``(xs, ys)`` of ``numpy.ndarray`` with the same length.
         Empty arrays if every frame is unbuildable.
     """
     if isinstance(joint, int):
@@ -118,14 +124,16 @@ def extract_trajectories(
     configuration) are skipped *per joint* — each joint's arrays only
     contain frames where that joint was successfully solved.
 
-    :param loci: Sequence of frames as produced by ``Linkage.step()`` or
-        ``Mechanism.step()``. Each frame is a sequence of ``(x, y)``
-        tuples, one per joint/component in the linkage's iteration order.
-    :param linkage: Optional ``Linkage`` or ``Mechanism``. If provided,
-        the returned dict is keyed by joint name; otherwise it is keyed
-        by integer index.
+    Args:
+        loci: Sequence of frames as produced by ``Linkage.step()`` or
+            ``Mechanism.step()``. Each frame is a sequence of ``(x, y)``
+            tuples, one per joint/component in the linkage's iteration order.
+        linkage: Optional ``Linkage`` or ``Mechanism``. If provided,
+            the returned dict is keyed by joint name; otherwise it is keyed
+            by integer index.
 
-    :returns: Mapping ``{joint_name_or_index: (xs, ys)}``. Each ``(xs,
+    Returns:
+        Mapping ``{joint_name_or_index: (xs, ys)}``. Each ``(xs,
         ys)`` pair is a tuple of ``numpy.ndarray`` with matching length.
         Empty arrays indicate a joint was never buildable.
     """
@@ -171,9 +179,11 @@ def _resolve_joint_index(linkage: "Any", joint: "Any") -> int:
 def bounding_box(locus: Iterable[Coord]) -> BoundingBox:
     """Compute the bounding box of a locus.
 
-    :param locus: A list of points or any iterable with the same structure.
+    Args:
+        locus: A list of points or any iterable with the same structure.
 
-    :returns: Bounding box as (y_min, x_max, y_max, x_min).
+    Returns:
+        Bounding box as (y_min, x_max, y_max, x_min).
     """
     y_min = float("inf")
     x_min = float("inf")
@@ -191,9 +201,11 @@ def movement_bounding_box(loci: Iterable[Iterable[Coord]]) -> BoundingBox:
     """
     Bounding box for a group of loci.
 
-    :param loci: Iterable of loci (sequences of coordinates).
+    Args:
+        loci: Iterable of loci (sequences of coordinates).
 
-    :returns: Bounding box as (y_min, x_max, y_max, x_min).
+    Returns:
+        Bounding box as (y_min, x_max, y_max, x_min).
     """
     bb: BoundingBox = (float("inf"), -float("inf"), -float("inf"), float("inf"))
     for locus in loci:

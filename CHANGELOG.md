@@ -28,6 +28,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **One docstring style across the codebase.** Docstrings were split between
+  two conventions: 85 files used Google style (`Args:`) while 16 used reST
+  field lists (`:param:`), and `linkage/transmission.py` used both at once. The
+  16 reST files — concentrated in `symbolic/`, `optimization/` and `geometry/`,
+  the oldest code in the package — are converted to Google style, so all 100
+  documented modules now read the same way. This is presentation only: 393
+  fields were rewritten with no change to wording, and the sole vocabulary
+  removed across all 16 files is the `param`/`returns`/`raises` markers
+  themselves. Sphinx cross-reference roles such as ``:func:`max` `` are
+  untouched, being valid in Google-style docstrings.
+
 - The `full` extra now includes `pymoo`, so `pip install pylinkage[full]`
   covers multi-objective optimization as the README's "all optional backends"
   description promises. `moo` remains available on its own, and is now listed

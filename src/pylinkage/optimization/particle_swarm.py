@@ -42,21 +42,24 @@ def _local_best_pso(
     *k* nearest ring-topology neighbors, preventing premature convergence
     to a single basin.
 
-    :param objective: Function mapping (n_particles, dimensions) array to
-        (n_particles,) array of **costs to minimize**.
-    :param dimensions: Number of parameters.
-    :param bounds: ``(lower, upper)`` arrays each of shape ``(dimensions,)``.
-    :param n_particles: Swarm size.
-    :param inertia: Velocity damping factor *w*.
-    :param c1: Cognitive (personal-best) acceleration coefficient.
-    :param c2: Social (neighborhood-best) acceleration coefficient.
-    :param neighbors: Ring-topology neighborhood size *k*.
-    :param iterations: Number of iterations.
-    :param center: Center for initial position sampling. If ``None``, particles
-        are sampled uniformly within *bounds*; otherwise positions are concentrated
-        around the center point within bounds.
-    :param verbose: Print iteration progress.
-    :returns: ``(best_cost, best_position)``.
+    Args:
+        objective: Function mapping (n_particles, dimensions) array to
+            (n_particles,) array of **costs to minimize**.
+        dimensions: Number of parameters.
+        bounds: ``(lower, upper)`` arrays each of shape ``(dimensions,)``.
+        n_particles: Swarm size.
+        inertia: Velocity damping factor *w*.
+        c1: Cognitive (personal-best) acceleration coefficient.
+        c2: Social (neighborhood-best) acceleration coefficient.
+        neighbors: Ring-topology neighborhood size *k*.
+        iterations: Number of iterations.
+        center: Center for initial position sampling. If ``None``, particles
+            are sampled uniformly within *bounds*; otherwise positions are concentrated
+            around the center point within bounds.
+        verbose: Print iteration progress.
+
+    Returns:
+        ``(best_cost, best_position)``.
     """
     lb, ub = bounds
     rng = np.random.default_rng()
@@ -162,35 +165,38 @@ def particle_swarm_optimization(
 
     Uses a local-best ring-topology PSO implemented in pure NumPy.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-        The swarm will look for the HIGHEST score.
-    :param linkage: Linkage to be optimized. Make sure to give an optimized linkage for
-        better results.
-    :param center: A list of initial dimensions. If None, dimensions will be generated
-        randomly between bounds. The default is None.
-    :param dimensions: Number of dimensions of the swarm space, number of parameters.
-        If None, it takes the value len(tuple(linkage.get_constraints())).
-        The default is None.
-    :param n_particles: Number of particles in the swarm. The default is 100.
-    :param inertia: Inertia of each particle. The default is 0.6.
-    :param leader: Cognitive acceleration coefficient (c1). The default is 3.0.
-    :param follower: Social acceleration coefficient (c2). The default is 0.1.
-    :param neighbors: Number of neighbors in ring topology. The default is 17.
-    :param iterations: Number of iterations. The default is 200.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-        (Default value = None).
-    :param order_relation: How to compare scores.
-        There should not be anything else than the built-in
-        max and min functions.
-        The default is max.
-    :param verbose: The optimization state will be printed in the console if True.
-        (Default value = True).
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+            The swarm will look for the HIGHEST score.
+        linkage: Linkage to be optimized. Make sure to give an optimized linkage for
+            better results.
+        center: A list of initial dimensions. If None, dimensions will be generated
+            randomly between bounds. The default is None.
+        dimensions: Number of dimensions of the swarm space, number of parameters.
+            If None, it takes the value len(tuple(linkage.get_constraints())).
+            The default is None.
+        n_particles: Number of particles in the swarm. The default is 100.
+        inertia: Inertia of each particle. The default is 0.6.
+        leader: Cognitive acceleration coefficient (c1). The default is 3.0.
+        follower: Social acceleration coefficient (c2). The default is 0.1.
+        neighbors: Number of neighbors in ring topology. The default is 17.
+        iterations: Number of iterations. The default is 200.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+            (Default value = None).
+        order_relation: How to compare scores.
+            There should not be anything else than the built-in
+            max and min functions.
+            The default is max.
+        verbose: The optimization state will be printed in the console if True.
+            (Default value = True).
 
-    :returns: Ensemble with the best result (single member).
+    Returns:
+        Ensemble with the best result (single member).
 
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        OptimizationError: If parameters are invalid or optimization fails.
     """
     # Backwards-compatible alias
     if "iters" in kwargs:

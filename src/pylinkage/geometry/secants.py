@@ -34,15 +34,17 @@ def circle_intersect(
     Transcription of a Matt Woodhead program, method provided by Paul Bourke,
     1997. http://paulbourke.net/geometry/circlesphere/.
 
-    :param x1: X coordinate of first circle center.
-    :param y1: Y coordinate of first circle center.
-    :param r1: Radius of first circle.
-    :param x2: X coordinate of second circle center.
-    :param y2: Y coordinate of second circle center.
-    :param r2: Radius of second circle.
-    :param tol: Distance under which two points are considered equal.
+    Args:
+        x1: X coordinate of first circle center.
+        y1: Y coordinate of first circle center.
+        r1: Radius of first circle.
+        x2: X coordinate of second circle center.
+        y2: Y coordinate of second circle center.
+        r2: Radius of second circle.
+        tol: Distance under which two points are considered equal.
 
-    :returns: Tuple of (n_intersections, x1, y1, x2, y2) where:
+    Returns:
+        Tuple of (n_intersections, x1, y1, x2, y2) where:
         - n=0: No intersection (other values undefined)
         - n=1: One intersection at (x1, y1)
         - n=2: Two intersections at (x1, y1) and (x2, y2)
@@ -109,15 +111,17 @@ def circle_line_from_points_intersection(
     """
     Intersection(s) of a circle and a line defined by two points.
 
-    :param cx: X coordinate of circle center.
-    :param cy: Y coordinate of circle center.
-    :param r: Circle radius.
-    :param p1_x: X coordinate of first point on line.
-    :param p1_y: Y coordinate of first point on line.
-    :param p2_x: X coordinate of second point on line.
-    :param p2_y: Y coordinate of second point on line.
+    Args:
+        cx: X coordinate of circle center.
+        cy: Y coordinate of circle center.
+        r: Circle radius.
+        p1_x: X coordinate of first point on line.
+        p1_y: Y coordinate of first point on line.
+        p2_x: X coordinate of second point on line.
+        p2_y: Y coordinate of second point on line.
 
-    :returns: Tuple of (n_intersections, x1, y1, x2, y2) where:
+    Returns:
+        Tuple of (n_intersections, x1, y1, x2, y2) where:
         - n=0: No intersection
         - n=1: One intersection (tangent) at (x1, y1)
         - n=2: Two intersections at (x1, y1) and (x2, y2)
@@ -170,14 +174,16 @@ def circle_line_intersection(
 
     From https://mathworld.wolfram.com/Circle-LineIntersection.html
 
-    :param cx: X coordinate of circle center.
-    :param cy: Y coordinate of circle center.
-    :param r: Circle radius.
-    :param a: Line equation coefficient a (ax + by + c = 0).
-    :param b: Line equation coefficient b.
-    :param c: Line equation coefficient c.
+    Args:
+        cx: X coordinate of circle center.
+        cy: Y coordinate of circle center.
+        r: Circle radius.
+        a: Line equation coefficient a (ax + by + c = 0).
+        b: Line equation coefficient b.
+        c: Line equation coefficient c.
 
-    :returns: Tuple of (n_intersections, x1, y1, x2, y2).
+    Returns:
+        Tuple of (n_intersections, x1, y1, x2, y2).
     """
     # Find two points on the line
     if b != 0:
@@ -199,11 +205,13 @@ def intersection(
 
     The input objects should be points or circles.
 
-    :param obj_1: First point or circle (as tuple).
-    :param obj_2: Second point or circle (as tuple).
-    :param tol: Absolute tolerance to use if provided.
+    Args:
+        obj_1: First point or circle (as tuple).
+        obj_2: Second point or circle (as tuple).
+        tol: Absolute tolerance to use if provided.
 
-    :returns: The intersection found, if any.
+    Returns:
+        The intersection found, if any.
     """
     # Two points
     if len(obj_1) == 2 and len(obj_2) == 2:
@@ -257,16 +265,18 @@ def line_line_intersection(
 
     Uses the parametric line intersection formula.
 
-    :param p1_x: X coordinate of first point on line 1.
-    :param p1_y: Y coordinate of first point on line 1.
-    :param p2_x: X coordinate of second point on line 1.
-    :param p2_y: Y coordinate of second point on line 1.
-    :param p3_x: X coordinate of first point on line 2.
-    :param p3_y: Y coordinate of first point on line 2.
-    :param p4_x: X coordinate of second point on line 2.
-    :param p4_y: Y coordinate of second point on line 2.
+    Args:
+        p1_x: X coordinate of first point on line 1.
+        p1_y: Y coordinate of first point on line 1.
+        p2_x: X coordinate of second point on line 1.
+        p2_y: Y coordinate of second point on line 1.
+        p3_x: X coordinate of first point on line 2.
+        p3_y: Y coordinate of first point on line 2.
+        p4_x: X coordinate of second point on line 2.
+        p4_y: Y coordinate of second point on line 2.
 
-    :returns: Tuple of (n_intersections, x, y) where:
+    Returns:
+        Tuple of (n_intersections, x, y) where:
         - n=0: No intersection (parallel lines)
         - n=1: One intersection at (x, y)
         - n=3: Coincident lines (same line)
@@ -311,9 +321,11 @@ def bounding_box(locus: list[Coord]) -> tuple[float, float, float, float]:
     """
     Compute the bounding box of a locus.
 
-    :param locus: A list of points or any iterable with the same structure.
+    Args:
+        locus: A list of points or any iterable with the same structure.
 
-    :returns: Bounding box as (y_min, x_max, y_max, x_min).
+    Returns:
+        Bounding box as (y_min, x_max, y_max, x_min).
     """
     y_min = float("inf")
     x_min = float("inf")

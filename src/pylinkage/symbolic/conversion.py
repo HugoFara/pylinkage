@@ -20,8 +20,11 @@ def get_numeric_parameters(sym_linkage: SymbolicLinkage) -> dict[str, float]:
     Returns a ``{parameter_name: value}`` dict populated from
     ``_numeric_*`` attributes previously stashed on each joint.
 
-    :param sym_linkage: The symbolic linkage.
-    :returns: Dictionary mapping parameter names to numeric values.
+    Args:
+        sym_linkage: The symbolic linkage.
+
+    Returns:
+        Dictionary mapping parameter names to numeric values.
     """
     params: dict[str, float] = {}
 
@@ -56,13 +59,16 @@ def fourbar_symbolic(
     - B (crank end): Crank rotating around A with radius ``crank_length``
     - C (coupler/rocker connection): Revolute connecting B and D
 
-    :param ground_length: Distance between ground anchors A and D.
-    :param crank_length: Length of the input crank (A to B).
-    :param coupler_length: Length of the coupler (B to C).
-    :param rocker_length: Length of the output rocker (D to C).
-    :param ground_x: X coordinate of ground anchor A. Default is 0.
-    :param ground_y: Y coordinate of ground anchor A. Default is 0.
-    :returns: A SymbolicLinkage representing the four-bar.
+    Args:
+        ground_length: Distance between ground anchors A and D.
+        crank_length: Length of the input crank (A to B).
+        coupler_length: Length of the coupler (B to C).
+        rocker_length: Length of the output rocker (D to C).
+        ground_x: X coordinate of ground anchor A. Default is 0.
+        ground_y: Y coordinate of ground anchor A. Default is 0.
+
+    Returns:
+        A SymbolicLinkage representing the four-bar.
     """
     if isinstance(ground_length, str):
         L0 = sp.Symbol(ground_length, positive=True, real=True)

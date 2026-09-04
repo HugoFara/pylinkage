@@ -31,11 +31,14 @@ def solve_linkage_symbolically(
     Returns (optionally simplified) closed-form expressions for
     trajectory curves of all or specified joints.
 
-    :param linkage: The symbolic linkage to solve.
-    :param output_joints: List of joint names to include in output.
-        If None, all joints are included.
-    :param simplify: Whether to simplify the expressions. Default is True.
-    :returns: Dictionary mapping joint name to (x(theta), y(theta)).
+    Args:
+        linkage: The symbolic linkage to solve.
+        output_joints: List of joint names to include in output.
+            If None, all joints are included.
+        simplify: Whether to simplify the expressions. Default is True.
+
+    Returns:
+        Dictionary mapping joint name to (x(theta), y(theta)).
     """
     trajectories = linkage.get_trajectory_expressions()
 
@@ -67,10 +70,13 @@ def eliminate_theta(
     constraint c^2 + s^2 = 1, then eliminates c and s using
     Groebner basis.
 
-    :param x_expr: X coordinate as a function of theta.
-    :param y_expr: Y coordinate as a function of theta.
-    :param theta: The angle symbol to eliminate. Default uses global theta.
-    :returns: Polynomial in x and y, or None if elimination fails.
+    Args:
+        x_expr: X coordinate as a function of theta.
+        y_expr: Y coordinate as a function of theta.
+        theta: The angle symbol to eliminate. Default uses global theta.
+
+    Returns:
+        Polynomial in x and y, or None if elimination fails.
 
     Example:
         >>> theta = sp.Symbol('theta')
@@ -135,11 +141,14 @@ def compute_trajectory_numeric(
     Uses lambdify for efficient numeric evaluation of the symbolic
     trajectory expressions.
 
-    :param linkage: The symbolic linkage.
-    :param param_values: Dictionary mapping parameter names to numeric values.
-    :param theta_values: Sequence of theta values to evaluate at.
-    :param output_joints: List of joint names to include. If None, all joints.
-    :returns: Dictionary mapping joint name to Nx2 array of (x, y) positions.
+    Args:
+        linkage: The symbolic linkage.
+        param_values: Dictionary mapping parameter names to numeric values.
+        theta_values: Sequence of theta values to evaluate at.
+        output_joints: List of joint names to include. If None, all joints.
+
+    Returns:
+        Dictionary mapping joint name to Nx2 array of (x, y) positions.
     """
     theta_arr = np.asarray(theta_values, dtype=np.float64)
 
@@ -187,9 +196,12 @@ def create_trajectory_functions(
     This is useful when you need to evaluate trajectories many times
     with different parameter values, as it avoids repeated lambdify calls.
 
-    :param linkage: The symbolic linkage.
-    :param output_joints: List of joint names to include. If None, all joints.
-    :returns: Dictionary mapping joint name to (x_func, y_func, param_symbols).
+    Args:
+        linkage: The symbolic linkage.
+        output_joints: List of joint names to include. If None, all joints.
+
+    Returns:
+        Dictionary mapping joint name to (x_func, y_func, param_symbols).
 
     Example:
         >>> funcs = create_trajectory_functions(linkage)
@@ -226,10 +238,13 @@ def check_buildability(
     the positions at a specific theta and checks for complex (imaginary)
     results.
 
-    :param linkage: The symbolic linkage.
-    :param param_values: Dictionary mapping parameter names to numeric values.
-    :param theta_value: Theta value to check at. Default is 0.
-    :returns: Tuple of (is_buildable, error_message).
+    Args:
+        linkage: The symbolic linkage.
+        param_values: Dictionary mapping parameter names to numeric values.
+        theta_value: Theta value to check at. Default is 0.
+
+    Returns:
+        Tuple of (is_buildable, error_message).
 
     Example:
         >>> buildable, msg = check_buildability(linkage, {"r0": 1, "r1": 10})

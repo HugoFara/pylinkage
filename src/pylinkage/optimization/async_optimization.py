@@ -76,33 +76,36 @@ async def particle_swarm_optimization_async(
     blocking the event loop, while providing progress callbacks and cancellation
     support.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-        The swarm will look for the HIGHEST score.
-    :param linkage: Linkage to be optimized.
-    :param center: A list of initial dimensions. If None, dimensions will be
-        generated randomly between bounds. The default is None.
-    :param dimensions: Number of dimensions of the swarm space.
-        If None, it takes len(tuple(linkage.get_constraints())).
-    :param n_particles: Number of particles in the swarm. The default is 100.
-    :param inertia: Inertia of each particle. The default is 0.6.
-    :param leader: Learning coefficient of each particle. The default is 3.0.
-    :param follower: Social coefficient. The default is 0.1.
-    :param neighbors: Number of neighbors to consider. The default is 17.
-    :param iterations: Number of iterations. The default is 200.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param on_progress: Optional callback function called with progress updates.
-        The callback receives an OptimizationProgress object.
-    :param executor: Optional ThreadPoolExecutor to use. If None, a default
-        executor will be created.
-    :param kwargs: Additional keyword arguments passed to LocalBestPSO.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+            The swarm will look for the HIGHEST score.
+        linkage: Linkage to be optimized.
+        center: A list of initial dimensions. If None, dimensions will be
+            generated randomly between bounds. The default is None.
+        dimensions: Number of dimensions of the swarm space.
+            If None, it takes len(tuple(linkage.get_constraints())).
+        n_particles: Number of particles in the swarm. The default is 100.
+        inertia: Inertia of each particle. The default is 0.6.
+        leader: Learning coefficient of each particle. The default is 3.0.
+        follower: Social coefficient. The default is 0.1.
+        neighbors: Number of neighbors to consider. The default is 17.
+        iterations: Number of iterations. The default is 200.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+        order_relation: How to compare scores (max or min). Default is max.
+        on_progress: Optional callback function called with progress updates.
+            The callback receives an OptimizationProgress object.
+        executor: Optional ThreadPoolExecutor to use. If None, a default
+            executor will be created.
+        kwargs: Additional keyword arguments passed to LocalBestPSO.
 
-    :returns: List of Agents: best score, best dimensions and initial positions.
+    Returns:
+        List of Agents: best score, best dimensions and initial positions.
 
-    :raises asyncio.CancelledError: If the optimization is cancelled.
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        asyncio.CancelledError: If the optimization is cancelled.
+        OptimizationError: If parameters are invalid or optimization fails.
 
     Example::
 
@@ -192,26 +195,29 @@ async def trials_and_errors_optimization_async(
     to avoid blocking the event loop, while providing progress callbacks and
     cancellation support.
 
-    :param eval_func: Evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-    :param linkage: Linkage to evaluate.
-    :param parameters: Parameters that will be modified. If None, uses
-        tuple(linkage.get_constraints()).
-    :param n_results: Number of best candidates to return. The default is 10.
-    :param divisions: Number of subdivisions between bounds. The default is 5.
-    :param on_progress: Optional callback function called with progress updates.
-    :param executor: Optional ThreadPoolExecutor to use. If None, a default
-        executor will be created.
-    :param kwargs: Additional arguments for the optimization:
-        - bounds: A 2-tuple containing minimal and maximal bounds.
-        - order_relation: Function to compare scores (max, min, abs).
-        - sequential: If True, consecutive linkages have small variation.
+    Args:
+        eval_func: Evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+        linkage: Linkage to evaluate.
+        parameters: Parameters that will be modified. If None, uses
+            tuple(linkage.get_constraints()).
+        n_results: Number of best candidates to return. The default is 10.
+        divisions: Number of subdivisions between bounds. The default is 5.
+        on_progress: Optional callback function called with progress updates.
+        executor: Optional ThreadPoolExecutor to use. If None, a default
+            executor will be created.
+        kwargs: Additional arguments for the optimization:
+            - bounds: A 2-tuple containing minimal and maximal bounds.
+            - order_relation: Function to compare scores (max, min, abs).
+            - sequential: If True, consecutive linkages have small variation.
 
-    :returns: List of (score, dimensions, initial_position) tuples.
+    Returns:
+        List of (score, dimensions, initial_position) tuples.
 
-    :raises asyncio.CancelledError: If the optimization is cancelled.
-    :raises OptimizationError: If parameters are invalid or no valid solution found.
+    Raises:
+        asyncio.CancelledError: If the optimization is cancelled.
+        OptimizationError: If parameters are invalid or no valid solution found.
 
     Example::
 
@@ -302,27 +308,30 @@ async def differential_evolution_optimization_async(
     executor to avoid blocking the event loop, while providing progress callbacks
     and cancellation support.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-    :param linkage: Linkage to be optimized.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param strategy: Differential evolution strategy. Default is "best1bin".
-    :param maxiter: Maximum number of generations. Default is 1000.
-    :param popsize: Population size multiplier. Default is 15.
-    :param tol: Relative tolerance for convergence. Default is 0.01.
-    :param mutation: Mutation constant. Default is (0.5, 1.0).
-    :param recombination: Recombination constant. Default is 0.7.
-    :param seed: Random seed for reproducibility.
-    :param on_progress: Optional callback function called with progress updates.
-    :param executor: Optional ThreadPoolExecutor to use.
-    :param kwargs: Additional keyword arguments passed to differential_evolution.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+        linkage: Linkage to be optimized.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+        order_relation: How to compare scores (max or min). Default is max.
+        strategy: Differential evolution strategy. Default is "best1bin".
+        maxiter: Maximum number of generations. Default is 1000.
+        popsize: Population size multiplier. Default is 15.
+        tol: Relative tolerance for convergence. Default is 0.01.
+        mutation: Mutation constant. Default is (0.5, 1.0).
+        recombination: Recombination constant. Default is 0.7.
+        seed: Random seed for reproducibility.
+        on_progress: Optional callback function called with progress updates.
+        executor: Optional ThreadPoolExecutor to use.
+        kwargs: Additional keyword arguments passed to differential_evolution.
 
-    :returns: List containing single Agent with best score, dimensions, and positions.
+    Returns:
+        List containing single Agent with best score, dimensions, and positions.
 
-    :raises asyncio.CancelledError: If the optimization is cancelled.
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        asyncio.CancelledError: If the optimization is cancelled.
+        OptimizationError: If parameters are invalid or optimization fails.
     """
     loop = asyncio.get_running_loop()
 
@@ -397,24 +406,27 @@ async def minimize_linkage_async(
     blocking the event loop, while providing progress callbacks and cancellation
     support.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-    :param linkage: Linkage to be optimized.
-    :param x0: Initial guess for the parameters.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param method: Optimization method. Default is "Nelder-Mead".
-    :param maxiter: Maximum number of iterations.
-    :param tol: Tolerance for termination.
-    :param on_progress: Optional callback function called with progress updates.
-    :param executor: Optional ThreadPoolExecutor to use.
-    :param kwargs: Additional keyword arguments passed to minimize.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+        linkage: Linkage to be optimized.
+        x0: Initial guess for the parameters.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+        order_relation: How to compare scores (max or min). Default is max.
+        method: Optimization method. Default is "Nelder-Mead".
+        maxiter: Maximum number of iterations.
+        tol: Tolerance for termination.
+        on_progress: Optional callback function called with progress updates.
+        executor: Optional ThreadPoolExecutor to use.
+        kwargs: Additional keyword arguments passed to minimize.
 
-    :returns: List containing single Agent with best score, dimensions, and positions.
+    Returns:
+        List containing single Agent with best score, dimensions, and positions.
 
-    :raises asyncio.CancelledError: If the optimization is cancelled.
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        asyncio.CancelledError: If the optimization is cancelled.
+        OptimizationError: If parameters are invalid or optimization fails.
     """
     loop = asyncio.get_running_loop()
 

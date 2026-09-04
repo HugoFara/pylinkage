@@ -49,11 +49,12 @@ class SymJoint(abc.ABC):
         """
         Create a symbolic joint.
 
-        :param x: Initial or symbolic x position.
-        :param y: Initial or symbolic y position.
-        :param parent0: First parent joint (for kinematic constraints).
-        :param parent1: Second parent joint (for kinematic constraints).
-        :param name: Human-readable name for the joint.
+        Args:
+            x: Initial or symbolic x position.
+            y: Initial or symbolic y position.
+            parent0: First parent joint (for kinematic constraints).
+            parent1: Second parent joint (for kinematic constraints).
+            name: Human-readable name for the joint.
         """
         self._x = sp.sympify(x) if x is not None else None
         self._y = sp.sympify(y) if y is not None else None
@@ -70,7 +71,8 @@ class SymJoint(abc.ABC):
         """
         Return the symbolic (x, y) position expressions.
 
-        :returns: Tuple of (x_expr, y_expr) SymPy expressions.
+        Returns:
+            Tuple of (x_expr, y_expr) SymPy expressions.
         """
         raise NotImplementedError
 
@@ -79,7 +81,8 @@ class SymJoint(abc.ABC):
         """
         Return the constraint equations this joint satisfies.
 
-        :returns: List of SymPy Eq objects representing constraints.
+        Returns:
+            List of SymPy Eq objects representing constraints.
         """
         raise NotImplementedError
 
@@ -90,7 +93,8 @@ class SymJoint(abc.ABC):
 
         Excludes the input angle theta.
 
-        :returns: Set of SymPy symbols that are parameters.
+        Returns:
+            Set of SymPy symbols that are parameters.
         """
         x_expr, y_expr = self.position_expr()
         all_symbols = x_expr.free_symbols | y_expr.free_symbols
@@ -118,9 +122,10 @@ class SymStatic(SymJoint):
         """
         Create a static joint at a fixed position.
 
-        :param x: X coordinate (numeric or symbolic). Default is 0.
-        :param y: Y coordinate (numeric or symbolic). Default is 0.
-        :param name: Human-readable name for the joint.
+        Args:
+            x: X coordinate (numeric or symbolic). Default is 0.
+            y: Y coordinate (numeric or symbolic). Default is 0.
+            name: Human-readable name for the joint.
         """
         super().__init__(x=x, y=y, name=name)
 
@@ -159,11 +164,12 @@ class SymCrank(SymJoint):
         """
         Create a crank joint rotating around a parent.
 
-        :param parent: Parent joint or fixed coordinate (x, y).
-        :param radius: Distance from parent. Can be numeric, symbolic, or
-            a string to create a new symbol. Default is "r".
-        :param theta: Input angle symbol. Default uses the global theta.
-        :param name: Human-readable name for the joint.
+        Args:
+            parent: Parent joint or fixed coordinate (x, y).
+            radius: Distance from parent. Can be numeric, symbolic, or
+                a string to create a new symbol. Default is "r".
+            theta: Input angle symbol. Default uses the global theta.
+            name: Human-readable name for the joint.
         """
         if isinstance(parent, SymJoint):
             super().__init__(parent0=parent, name=name)
@@ -253,15 +259,16 @@ class SymRevolute(SymJoint):
         """
         Create a revolute joint connecting two parents.
 
-        :param parent0: First parent joint.
-        :param parent1: Second parent joint.
-        :param distance0: Distance to parent0. Can be numeric, symbolic, or
-            a string to create a new symbol. Default is "r0".
-        :param distance1: Distance to parent1. Can be numeric, symbolic, or
-            a string to create a new symbol. Default is "r1".
-        :param branch: +1 or -1 to select which circle intersection.
-            Default is +1.
-        :param name: Human-readable name for the joint.
+        Args:
+            parent0: First parent joint.
+            parent1: Second parent joint.
+            distance0: Distance to parent0. Can be numeric, symbolic, or
+                a string to create a new symbol. Default is "r0".
+            distance1: Distance to parent1. Can be numeric, symbolic, or
+                a string to create a new symbol. Default is "r1".
+            branch: +1 or -1 to select which circle intersection.
+                Default is +1.
+            name: Human-readable name for the joint.
         """
         super().__init__(parent0=parent0, parent1=parent1, name=name)
 

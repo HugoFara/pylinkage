@@ -27,9 +27,12 @@ def symbolic_gradient(
     """
     Compute the symbolic gradient of an objective function.
 
-    :param objective: Symbolic objective expression.
-    :param parameters: List of parameter symbols to differentiate with respect to.
-    :returns: List of partial derivative expressions.
+    Args:
+        objective: Symbolic objective expression.
+        parameters: List of parameter symbols to differentiate with respect to.
+
+    Returns:
+        List of partial derivative expressions.
     """
     return [sp.diff(objective, p) for p in parameters]
 
@@ -41,9 +44,12 @@ def symbolic_hessian(
     """
     Compute the symbolic Hessian matrix of an objective function.
 
-    :param objective: Symbolic objective expression.
-    :param parameters: List of parameter symbols.
-    :returns: SymPy Matrix of second partial derivatives.
+    Args:
+        objective: Symbolic objective expression.
+        parameters: List of parameter symbols.
+
+    Returns:
+        SymPy Matrix of second partial derivatives.
     """
     return sp.hessian(objective, parameters)
 
@@ -97,13 +103,14 @@ class SymbolicOptimizer:
         """
         Create a symbolic optimizer.
 
-        :param linkage: The symbolic linkage to optimize.
-        :param objective_func: Function that takes trajectory dict and returns
-            a symbolic objective expression. The trajectories are
-            {joint_name: (x_expr, y_expr)} where x_expr and y_expr are
-            symbolic expressions in theta and parameters.
-        :param theta_samples: Number of theta samples for averaging objectives
-            that depend on the full trajectory. Default is 360.
+        Args:
+            linkage: The symbolic linkage to optimize.
+            objective_func: Function that takes trajectory dict and returns
+                a symbolic objective expression. The trajectories are
+                {joint_name: (x_expr, y_expr)} where x_expr and y_expr are
+                symbolic expressions in theta and parameters.
+            theta_samples: Number of theta samples for averaging objectives
+                that depend on the full trajectory. Default is 360.
         """
         self.linkage = linkage
         self.objective_func = objective_func
@@ -146,10 +153,13 @@ class SymbolicOptimizer:
 
         The objective is averaged over all theta samples.
 
-        :param param_values: Dictionary mapping parameter names to values.
-        :param theta_samples: Theta values to evaluate at. If None, uses
-            equally spaced samples over [0, 2*pi].
-        :returns: Mean objective value.
+        Args:
+            param_values: Dictionary mapping parameter names to values.
+            theta_samples: Theta values to evaluate at. If None, uses
+                equally spaced samples over [0, 2*pi].
+
+        Returns:
+            Mean objective value.
         """
         if theta_samples is None:
             theta_samples = np.linspace(0, 2 * np.pi, self.theta_samples)
@@ -186,10 +196,13 @@ class SymbolicOptimizer:
 
         The gradient is averaged over all theta samples.
 
-        :param param_values: Dictionary mapping parameter names to values.
-        :param theta_samples: Theta values to evaluate at. If None, uses
-            equally spaced samples over [0, 2*pi].
-        :returns: Array of gradient values (one per parameter).
+        Args:
+            param_values: Dictionary mapping parameter names to values.
+            theta_samples: Theta values to evaluate at. If None, uses
+                equally spaced samples over [0, 2*pi].
+
+        Returns:
+            Array of gradient values (one per parameter).
         """
         if theta_samples is None:
             theta_samples = np.linspace(0, 2 * np.pi, self.theta_samples)
@@ -235,14 +248,17 @@ class SymbolicOptimizer:
 
         Uses scipy.optimize.minimize with analytical gradients.
 
-        :param initial_params: Dictionary of initial parameter values.
-        :param bounds: Dictionary mapping parameter names to (min, max) bounds.
-            If None, parameters are unbounded.
-        :param theta_samples: Theta values for objective evaluation.
-        :param method: Scipy optimization method. Default is "L-BFGS-B".
-        :param maxiter: Maximum iterations. Default is 1000.
-        :param tol: Convergence tolerance. Default is 1e-6.
-        :returns: OptimizationResult with optimal parameters.
+        Args:
+            initial_params: Dictionary of initial parameter values.
+            bounds: Dictionary mapping parameter names to (min, max) bounds.
+                If None, parameters are unbounded.
+            theta_samples: Theta values for objective evaluation.
+            method: Scipy optimization method. Default is "L-BFGS-B".
+            maxiter: Maximum iterations. Default is 1000.
+            tol: Convergence tolerance. Default is 1e-6.
+
+        Returns:
+            OptimizationResult with optimal parameters.
         """
         from scipy.optimize import minimize
 
@@ -299,11 +315,14 @@ def generate_symbolic_bounds(
     Creates bounds as (center/min_ratio, center*max_factor) for each
     parameter. This is similar to the numeric generate_bounds function.
 
-    :param linkage: The symbolic linkage.
-    :param center_values: Dictionary of center values for each parameter.
-    :param min_ratio: Divisor for lower bound. Default is 5.
-    :param max_factor: Multiplier for upper bound. Default is 5.
-    :returns: Dictionary mapping parameter names to (min, max) bounds.
+    Args:
+        linkage: The symbolic linkage.
+        center_values: Dictionary of center values for each parameter.
+        min_ratio: Divisor for lower bound. Default is 5.
+        max_factor: Multiplier for upper bound. Default is 5.
+
+    Returns:
+        Dictionary mapping parameter names to (min, max) bounds.
     """
     bounds = {}
     for param_name in linkage.parameters:
