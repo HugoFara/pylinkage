@@ -9,10 +9,10 @@ from __future__ import annotations
 import math
 
 from .. import exceptions as pl_exceptions
-from ._base import ConnectedDyad, Dyad, _AnchorProxy
+from ._base import Component, ConnectedComponent, _AnchorProxy
 
 
-class RRPDyad(ConnectedDyad):
+class RRPDyad(ConnectedComponent):
     """RRP Dyad - circle-line intersection (slider mechanism).
 
     Positions a joint at the intersection of:
@@ -47,16 +47,16 @@ class RRPDyad(ConnectedDyad):
 
     __slots__ = ("revolute_anchor", "line_anchor1", "line_anchor2", "distance")
 
-    revolute_anchor: Dyad | _AnchorProxy
-    line_anchor1: Dyad | _AnchorProxy
-    line_anchor2: Dyad | _AnchorProxy
+    revolute_anchor: Component | _AnchorProxy
+    line_anchor1: Component | _AnchorProxy
+    line_anchor2: Component | _AnchorProxy
     distance: float
 
     def __init__(
         self,
-        revolute_anchor: Dyad | _AnchorProxy,
-        line_anchor1: Dyad | _AnchorProxy,
-        line_anchor2: Dyad | _AnchorProxy,
+        revolute_anchor: Component | _AnchorProxy,
+        line_anchor1: Component | _AnchorProxy,
+        line_anchor2: Component | _AnchorProxy,
         distance: float,
         x: float | None = None,
         y: float | None = None,
@@ -84,7 +84,7 @@ class RRPDyad(ConnectedDyad):
             self._initialize_position()
 
     @property
-    def anchors(self) -> tuple[Dyad, Dyad, Dyad]:
+    def anchors(self) -> tuple[Component, Component, Component]:
         """Return the parent dyads (revolute anchor, line anchors)."""
         ra = (
             self.revolute_anchor._parent
@@ -104,7 +104,7 @@ class RRPDyad(ConnectedDyad):
         return (ra, la1, la2)
 
     def _get_anchor_position(
-        self, anchor: Dyad | _AnchorProxy
+        self, anchor: Component | _AnchorProxy
     ) -> tuple[float | None, float | None]:
         """Get the position of an anchor."""
         if isinstance(anchor, _AnchorProxy):

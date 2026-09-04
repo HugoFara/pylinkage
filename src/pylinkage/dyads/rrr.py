@@ -9,7 +9,7 @@ from __future__ import annotations
 import math
 
 from .. import exceptions as pl_exceptions
-from ._base import BinaryDyad, Dyad, _AnchorProxy
+from ._base import BinaryDyad, Component, _AnchorProxy
 
 
 class RRRDyad(BinaryDyad):
@@ -47,8 +47,8 @@ class RRRDyad(BinaryDyad):
 
     def __init__(
         self,
-        anchor1: Dyad | _AnchorProxy,
-        anchor2: Dyad | _AnchorProxy,
+        anchor1: Component | _AnchorProxy,
+        anchor2: Component | _AnchorProxy,
         distance1: float,
         distance2: float,
         x: float | None = None,

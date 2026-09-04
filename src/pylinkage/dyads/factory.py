@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from ._base import Dyad, _AnchorProxy
+from ._base import Component, _AnchorProxy
 from .pp import PPDyad
 from .rrp import RRPDyad
 from .rrr import RRRDyad
@@ -86,7 +86,7 @@ def _parse_isomer_signature(signature: str) -> tuple[str, str]:
 
 def create_dyad(
     signature: str,
-    anchors: dict[str, Dyad | _AnchorProxy | Component],
+    anchors: dict[str, Component | _AnchorProxy],
     constraints: dict[str, float] | None = None,
     x: float | None = None,
     y: float | None = None,
@@ -162,7 +162,7 @@ def create_dyad(
 
 
 def _create_rrr_dyad(
-    anchors: dict[str, Dyad | _AnchorProxy | Component],
+    anchors: dict[str, Component | _AnchorProxy],
     constraints: dict[str, float],
     x: float | None,
     y: float | None,
@@ -195,7 +195,7 @@ def _create_rrr_dyad(
 
 
 def _create_rrp_dyad(
-    anchors: dict[str, Dyad | _AnchorProxy | Component],
+    anchors: dict[str, Component | _AnchorProxy],
     constraints: dict[str, float],
     x: float | None,
     y: float | None,
@@ -228,7 +228,7 @@ def _create_rrp_dyad(
 
 
 def _create_pp_dyad(
-    anchors: dict[str, Dyad | _AnchorProxy | Component],
+    anchors: dict[str, Component | _AnchorProxy],
     constraints: dict[str, float],
     x: float | None,
     y: float | None,

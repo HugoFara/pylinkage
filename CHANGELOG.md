@@ -46,6 +46,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Documentation links that pointed at the wrong class.** `pylinkage.dyads`
+  exports `Dyad` as a plain alias of `Component` (and `ConnectedDyad` of
+  `ConnectedComponent`), and the package annotated its anchors with that alias —
+  `revolute_anchor: Dyad | _AnchorProxy`. Two unrelated classes are also named
+  `Dyad` (`pylinkage.assur.Dyad`, an Assur group, and `pylinkage.synthesis.Dyad`,
+  a Burmester construct), so Sphinx resolved those annotations to one of them and
+  sent readers to a class the code never referred to. The annotations now name
+  `Component` directly. The `Dyad` and `ConnectedDyad` aliases remain exported
+  and unchanged, so no import breaks. Docs build warnings drop from 38 to 8.
+
 - **Broken README links, on three surfaces at once.** The README linked to the
   15 tutorial notebooks, `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` with
   repository-relative paths. Those resolve only on GitHub: on the PyPI landing
