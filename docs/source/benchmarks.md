@@ -149,18 +149,18 @@ implies more gently than the timings warrant.
 ```
 
 ```{note}
-`n_orientation_samples` is **not** an effective control, despite its name and
-what earlier versions of this page claimed. Measured on the four precision
-points above, the values 6, 12, 36 and 72 all take the same time and return the
-same ten solutions; on other point sets, lowering it returns *fewer* solutions
-without being faster. The parameter sets a per-axis grid resolution that is
-floored at 6, so it has no effect across most of its useful range.
+`n_orientation_samples` is deprecated in favour of `orientation_resolution`,
+which is the per-axis grid resolution the old argument was silently folded
+into. The grid holds `orientation_resolution ** (n_points - 1)` candidates, so
+the exponential above is visible in the signature rather than discovered at
+runtime. The default of 6 is unchanged, and old calls are translated, so no
+result moves. See [Deprecations](deprecations.md).
 
-Making it mean what its name says -- roughly that many candidate orientations in
-total -- was measured and rejected: it loses solutions. On three of six test
-point sets the search then returned nothing where it previously found ten. The
-dense grid earns its cost, so only the name and the documentation were ever
-wrong. Tracked in [#29](https://github.com/HugoFara/pylinkage/issues/29).
+Lowering the resolution is rarely the trade it looks like: a coarser grid
+returns *no* solutions more often than it returns fewer. On three of six test
+point sets, shrinking it took the result from ten solutions to zero. The dense
+grid earns its cost. Use `max_solutions` to control the time; that one is
+monotone.
 ```
 
 ## What is not benchmarked here

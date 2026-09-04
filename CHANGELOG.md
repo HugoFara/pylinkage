@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`orientation_resolution` on `path_generation()`**, replacing
+  `n_orientation_samples`. It is the number of angles sampled per free
+  orientation, so the cost model is now readable from the signature: the search
+  grid holds `orientation_resolution ** (n_precision_points - 1)` candidates.
+  The default of 6 reproduces the old default exactly.
+
+- **A warning when path generation is about to be slow.** Cost grows
+  exponentially in the number of precision points, and nothing said so. Five
+  points reach a four-dimensional grid that can run for seconds and still
+  return nothing. Calls whose grid exceeds a thousand candidates now warn up
+  front, and the message is repeated in `SynthesisResult.warnings`.
+
 - **`pylinkage.synthesis.BurmesterDyad`**, the new name for what was
   `pylinkage.synthesis.Dyad`. Same class, same behaviour; the old name still
   works and now warns.
@@ -57,6 +69,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   faster, the solver did not regress.
 
 ### Deprecated
+
+- **`n_orientation_samples`, which never denoted a number of samples.** It was
+  folded into a per-axis grid resolution through
+  `max(6, round(n_samples ** (1 / free)))`, so the floor swallowed it: with four
+  precision points every value from 6 to 216 produced an identical search.
+  Measured on the README's points, 6, 12, 36 and 72 all took the same time and
+  returned the same ten solutions. It now emits a `DeprecationWarning`, is
+  translated through the old formula so no result moves, and is scheduled for
+  removal in 2.0.0. Use `orientation_resolution`.
+
+  Redefining it to mean what its name says — roughly that many candidates in
+  total — was implemented, measured and rejected: on three of six test point
+  sets the search then returned nothing where it had found ten. Reordering the
+  grid coarse-to-fine or shuffling it was also measured, in case truncation was
+  merely sampling a biased corner; neither changed the solutions found nor the
+  time taken. The dense grid earns its cost, so the search is unchanged and only
+  the name was wrong.
 
 - **The three `Dyad` names that were not what they said.** Three unrelated
   classes were reachable as `Dyad`, and only two were dyads at all:

@@ -119,7 +119,7 @@ def main() -> None:
     print("Synthesizing four-bar linkages through target points...")
     result = path_generation(
         TARGET_POINTS,
-        n_orientation_samples=48,
+        orientation_resolution=8,
         max_solutions=12,
         require_grashof=True,
     )
