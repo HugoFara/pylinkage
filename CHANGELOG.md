@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **`path_generation()` is 2-8x faster**, with byte-identical results. Verifying
+  a candidate by simulating it was 67% of the runtime, and ran through the
+  pure-Python `Linkage.step()`; it now uses the numba solver, which executes the
+  same `solve_*` functions roughly twenty times faster. Measured end to end:
+
+  | Precision points | Before | After |
+  |---|---:|---:|
+  | README example | 345 ms | 163 ms |
+  | Benchmarked example | 1689 ms | 678 ms |
+  | Three points | 430 ms | 55 ms |
+
+  The two paths report an unassemblable mechanism differently — `step()` raises,
+  the solver writes `NaN` — so a naive switch would silently change which
+  candidates survive. Both are treated as rejection, and the solution sets are
+  verified identical across six point sets. `step()` is still used when numba is
+  absent or the mechanism contains a component the solver cannot represent.
+  This became possible only once `step_fast()` stopped returning `NaN` for
+  `FixedDyad`, the component carrying the coupler point.
+
+- **`Linkage.step()` is about a quarter faster** — 257,550 to 325,718 steps/s on
+  the reference four-bar — which speeds up every simulation, not only synthesis.
+  Two things in the innermost loop: `step()` re-ran `isinstance(component,
+  (Crank, ArcCrank, LinearActuator))` for every component on every iteration
+  although the classification is a property of the solve order, and
+  `_get_anchor_position` ran an `isinstance` check against an abstract base
+  class whose two branches returned the same expression. The published
+  `step_fast()` speedup falls from 6.4x to 5.1x as a result: the numerator got
+  faster, the solver did not regress.
+
+### Fixed
+
+- **The benchmarks page figures are regenerated** against the above, and its
+  breakdown of `path_generation()` is rewritten: Burmester synthesis over the
+  orientation grid is now 87% of the runtime and verification under 10%, the
+  reverse of what the page described. It also now warns that cost grows
+  exponentially in the number of precision points — five points can take seconds
+  and return nothing — which no documentation said.
+
 ### Fixed
 
 - **`step_fast()` silently returned NaN for every dyad except `RRRDyad`.**

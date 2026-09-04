@@ -204,13 +204,22 @@ class Linkage:
         if iterations is None:
             iterations = self.get_rotation_period()
 
+        # Whether a component is actuator-driven is a property of the solve
+        # order, not of the step, so classify once rather than on every
+        # component on every iteration.
+        plan = [
+            (component, isinstance(component, (Crank, ArcCrank, LinearActuator)))
+            for component in self._solve_order
+        ]
+        components = self.components
+
         for _ in range(iterations):
-            for component in self._solve_order:
-                if isinstance(component, (Crank, ArcCrank, LinearActuator)):
+            for component, is_actuator in plan:
+                if is_actuator:
                     component.reload(dt)
                 else:
                     component.reload()
-            yield tuple(d.position for d in self.components)
+            yield tuple(d.position for d in components)
 
     def get_rotation_period(self) -> int:
         """Return number of steps for one full cycle.

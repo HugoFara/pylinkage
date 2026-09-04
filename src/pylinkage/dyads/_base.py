@@ -48,12 +48,15 @@ class BinaryDyad(ConnectedComponent):
     ) -> tuple[float | None, float | None]:
         """Get the position of an anchor.
 
+        Both a Component and an _AnchorProxy expose ``position``, so no
+        dispatch is needed. This runs once per anchor per simulation step,
+        which is often enough that the removed isinstance check against an
+        abstract base class was measurable.
+
         Args:
             anchor: Either a Component or an _AnchorProxy.
 
         Returns:
             The (x, y) position of the anchor.
         """
-        if isinstance(anchor, _AnchorProxy):
-            return anchor.position
         return anchor.position
