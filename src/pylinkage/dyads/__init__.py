@@ -53,21 +53,18 @@ Backwards Compatibility:
     - Ground: from pylinkage.components
     - Crank, LinearActuator: from pylinkage.actuators
     - Linkage: from pylinkage.simulation
-    - Dyad, ConnectedDyad: aliases for Component, ConnectedComponent
+    - Dyad, ConnectedDyad: deprecated aliases, see the Deprecations page
 """
 
-# Primary exports - true Assur groups
-# Actuators
+# Primary exports are the true Assur groups defined in this package; the rest
+# are re-exports kept for backwards compatibility.
+from .._deprecation import DeprecatedAlias, deprecated_getattr
 from ..actuators import ArcCrank as ArcCrank
 from ..actuators import Crank as Crank
 from ..actuators import LinearActuator as LinearActuator
-
-# Re-exports for backwards compatibility
-# Base classes (with proper aliases)
+from ..components import _ALIAS_REASON
 from ..components import Component as Component
 from ..components import ConnectedComponent as ConnectedComponent
-from ..components import ConnectedDyad as ConnectedDyad  # Alias for ConnectedComponent
-from ..components import Dyad as Dyad  # Alias for Component
 
 # Ground and sensors from components
 from ..components import Ground as Ground
@@ -116,7 +113,26 @@ __all__ = [
     # Base classes
     "Component",
     "ConnectedComponent",
-    "Dyad",  # Alias for Component
-    "ConnectedDyad",  # Alias for ConnectedComponent
     "_AnchorProxy",
+    # Deprecated aliases, served by __getattr__ below.
+    "Dyad",
+    "ConnectedDyad",
 ]
+
+
+_DEPRECATED = {
+    "Dyad": DeprecatedAlias(
+        value=Component,
+        replacement="pylinkage.components.Component",
+        removed_in="2.0.0",
+        reason=_ALIAS_REASON,
+    ),
+    "ConnectedDyad": DeprecatedAlias(
+        value=ConnectedComponent,
+        replacement="pylinkage.components.ConnectedComponent",
+        removed_in="2.0.0",
+        reason=_ALIAS_REASON,
+    ),
+}
+
+__getattr__ = deprecated_getattr(__name__, _DEPRECATED)

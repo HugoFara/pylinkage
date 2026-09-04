@@ -36,7 +36,7 @@ from .burmester import (
     compute_circle_point_curve,
     select_compatible_dyads,
 )
-from .core import Dyad, SynthesisProblem, SynthesisResult
+from .core import BurmesterDyad, SynthesisProblem, SynthesisResult
 from .utils import GrashofType, grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
@@ -44,8 +44,8 @@ if TYPE_CHECKING:
 
 
 def _dyads_to_motion_fourbar(
-    dyad_left: Dyad,
-    dyad_right: Dyad,
+    dyad_left: BurmesterDyad,
+    dyad_right: BurmesterDyad,
     reference_pose: Pose,
 ) -> FourBarSolution | None:
     """Convert dyads to four-bar for motion generation.
@@ -54,8 +54,8 @@ def _dyads_to_motion_fourbar(
     (coupler) and the center points are fixed pivots (frame).
 
     Args:
-        dyad_left: Dyad for left side (A-B connection).
-        dyad_right: Dyad for right side (D-C connection).
+        dyad_left: BurmesterDyad for left side (A-B connection).
+        dyad_right: BurmesterDyad for right side (D-C connection).
         reference_pose: Reference pose (typically first pose).
 
     Returns:

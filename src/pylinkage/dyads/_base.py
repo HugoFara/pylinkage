@@ -8,12 +8,8 @@ from __future__ import annotations
 
 from ..components import Component, ConnectedComponent, _AnchorProxy
 
-# Re-export for backwards compatibility and use by dyad classes
-__all__ = ["BinaryDyad", "Dyad", "ConnectedDyad", "_AnchorProxy", "Component", "ConnectedComponent"]
-
-# Backwards compatibility aliases
-Dyad = Component
-ConnectedDyad = ConnectedComponent
+# Re-exported for use by the dyad classes in this package
+__all__ = ["BinaryDyad", "_AnchorProxy", "Component", "ConnectedComponent"]
 
 
 class BinaryDyad(ConnectedComponent):

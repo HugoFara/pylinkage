@@ -42,7 +42,7 @@ from .burmester import (
     compute_circle_point_curve,
     select_compatible_dyads,
 )
-from .core import Dyad, SynthesisProblem, SynthesisResult
+from .core import BurmesterDyad, SynthesisProblem, SynthesisResult
 from .utils import GrashofType, grashof_check, validate_fourbar
 
 if TYPE_CHECKING:
@@ -167,8 +167,8 @@ def _points_to_poses(
 
 
 def _dyads_to_fourbar(
-    dyad_left: Dyad,
-    dyad_right: Dyad,
+    dyad_left: BurmesterDyad,
+    dyad_right: BurmesterDyad,
     coupler_point_world: Point2D | None = None,
 ) -> FourBarSolution | None:
     """Convert two dyads to a four-bar solution.
@@ -177,8 +177,8 @@ def _dyads_to_fourbar(
     The right dyad connects ground pivot D to coupler point C.
 
     Args:
-        dyad_left: Dyad for the crank side (A-B).
-        dyad_right: Dyad for the rocker side (D-C).
+        dyad_left: BurmesterDyad for the crank side (A-B).
+        dyad_right: BurmesterDyad for the rocker side (D-C).
         coupler_point_world: World-frame position of the traced coupler
             point at the first precision position. This is the point that
             should pass through the precision points.
