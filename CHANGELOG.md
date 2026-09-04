@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`pylinkage.synthesis.BurmesterDyad`**, the new name for what was
+  `pylinkage.synthesis.Dyad`. Same class, same behaviour; the old name still
+  works and now warns.
+
+- **A deprecation policy, at `docs/source/deprecations.md`.** One page stating
+  what pylinkage promises about public names: a name is announced with a
+  `DeprecationWarning` naming its replacement and removal release, and is
+  removed no earlier than the next major version. It carries the table of
+  everything currently deprecated, and how to surface the warnings, which are
+  silent by default in Python.
+
+- `pylinkage._deprecation`, the machinery behind that: deprecated names are
+  removed from their module's namespace and served by a module-level
+  `__getattr__` (PEP 562), so reading one warns while `from ... import Name`
+  keeps resolving exactly as before.
+
 ### Changed
 
 - **`path_generation()` is 2-8x faster**, with byte-identical results. Verifying
@@ -38,6 +56,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `step_fast()` speedup falls from 6.4x to 5.1x as a result: the numerator got
   faster, the solver did not regress.
 
+### Deprecated
+
+- **The three `Dyad` names that were not what they said.** Three unrelated
+  classes were reachable as `Dyad`, and only two were dyads at all:
+  `pylinkage.assur.Dyad` (an Assur group, unaffected and keeping its name),
+  `pylinkage.synthesis.Dyad` (a Burmester dyad, now `BurmesterDyad`), and
+  `pylinkage.components.Dyad` / `pylinkage.dyads.Dyad` with their
+  `ConnectedDyad` counterparts, which were plain aliases of `Component` and
+  `ConnectedComponent` — a `Ground` point is a `Component`, and calling it a
+  dyad is simply wrong. All four aliases now emit a `DeprecationWarning` and
+  are scheduled for removal in 2.0.0. Nothing breaks: each name still resolves
+  to the same object it always did, and stays in its module's `__all__`.
+
+  The concrete cost of the collision was that Sphinx could not tell the three
+  apart, so cross-references landed on the wrong class. With the aliases
+  deprecated and the rename in place, the documentation build goes from 8
+  warnings to **0**.
+
 ### Fixed
 
 - **The benchmarks page figures are regenerated** against the above, and its
@@ -46,8 +82,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reverse of what the page described. It also now warns that cost grows
   exponentially in the number of precision points — five points can take seconds
   and return nothing — which no documentation said.
-
-### Fixed
 
 - **`step_fast()` silently returned NaN for every dyad except `RRRDyad`.**
   `linkage_to_solver_data()` typed every dyad as `JOINT_REVOLUTE` and read
@@ -69,8 +103,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `step()` and `step_fast()` now agree bit for bit on all three supported dyad
   types, and are tested to.
 
-### Fixed
-
 - **The benchmarks page gave wrong advice about `path_generation()`.** It
   attributed the cost to the orientation sweep and said lowering
   `n_orientation_samples` trades coverage for time roughly linearly. Profiling
@@ -83,8 +115,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `path_generation()` docstring now say so, and the page notes that cost
   depends heavily on which points are asked for: two four-point problems
   returning ten solutions each measured 336 ms and 1676 ms. Tracked in #29.
-
-### Fixed
 
 - **The cited DOI pointed at 1.0.0 and would have gone stale every release.**
   `CITATION.cff` and the README badge carried `10.5281/zenodo.21207487`, the
@@ -100,42 +130,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `{now}`. `CONTRIBUTING.md`'s release section is corrected to match, and gains
   the `uv lock` step it was missing — `uv.lock` records the project version and
   bump-my-version does not touch it.
-
-### Added
-
-- **`pylinkage.synthesis.BurmesterDyad`**, the new name for what was
-  `pylinkage.synthesis.Dyad`. Same class, same behaviour; the old name still
-  works and now warns.
-
-- **A deprecation policy, at `docs/source/deprecations.md`.** One page stating
-  what pylinkage promises about public names: a name is announced with a
-  `DeprecationWarning` naming its replacement and removal release, and is
-  removed no earlier than the next major version. It carries the table of
-  everything currently deprecated, and how to surface the warnings, which are
-  silent by default in Python.
-
-- `pylinkage._deprecation`, the machinery behind that: deprecated names are
-  removed from their module's namespace and served by a module-level
-  `__getattr__` (PEP 562), so reading one warns while `from ... import Name`
-  keeps resolving exactly as before.
-
-### Deprecated
-
-- **The three `Dyad` names that were not what they said.** Three unrelated
-  classes were reachable as `Dyad`, and only two were dyads at all:
-  `pylinkage.assur.Dyad` (an Assur group, unaffected and keeping its name),
-  `pylinkage.synthesis.Dyad` (a Burmester dyad, now `BurmesterDyad`), and
-  `pylinkage.components.Dyad` / `pylinkage.dyads.Dyad` with their
-  `ConnectedDyad` counterparts, which were plain aliases of `Component` and
-  `ConnectedComponent` — a `Ground` point is a `Component`, and calling it a
-  dyad is simply wrong. All four aliases now emit a `DeprecationWarning` and
-  are scheduled for removal in 2.0.0. Nothing breaks: each name still resolves
-  to the same object it always did, and stays in its module's `__all__`.
-
-  The concrete cost of the collision was that Sphinx could not tell the three
-  apart, so cross-references landed on the wrong class. With the aliases
-  deprecated and the rename in place, the documentation build goes from 8
-  warnings to **0**.
 
 ## [1.1.1] - 2026-09-04
 
