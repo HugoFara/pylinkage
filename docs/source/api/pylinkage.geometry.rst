@@ -9,21 +9,21 @@ pylinkage.geometry.core module
 
 .. automodule:: pylinkage.geometry.core
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 pylinkage.geometry.secants module
 ---------------------------------
 
 .. automodule:: pylinkage.geometry.secants
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: pylinkage.geometry
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
