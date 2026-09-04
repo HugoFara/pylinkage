@@ -69,34 +69,37 @@ def differential_evolution_optimization(
     gradient information. It is generally faster than grid search and
     can handle multimodal objective functions.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-        The optimizer will look for the score based on order_relation.
-    :param linkage: Linkage to be optimized.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-        If None, bounds will be generated from linkage constraints using
-        generate_bounds().
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param strategy: Differential evolution strategy. Options include:
-        'best1bin', 'best1exp', 'rand1exp', 'randtobest1exp', 'best2exp',
-        'rand2exp', 'randtobest1bin', 'best2bin', 'rand2bin', 'rand1bin'.
-        Default is "best1bin".
-    :param maxiter: Maximum number of generations. Default is 1000.
-    :param popsize: Population size multiplier. The total population will be
-        popsize * dimensions. Default is 15.
-    :param tol: Relative tolerance for convergence. Default is 0.01.
-    :param mutation: Mutation constant (dithering). Can be a float in [0, 2]
-        or a tuple (min, max). Default is (0.5, 1.0).
-    :param recombination: Recombination constant in [0, 1]. Default is 0.7.
-    :param seed: Random seed for reproducibility.
-    :param workers: Number of parallel workers. Use -1 for all CPUs. Default is 1.
-    :param verbose: Print progress if True. Default is True.
-    :param kwargs: Additional keyword arguments passed to differential_evolution.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+            The optimizer will look for the score based on order_relation.
+        linkage: Linkage to be optimized.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+            If None, bounds will be generated from linkage constraints using
+            generate_bounds().
+        order_relation: How to compare scores (max or min). Default is max.
+        strategy: Differential evolution strategy. Options include:
+            'best1bin', 'best1exp', 'rand1exp', 'randtobest1exp', 'best2exp',
+            'rand2exp', 'randtobest1bin', 'best2bin', 'rand2bin', 'rand1bin'.
+            Default is "best1bin".
+        maxiter: Maximum number of generations. Default is 1000.
+        popsize: Population size multiplier. The total population will be
+            popsize * dimensions. Default is 15.
+        tol: Relative tolerance for convergence. Default is 0.01.
+        mutation: Mutation constant (dithering). Can be a float in [0, 2]
+            or a tuple (min, max). Default is (0.5, 1.0).
+        recombination: Recombination constant in [0, 1]. Default is 0.7.
+        seed: Random seed for reproducibility.
+        workers: Number of parallel workers. Use -1 for all CPUs. Default is 1.
+        verbose: Print progress if True. Default is True.
+        kwargs: Additional keyword arguments passed to differential_evolution.
 
-    :returns: Ensemble with the best result (single member).
+    Returns:
+        Ensemble with the best result (single member).
 
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        OptimizationError: If parameters are invalid or optimization fails.
 
     Example::
 
@@ -204,29 +207,32 @@ def dual_annealing_optimization(
     with controlled random jumps, making it effective for problems with many
     local minima and expensive evaluations.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-    :param linkage: Linkage to be optimized.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-        If None, bounds will be generated from linkage constraints.
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param maxiter: Maximum number of global iterations. Default is 1000.
-    :param initial_temp: Initial temperature for the annealing schedule.
-        Higher values allow more exploration. Default is 5230.0.
-    :param restart_temp_ratio: Fraction of initial_temp at which the
-        temperature is restarted. Default is 2e-5.
-    :param visit: Parameter for the visiting distribution. Higher values
-        give heavier tails (more long-range jumps). Default is 2.62.
-    :param accept: Parameter for the acceptance distribution. Lower values
-        make acceptance more restrictive. Default is -5.0.
-    :param seed: Random seed for reproducibility.
-    :param verbose: Print progress if True. Default is True.
-    :param kwargs: Additional keyword arguments passed to dual_annealing.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+        linkage: Linkage to be optimized.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+            If None, bounds will be generated from linkage constraints.
+        order_relation: How to compare scores (max or min). Default is max.
+        maxiter: Maximum number of global iterations. Default is 1000.
+        initial_temp: Initial temperature for the annealing schedule.
+            Higher values allow more exploration. Default is 5230.0.
+        restart_temp_ratio: Fraction of initial_temp at which the
+            temperature is restarted. Default is 2e-5.
+        visit: Parameter for the visiting distribution. Higher values
+            give heavier tails (more long-range jumps). Default is 2.62.
+        accept: Parameter for the acceptance distribution. Lower values
+            make acceptance more restrictive. Default is -5.0.
+        seed: Random seed for reproducibility.
+        verbose: Print progress if True. Default is True.
+        kwargs: Additional keyword arguments passed to dual_annealing.
 
-    :returns: Ensemble with the best result (single member).
+    Returns:
+        Ensemble with the best result (single member).
 
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        OptimizationError: If parameters are invalid or optimization fails.
 
     Example::
 
@@ -334,32 +340,35 @@ def minimize_linkage(
     scipy's minimize function. It supports various gradient-free methods
     suitable for linkage optimization.
 
-    :param eval_func: The evaluation function.
-        Input: (linkage, num_constraints, initial_coordinates).
-        Output: score (float).
-        The optimizer will look for the score based on order_relation.
-    :param linkage: Linkage to be optimized.
-    :param x0: Initial guess for the parameters. If None, uses current
-        linkage constraints.
-    :param bounds: Bounds to the space, in format (lower_bound, upper_bound).
-        If None and method supports bounds, bounds will be generated from
-        linkage constraints.
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param method: Optimization method. Options:
-        - "Nelder-Mead": Simplex method, no bounds (default)
-        - "Powell": Powell's method, no bounds
-        - "COBYLA": Constrained optimization by linear approximation
-        - "L-BFGS-B": Limited-memory BFGS with bounds
-        - "SLSQP": Sequential Least Squares Programming
-        - "TNC": Truncated Newton with bounds
-    :param maxiter: Maximum number of iterations. If None, uses scipy default.
-    :param tol: Tolerance for termination. If None, uses scipy default.
-    :param verbose: Print progress if True. Default is True.
-    :param kwargs: Additional keyword arguments passed to minimize.
+    Args:
+        eval_func: The evaluation function.
+            Input: (linkage, num_constraints, initial_coordinates).
+            Output: score (float).
+            The optimizer will look for the score based on order_relation.
+        linkage: Linkage to be optimized.
+        x0: Initial guess for the parameters. If None, uses current
+            linkage constraints.
+        bounds: Bounds to the space, in format (lower_bound, upper_bound).
+            If None and method supports bounds, bounds will be generated from
+            linkage constraints.
+        order_relation: How to compare scores (max or min). Default is max.
+        method: Optimization method. Options:
+            - "Nelder-Mead": Simplex method, no bounds (default)
+            - "Powell": Powell's method, no bounds
+            - "COBYLA": Constrained optimization by linear approximation
+            - "L-BFGS-B": Limited-memory BFGS with bounds
+            - "SLSQP": Sequential Least Squares Programming
+            - "TNC": Truncated Newton with bounds
+        maxiter: Maximum number of iterations. If None, uses scipy default.
+        tol: Tolerance for termination. If None, uses scipy default.
+        verbose: Print progress if True. Default is True.
+        kwargs: Additional keyword arguments passed to minimize.
 
-    :returns: Ensemble with the best result (single member).
+    Returns:
+        Ensemble with the best result (single member).
 
-    :raises OptimizationError: If parameters are invalid or optimization fails.
+    Raises:
+        OptimizationError: If parameters are invalid or optimization fails.
 
     Example::
 
@@ -469,18 +478,21 @@ def chain_optimizers(
     starting point (via ``center`` for population-based methods, or ``x0``
     for local methods).
 
-    :param eval_func: The evaluation function, shared across all stages.
-    :param linkage: Linkage to be optimized.
-    :param stages: Sequence of ``(optimizer_func, kwargs)`` tuples. Each
-        ``optimizer_func`` must accept ``eval_func`` and ``linkage`` as
-        its first two positional arguments. ``kwargs`` are passed through.
-        Do **not** include ``eval_func`` or ``linkage`` in ``kwargs``.
-    :param order_relation: How to compare scores (max or min). Default is max.
-    :param verbose: Print stage headers and progress. Default is True.
+    Args:
+        eval_func: The evaluation function, shared across all stages.
+        linkage: Linkage to be optimized.
+        stages: Sequence of ``(optimizer_func, kwargs)`` tuples. Each
+            ``optimizer_func`` must accept ``eval_func`` and ``linkage`` as
+            its first two positional arguments. ``kwargs`` are passed through.
+            Do **not** include ``eval_func`` or ``linkage`` in ``kwargs``.
+        order_relation: How to compare scores (max or min). Default is max.
+        verbose: Print stage headers and progress. Default is True.
 
-    :returns: Ensemble from the final optimization stage.
+    Returns:
+        Ensemble from the final optimization stage.
 
-    :raises OptimizationError: If no stages are provided.
+    Raises:
+        OptimizationError: If no stages are provided.
 
     Example::
 

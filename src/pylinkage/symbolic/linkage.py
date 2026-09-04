@@ -43,9 +43,10 @@ class SymbolicLinkage:
         """
         Create a symbolic linkage from a collection of joints.
 
-        :param joints: Iterable of SymJoint objects.
-        :param theta: Input angle symbol. Default uses the global theta.
-        :param name: Human-readable name for the linkage.
+        Args:
+            joints: Iterable of SymJoint objects.
+            theta: Input angle symbol. Default uses the global theta.
+            name: Human-readable name for the linkage.
         """
         self.joints = tuple(joints)
         self.theta = theta if theta is not None else default_theta
@@ -65,7 +66,8 @@ class SymbolicLinkage:
         Collects parameters from all joints and returns them as a
         dictionary mapping parameter names to symbols.
 
-        :returns: Dictionary of parameter name to symbol.
+        Returns:
+            Dictionary of parameter name to symbol.
         """
         if self._parameters is None:
             self._parameters = {}
@@ -78,9 +80,14 @@ class SymbolicLinkage:
         """
         Get a joint by name.
 
-        :param name: Name of the joint.
-        :returns: The joint with the given name.
-        :raises ValueError: If no joint with the given name exists.
+        Args:
+            name: Name of the joint.
+
+        Returns:
+            The joint with the given name.
+
+        Raises:
+            ValueError: If no joint with the given name exists.
         """
         for joint in self.joints:
             if joint.name == name:
@@ -91,7 +98,8 @@ class SymbolicLinkage:
         """
         Return symbolic trajectory expressions for all joints.
 
-        :returns: Dictionary mapping joint name to (x(theta), y(theta)).
+        Returns:
+            Dictionary mapping joint name to (x(theta), y(theta)).
         """
         return {joint.name: joint.position_expr() for joint in self.joints}
 
@@ -99,7 +107,8 @@ class SymbolicLinkage:
         """
         Return all constraint equations for the linkage.
 
-        :returns: List of SymPy Eq objects representing all constraints.
+        Returns:
+            List of SymPy Eq objects representing all constraints.
         """
         equations: list[sp.Eq] = []
         for joint in self.joints:
@@ -110,9 +119,14 @@ class SymbolicLinkage:
         """
         Get the trajectory expression for a specific joint.
 
-        :param joint_name: Name of the joint.
-        :returns: Tuple of (x(theta), y(theta)) expressions.
-        :raises ValueError: If no joint with the given name exists.
+        Args:
+            joint_name: Name of the joint.
+
+        Returns:
+            Tuple of (x(theta), y(theta)) expressions.
+
+        Raises:
+            ValueError: If no joint with the given name exists.
         """
         joint = self.get_joint(joint_name)
         return joint.position_expr()
@@ -128,9 +142,12 @@ class SymbolicLinkage:
         each parameter. This is useful for sensitivity analysis and
         gradient-based optimization.
 
-        :param joint_names: List of joint names to include. If None, all
-            joints are included.
-        :returns: SymPy Matrix of shape (2*n_joints, n_params).
+        Args:
+            joint_names: List of joint names to include. If None, all
+                joints are included.
+
+        Returns:
+            SymPy Matrix of shape (2*n_joints, n_params).
         """
         if joint_names is None:
             joints_to_include = self.joints
@@ -159,9 +176,12 @@ class SymbolicLinkage:
 
         This gives the velocity direction for each joint.
 
-        :param joint_names: List of joint names to include. If None, all
-            joints are included.
-        :returns: SymPy Matrix of shape (2*n_joints, 1).
+        Args:
+            joint_names: List of joint names to include. If None, all
+                joints are included.
+
+        Returns:
+            SymPy Matrix of shape (2*n_joints, 1).
         """
         if joint_names is None:
             joints_to_include = self.joints
@@ -185,7 +205,8 @@ class SymbolicLinkage:
         Note: This creates new joint objects with simplified expressions,
         but the linkage structure is preserved.
 
-        :returns: New SymbolicLinkage with simplified position expressions.
+        Returns:
+            New SymbolicLinkage with simplified position expressions.
         """
         from .joints import SymCrank, SymRevolute, SymStatic
 
@@ -246,8 +267,11 @@ class SymbolicLinkage:
         This is useful for partial evaluation or for substituting
         symbolic parameters with numeric values.
 
-        :param param_values: Dictionary mapping parameter names to values.
-        :returns: New SymbolicLinkage with substituted parameters.
+        Args:
+            param_values: Dictionary mapping parameter names to values.
+
+        Returns:
+            New SymbolicLinkage with substituted parameters.
         """
         from .joints import SymCrank, SymRevolute, SymStatic
 

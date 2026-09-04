@@ -18,11 +18,14 @@ def symbolic_dist(
     """
     Compute the symbolic Euclidean distance between two points.
 
-    :param x1: X coordinate of first point.
-    :param y1: Y coordinate of first point.
-    :param x2: X coordinate of second point.
-    :param y2: Y coordinate of second point.
-    :returns: Symbolic expression for the distance.
+    Args:
+        x1: X coordinate of first point.
+        y1: Y coordinate of first point.
+        x2: X coordinate of second point.
+        y2: Y coordinate of second point.
+
+    Returns:
+        Symbolic expression for the distance.
     """
     return sp.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
 
@@ -38,11 +41,14 @@ def symbolic_sqr_dist(
 
     Useful for avoiding square roots in constraint equations.
 
-    :param x1: X coordinate of first point.
-    :param y1: Y coordinate of first point.
-    :param x2: X coordinate of second point.
-    :param y2: Y coordinate of second point.
-    :returns: Symbolic expression for the squared distance.
+    Args:
+        x1: X coordinate of first point.
+        y1: Y coordinate of first point.
+        x2: X coordinate of second point.
+        y2: Y coordinate of second point.
+
+    Returns:
+        Symbolic expression for the squared distance.
     """
     return (x1 - x2) ** 2 + (y1 - y2) ** 2
 
@@ -56,11 +62,14 @@ def symbolic_cyl_to_cart(
     """
     Convert polar coordinates to cartesian coordinates symbolically.
 
-    :param radius: Distance from origin.
-    :param angle: Angle in radians (counterclockwise from positive x-axis).
-    :param ori_x: X coordinate of origin. Default is 0.
-    :param ori_y: Y coordinate of origin. Default is 0.
-    :returns: Tuple of (x, y) symbolic expressions.
+    Args:
+        radius: Distance from origin.
+        angle: Angle in radians (counterclockwise from positive x-axis).
+        ori_x: X coordinate of origin. Default is 0.
+        ori_y: Y coordinate of origin. Default is 0.
+
+    Returns:
+        Tuple of (x, y) symbolic expressions.
     """
     ori_x = sp.sympify(ori_x)
     ori_y = sp.sympify(ori_y)
@@ -94,15 +103,18 @@ def symbolic_circle_intersect(
     - The intersection points are at distance h perpendicular to the line
       connecting the centers.
 
-    :param x1: X coordinate of first circle center.
-    :param y1: Y coordinate of first circle center.
-    :param r1: Radius of first circle.
-    :param x2: X coordinate of second circle center.
-    :param y2: Y coordinate of second circle center.
-    :param r2: Radius of second circle.
-    :param branch: +1 or -1 to select which intersection point.
-        Default is +1.
-    :returns: Tuple of (x, y) symbolic expressions for the intersection.
+    Args:
+        x1: X coordinate of first circle center.
+        y1: Y coordinate of first circle center.
+        r1: Radius of first circle.
+        x2: X coordinate of second circle center.
+        y2: Y coordinate of second circle center.
+        r2: Radius of second circle.
+        branch: +1 or -1 to select which intersection point.
+            Default is +1.
+
+    Returns:
+        Tuple of (x, y) symbolic expressions for the intersection.
 
     Note:
         The expressions may be complex (imaginary) for parameter values
@@ -154,16 +166,19 @@ def symbolic_circle_line_intersect(
     The line is defined by two points on it. The branch parameter
     selects which of the two intersection points to return.
 
-    :param cx: X coordinate of circle center.
-    :param cy: Y coordinate of circle center.
-    :param r: Radius of the circle.
-    :param p1_x: X coordinate of first point on line.
-    :param p1_y: Y coordinate of first point on line.
-    :param p2_x: X coordinate of second point on line.
-    :param p2_y: Y coordinate of second point on line.
-    :param branch: +1 or -1 to select which intersection point.
-        Default is +1.
-    :returns: Tuple of (x, y) symbolic expressions for the intersection.
+    Args:
+        cx: X coordinate of circle center.
+        cy: Y coordinate of circle center.
+        r: Radius of the circle.
+        p1_x: X coordinate of first point on line.
+        p1_y: Y coordinate of first point on line.
+        p2_x: X coordinate of second point on line.
+        p2_y: Y coordinate of second point on line.
+        branch: +1 or -1 to select which intersection point.
+            Default is +1.
+
+    Returns:
+        Tuple of (x, y) symbolic expressions for the intersection.
 
     Note:
         The expressions may be complex (imaginary) for parameter values

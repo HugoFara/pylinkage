@@ -80,14 +80,16 @@ class TransmissionAngleAnalysis:
         marked with horizontal reference lines, and the y-axis is fixed
         to ``[0, 180]`` so plots are comparable across mechanisms.
 
-        :param ax: Axes to draw on. A new figure is created if ``None``.
-        :param show_limits: Draw red dashed lines at the acceptable-range
-            bounds (default ``[40°, 140°]``).
-        :param show_optimum: Draw a green dotted line at 90° (the
-            transmission-angle optimum).
-        :param title: Plot title. Pass ``None`` to omit.
+        Args:
+            ax: Axes to draw on. A new figure is created if ``None``.
+            show_limits: Draw red dashed lines at the acceptable-range
+                bounds (default ``[40°, 140°]``).
+            show_optimum: Draw a green dotted line at 90° (the
+                transmission-angle optimum).
+            title: Plot title. Pass ``None`` to omit.
 
-        :returns: The Matplotlib axes the plot was drawn on.
+        Returns:
+            The Matplotlib axes the plot was drawn on.
         """
         import matplotlib.pyplot as plt
 
