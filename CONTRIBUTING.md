@@ -93,7 +93,9 @@ This section is mainly intended for maintainers.
    uv run sphinx-build -b html docs/source docs/
    ```
 
-3. Bump the version (updates `pyproject.toml` and `src/pylinkage/__init__.py`, commits, and tags):
+3. Bump the version. This updates `pyproject.toml`, `src/pylinkage/__init__.py`
+   and `CITATION.cff` (both its `version` and its `date-released`), then commits
+   and tags:
 
    ```bash
    uv run bump-my-version bump patch  # For bug fixes (0.6.0 → 0.6.1)
@@ -101,7 +103,17 @@ This section is mainly intended for maintainers.
    uv run bump-my-version bump major  # For breaking changes (0.6.0 → 1.0.0)
    ```
 
-   Use `--dry-run` to preview changes without applying them.
+   Use `--dry-run --allow-dirty` to preview changes without applying them.
+
+   `uv.lock` records the project version too, and bump-my-version does not
+   touch it. Run `uv lock` and include the result in the bump commit:
+
+   ```bash
+   uv run bump-my-version bump patch --no-commit --no-tag
+   uv lock
+   git commit -am "chore: bump version X.Y.Z → X.Y.W"
+   git tag -a vX.Y.W -m "Release vX.Y.W"
+   ```
 
 4. Push the commit and tag:
 
@@ -111,6 +123,11 @@ This section is mainly intended for maintainers.
 
 5. Publish a new [GitHub release](https://github.com/HugoFara/pylinkage/releases).
    This triggers automatic PyPI publishing.
+
+   Zenodo mints a DOI for each release on its own, provided the repository is
+   enabled at [zenodo.org/account/settings/github](https://zenodo.org/account/settings/github).
+   Nothing needs editing afterwards: the DOI in `CITATION.cff` and the README
+   badge is the *concept* DOI, which always resolves to the newest version.
 
 ## Caveats
 

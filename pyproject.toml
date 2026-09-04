@@ -173,3 +173,16 @@ replace = 'version = "{new_version}"'
 filename = "src/pylinkage/__init__.py"
 search = '__version__ = "{current_version}"'
 replace = '__version__ = "{new_version}"'
+
+# CITATION.cff carries the release version and date. Both were edited by hand
+# before; the DOI below it is the Zenodo concept DOI, which never changes.
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+search = "version: {current_version}"
+replace = "version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "CITATION.cff"
+regex = true
+search = 'date-released: "[0-9-]+"'
+replace = 'date-released: "{now:%Y-%m-%d}"'
