@@ -17,6 +17,10 @@ result = path_generation([(0, 0), (1, 1), (2, 1), (3, 0)])
 show_linkage(result.solutions[0])
 ```
 
+To run that example: `pip install pylinkage[scipy,viz]`. Synthesis needs SciPy and
+plotting needs Matplotlib; both are [optional extras](#installation), so a plain
+`pip install pylinkage` gives you the core library without them.
+
 ![Path generation result](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/synthesis_path_generation.gif)
 
 ## Installation
