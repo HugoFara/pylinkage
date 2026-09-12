@@ -30,12 +30,37 @@ References:
     - Wampler et al., "Complete Solution of the Nine-Point Path Synthesis"
 """
 
+import math
+
 import pylinkage as pl
 from pylinkage.synthesis import (
     FourBarSolution,
+    crank_angle_limits,
     grashof_check,
     path_generation,
+    solution_to_linkage,
 )
+
+
+def show(result, index=0):
+    """Animate one synthesized linkage.
+
+    A crank-rocker turns fully, so its Linkage animates as it comes. When the
+    crank can only oscillate (double-rocker, non-Grashof), the linkage is
+    rebuilt around an ArcCrank sweeping the reachable range: driven through a
+    full turn it would stop at an unbuildable position.
+    """
+    raw = result.raw_solutions[index]
+    limits = crank_angle_limits(
+        raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
+    )
+    linkage = result.solutions[index]
+    if limits is not None:
+        lo, hi = (math.degrees(a) for a in limits)
+        print(f"  (crank oscillates between {lo:.1f} and {hi:.1f} deg from the ground line)")
+        linkage = solution_to_linkage(raw._replace(arc_limits=limits), name=linkage.name)
+    pl.show_linkage(linkage)
+
 
 
 def demo_basic_path_generation():
@@ -68,16 +93,15 @@ def demo_basic_path_generation():
         require_grashof=True,
     )
 
-    print(f"\nFound {len(result)} solution(s)")
+    print(f"\nFound {len(result.solutions)} solution(s)")
 
     if result.warnings:
         print("Warnings:")
         for warning in result.warnings:
             print(f"  - {warning}")
 
-    if result:
+    if result.solutions:
         # Show the first solution
-        linkage = result.solutions[0]
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nBest solution - Link lengths:")
@@ -92,7 +116,7 @@ def demo_basic_path_generation():
         print(f"  Grashof type: {grashof_type.name}")
 
         print("\nVisualizing synthesized linkage...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_walking_mechanism():
@@ -124,9 +148,9 @@ def demo_walking_mechanism():
         orientation_resolution=8,  # Finer orientation grid, for coverage
     )
 
-    print(f"\nFound {len(result)} walking mechanism solution(s)")
+    print(f"\nFound {len(result.solutions)} walking mechanism solution(s)")
 
-    if result:
+    if result.solutions:
         # Show top 3 solutions
         print("\nTop solutions:")
         for i, raw in enumerate(result.raw_solutions[:3], 1):
@@ -139,7 +163,7 @@ def demo_walking_mechanism():
             print(f"    Type: {grashof_type.name}")
 
         print("\nVisualizing best walking mechanism...")
-        pl.show_linkage(result.solutions[0])
+        show(result)
 
 
 def demo_straight_line_approximation():
@@ -152,11 +176,13 @@ def demo_straight_line_approximation():
     print("Demo 3: Straight Line Approximation")
     print("=" * 60)
 
-    # Collinear points for straight line
-    # Using 3 points for reliable synthesis
+    # Three points on a line are a degenerate case for Burmester theory:
+    # the circle through them has infinite radius, so no finite dyad can
+    # be found. Bow the middle point by a hundredth and the coupler curve
+    # approximates the line to that accuracy.
     precision_points = [
         (0.0, 1.0),
-        (1.0, 1.0),
+        (1.0, 1.02),
         (2.0, 1.0),
     ]
 
@@ -172,15 +198,14 @@ def demo_straight_line_approximation():
         orientation_resolution=8,
     )
 
-    print(f"\nFound {len(result)} straight-line approximation(s)")
+    print(f"\nFound {len(result.solutions)} straight-line approximation(s)")
 
     if result.warnings:
         print("Notes:")
         for warning in result.warnings:
             print(f"  - {warning}")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nBest straight-line approximation:")
@@ -188,7 +213,7 @@ def demo_straight_line_approximation():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing straight-line mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No solutions found. Perfect straight lines are challenging.")
         print("Try using only 3 points or adjusting their positions.")
@@ -221,10 +246,9 @@ def demo_loop_path():
         require_grashof=True,
     )
 
-    print(f"\nFound {len(result)} loop mechanism(s)")
+    print(f"\nFound {len(result.solutions)} loop mechanism(s)")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nLoop mechanism:")
@@ -232,14 +256,20 @@ def demo_loop_path():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing loop mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_constrained_ground_pivots():
     """Path generation with constrained ground pivot positions.
 
-    Sometimes the ground pivot locations are predetermined
-    by the physical design constraints.
+    Sometimes the ground pivot locations are predetermined by the
+    physical design. Both pivots must then lie on the center-point
+    curve of the precision points, which arbitrary positions almost
+    never do: the constraint selects among the linkages the points
+    admit rather than conjuring one for any frame. So the workflow is
+    to synthesize freely, read off the pivots the solutions propose,
+    and fix the pair that suits the frame (here, rounded to the tenth
+    a layout drawing would use).
     """
     print("\n" + "=" * 60)
     print("Demo 5: Constrained Ground Pivots")
@@ -252,13 +282,25 @@ def demo_constrained_ground_pivots():
         (4.0, 3.0),
     ]
 
-    # Fix the ground pivot positions
-    ground_pivot_a = (0.0, 0.0)  # Crank pivot
-    ground_pivot_d = (6.0, 0.0)  # Rocker pivot
-
     print("\nPrecision points:")
     for i, (x, y) in enumerate(precision_points, 1):
         print(f"  Point {i}: ({x:.2f}, {y:.2f})")
+
+    free = path_generation(precision_points, max_solutions=5, require_grashof=False)
+    print(f"\nGround pivots proposed by {len(free.solutions)} free solution(s):")
+    for i, raw in enumerate(free.raw_solutions, 1):
+        print(
+            f"  {i}: A=({raw.ground_pivot_a[0]:.2f}, {raw.ground_pivot_a[1]:.2f})"
+            f"  D=({raw.ground_pivot_d[0]:.2f}, {raw.ground_pivot_d[1]:.2f})"
+        )
+    if not free.solutions:
+        print("No free solution to take the pivots from")
+        return
+
+    # Fix the first pair, as a designer would place it on a drawing
+    chosen = free.raw_solutions[0]
+    ground_pivot_a = tuple(round(float(v), 1) for v in chosen.ground_pivot_a)
+    ground_pivot_d = tuple(round(float(v), 1) for v in chosen.ground_pivot_d)
 
     print("\nConstrained ground pivots:")
     print(f"  A (crank base):  {ground_pivot_a}")
@@ -272,10 +314,9 @@ def demo_constrained_ground_pivots():
         require_grashof=False,
     )
 
-    print(f"\nFound {len(result)} solution(s) with fixed ground")
+    print(f"\nFound {len(result.solutions)} solution(s) with fixed ground")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nSolution with constrained ground:")
@@ -285,7 +326,7 @@ def demo_constrained_ground_pivots():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing constrained mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No solutions found with the given ground constraints.")
         print("Try moving the precision points or relaxing the ground constraints.")
@@ -318,9 +359,9 @@ def demo_compare_solutions():
         require_grashof=False,  # Allow all types to see variety
     )
 
-    print(f"\nFound {len(result)} different solutions")
+    print(f"\nFound {len(result.solutions)} different solutions")
 
-    if result:
+    if result.solutions:
         print("\nSolution comparison:")
         print("-" * 70)
         print(f"{'#':<3} {'Crank':<10} {'Coupler':<10} {'Rocker':<10} {'Ground':<10} {'Type':<15}")
@@ -338,11 +379,11 @@ def demo_compare_solutions():
         print("-" * 70)
 
         print("\nVisualizing first solution...")
-        pl.show_linkage(result.solutions[0])
+        show(result)
 
         if len(result.solutions) > 1:
             print("\nVisualizing second solution for comparison...")
-            pl.show_linkage(result.solutions[1])
+            show(result, 1)
 
 
 def main():

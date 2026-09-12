@@ -32,10 +32,33 @@ import math
 import pylinkage as pl
 from pylinkage.synthesis import (
     FourBarSolution,
+    crank_angle_limits,
     function_generation,
     grashof_check,
+    solution_to_linkage,
     verify_function_generation,
 )
+
+
+def show(result, index=0):
+    """Animate one synthesized linkage.
+
+    A crank-rocker turns fully, so its Linkage animates as it comes. When the
+    crank can only oscillate (double-rocker, non-Grashof), the linkage is
+    rebuilt around an ArcCrank sweeping the reachable range: driven through a
+    full turn it would stop at an unbuildable position.
+    """
+    raw = result.raw_solutions[index]
+    limits = crank_angle_limits(
+        raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
+    )
+    linkage = result.solutions[index]
+    if limits is not None:
+        lo, hi = (math.degrees(a) for a in limits)
+        print(f"  (crank oscillates between {lo:.1f} and {hi:.1f} deg from the ground line)")
+        linkage = solution_to_linkage(raw._replace(arc_limits=limits), name=linkage.name)
+    pl.show_linkage(linkage)
+
 
 
 def demo_basic_function_generation():
@@ -68,8 +91,8 @@ def demo_basic_function_generation():
     # Perform synthesis
     result = function_generation(angle_pairs, ground_length=4.0)
 
-    if result:
-        print(f"\nFound {len(result)} solution(s)")
+    if result.solutions:
+        print(f"\nFound {len(result.solutions)} solution(s)")
         linkage = result.solutions[0]
 
         # Show link lengths from raw solution
@@ -94,7 +117,7 @@ def demo_basic_function_generation():
 
         # Visualize
         print("\nVisualizing synthesized linkage...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No valid solution found")
         for warning in result.warnings:
@@ -111,14 +134,18 @@ def demo_approximate_function_generation():
     print("Demo 2: Approximate Function Generation (5 Positions)")
     print("=" * 60)
 
-    # Define 5 precision positions
-    # More positions mean tighter constraints - exact match unlikely
+    # Define 5 precision positions: the rocker follows the crank, slowing
+    # down a little as both advance. More positions mean tighter constraints,
+    # so an exact match is unlikely; the fit below is within half a degree.
+    # Angle pairs measured from the ground line and starting near 0 degrees
+    # tend to give the Freudenstein equation a negative crank length, so the
+    # motion is placed in the upper quadrant.
     angle_pairs = [
-        (0.0, 0.0),
-        (0.2, 0.15),
-        (0.4, 0.28),
-        (0.6, 0.40),
-        (0.8, 0.55),
+        (math.radians(64.0), math.radians(52.0)),
+        (math.radians(86.0), math.radians(75.5)),
+        (math.radians(108.5), math.radians(97.5)),
+        (math.radians(131.0), math.radians(117.5)),
+        (math.radians(153.0), math.radians(136.0)),
     ]
 
     print("\nPrecision positions (5 points - overdetermined):")
@@ -132,8 +159,8 @@ def demo_approximate_function_generation():
         require_grashof=False,  # Accept non-Grashof solutions
     )
 
-    if result:
-        print(f"\nFound {len(result)} solution(s)")
+    if result.solutions:
+        print(f"\nFound {len(result.solutions)} solution(s)")
         linkage = result.solutions[0]
         raw: FourBarSolution = result.raw_solutions[0]
 
@@ -150,7 +177,7 @@ def demo_approximate_function_generation():
             print(f"  Position {i} error: {math.degrees(err):.3f} deg")
 
         print("\nVisualizing approximate solution...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No valid solution found")
         for warning in result.warnings:
@@ -191,9 +218,8 @@ def demo_crank_rocker_synthesis():
         require_crank_rocker=True,  # Specifically require crank-rocker type
     )
 
-    if result:
-        print(f"\nFound {len(result)} crank-rocker solution(s)")
-        linkage = result.solutions[0]
+    if result.solutions:
+        print(f"\nFound {len(result.solutions)} crank-rocker solution(s)")
         raw: FourBarSolution = result.raw_solutions[0]
 
         grashof_type = grashof_check(
@@ -209,7 +235,7 @@ def demo_crank_rocker_synthesis():
 
         # Show the linkage going through a full rotation
         print("\nVisualizing crank-rocker mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No crank-rocker solution found")
         for warning in result.warnings:
@@ -247,7 +273,7 @@ def demo_compare_grashof_types():
             require_grashof=False,
         )
 
-        if result:
+        if result.solutions:
             raw: FourBarSolution = result.raw_solutions[0]
             grashof_type = grashof_check(
                 raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
