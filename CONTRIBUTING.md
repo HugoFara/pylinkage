@@ -45,26 +45,12 @@ uv run task typecheck   # Run mypy
 uv build
 ```
 
-## Running the Web App (React + FastAPI)
+## The graphical editor
 
-Install dependencies:
-
-```bash
-uv sync --extra api          # Install FastAPI/uvicorn backend dependencies
-cd frontend && npm install   # Install React frontend dependencies
-```
-
-Run the backend (from project root):
-
-```bash
-uv run task api
-```
-
-Run the frontend (in a separate terminal):
-
-```bash
-uv run task frontend
-```
+The visual editor and its HTTP backend live in
+[pylinkage-editor](https://github.com/HugoFara/pylinkage-editor). The backend
+is a small FastAPI application that depends on this package; see that
+repository's `server/README.md` to run it.
 
 ## Documentation
 

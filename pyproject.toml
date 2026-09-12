@@ -68,11 +68,6 @@ docs = [
     "sphinx-rtd-theme>=2.0.0",
     "myst-parser>=3.0.1",
 ]
-api = [
-    "fastapi>=0.109.0",
-    "uvicorn[standard]>=0.27.0",
-    "pydantic-settings>=2.1.0",
-]
 cad = [
     "ezdxf>=1.0.0",
     "build123d>=0.7.0",
@@ -154,7 +149,6 @@ lint = "ruff check ."
 lint-fix = "ruff check . --fix"
 format = "ruff format ."
 typecheck = "mypy src/pylinkage"
-api = "python -m uvicorn api.main:app --reload --port 8000"
 
 [tool.bumpversion]
 current_version = "1.1.1"

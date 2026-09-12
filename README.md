@@ -215,7 +215,7 @@ Level 4: Applications   → Optimization, Synthesis, Symbolic, Visualization
 
 ## Related Projects
 
-- **[pylinkage-editor](https://github.com/HugoFara/pylinkage-editor)** — Visual linkage design tool with an easy-to-use interface. Draw mechanisms interactively, run synthesis from the GUI, and export results.
+- **[pylinkage-editor](https://github.com/HugoFara/pylinkage-editor)** — Visual linkage design tool with an easy-to-use interface. Draw mechanisms interactively, run synthesis from the GUI, and export results. Its Python backend (an HTTP server over pylinkage) lives in that repository too.
 - **[leggedsnake](https://github.com/HugoFara/leggedsnake)** — Dynamic walking simulation built on pylinkage. Adds pymunk physics, genetic algorithm optimization, and walking-specific fitness evaluation.
 
 ## Contributing

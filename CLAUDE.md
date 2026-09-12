@@ -251,7 +251,6 @@ Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 Optional extras:
 - `moo`: pymoo (for multi-objective optimization)
 - `cad`: ezdxf, build123d (for CAD export)
-- `api`: fastapi, uvicorn (for REST API)
 - `analysis`: pandas (for data analysis)
 
 Dev (managed via uv): pytest, pytest-cov, hypothesis, mypy, ruff, sphinx, sphinx-rtd-theme, myst-parser, taskipy
