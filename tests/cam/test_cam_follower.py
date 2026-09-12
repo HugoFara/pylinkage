@@ -18,11 +18,11 @@ from pylinkage.cam import (
 )
 from pylinkage.components import Ground
 from pylinkage.dyads import (
-    Linkage,
     OscillatingCamFollower,
     RRRDyad,
     TranslatingCamFollower,
 )
+from pylinkage.simulation import Linkage
 
 
 class TestMotionLaws:

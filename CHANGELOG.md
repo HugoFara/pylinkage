@@ -4,10 +4,41 @@ All notable changes to pylinkage are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+What the version number promises, and how a name is retired, is in
+the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
 ### Added
+
+- **A defined public surface.** A name is public when it is in a package's
+  `__all__`; modules inside a package are implementation; each name has one
+  home. The rule is on the Deprecations page, and the surface is pinned name
+  by name in `tests/test_public_api.py`, so it cannot change without a diff in
+  that file. Newer subsystems are marked provisional there (`topology`,
+  `solver`, co-design, multi-topology synthesis, hierarchical hypergraphs, CAD
+  export): exported and documented, but not yet promised.
+
+- **Every subpackage is reachable from the top level** (`pylinkage.components`,
+  `pylinkage.hypergraph`, `pylinkage.optimization`, …; before, only `assur`,
+  `dyads`, `mechanism`, `symbolic` and `synthesis` were), and the definition
+  path is importable straight from `pylinkage`: `Ground`, `PointTracker`,
+  `Crank`, `ArcCrank`, `LinearActuator`, `RRRDyad`, `RRPDyad`, `PPDyad`,
+  `FixedDyad`, alongside `Linkage`.
+
+- **`pylinkage.mechanism.TrackerJoint` and `ArcDriverLink`** are exported.
+  Both leggedsnake and the editor's backend were importing them from the
+  `mechanism.joint` and `mechanism.link` modules because the package did not
+  offer them.
+
+- **`pylinkage.dimensions` and `pylinkage.exceptions` have an `__all__`**
+  (`Dimensions`, `DriverAngle`; the four exception classes).
+
+- **A "Which API should I use?" section in the README**, naming
+  `components` / `actuators` / `dyads` / `simulation` as the definition path
+  and saying in one line each what `MechanismBuilder`, `hypergraph`, `assur`
+  and `Mechanism` are for. The API reference index opens with the same
+  guidance instead of an alphabetical list.
 
 - **`pylinkage.synthesis.crank_angle_limits(crank, coupler, rocker, ground)`**,
   the angular range of a crank that cannot rotate fully. It sits beside
@@ -46,6 +77,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **54 implementation names left the `__all__` of their packages.** They stay
+  importable exactly as before; they are no longer advertised as public and
+  `import *` no longer pulls them in. Among them: the numba kernels and
+  `step_single*` helpers in `solver` (`simulate`, `simulate_with_kinematics`,
+  `SolverData`, the `JOINT_*` constants and the conversion functions remain
+  public); `AnyJoint`, `AnyLink`, the per-entity `joint_to_dict` /
+  `link_from_dict` halves of `mechanism_to_dict` and `is_legacy_format` in
+  `mechanism`; the `Point2D` / `ComplexPoint` / `AnglePair` aliases,
+  `point_to_complex`, `complex_to_point` and `compute_metrics` in `synthesis`;
+  `SymCoord` in `symbolic`; the styling constants and `LinkStyle` /
+  `SymbolType` in `visualizer`; `DYAD_TYPES`, `identify_dyad_type`,
+  `identify_group_type` in `assur`; `DEFAULT_ANGULAR_VELOCITY` in `actuators`;
+  `MutableAgent` in `optimization.collections`; `_AnchorProxy` in `components`
+  and `dyads`.
+
 - **`path_generation()` is 2-8x faster**, with byte-identical results. Verifying
   a candidate by simulating it was 67% of the runtime, and ran through the
   pure-Python `Linkage.step()`; it now uses the numba solver, which executes the
@@ -76,6 +122,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   faster, the solver did not regress.
 
 ### Deprecated
+
+- **The sibling re-exports in `pylinkage.dyads`**: `Ground`, `PointTracker`,
+  `Component`, `ConnectedComponent`, `Crank`, `ArcCrank`, `LinearActuator` and
+  `Linkage`. Each still resolves to the same object and warns, naming its home
+  (`pylinkage.components`, `pylinkage.actuators`, `pylinkage.simulation`).
+  `pylinkage.dyads.Ground` and `pylinkage.components.Ground` were both correct,
+  which is why tutorials disagreed on which to write.
+
+- **`pylinkage.optimization.Ensemble`**, in favour of
+  `pylinkage.population.Ensemble`, its home.
+
+- **`pylinkage.assur.MobilityResult` and `StructuralAnalysis`.** Nothing in
+  the package produced them; they were dataclasses exported without a function
+  to fill them. The mobility analysis that exists is
+  `pylinkage.topology.compute_mobility()`, returning a `MobilityInfo`.
 
 - **`n_orientation_samples`, which never denoted a number of samples.** It was
   folded into a per-axis grid resolution through

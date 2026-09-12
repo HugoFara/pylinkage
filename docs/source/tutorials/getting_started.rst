@@ -24,7 +24,9 @@ Core Concepts
 
 Pylinkage models planar linkage mechanisms with three kinds of objects from
 the ``components`` / ``actuators`` / ``dyads`` packages, plus a thin
-container:
+container. This is the recommended way to define a mechanism; the other
+representations (``mechanism``, ``hypergraph``, ``assur``) are covered in
+later tutorials and convert to and from this one.
 
 1. **Components**: building blocks of the mechanism (``Ground`` anchors,
    ``Crank`` / ``LinearActuator`` drivers, and dyads such as ``RRRDyad``,

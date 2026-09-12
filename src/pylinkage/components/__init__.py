@@ -28,7 +28,6 @@ __all__ = [
     "ConnectedComponent",
     "Ground",
     "PointTracker",
-    "_AnchorProxy",
     # Deprecated aliases, served by __getattr__ below.
     "Dyad",
     "ConnectedDyad",

@@ -13,6 +13,14 @@ if TYPE_CHECKING:
     from .linkage.linkage import Linkage
 
 
+__all__ = [
+    "UnbuildableError",
+    "UnderconstrainedError",
+    "NotCompletelyDefinedError",
+    "OptimizationError",
+]
+
+
 class UnbuildableError(Exception):
     """Should be raised when the constraints cannot be solved."""
 
@@ -38,7 +46,6 @@ class UnderconstrainedError(Exception):
     ) -> None:
         self.linkage = linkage
         super().__init__(message)
-
 
 
 class NotCompletelyDefinedError(Exception):

@@ -48,31 +48,33 @@ Example:
         for positions in linkage.step():
             print(positions)
 
-Backwards Compatibility:
-    For convenience, this module re-exports items from their canonical locations:
-    - Ground: from pylinkage.components
-    - Crank, LinearActuator: from pylinkage.actuators
-    - Linkage: from pylinkage.simulation
-    - Dyad, ConnectedDyad: deprecated aliases, see the Deprecations page
+Deprecated re-exports:
+    This module used to re-export ``Ground``, ``PointTracker``, ``Crank``,
+    ``ArcCrank``, ``LinearActuator``, ``Linkage``, ``Component`` and
+    ``ConnectedComponent`` from their home modules. Those names still resolve
+    here but warn; import them from ``pylinkage.components``,
+    ``pylinkage.actuators`` and ``pylinkage.simulation``. See the
+    Deprecations page.
 """
 
-# Primary exports are the true Assur groups defined in this package; the rest
-# are re-exports kept for backwards compatibility.
+# Primary exports are the true Assur groups defined in this package. Names
+# from sibling packages are served as deprecated aliases by __getattr__ below,
+# so they are imported under private names to keep them out of the namespace.
 from .._deprecation import DeprecatedAlias, deprecated_getattr
-from ..actuators import ArcCrank as ArcCrank
-from ..actuators import Crank as Crank
-from ..actuators import LinearActuator as LinearActuator
+from ..actuators import ArcCrank as _ArcCrank
+from ..actuators import Crank as _Crank
+from ..actuators import LinearActuator as _LinearActuator
 from ..components import _ALIAS_REASON
-from ..components import Component as Component
-from ..components import ConnectedComponent as ConnectedComponent
+from ..components import Component as _Component
+from ..components import ConnectedComponent as _ConnectedComponent
 
 # Ground and sensors from components
-from ..components import Ground as Ground
-from ..components import PointTracker as PointTracker
+from ..components import Ground as _Ground
+from ..components import PointTracker as _PointTracker
 from ..components import _AnchorProxy as _AnchorProxy
 
 # Linkage container
-from ..simulation import Linkage as Linkage
+from ..simulation import Linkage as _Linkage
 from ._base import BinaryDyad as BinaryDyad
 from ._conversion import to_mechanism as to_mechanism
 from .factory import create_dyad as create_dyad
@@ -103,32 +105,52 @@ __all__ = [
     "get_isomer_geometry",
     "get_required_anchors",
     "get_required_constraints",
-    # Re-exports for backwards compatibility
+    # Deprecated aliases, served by __getattr__ below.
     "Ground",
     "PointTracker",
     "Crank",
     "ArcCrank",
     "LinearActuator",
     "Linkage",
-    # Base classes
     "Component",
     "ConnectedComponent",
-    "_AnchorProxy",
-    # Deprecated aliases, served by __getattr__ below.
     "Dyad",
     "ConnectedDyad",
 ]
 
+_REEXPORT_REASON = (
+    "pylinkage.dyads only defines dyads; each of these names has a single home "
+    "module, and importing it from there is the documented path."
+)
+
 
 _DEPRECATED = {
+    "Ground": DeprecatedAlias(_Ground, "pylinkage.components.Ground", "2.0.0", _REEXPORT_REASON),
+    "PointTracker": DeprecatedAlias(
+        _PointTracker, "pylinkage.components.PointTracker", "2.0.0", _REEXPORT_REASON
+    ),
+    "Component": DeprecatedAlias(
+        _Component, "pylinkage.components.Component", "2.0.0", _REEXPORT_REASON
+    ),
+    "ConnectedComponent": DeprecatedAlias(
+        _ConnectedComponent, "pylinkage.components.ConnectedComponent", "2.0.0", _REEXPORT_REASON
+    ),
+    "Crank": DeprecatedAlias(_Crank, "pylinkage.actuators.Crank", "2.0.0", _REEXPORT_REASON),
+    "ArcCrank": DeprecatedAlias(
+        _ArcCrank, "pylinkage.actuators.ArcCrank", "2.0.0", _REEXPORT_REASON
+    ),
+    "LinearActuator": DeprecatedAlias(
+        _LinearActuator, "pylinkage.actuators.LinearActuator", "2.0.0", _REEXPORT_REASON
+    ),
+    "Linkage": DeprecatedAlias(_Linkage, "pylinkage.simulation.Linkage", "2.0.0", _REEXPORT_REASON),
     "Dyad": DeprecatedAlias(
-        value=Component,
+        value=_Component,
         replacement="pylinkage.components.Component",
         removed_in="2.0.0",
         reason=_ALIAS_REASON,
     ),
     "ConnectedDyad": DeprecatedAlias(
-        value=ConnectedComponent,
+        value=_ConnectedComponent,
         replacement="pylinkage.components.ConnectedComponent",
         removed_in="2.0.0",
         reason=_ALIAS_REASON,

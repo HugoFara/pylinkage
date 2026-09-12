@@ -23,40 +23,43 @@ For direct access to the solver:
     ... )
 """
 
-# Pure numba components (no Python object dependencies)
+from typing import TYPE_CHECKING
+
+# Pure numba components (no Python object dependencies). The kernels stay
+# importable from here but are not public: see tests/test_public_api.py.
 from .acceleration import (
-    solve_crank_acceleration,
-    solve_fixed_acceleration,
-    solve_prismatic_acceleration,
-    solve_revolute_acceleration,
-    solve_rigid_body_acceleration,
+    solve_crank_acceleration,  # noqa: F401
+    solve_fixed_acceleration,  # noqa: F401
+    solve_prismatic_acceleration,  # noqa: F401
+    solve_revolute_acceleration,  # noqa: F401
+    solve_rigid_body_acceleration,  # noqa: F401
 )
 
 # Group solvers (standalone functions for Assur groups)
 from .groups import (
-    solve_rrp_dyad,
-    solve_rrr_dyad,
+    solve_rrp_dyad,  # noqa: F401
+    solve_rrr_dyad,  # noqa: F401
 )
 from .joints import (
-    solve_crank,
-    solve_fixed,
-    solve_linear,
-    solve_revolute,
+    solve_crank,  # noqa: F401
+    solve_fixed,  # noqa: F401
+    solve_linear,  # noqa: F401
+    solve_revolute,  # noqa: F401
 )
 from .simulation import (
-    first_nan_step,
-    has_nan_positions,
+    first_nan_step,  # noqa: F401
+    has_nan_positions,  # noqa: F401
     simulate,
     simulate_with_kinematics,
-    step_single,
-    step_single_acceleration,
-    step_single_velocity,
+    step_single,  # noqa: F401
+    step_single_acceleration,  # noqa: F401
+    step_single_velocity,  # noqa: F401
 )
 
 # High-level solving API
 from .solve import (
-    solve_decomposition,
-    solve_group,
+    solve_decomposition,  # noqa: F401
+    solve_group,  # noqa: F401
 )
 from .types import (
     JOINT_CRANK,
@@ -68,17 +71,25 @@ from .types import (
     SolverData,
 )
 from .velocity import (
-    solve_crank_velocity,
-    solve_fixed_velocity,
-    solve_prismatic_velocity,
-    solve_revolute_velocity,
-    solve_rigid_body_velocity,
+    solve_crank_velocity,  # noqa: F401
+    solve_fixed_velocity,  # noqa: F401
+    solve_prismatic_velocity,  # noqa: F401
+    solve_revolute_velocity,  # noqa: F401
+    solve_rigid_body_velocity,  # noqa: F401
 )
 
-# Conversion functions are loaded lazily to avoid circular imports.
-# They live in pylinkage.bridge for architectural reasons
-# (keeps solver pure, with no Python object dependencies).
-# For new code, prefer importing from pylinkage.bridge directly.
+# Conversion functions are loaded lazily to avoid circular imports. They are
+# implemented in pylinkage.bridge (which keeps this package free of Python
+# object dependencies) but this package is their public home.
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from ..bridge.solver_conversion import (
+        linkage_to_solver_data,
+        solver_data_to_linkage,
+        update_solver_constraints,
+        update_solver_positions,
+    )
+
 _conversion_attrs = {
     "linkage_to_solver_data",
     "solver_data_to_linkage",
@@ -105,38 +116,10 @@ __all__ = [
     "JOINT_FIXED",
     "JOINT_PRISMATIC",
     "MAX_PARENTS",
-    # Joint solvers (position)
-    "solve_crank",
-    "solve_revolute",
-    "solve_fixed",
-    "solve_linear",
-    # Joint solvers (velocity)
-    "solve_crank_velocity",
-    "solve_revolute_velocity",
-    "solve_fixed_velocity",
-    "solve_prismatic_velocity",
-    "solve_rigid_body_velocity",
-    # Joint solvers (acceleration)
-    "solve_crank_acceleration",
-    "solve_revolute_acceleration",
-    "solve_fixed_acceleration",
-    "solve_prismatic_acceleration",
-    "solve_rigid_body_acceleration",
-    # Group solvers
-    "solve_rrr_dyad",
-    "solve_rrp_dyad",
-    # High-level solving
-    "solve_group",
-    "solve_decomposition",
     # Simulation
-    "step_single",
-    "step_single_velocity",
-    "step_single_acceleration",
     "simulate",
     "simulate_with_kinematics",
-    "has_nan_positions",
-    "first_nan_step",
-    # Conversion (lazy-loaded for backwards compatibility)
+    # Conversion (lazy-loaded to avoid a circular import through pylinkage.bridge)
     "linkage_to_solver_data",
     "solver_data_to_linkage",
     "update_solver_constraints",

@@ -12,16 +12,36 @@ Created on Thu Jun 10 21:30:52 2021
 """
 
 __all__ = [
-    # Assur group module
+    # Subpackages. Heavy or optional ones load on first access.
+    "actuators",
     "assur",
-    # Dyads module (user-facing API for mechanism building)
+    "cam",
+    "components",
+    "dimensions",
     "dyads",
-    # Mechanism module (new Links + Joints model)
+    "exceptions",
+    "geometry",
+    "hypergraph",
+    "linkage",
     "mechanism",
-    # Symbolic computation module (lazy, requires sympy)
+    "optimization",
+    "population",
+    "simulation",
+    "solver",
     "symbolic",
-    # Synthesis module (lazy, requires scipy)
     "synthesis",
+    "topology",
+    "visualizer",
+    # The definition path: frame, actuators, dyads, container
+    "Ground",
+    "PointTracker",
+    "Crank",
+    "ArcCrank",
+    "LinearActuator",
+    "RRRDyad",
+    "RRPDyad",
+    "PPDyad",
+    "FixedDyad",
     # Canonical types (from _types.py)
     "JointType",
     "NodeRole",
@@ -67,16 +87,22 @@ __all__ = [
 ]
 
 import importlib as _importlib
+from typing import TYPE_CHECKING
 
 # --- Eager imports (lightweight, always available) ---
-# Assur group module for graph-based linkage representation
+from . import actuators as actuators
 from . import assur as assur
-
-# Dyads module - user-facing API for mechanism building
+from . import cam as cam
+from . import components as components
+from . import dimensions as dimensions
 from . import dyads as dyads
-
-# Mechanism module - new Links + Joints model
+from . import exceptions as exceptions
+from . import geometry as geometry
+from . import hypergraph as hypergraph
+from . import linkage as linkage
 from . import mechanism as mechanism
+from . import simulation as simulation
+from . import topology as topology
 from ._simulation_context import (
     Simulation as Simulation,
 )
@@ -103,6 +129,15 @@ from ._types import (
 from ._types import (
     PortId as PortId,
 )
+from .actuators import ArcCrank as ArcCrank
+from .actuators import Crank as Crank
+from .actuators import LinearActuator as LinearActuator
+from .components import Ground as Ground
+from .components import PointTracker as PointTracker
+from .dyads import FixedDyad as FixedDyad
+from .dyads import PPDyad as PPDyad
+from .dyads import RRPDyad as RRPDyad
+from .dyads import RRRDyad as RRRDyad
 from .exceptions import (
     NotCompletelyDefinedError as NotCompletelyDefinedError,
 )
@@ -148,10 +183,32 @@ from .simulation import (
 
 # --- Lazy imports (heavy optional dependencies) ---
 
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from . import optimization, population, solver, symbolic, synthesis, visualizer
+    from .optimization import (
+        collections,
+        generate_bounds,
+        kinematic_maximization,
+        kinematic_minimization,
+        particle_swarm_optimization,
+        trials_and_errors_optimization,
+    )
+    from .population import Ensemble, Member, Population
+    from .visualizer import (
+        plot_kinematic_linkage,
+        plot_static_linkage,
+        show_linkage,
+        swarm_tiled_repr,
+    )
+
 _LAZY_SUBMODULES = {
+    "optimization",
     "population",
+    "solver",
     "symbolic",
     "synthesis",
+    "visualizer",
 }
 
 _LAZY_ATTRS: dict[str, str] = {

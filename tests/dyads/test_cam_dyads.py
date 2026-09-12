@@ -15,10 +15,10 @@ from pylinkage.cam import (
 )
 from pylinkage.components import Ground
 from pylinkage.dyads import (
-    Linkage,
     OscillatingCamFollower,
     TranslatingCamFollower,
 )
+from pylinkage.simulation import Linkage
 
 
 class TestOscillatingCamFollowerExtended:

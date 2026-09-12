@@ -65,7 +65,6 @@ For optimization::
 
 __all__ = [
     # Type definitions
-    "SymCoord",
     "theta",
     # Joint classes
     "SymJoint",
@@ -97,7 +96,7 @@ __all__ = [
     "fourbar_symbolic",
 ]
 
-from ._types import SymCoord, theta
+from ._types import SymCoord, theta  # noqa: F401
 from .conversion import (
     fourbar_symbolic,
     get_numeric_parameters,

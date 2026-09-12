@@ -87,6 +87,24 @@ show_linkage(my_linkage)
 
 ![A four-bar linkage animated](https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif)
 
+### Which API should I use?
+
+The one above. `components` (frame points), `actuators` (motor inputs),
+`dyads` (the constrained pairs that close the loops) and `simulation.Linkage`
+(the container) are *the* way to define a mechanism, and every tutorial starts
+there. The same names are importable straight from `pylinkage` as a shortcut.
+
+Pylinkage has other representations, each with a job:
+
+| Representation | Use it when |
+|---|---|
+| `mechanism.MechanismBuilder` | you think in link lengths first, joints second (below) |
+| `hypergraph` | you compose mechanisms from reusable sub-assemblies, or need a topology (not geometry) to reason about |
+| `assur` | you want the structural decomposition of a mechanism into Assur groups |
+| `mechanism.Mechanism` | you need the low-level links-and-joints model everything else lowers to |
+
+They all convert to and from each other; none is needed to get started.
+
 ### Alternative: Links-First Builder
 
 For a more mechanical engineering-oriented approach, use `MechanismBuilder` to define links with their lengths first, then connect them:
@@ -206,6 +224,14 @@ Level 4: Applications   → Optimization, Synthesis, Symbolic, Visualization
 | `pylinkage.hypergraph` | Hierarchical component-based linkage definition | — |
 
 </details>
+
+## Stability
+
+Pylinkage follows [semantic versioning](https://semver.org/spec/v2.0.0.html).
+What that covers, and how a name is retired, is on one page:
+[Deprecations](https://hugofara.github.io/pylinkage/deprecations.html).
+The public surface is pinned in
+[`tests/test_public_api.py`](https://github.com/HugoFara/pylinkage/blob/main/tests/test_public_api.py).
 
 ## Requirements
 

@@ -7,6 +7,7 @@ __all__ = [
     "CoOptimizationResult",
     "CoOptSolution",
     "collections",
+    # Deprecated, served by __getattr__ below.
     "Ensemble",
     "differential_evolution_optimization",
     "differential_evolution_optimization_async",
@@ -31,6 +32,7 @@ __all__ = [
 ]
 
 import importlib as _importlib
+from typing import TYPE_CHECKING
 
 # Eagerly import lightweight submodules
 from . import collections as collections
@@ -51,8 +53,35 @@ from .utils import (
 )
 
 # Lazy-loaded attributes (require scipy / pyswarms)
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from .async_optimization import (
+        OptimizationProgress,
+        differential_evolution_optimization_async,
+        minimize_linkage_async,
+        particle_swarm_optimization_async,
+        trials_and_errors_optimization_async,
+    )
+    from .co_optimization_types import (
+        CoOptimizationConfig,
+        CoOptimizationResult,
+        CoOptSolution,
+        MixedChromosome,
+    )
+    from .grid_search import trials_and_errors_optimization
+    from .mixed_variable import co_optimize
+    from .multi_objective import multi_objective_optimization
+    from .particle_swarm import particle_swarm_optimization
+    from .scipy_optimize import (
+        chain_optimizers,
+        differential_evolution_optimization,
+        dual_annealing_optimization,
+        minimize_linkage,
+    )
+    from .topology_neighborhood import TopologyNeighbor, topology_neighbors
+    from .warm_start import warm_start_co_optimization
+
 _LAZY_ATTRS: dict[str, tuple[str, str]] = {
-    "Ensemble": ("..population", "Ensemble"),
     "chain_optimizers": (".scipy_optimize", "chain_optimizers"),
     "differential_evolution_optimization": (
         ".scipy_optimize",
@@ -101,6 +130,22 @@ _LAZY_ATTRS: dict[str, tuple[str, str]] = {
 
 
 def __getattr__(name: str) -> object:
+    if name == "Ensemble":
+        # Resolved lazily: population imports this package.
+        from warnings import warn
+
+        from .._deprecation import DeprecatedAlias
+        from ..population import Ensemble
+
+        alias = DeprecatedAlias(
+            Ensemble,
+            "pylinkage.population.Ensemble",
+            "2.0.0",
+            "Ensemble is the population container the optimizers return; "
+            "pylinkage.population is its home.",
+        )
+        warn(alias.message(__name__, name), DeprecationWarning, stacklevel=2)
+        return Ensemble
     if name in _LAZY_ATTRS:
         module_path, attr_name = _LAZY_ATTRS[name]
         mod = _importlib.import_module(module_path, __name__)
