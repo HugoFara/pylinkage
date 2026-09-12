@@ -124,10 +124,7 @@ References
 
 __all__ = [
     # Type definitions
-    "Point2D",
-    "ComplexPoint",
     "PrecisionPoint",
-    "AnglePair",
     "Pose",
     "SynthesisType",
     "FourBarSolution",
@@ -156,7 +153,6 @@ __all__ = [
     "generalized_synthesis",
     "multi_topology_synthesize",
     "nbar_solution_to_linkage",
-    "compute_metrics",
     # Burmester theory functions
     "compute_pole",
     "compute_all_poles",
@@ -176,18 +172,16 @@ __all__ = [
     "is_crank_rocker",
     "GrashofType",
     "validate_fourbar",
-    "point_to_complex",
-    "complex_to_point",
 ]
 
 # Type definitions
 from .._deprecation import DeprecatedAlias, deprecated_getattr
 from ._types import (
-    AnglePair,
-    ComplexPoint,
+    AnglePair,  # noqa: F401
+    ComplexPoint,  # noqa: F401
     DyadSolution,
     FourBarSolution,
-    Point2D,
+    Point2D,  # noqa: F401
     Pose,
     PrecisionPoint,
     SynthesisType,
@@ -195,11 +189,11 @@ from ._types import (
 
 # Burmester theory
 from .burmester import (
-    complex_to_point,
+    complex_to_point,  # noqa: F401
     compute_all_poles,
     compute_circle_point_curve,
     compute_pole,
-    point_to_complex,
+    point_to_complex,  # noqa: F401
     select_compatible_dyads,
 )
 
@@ -228,7 +222,7 @@ from .generalized import generalized_synthesis
 from .motion_generation import motion_generation, motion_generation_3_poses
 from .multi_topology import synthesize as multi_topology_synthesize
 from .path_generation import path_generation, path_generation_with_timing, verify_path_generation
-from .ranking import compute_metrics
+from .ranking import compute_metrics  # noqa: F401
 from .six_bar import six_bar_path_generation
 
 # Topology-aware synthesis (Phase 3)

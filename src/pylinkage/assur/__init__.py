@@ -42,7 +42,7 @@ __all__ = [
     "EdgeId",
     # Wrapper class
     "AssurMechanism",
-    # Analysis results
+    # Analysis results (deprecated, served by __getattr__ below)
     "MobilityResult",
     "StructuralAnalysis",
     # Graph structures
@@ -53,14 +53,11 @@ __all__ = [
     "AssurGroup",
     "Dyad",
     "Triad",
-    "identify_group_type",
     # Backwards-compatible aliases
     "DyadRRR",
     "DyadRRP",
     "DyadRPR",
     "DyadPRR",
-    "DYAD_TYPES",
-    "identify_dyad_type",
     # Signature parsing and hypergraph generation
     "AssurGroupClass",
     "AssurSignature",
@@ -84,8 +81,10 @@ __all__ = [
     "graph_from_json",
 ]
 
+from .._deprecation import DeprecatedAlias, deprecated_getattr
 from ._types import EdgeId, JointType, NodeId, NodeRole
-from .analysis import MobilityResult, StructuralAnalysis
+from .analysis import MobilityResult as _MobilityResult
+from .analysis import StructuralAnalysis as _StructuralAnalysis
 from .assur_mechanism import AssurMechanism
 from .decomposition import (
     DecompositionResult,
@@ -94,7 +93,7 @@ from .decomposition import (
 )
 from .graph import Edge, LinkageGraph, Node
 from .groups import (
-    DYAD_TYPES,
+    DYAD_TYPES,  # noqa: F401
     AssurGroup,
     Dyad,
     DyadPRR,
@@ -102,8 +101,8 @@ from .groups import (
     DyadRRP,
     DyadRRR,
     Triad,
-    identify_dyad_type,
-    identify_group_type,
+    identify_dyad_type,  # noqa: F401
+    identify_group_type,  # noqa: F401
 )
 from .hypergraph_conversion import from_hypergraph, to_hypergraph
 from .mechanism_conversion import graph_to_mechanism, mechanism_to_graph
@@ -120,3 +119,20 @@ from .signature import (
     signature_to_group_class,
     signature_to_hypergraph,
 )
+
+_ANALYSIS_REASON = (
+    "Nothing in pylinkage produces these; they were exported without a "
+    "function to fill them. pylinkage.topology.compute_mobility() is the "
+    "mobility analysis, returning a MobilityInfo."
+)
+
+_DEPRECATED = {
+    "MobilityResult": DeprecatedAlias(
+        _MobilityResult, "pylinkage.topology.MobilityInfo", "2.0.0", _ANALYSIS_REASON
+    ),
+    "StructuralAnalysis": DeprecatedAlias(
+        _StructuralAnalysis, "pylinkage.topology.compute_mobility", "2.0.0", _ANALYSIS_REASON
+    ),
+}
+
+__getattr__ = deprecated_getattr(__name__, _DEPRECATED)

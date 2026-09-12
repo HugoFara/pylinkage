@@ -2,21 +2,21 @@
 
 import pytest
 
+from pylinkage.actuators import Crank
+from pylinkage.components import Ground
 from pylinkage.dyads import (
-    Crank,
     FixedDyad,
-    Ground,
-    Linkage,
     RRPDyad,
     RRRDyad,
+    to_mechanism,
 )
-from pylinkage.dyads._conversion import to_mechanism
 from pylinkage.mechanism import (
     DriverLink,
     GroundJoint,
     GroundLink,
     Mechanism,
 )
+from pylinkage.simulation import Linkage
 
 
 def _make_fourbar() -> Linkage:

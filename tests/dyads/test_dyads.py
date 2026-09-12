@@ -8,18 +8,15 @@ import math
 
 import pytest
 
+from pylinkage.actuators import ArcCrank, Crank, LinearActuator
+from pylinkage.components import Ground, PointTracker
 from pylinkage.dyads import (
-    ArcCrank,
-    Crank,
     FixedDyad,
-    Ground,
-    LinearActuator,
-    Linkage,
-    PointTracker,
     RRPDyad,
     RRRDyad,
 )
 from pylinkage.exceptions import UnbuildableError
+from pylinkage.simulation import Linkage
 
 
 class TestGround:

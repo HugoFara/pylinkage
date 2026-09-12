@@ -2,6 +2,38 @@
 
 Names that still work but are on their way out, with what to use instead.
 
+## What is public
+
+A name is public when it is listed in the `__all__` of a package, and a
+package is public when it is reachable as an attribute of `pylinkage`
+(`pylinkage.synthesis`, `pylinkage.optimization.collections`, …). That is the
+whole rule. The policy below applies to those names and nothing else.
+
+Two consequences:
+
+- **Modules inside a package are implementation.** `from
+  pylinkage.synthesis.path_generation import path_generation` works today and
+  may stop working without notice; `from pylinkage.synthesis import
+  path_generation` is the promise. Newer modules carry a leading underscore
+  to make this visible (`population._member`, `synthesis._types`); older ones
+  will be renamed as they are touched.
+- **Each name has one home.** `Ground` lives in `pylinkage.components`, not
+  also in `pylinkage.dyads`. The top-level package re-exports the definition
+  path (`Ground`, `Crank`, `RRRDyad`, `Linkage`, …) for convenience; every
+  other second location is a deprecated alias, listed below.
+
+The surface is pinned name by name in `tests/test_public_api.py`, so it cannot
+change without a diff in that file.
+
+Some public names are **provisional**: exported and documented, but their
+shape may still change in a minor release. They are the newer subsystems —
+`pylinkage.topology`, `pylinkage.solver`, the co-design family in
+`pylinkage.optimization` (`co_optimize`, `CoOptimizationConfig`, …), the
+multi-topology synthesis in `pylinkage.synthesis` (`NBarSolution`,
+`generalized_synthesis`, …), hierarchical composition in
+`pylinkage.hypergraph`, and the CAD export in `pylinkage.visualizer`. A change
+to one is announced in the changelog, not through a warning.
+
 ## How deprecation works here
 
 pylinkage follows [semantic versioning](https://semver.org/spec/v2.0.0.html).
@@ -33,7 +65,31 @@ whether an upgrade will affect you.
 | `pylinkage.dyads.Dyad` | `pylinkage.components.Component` | 2.0.0 |
 | `pylinkage.dyads.ConnectedDyad` | `pylinkage.components.ConnectedComponent` | 2.0.0 |
 | `pylinkage.synthesis.Dyad` | `pylinkage.synthesis.BurmesterDyad` | 2.0.0 |
+| `pylinkage.dyads.Ground` | `pylinkage.components.Ground` | 2.0.0 |
+| `pylinkage.dyads.PointTracker` | `pylinkage.components.PointTracker` | 2.0.0 |
+| `pylinkage.dyads.Component` | `pylinkage.components.Component` | 2.0.0 |
+| `pylinkage.dyads.ConnectedComponent` | `pylinkage.components.ConnectedComponent` | 2.0.0 |
+| `pylinkage.dyads.Crank` | `pylinkage.actuators.Crank` | 2.0.0 |
+| `pylinkage.dyads.ArcCrank` | `pylinkage.actuators.ArcCrank` | 2.0.0 |
+| `pylinkage.dyads.LinearActuator` | `pylinkage.actuators.LinearActuator` | 2.0.0 |
+| `pylinkage.dyads.Linkage` | `pylinkage.simulation.Linkage` | 2.0.0 |
+| `pylinkage.optimization.Ensemble` | `pylinkage.population.Ensemble` | 2.0.0 |
+| `pylinkage.assur.MobilityResult` | `pylinkage.topology.MobilityInfo` | 2.0.0 |
+| `pylinkage.assur.StructuralAnalysis` | `pylinkage.topology.compute_mobility()` | 2.0.0 |
 | `path_generation(n_orientation_samples=...)` | `orientation_resolution=` | 2.0.0 |
+
+### Why the `dyads` re-exports are going away
+
+`pylinkage.dyads` used to re-export the frame, actuator and container classes
+"for convenience", so `pylinkage.dyads.Ground` and `pylinkage.components.Ground`
+were both correct and tutorials disagreed on which to use. Under the one-home
+rule above, `dyads` defines dyads. The objects are unchanged.
+
+### Why `MobilityResult` and `StructuralAnalysis` are going away
+
+They were exported from `pylinkage.assur` with no function anywhere in the
+package that produced them. The mobility analysis that exists is
+`pylinkage.topology.compute_mobility()`, which returns a `MobilityInfo`.
 
 ### Why the `Dyad` names are going away
 
@@ -87,6 +143,27 @@ from pylinkage.synthesis import Dyad
 # After
 from pylinkage.components import Component, ConnectedComponent
 from pylinkage.synthesis import BurmesterDyad
+```
+
+```python
+# Before
+from pylinkage.dyads import Ground, Crank, RRRDyad, Linkage
+
+# After -- one home per name, or the top-level shortcut
+from pylinkage.components import Ground
+from pylinkage.actuators import Crank
+from pylinkage.dyads import RRRDyad
+from pylinkage.simulation import Linkage
+
+from pylinkage import Ground, Crank, RRRDyad, Linkage  # equivalent
+```
+
+```python
+# Before
+from pylinkage.optimization import Ensemble
+
+# After
+from pylinkage.population import Ensemble
 ```
 
 ```python

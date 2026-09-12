@@ -11,7 +11,6 @@ Backends:
 
 __all__ = [
     # Matplotlib backend (default)
-    "COLOR_SWITCHER",
     "animate_dashboard",
     "animate_parallel_coordinates",
     "dashboard_layout",
@@ -45,10 +44,6 @@ __all__ = [
     "LinkProfile",
     "JointProfile",
     # Symbol definitions
-    "LINK_COLORS",
-    "SYMBOL_SPECS",
-    "LinkStyle",
-    "SymbolType",
 ]
 
 import importlib as _importlib

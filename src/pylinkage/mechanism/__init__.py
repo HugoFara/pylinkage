@@ -54,17 +54,19 @@ from .factories import (
     slider_crank,
 )
 from .joint import (
-    AnyJoint,
+    AnyJoint,  # noqa: F401
     GroundJoint,
     Joint,
     JointType,
     PrismaticJoint,
     RevoluteJoint,
+    TrackerJoint,
 )
 
 # Link classes
 from .link import (
-    AnyLink,
+    AnyLink,  # noqa: F401
+    ArcDriverLink,
     DriverLink,
     GroundLink,
     Link,
@@ -76,11 +78,11 @@ from .mechanism import Mechanism
 
 # Serialization
 from .serialization import (
-    is_legacy_format,
-    joint_from_dict,
-    joint_to_dict,
-    link_from_dict,
-    link_to_dict,
+    is_legacy_format,  # noqa: F401
+    joint_from_dict,  # noqa: F401
+    joint_to_dict,  # noqa: F401
+    link_from_dict,  # noqa: F401
+    link_to_dict,  # noqa: F401
     mechanism_from_dict,
     mechanism_from_json,
     mechanism_to_dict,
@@ -93,14 +95,14 @@ __all__ = [
     "RevoluteJoint",
     "PrismaticJoint",
     "GroundJoint",
+    "TrackerJoint",
     "JointType",
-    "AnyJoint",
     # Link classes
     "Link",
     "GroundLink",
     "DriverLink",
+    "ArcDriverLink",
     "LinkType",
-    "AnyLink",
     # Mechanism
     "Mechanism",
     # Builder
@@ -113,9 +115,4 @@ __all__ = [
     "mechanism_from_dict",
     "mechanism_to_json",
     "mechanism_from_json",
-    "joint_to_dict",
-    "joint_from_dict",
-    "link_to_dict",
-    "link_from_dict",
-    "is_legacy_format",
 ]

@@ -7,6 +7,7 @@ __all__ = [
     "CoOptimizationResult",
     "CoOptSolution",
     "collections",
+    # Deprecated, served by __getattr__ below.
     "Ensemble",
     "differential_evolution_optimization",
     "differential_evolution_optimization_async",
@@ -52,7 +53,6 @@ from .utils import (
 
 # Lazy-loaded attributes (require scipy / pyswarms)
 _LAZY_ATTRS: dict[str, tuple[str, str]] = {
-    "Ensemble": ("..population", "Ensemble"),
     "chain_optimizers": (".scipy_optimize", "chain_optimizers"),
     "differential_evolution_optimization": (
         ".scipy_optimize",
@@ -101,6 +101,22 @@ _LAZY_ATTRS: dict[str, tuple[str, str]] = {
 
 
 def __getattr__(name: str) -> object:
+    if name == "Ensemble":
+        # Resolved lazily: population imports this package.
+        from warnings import warn
+
+        from .._deprecation import DeprecatedAlias
+        from ..population import Ensemble
+
+        alias = DeprecatedAlias(
+            Ensemble,
+            "pylinkage.population.Ensemble",
+            "2.0.0",
+            "Ensemble is the population container the optimizers return; "
+            "pylinkage.population is its home.",
+        )
+        warn(alias.message(__name__, name), DeprecationWarning, stacklevel=2)
+        return Ensemble
     if name in _LAZY_ATTRS:
         module_path, attr_name = _LAZY_ATTRS[name]
         mod = _importlib.import_module(module_path, __name__)

@@ -45,6 +45,5 @@ from .linear import LinearActuator as LinearActuator
 __all__ = [
     "ArcCrank",
     "Crank",
-    "DEFAULT_ANGULAR_VELOCITY",
     "LinearActuator",
 ]
