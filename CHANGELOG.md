@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`pylinkage.synthesis.crank_angle_limits(crank, coupler, rocker, ground)`**,
+  the angular range of a crank that cannot rotate fully. It sits beside
+  `grashof_check` and `is_crank_rocker`, and returns `None` for a crank that
+  rotates fully. It was `synthesis.conversion._compute_crank_limits`, a private
+  name that only the editor's backend ever called; it now has a public name
+  and a test that checks the returned bounds against the collinear positions.
+
 - **`orientation_resolution` on `path_generation()`**, replacing
   `n_orientation_samples`. It is the number of angles sampled per free
   orientation, so the cost model is now readable from the signature: the search

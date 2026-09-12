@@ -181,6 +181,68 @@ def is_crank_rocker(
     )
 
 
+def crank_angle_limits(
+    crank: float,
+    coupler: float,
+    rocker: float,
+    ground: float,
+) -> tuple[float, float] | None:
+    """Angular range of the crank when it cannot make a full rotation.
+
+    In a non-Grashof four-bar the crank oscillates. It is stopped where
+    the coupler and rocker become collinear, once extended and once folded.
+    The crank angle at each stop follows from the law of cosines in the
+    triangle formed by the crank, the ground and the coupler-rocker line.
+
+    Angles are measured from the ground line, crank pivot towards rocker
+    pivot. The range returned is the one with positive angles; the mirror
+    range below the ground line is reached by negating both bounds. A
+    margin of 0.02 rad (about one degree) is taken off each end so that a
+    crank driven through the range never lands exactly on the singular
+    position.
+
+    Args:
+        crank: Length of crank (input link).
+        coupler: Length of coupler (connecting link).
+        rocker: Length of rocker (output link).
+        ground: Length of ground (frame link).
+
+    Returns:
+        ``(min_angle, max_angle)`` in radians, or ``None`` when the crank can
+        rotate fully, or when the range is too narrow to survive the margin.
+
+    Example:
+        >>> crank_angle_limits(1.0, 3.0, 3.0, 4.0) is None
+        True
+        >>> lo, hi = crank_angle_limits(3.0, 1.5, 1.5, 2.0)
+        >>> 0 < lo < hi < math.pi
+        True
+    """
+    if grashof_check(crank, coupler, rocker, ground) in (
+        GrashofType.GRASHOF_CRANK_ROCKER,
+        GrashofType.GRASHOF_DOUBLE_CRANK,
+        GrashofType.CHANGE_POINT,
+    ):
+        return None
+
+    # Crank tip to rocker pivot spans coupler + rocker when extended and
+    # |coupler - rocker| when folded.
+    angles = []
+    for span in (coupler + rocker, abs(coupler - rocker)):
+        cos_val = (crank * crank + ground * ground - span * span) / (
+            2.0 * crank * ground
+        )
+        cos_val = max(-1.0, min(1.0, cos_val))
+        angles.append(math.acos(cos_val))
+
+    margin = 0.02
+    angle_min = min(angles) + margin
+    angle_max = max(angles) - margin
+    if angle_min >= angle_max:
+        return None
+    return (angle_min, angle_max)
+
+
 def validate_fourbar(solution: FourBarSolution) -> tuple[bool, list[str]]:
     """Validate a four-bar solution for geometric consistency.
 

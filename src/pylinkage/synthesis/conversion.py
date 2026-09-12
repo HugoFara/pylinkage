@@ -55,65 +55,6 @@ def _compute_coupler_point_params(
     return distance, angle
 
 
-def _compute_crank_limits(
-    a: float,
-    b: float,
-    c: float,
-    d: float,
-) -> tuple[float, float] | None:
-    """Compute crank angular limits for a non-Grashof four-bar.
-
-    For a non-Grashof linkage the crank cannot make a full rotation.
-    The limit positions occur when the coupler and rocker are collinear
-    (either extended or folded). Returns the two crank angles at which
-    this happens, or None if the crank can rotate fully.
-
-    Args:
-        a: Crank length.
-        b: Coupler length.
-        c: Rocker length.
-        d: Ground length.
-
-    Returns:
-        (min_angle, max_angle) in radians, or None if full rotation is possible.
-    """
-    from .utils import GrashofType, grashof_check
-
-    gt = grashof_check(a, b, c, d)
-    if gt in (
-        GrashofType.GRASHOF_CRANK_ROCKER,
-        GrashofType.GRASHOF_DOUBLE_CRANK,
-        GrashofType.CHANGE_POINT,
-    ):
-        return None  # Full rotation possible
-
-    # Limit positions: coupler + rocker collinear
-    # Triangle A-D with side BD at the limit:
-    #   Extended: BD = b + c
-    #   Folded:   BD = |b - c|
-    # Law of cosines at vertex A: cos(θ) = (a² + d² - BD²) / (2·a·d)
-    angles = []
-    for bd in [b + c, abs(b - c)]:
-        cos_val = (a * a + d * d - bd * bd) / (2.0 * a * d)
-        cos_val = max(-1.0, min(1.0, cos_val))  # Clamp for numerical safety
-        angles.append(math.acos(cos_val))
-
-    # The crank oscillates between these two angles
-    angle_min = min(angles)
-    angle_max = max(angles)
-
-    # Add small margin to avoid exactly hitting the singularity
-    margin = 0.02  # ~1 degree
-    angle_min += margin
-    angle_max -= margin
-
-    if angle_min >= angle_max:
-        # Range too narrow after margin — mechanism barely moves
-        return None
-
-    return (angle_min, angle_max)
-
-
 def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
