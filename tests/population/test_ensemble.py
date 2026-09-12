@@ -496,3 +496,58 @@ def test_ensemble_save_svg_calls_backend(
     )
     ens.save_svg(str(tmp_path / "out.svg"), idx=0)
     assert seen.get("called") is True
+
+
+def _build_double_slider():
+    """A linkage the numba solver cannot represent (it holds a PPDyad)."""
+    from pylinkage.actuators import Crank
+    from pylinkage.components import Ground
+    from pylinkage.dyads import PPDyad, RRRDyad
+    from pylinkage.simulation import Linkage
+
+    O1 = Ground(0.0, 0.0, name="O1")
+    O2 = Ground(4.0, 0.0, name="O2")
+    crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1, name="crank")
+    rocker = RRRDyad(anchor1=crank.output, anchor2=O2, distance1=3.0, distance2=3.0, name="rocker")
+    L1 = Ground(0.0, 3.0, name="L1")
+    L2 = Ground(6.0, 3.0, name="L2")
+    L3 = Ground(2.0, -3.0, name="L3")
+    L4 = Ground(2.0, 5.0, name="L4")
+    slider = PPDyad(
+        line1_anchor1=L1, line1_anchor2=L2, line2_anchor1=L3, line2_anchor2=L4, name="slider",
+    )
+    return Linkage([O1, O2, crank, rocker, L1, L2, L3, L4, slider], name="DoubleSlider")
+
+
+def test_ensemble_holds_members_the_solver_cannot_represent():
+    """Optimizers return Ensembles; building one must not need the numba solver."""
+    linkage = _build_double_slider()
+    n_joints = len(linkage.components)
+    dims = np.array([linkage.get_constraints()] * 2, dtype=np.float64)
+    positions = np.zeros((2, n_joints, 2))
+    ens = Ensemble(
+        linkage=linkage,
+        dimensions=dims,
+        initial_positions=positions,
+        scores={"s": np.array([1.0, 2.0])},
+    )
+
+    assert ens.n_members == 2
+    assert ens.n_joints == n_joints
+    assert ens[1].score == 2.0
+    assert len(ens[:1]) == 1
+    assert "n_members=2" in repr(ens)
+    with pytest.raises(NotImplementedError, match="PPDyad"):
+        ens.simulate(iterations=2)
+    with pytest.raises(NotImplementedError, match="PPDyad"):
+        _ = ens.topology_key
+
+
+def test_ensemble_template_is_compiled_once_and_shared_by_slices(
+    fourbar, member_dims, member_positions, member_scores,
+):
+    ens = _make_ensemble(fourbar, member_dims, member_positions, member_scores)
+    assert ens._template is None
+    template = ens.template
+    assert ens.template is template
+    assert ens[:2].template is template

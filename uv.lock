@@ -3065,6 +3065,7 @@ dependencies = [
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "tqdm" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
 [package.optional-dependencies]
@@ -3197,6 +3198,7 @@ requires-dist = [
     { name = "sympy", marker = "extra == 'full'", specifier = ">=1.12" },
     { name = "sympy", marker = "extra == 'symbolic'", specifier = ">=1.12" },
     { name = "tqdm", specifier = ">=4.40.0" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'", specifier = ">=4.0.0" },
 ]
 provides-extras = ["numba", "scipy", "symbolic", "pso", "viz", "plotly", "svg", "full", "dev", "docs", "cad", "analysis", "moo"]
 
