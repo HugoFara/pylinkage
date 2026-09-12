@@ -86,7 +86,8 @@ def get_parent_pairs(component: Any) -> list[Any]:
     """
     parents: list[Any] = []
 
-    # Modern API: Crank.anchor, BinaryDyad.anchor1/anchor2
+    # Modern API: Crank.anchor, BinaryDyad.anchor1/anchor2,
+    # RRPDyad.revolute_anchor (its rail is a separate bar, see get_rail_pairs)
     anchor = getattr(component, "anchor", None)
     if anchor is not None:
         parents.append(anchor)
@@ -101,6 +102,10 @@ def get_parent_pairs(component: Any) -> list[Any]:
     if parents:
         return parents
 
+    revolute_anchor = getattr(component, "revolute_anchor", None)
+    if revolute_anchor is not None:
+        return [revolute_anchor]
+
     # Legacy API: joint0, joint1
     joint0 = getattr(component, "joint0", None)
     if joint0 is not None:
@@ -111,6 +116,29 @@ def get_parent_pairs(component: Any) -> list[Any]:
         parents.append(joint1)
 
     return parents
+
+
+def get_rail_pairs(component: Any) -> list[tuple[Any, Any]]:
+    """Return the ``(end1, end2)`` pairs of the rails *component* slides on.
+
+    A prismatic joint is drawn as a bar between the two points that define
+    its line: ``RRPDyad.line_anchor1``/``line_anchor2``, both lines of a
+    ``PPDyad``, or a legacy prismatic joint's ``joint1``/``joint2``.
+    """
+    rails: list[tuple[Any, Any]] = []
+    for a, b in (
+        ("line_anchor1", "line_anchor2"),
+        ("line1_anchor1", "line1_anchor2"),
+        ("line2_anchor1", "line2_anchor2"),
+    ):
+        end1, end2 = getattr(component, a, None), getattr(component, b, None)
+        if end1 is not None and end2 is not None:
+            rails.append((end1, end2))
+    if not rails and is_prismatic_like(component):
+        end1, end2 = getattr(component, "joint1", None), getattr(component, "joint2", None)
+        if end1 is not None and end2 is not None:
+            rails.append((end1, end2))
+    return rails
 
 
 def resolve_component(
@@ -168,3 +196,18 @@ def build_connections(linkage: Any, components: list[Any]) -> list[tuple[int, in
             if p is not None:
                 pairs.append((p, j))
     return pairs
+
+
+def build_rails(components: list[Any]) -> list[tuple[int, int]]:
+    """Return ``(end1_idx, end2_idx)`` pairs for every slider rail to draw.
+
+    Rails are the lines prismatic joints slide on; they are bars of the
+    frame or of a link, not connections to the sliding joint itself.
+    """
+    rails: list[tuple[int, int]] = []
+    for comp in components:
+        for end1, end2 in get_rail_pairs(comp):
+            i1, i2 = resolve_component(end1, components), resolve_component(end2, components)
+            if i1 is not None and i2 is not None and (i1, i2) not in rails:
+                rails.append((i1, i2))
+    return rails

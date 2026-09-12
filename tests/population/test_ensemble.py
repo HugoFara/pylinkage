@@ -551,3 +551,38 @@ def test_ensemble_template_is_compiled_once_and_shared_by_slices(
     template = ens.template
     assert ens.template is template
     assert ens[:2].template is template
+
+
+def test_ensemble_show_simulates_the_member_on_the_spot(
+    fourbar, member_dims, member_positions, member_scores, monkeypatch,
+):
+    """show()/plot_plotly()/save_svg() must not require a prior simulate()."""
+    ens = _make_ensemble(fourbar, member_dims, member_positions, member_scores)
+    seen: dict = {}
+
+    def fake_show(linkage, loci=None, **kwargs):
+        seen["frames"] = len(loci)
+
+    monkeypatch.setattr("pylinkage.visualizer.animated.show_linkage", fake_show)
+    assert ens.trajectories is None
+    ens.show(1, iterations=7)
+    assert seen["frames"] == 7
+    # A one-off simulation does not populate the batch cache
+    assert ens.trajectories is None
+
+
+def test_ensemble_to_pareto_front_round_trips(fourbar, member_dims, member_positions):
+    scores = {"error": np.array([0.5, 0.1, 0.3]), "size": np.array([1.0, 3.0, 2.0])}
+    ens = _make_ensemble(fourbar, member_dims, member_positions, scores)
+
+    front = ens.to_pareto_front()
+    assert front.objective_names == ("error", "size")
+    assert len(front) == 3
+    assert front[1].scores == (0.1, 3.0)
+    np.testing.assert_array_equal(front[1].dimensions, member_dims[1])
+    assert front.best_compromise().scores in {s.scores for s in front}
+
+    back = Ensemble.from_pareto_front(fourbar, front)
+    np.testing.assert_array_equal(back.dimensions, ens.dimensions)
+    np.testing.assert_array_equal(back.initial_positions, ens.initial_positions)
+    assert back.scores.keys() == ens.scores.keys()

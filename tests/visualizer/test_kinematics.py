@@ -274,3 +274,36 @@ class TestAnimateKinematics:
             title="Kin anim",
         )
         assert fig is not None
+
+
+class TestRealLinkage:
+    """The fixtures above mimic the legacy joint API; this is the real thing.
+
+    ``set_input_velocity()`` on a ``simulation.Linkage`` must be all that
+    ``show_kinematics``/``animate_kinematics`` need: no ``joints`` attribute,
+    no ``omega`` attribute, no ``joint0``/``joint1`` parents.
+    """
+
+    def teardown_method(self):
+        plt.close("all")
+
+    def test_show_kinematics(self):
+        lk, crank = _fourbar()
+        lk.set_input_velocity(crank, omega=5.0)
+        fig = show_kinematics(lk, frame_index=3, show_acceleration=True)
+        assert fig is not None
+
+    def test_show_kinematics_without_omega_raises(self):
+        lk, _ = _fourbar()
+        with pytest.raises(ValueError, match="set_input_velocity"):
+            show_kinematics(lk)
+
+    def test_animate_kinematics_draws_every_bar(self, monkeypatch):
+        monkeypatch.setattr(plt, "show", lambda *a, **k: None)
+        monkeypatch.setattr(plt, "pause", lambda *a, **k: None)
+        lk, crank = _fourbar()
+        lk.set_input_velocity(crank, omega=5.0)
+        fig = animate_kinematics(lk, duration=1.0, fps=3)
+        # crank->ground, rocker->crank, rocker->ground
+        ax2 = fig.axes[1]
+        assert len(ax2.lines) == 3

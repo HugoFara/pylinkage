@@ -9,6 +9,7 @@ import math
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from .core import build_connections, build_rails, get_components
 from .symbols import SymbolType, get_symbol_spec
 
 if TYPE_CHECKING:
@@ -317,7 +318,7 @@ def plot_linkage_dxf(
     frame_positions = loci[frame_index]
     current_positions: dict[object, tuple[float, float]] = {
         joint: (frame_positions[i][0] or 0.0, frame_positions[i][1] or 0.0)
-        for i, joint in enumerate(linkage.joints)
+        for i, joint in enumerate(get_components(linkage))
     }
 
     def get_position(joint: object) -> tuple[float, float]:
@@ -328,72 +329,20 @@ def plot_linkage_dxf(
         coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
-    from .core import is_prismatic_like, is_revolute_like
+    # Draw links, then slider rails
+    components = get_components(linkage)
+    for p_idx, c_idx in build_connections(linkage, components):
+        parent_pos = get_position(components[p_idx])
+        pos = get_position(components[c_idx])
+        _draw_dxf_link(msp, parent_pos[0], parent_pos[1], pos[0], pos[1], link_width)
 
-    # Draw links
-    drawn_links: set[tuple[int, int]] = set()
-
-    for joint in linkage.joints:
-        pos = get_position(joint)
-
-        # Draw link to joint0 (first parent)
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is not None:
-            parent_pos = get_position(joint0)
-
-            joint_ids = (id(joint), id(joint0))
-            rev_ids = (id(joint0), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                _draw_dxf_link(
-                    msp,
-                    parent_pos[0],
-                    parent_pos[1],
-                    pos[0],
-                    pos[1],
-                    link_width,
-                )
-                drawn_links.add(joint_ids)
-
-        # Draw link to joint1 (second parent) for joints that have it
-        joint1 = getattr(joint, "joint1", None)
-        if joint1 is not None and is_revolute_like(joint):
-            parent_pos = get_position(joint1)
-
-            joint_ids = (id(joint), id(joint1))
-            rev_ids = (id(joint1), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                _draw_dxf_link(
-                    msp,
-                    parent_pos[0],
-                    parent_pos[1],
-                    pos[0],
-                    pos[1],
-                    link_width,
-                )
-                drawn_links.add(joint_ids)
-
-        # Handle Prismatic joints - draw constraint line
-        p_joint1 = getattr(joint, "joint1", None)
-        p_joint2 = getattr(joint, "joint2", None)
-        if is_prismatic_like(joint) and p_joint1 is not None and p_joint2 is not None:
-            p1_pos = get_position(p_joint1)
-            p2_pos = get_position(p_joint2)
-
-            joint_ids = (id(p_joint1), id(p_joint2))
-            rev_ids = (id(p_joint2), id(p_joint1))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                _draw_dxf_link(
-                    msp,
-                    p1_pos[0],
-                    p1_pos[1],
-                    p2_pos[0],
-                    p2_pos[1],
-                    link_width * 0.8,
-                )
-                drawn_links.add(joint_ids)
+    for i1, i2 in build_rails(components):
+        p1_pos = get_position(components[i1])
+        p2_pos = get_position(components[i2])
+        _draw_dxf_link(msp, p1_pos[0], p1_pos[1], p2_pos[0], p2_pos[1], link_width * 0.8)
 
     # Draw joints (on top of links conceptually, though DXF doesn't have z-order)
-    for joint in linkage.joints:
+    for joint in get_components(linkage):
         pos = get_position(joint)
         spec = get_symbol_spec(joint)
 

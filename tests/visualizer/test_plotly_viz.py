@@ -207,6 +207,13 @@ class TestPlotWithVelocity:
         with pytest.raises(ValueError):
             plot_linkage_plotly_with_velocity(lk, frame_index=0)
 
+    def test_real_linkage_after_set_input_velocity(self):
+        """No adapter: set_input_velocity() is all a simulation.Linkage needs."""
+        lk, crank = _fourbar()
+        lk.set_input_velocity(crank, omega=5.0)
+        fig = plot_linkage_plotly_with_velocity(lk, frame_index=2)
+        assert isinstance(fig, go.Figure)
+
     def test_bad_frame_index(self):
         lk, crank = _fourbar()
         lk.set_input_velocity(crank, omega=5.0)

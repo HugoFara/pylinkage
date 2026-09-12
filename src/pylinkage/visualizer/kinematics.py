@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 
+from .core import get_components, get_parent_pairs, resolve_component
+
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
     from typing import Any as Linkage  # accepts simulation.Linkage and Mechanism
@@ -55,7 +57,7 @@ def plot_velocity_vectors(
 
     # Filter out static joints if requested
     if skip_static:
-        mask = [not is_static_like(j) for j in linkage.joints]
+        mask = [not is_static_like(j) for j in get_components(linkage)]
         positions = positions[mask]
         velocities = velocities[mask]
 
@@ -118,7 +120,7 @@ def plot_acceleration_vectors(
 
     # Filter out static joints if requested
     if skip_static:
-        mask = [not is_static_like(j) for j in linkage.joints]
+        mask = [not is_static_like(j) for j in get_components(linkage)]
         positions = positions[mask]
         accelerations = accelerations[mask]
 
@@ -174,7 +176,10 @@ def plot_kinematics_frame(
 
     # Convert single frame to loci format for plot_static_linkage
     loci = [
-        tuple((float(positions[i, 0]), float(positions[i, 1])) for i in range(len(linkage.joints)))
+        tuple(
+            (float(positions[i, 0]), float(positions[i, 1]))
+            for i in range(len(get_components(linkage)))
+        )
     ]
     plot_static_linkage(linkage, axis, loci, show_legend=False)
 
@@ -225,8 +230,8 @@ def show_kinematics(
     from ..linkage.analysis import movement_bounding_box
 
     has_omega = any(
-        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0)
-        for j in linkage.joints
+        type(j).__name__ == "Crank" and (getattr(j, "_omega", None) or getattr(j, "omega", None))
+        for j in get_components(linkage)
     )
     if not has_omega:
         raise ValueError(
@@ -251,7 +256,12 @@ def show_kinematics(
         max_vel = np.nanmax(vel_mag) if np.any(~np.isnan(vel_mag)) else 1.0
         # Scale so max velocity arrow is about 1/5 of linkage size
         bbox = movement_bounding_box(
-            [tuple((float(pos[i, 0]), float(pos[i, 1])) for i in range(len(linkage.joints)))]
+            [
+                tuple(
+                    (float(pos[i, 0]), float(pos[i, 1]))
+                    for i in range(len(get_components(linkage)))
+                )
+            ]
         )
         linkage_size = max(bbox[2] - bbox[0], bbox[1] - bbox[3])
         velocity_scale = max_vel / (linkage_size * 0.2) if max_vel > 0 else 1.0
@@ -266,7 +276,7 @@ def show_kinematics(
     loci = [
         tuple(
             (float(positions[i, j, 0]), float(positions[i, j, 1]))
-            for j in range(len(linkage.joints))
+            for j in range(len(get_components(linkage)))
         )
         for i in range(n_frames)
     ]
@@ -339,8 +349,8 @@ def animate_kinematics(
 
     # Check that omega is set (legacy Linkage.Crank exposes ``omega``).
     has_omega = any(
-        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0)
-        for j in linkage.joints
+        type(j).__name__ == "Crank" and (getattr(j, "_omega", None) or getattr(j, "omega", None))
+        for j in get_components(linkage)
     )
     if not has_omega:
         raise ValueError(
@@ -359,7 +369,7 @@ def animate_kinematics(
         loci = [
             tuple(
                 (float(positions[i, j, 0]), float(positions[i, j, 1]))
-                for j in range(len(linkage.joints))
+                for j in range(len(get_components(linkage)))
             )
             for i in range(n_frames)
         ]
@@ -374,7 +384,7 @@ def animate_kinematics(
     loci = [
         tuple(
             (float(positions[i, j, 0]), float(positions[i, j, 1]))
-            for j in range(len(linkage.joints))
+            for j in range(len(get_components(linkage)))
         )
         for i in range(n_frames)
     ]
@@ -396,19 +406,21 @@ def animate_kinematics(
     ax2.set_title(title or "Kinematics Animation")
 
     # Initialize artists for animation
+    components = get_components(linkage)
     link_lines = []
-    for joint in linkage.joints:
-        for parent in (getattr(joint, "joint0", None), getattr(joint, "joint1", None)):
-            if parent is not None:
+    for j_idx, joint in enumerate(components):
+        for parent in get_parent_pairs(joint):
+            p_idx = resolve_component(parent, components)
+            if p_idx is not None:
                 (line,) = ax2.plot([], [], c=_get_color(joint), linewidth=2)
-                link_lines.append((joint, parent, line))
+                link_lines.append((j_idx, p_idx, line))
 
     # Joint markers
     joint_scatter = ax2.scatter([], [], s=80, c="white", edgecolors="black", zorder=5)
 
     # Velocity quiver (will be updated each frame)
     # Initialize with empty data
-    non_static_mask = [not is_static_like(j) for j in linkage.joints]
+    non_static_mask = [not is_static_like(j) for j in get_components(linkage)]
     n_non_static = sum(non_static_mask)
     quiver = ax2.quiver(
         np.zeros(n_non_static),
@@ -431,14 +443,8 @@ def animate_kinematics(
         vel = velocities[frame_idx]
 
         # Update links
-        for joint, parent, line in link_lines:
-            j_idx = list(linkage.joints).index(joint)
-            if is_static_like(parent):
-                p_pos = parent.coord()
-            else:
-                p_idx = list(linkage.joints).index(parent)
-                p_pos = (pos[p_idx, 0], pos[p_idx, 1])
-            line.set_data([p_pos[0], pos[j_idx, 0]], [p_pos[1], pos[j_idx, 1]])
+        for j_idx, p_idx, line in link_lines:
+            line.set_data([pos[p_idx, 0], pos[j_idx, 0]], [pos[p_idx, 1], pos[j_idx, 1]])
 
         # Update joint positions
         joint_scatter.set_offsets(pos)

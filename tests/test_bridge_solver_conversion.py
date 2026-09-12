@@ -178,6 +178,53 @@ class TestLinkageToSolverData:
         with pytest.raises(NotImplementedError, match="PPDyad"):
             linkage_to_solver_data(linkage)
 
+    def test_point_tracker_follows_its_anchors(self):
+        """A PointTracker has FixedDyad geometry and must not be frozen in place."""
+        from pylinkage.components import PointTracker
+
+        linkage = make_fourbar()
+        A, D, crank, rocker = linkage.components
+        tracker = PointTracker(
+            anchor1=crank.output, anchor2=rocker, distance=1.0, angle=0.5, name="T"
+        )
+        linkage = Linkage([A, D, crank, rocker, tracker])
+
+        data = linkage_to_solver_data(linkage)
+        assert data.joint_types[4] == JOINT_FIXED
+        start = linkage.get_coords()
+        slow = np.array([[list(p) for p in frame] for frame in linkage.step(iterations=20)])
+        linkage.set_coords(start)
+        fast = linkage.step_fast(iterations=20)
+        np.testing.assert_allclose(fast[:, 4], slow[:, 4], atol=1e-9)
+
+    def test_unknown_component_raises(self):
+        """A custom Component the solver does not know is refused, not frozen."""
+        from pylinkage.components import Component
+
+        class Midpoint(Component):
+            __slots__ = ("a", "b")
+
+            def __init__(self, a, b):
+                super().__init__(None, None, "mid")
+                self.a, self.b = a, b
+
+            def get_constraints(self):
+                return ()
+
+            def set_constraints(self, *args):
+                pass
+
+            def reload(self, dt=1):
+                self.x = (self.a.x + self.b.x) / 2
+                self.y = (self.a.y + self.b.y) / 2
+
+        linkage = make_fourbar()
+        A, D, crank, rocker = linkage.components
+        linkage = Linkage([A, D, crank, rocker, Midpoint(A, D)])
+
+        with pytest.raises(NotImplementedError, match="Midpoint"):
+            linkage_to_solver_data(linkage)
+
 
 class TestSolverDataToLinkage:
     def test_positions_updated(self):

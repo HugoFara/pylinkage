@@ -12,8 +12,9 @@ import drawsvg as draw
 import numpy as np
 
 from .core import (
+    build_connections,
+    build_rails,
     get_components,
-    is_prismatic_like,
     is_revolute_like,
     is_static_like,
 )
@@ -572,72 +573,31 @@ def plot_linkage_svg(
             )
         )
 
-    # Draw links
+    # Draw links, then slider rails
+    components = get_components(linkage)
     link_index = 0
-    drawn_links: set[tuple[int, int]] = set()
-
-    for joint in get_components(linkage):
-        pos = get_position(joint)
+    for p_idx, c_idx in build_connections(linkage, components):
+        parent_pos = get_position(components[p_idx])
+        pos = get_position(components[c_idx])
+        px, py = w2c(parent_pos[0], parent_pos[1])
         cx, cy = w2c(pos[0], pos[1])
+        color = get_link_color(link_index)
+        _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
+        link_index += 1
 
-        # Draw link to joint0 (first parent)
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is not None:
-            parent_pos = get_position(joint0)
-            px, py = w2c(parent_pos[0], parent_pos[1])
+        # Dimension line
+        if show_dimensions:
+            length = math.sqrt((pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2)
+            _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
 
-            joint_ids = (id(joint), id(joint0))
-            rev_ids = (id(joint0), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
-                drawn_links.add(joint_ids)
-                link_index += 1
-
-                # Dimension line
-                if show_dimensions:
-                    length = math.sqrt(
-                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                    )
-                    _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
-
-        # Draw link to joint1 (second parent) for joints that have it
-        joint1 = getattr(joint, "joint1", None)
-        if joint1 is not None and is_revolute_like(joint):
-            parent_pos = get_position(joint1)
-            px, py = w2c(parent_pos[0], parent_pos[1])
-
-            joint_ids = (id(joint), id(joint1))
-            rev_ids = (id(joint1), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                _draw_link(d, px, py, cx, cy, color=color, width=12, style=link_style_enum)
-                drawn_links.add(joint_ids)
-                link_index += 1
-
-                if show_dimensions:
-                    length = math.sqrt(
-                        (pos[0] - parent_pos[0]) ** 2 + (pos[1] - parent_pos[1]) ** 2
-                    )
-                    _draw_dimension(d, px, py, cx, cy, f"{length:.2f}", offset=25)
-
-        # Handle Prismatic joints differently
-        p_joint1 = getattr(joint, "joint1", None)
-        p_joint2 = getattr(joint, "joint2", None)
-        if is_prismatic_like(joint) and p_joint1 is not None and p_joint2 is not None:
-            # Draw the constraint line between joint1 and joint2
-            p1_pos = get_position(p_joint1)
-            p2_pos = get_position(p_joint2)
-            p1x, p1y = w2c(p1_pos[0], p1_pos[1])
-            p2x, p2y = w2c(p2_pos[0], p2_pos[1])
-
-            joint_ids = (id(p_joint1), id(p_joint2))
-            rev_ids = (id(p_joint2), id(p_joint1))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                color = get_link_color(link_index)
-                _draw_link(d, p1x, p1y, p2x, p2y, color=color, width=10, style=link_style_enum)
-                drawn_links.add(joint_ids)
-                link_index += 1
+    for i1, i2 in build_rails(components):
+        p1_pos = get_position(components[i1])
+        p2_pos = get_position(components[i2])
+        p1x, p1y = w2c(p1_pos[0], p1_pos[1])
+        p2x, p2y = w2c(p2_pos[0], p2_pos[1])
+        color = get_link_color(link_index)
+        _draw_link(d, p1x, p1y, p2x, p2y, color=color, width=10, style=link_style_enum)
+        link_index += 1
 
     # Draw joints (on top of links)
     for joint in get_components(linkage):

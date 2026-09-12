@@ -506,8 +506,10 @@ Computing Sensitivity
    solutions = solve_linkage_symbolically(linkage)
    x_coupler, y_coupler = solutions["C"]
 
-   # Define parameters
-   L1, L2, L3 = sp.symbols("L1 L2 L3")
+   # Differentiate with respect to the linkage's own symbols. A fresh
+   # sp.symbols("L1 L2 L3") would carry different assumptions, count as
+   # unrelated symbols, and give zero gradients.
+   L1, L2, L3 = (linkage.parameters[name] for name in ("L1", "L2", "L3"))
    params = [L1, L2, L3]
 
    # Compute gradients (sensitivity)
@@ -653,8 +655,13 @@ parameters using the modern component API:
 
    bounds = pl.generate_bounds(
        numeric_linkage.get_constraints(),
-       min_ratio=0.9, max_ratio=1.1,  # Search near optimal
+       min_ratio=1.1, max_factor=1.1,  # Search within ±10% of the optimum
    )
+   results = pl.particle_swarm_optimization(
+       fitness, numeric_linkage, bounds=bounds, order_relation=min,
+       n_particles=20, iterations=20, verbose=False,
+   )
+   print(f"PSO fine-tuning: {results[0].score:.4f}")
 
 Complete Workflow Example
 -------------------------

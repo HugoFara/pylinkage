@@ -8,8 +8,10 @@ from pylinkage.visualizer.core import (
     COLOR_SWITCHER,
     _get_color,
     build_connections,
+    build_rails,
     get_components,
     get_parent_pairs,
+    get_rail_pairs,
     is_prismatic_like,
     is_revolute_like,
     is_static_like,
@@ -152,7 +154,21 @@ class TestBuildConnections:
     def test_slider_crank(self):
         lk, parts = _slider_crank()
         pairs = build_connections(lk, parts)
-        assert pairs
+        # ground->crank and crank tip->slider: the connecting rod is a bar
+        assert pairs == [(0, 3), (3, 4)]
+
+
+class TestRails:
+    def test_rrp_rail_between_line_anchors(self):
+        lk, parts = _slider_crank()
+        slider = parts[4]
+        assert get_rail_pairs(slider) == [(parts[1], parts[2])]
+        assert build_rails(parts) == [(1, 2)]
+
+    def test_revolute_joint_has_no_rail(self):
+        _, parts = _fourbar()
+        assert get_rail_pairs(parts[3]) == []
+        assert build_rails(parts) == []
 
     def test_mechanism_branch(self):
         # Build a minimal Mechanism-like object

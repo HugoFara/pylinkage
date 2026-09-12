@@ -65,7 +65,8 @@ def is_dyad(part: Any) -> bool:
 
     Recognises the modern dyad classes by name
     (``RRRDyad`` / ``RRPDyad`` / ``PPDyad`` / ``FixedDyad`` /
-    ``BinaryDyad`` / cam-follower variants) plus a ``Mechanism``
+    ``PointTracker`` / ``BinaryDyad`` / cam-follower variants) plus a
+    ``Mechanism``
     ``RevoluteJoint`` or ``PrismaticJoint`` that is neither a ground
     anchor nor a driver output (those are the dependent joints solved
     from neighbouring links — dyad-equivalent).
@@ -76,6 +77,7 @@ def is_dyad(part: Any) -> bool:
         "RRPDyad",
         "PPDyad",
         "FixedDyad",
+        "PointTracker",
         "BinaryDyad",
         "TranslatingCamFollower",
         "OscillatingCamFollower",
