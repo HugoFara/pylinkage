@@ -110,6 +110,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   deprecated and the rename in place, the documentation build goes from 8
   warnings to **0**.
 
+### Removed
+
+- **The `api/` directory, the `[api]` extra and `task api`.** The FastAPI
+  server was the backend of
+  [pylinkage-editor](https://github.com/HugoFara/pylinkage-editor) and now
+  lives there, in `server/`, with pylinkage as a dependency. It was never part
+  of the wheel: `pip install pylinkage[api]` installed fastapi and uvicorn for
+  code that was not there, and anyone setting up the editor had to find the
+  server by reading this repository's source (#46). If you were running it from
+  a checkout, `cd pylinkage-editor/server && uv run pylinkage-editor-server`
+  replaces `uv run task api`.
+
 ### Fixed
 
 - **The benchmarks page figures are regenerated** against the above, and its
