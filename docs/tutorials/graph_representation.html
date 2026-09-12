@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Graph-Based Linkage Representation &mdash; pylinkage 1.2.0 documentation</title>
+  <title>Graph-Based Linkage Representation &mdash; pylinkage 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/documentation_options.js?v=ca842793"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -240,9 +240,10 @@ Simulation steps: 60
 <h3>Ternary Links via Hyperedge<a class="headerlink" href="#ternary-links-via-hyperedge" title="Link to this heading"></a></h3>
 <p>A coupler point <code class="docutils literal notranslate"><span class="pre">P</span></code> rigidly attached to the coupler makes B-C-P one
 rigid triangle. A <code class="docutils literal notranslate"><span class="pre">Hyperedge</span></code> records that the three joints share one
-body, which topology analysis needs to count links correctly. The
-hyperedge is membership only: to <em>constrain</em> the triangle, add its three
-edges with their lengths.</p>
+body: <code class="docutils literal notranslate"><span class="pre">to_mechanism</span></code> holds every pair of its nodes at the distance
+their initial positions give, and mobility analysis counts it as one
+link. Edges inside the hyperedge are optional — here they carry the
+side lengths so that <code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> fully describes the triangle.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hyperedge</span>
 
 <span class="n">hg_coupler</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CouplerFourBar&quot;</span><span class="p">)</span>
@@ -489,9 +490,12 @@ dictionary; <code class="docutils literal notranslate"><span class="pre">graph_t
 <section id="mobility-analysis">
 <h3>Mobility Analysis<a class="headerlink" href="#mobility-analysis" title="Link to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">compute_mobility</span></code> applies the Kutzbach–Grübler equation
-<span class="math notranslate nohighlight">\(M = 3(n - 1) - 2 j_1 - j_2\)</span> to a hypergraph. Every edge counts as
-one binary link, every hyperedge as one rigid body, plus the ground; every
-node is a one-DOF joint.</p>
+<span class="math notranslate nohighlight">\(M = 3(n - 1) - 2 j_1 - j_2\)</span> to a hypergraph. Links are rigid
+bodies: the ground, one per edge and one per hyperedge — except that
+bodies pinned together at two or more nodes are one body, so a hyperedge
+over a triangle of edges is a single link. A node shared by <span class="math notranslate nohighlight">\(k\)</span>
+bodies is <span class="math notranslate nohighlight">\(k - 1\)</span> one-DOF joints: a coupler point that belongs to
+one body only is not a joint, and a pin where three links meet is two.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_dof</span><span class="p">,</span> <span class="n">compute_mobility</span>
 
 <span class="n">info</span> <span class="o">=</span> <span class="n">compute_mobility</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
@@ -511,13 +515,20 @@ node is a one-DOF joint.</p>
 Single-DOF mechanism (typical linkage)
 </pre></div>
 </div>
-<p>Because a hyperedge is a link of its own, a ternary link meant for
-mobility analysis is a hyperedge with <strong>no</strong> edges among its nodes — the
-convention the topology catalog below follows. The coupler four-bar above
-adds the triangle’s edges so that <code class="docutils literal notranslate"><span class="pre">to_mechanism</span></code> can solve it, and
-<code class="docutils literal notranslate"><span class="pre">compute_dof</span></code> then counts the same body four times; for its mobility,
-analyze the topology without the coupler point, or rebuild it
-hyperedge-only.</p>
+<p>The coupler four-bar above, with its hyperedge and the three edges
+inside it, is therefore still four links and one degree of freedom:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">info</span> <span class="o">=</span> <span class="n">compute_mobility</span><span class="p">(</span><span class="n">hg_coupler</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coupler four-bar: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">num_links</span><span class="si">}</span><span class="s2"> links, DOF </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">dof</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Coupler four-bar: 4 links, DOF 1
+</pre></div>
+</div>
+<p>Three edges closing a triangle <em>without</em> a hyperedge are counted as three
+bars pinned together; the degree of freedom comes out the same, only the
+link count differs. The topology catalog below writes every ternary link
+as a hyperedge with no edges among its nodes.</p>
 </section>
 <section id="isomorphism-detection">
 <h3>Isomorphism Detection<a class="headerlink" href="#isomorphism-detection" title="Link to this heading"></a></h3>

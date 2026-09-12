@@ -1,4 +1,4 @@
-cff-version: 1.2.0
+cff-version: 1.2.1
 message: "If you use this software, please cite it as below."
 type: software
 title: "pylinkage: Co-optimization of Linkage Topology and Dimensions in Python"
@@ -7,7 +7,7 @@ authors:
     given-names: Hugo
     orcid: "https://orcid.org/0009-0001-0769-4434"
     affiliation: "Independent Researcher, France"
-version: 1.2.0
+version: 1.2.1
 date-released: "2026-09-12"
 identifiers:
   - type: doi

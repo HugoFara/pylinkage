@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.topology package &mdash; pylinkage 1.2.0 documentation</title>
+  <title>pylinkage.topology package &mdash; pylinkage 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/documentation_options.js?v=ca842793"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -189,10 +189,19 @@ and related mobility analysis, operating on pure topology (no dimensions).</p>
 - n = number of links (including ground)
 - j1 = number of 1-DOF joints (revolute, prismatic)
 - j2 = number of 2-DOF joints (higher pairs)</p>
-<p>Links are counted from edges and hyperedges. Each edge is one binary
-link. Each hyperedge is one rigid body (one link regardless of how
-many joints it has). The ground link is always counted as 1.</p>
-<p>All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.</p>
+<p>Links are the rigid bodies of the graph: the ground (every
+<code class="docutils literal notranslate"><span class="pre">GROUND</span></code> node, or an implicit link when there is none), one body
+per edge and one per hyperedge, except that bodies sharing two or
+more nodes are pinned together and count as one. A hyperedge over a
+triangle whose sides are also edges is therefore one link, as is an
+edge between two ground nodes.</p>
+<p>Joints are counted per node: a node shared by <code class="docutils literal notranslate"><span class="pre">k</span></code> bodies is
+<code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">-</span> <span class="pre">1</span></code> joints, so a coupler point that belongs to a single body
+is not a joint and a pin shared by three links is two. A
+<code class="docutils literal notranslate"><span class="pre">PRISMATIC</span></code> node is a slider block of its own with one prismatic
+joint to the hyperedge it slides along. All joints are 1-DOF.</p>
+<p>Three edges closing a triangle are counted as three bars pinned
+together rather than one body; the DOF is the same either way.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only, no dimensions needed).</p>
@@ -842,10 +851,19 @@ hashes guarantee non-isomorphism.</p>
 - n = number of links (including ground)
 - j1 = number of 1-DOF joints (revolute, prismatic)
 - j2 = number of 2-DOF joints (higher pairs)</p>
-<p>Links are counted from edges and hyperedges. Each edge is one binary
-link. Each hyperedge is one rigid body (one link regardless of how
-many joints it has). The ground link is always counted as 1.</p>
-<p>All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.</p>
+<p>Links are the rigid bodies of the graph: the ground (every
+<code class="docutils literal notranslate"><span class="pre">GROUND</span></code> node, or an implicit link when there is none), one body
+per edge and one per hyperedge, except that bodies sharing two or
+more nodes are pinned together and count as one. A hyperedge over a
+triangle whose sides are also edges is therefore one link, as is an
+edge between two ground nodes.</p>
+<p>Joints are counted per node: a node shared by <code class="docutils literal notranslate"><span class="pre">k</span></code> bodies is
+<code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">-</span> <span class="pre">1</span></code> joints, so a coupler point that belongs to a single body
+is not a joint and a pin shared by three links is two. A
+<code class="docutils literal notranslate"><span class="pre">PRISMATIC</span></code> node is a slider block of its own with one prismatic
+joint to the hyperedge it slides along. All joints are 1-DOF.</p>
+<p>Three edges closing a triangle are counted as three bars pinned
+together rather than one body; the DOF is the same either way.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only, no dimensions needed).</p>

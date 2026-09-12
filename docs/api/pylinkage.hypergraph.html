@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.hypergraph package &mdash; pylinkage 1.2.0 documentation</title>
+  <title>pylinkage.hypergraph package &mdash; pylinkage 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/documentation_options.js?v=ca842793"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -647,8 +647,10 @@ distances, angles) is stored separately in a Dimensions object.</p>
 <dt class="sig sig-object py" id="pylinkage.hypergraph.graph.HypergraphLinkage.to_simple_graph">
 <span class="sig-name descname"><span class="pre">to_simple_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></span><a class="headerlink" href="#pylinkage.hypergraph.graph.HypergraphLinkage.to_simple_graph" title="Link to this definition"></a></dt>
 <dd><p>Convert to a simple graph by expanding hyperedges to edges.</p>
-<p>Creates a new HypergraphLinkage with no hyperedges, where each
-hyperedge has been converted to its equivalent edges.</p>
+<p>Creates a new HypergraphLinkage with no hyperedges. Every
+hyperedge becomes the clique of its nodes — one edge per pair —
+since a rigid body holds each pair of its joints at a fixed
+distance. Pairs already joined by an edge are left as they are.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A new HypergraphLinkage with only nodes and edges.</p>
@@ -2018,8 +2020,10 @@ distances, angles) is stored separately in a Dimensions object.</p>
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">to_simple_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></span></dt>
 <dd><p>Convert to a simple graph by expanding hyperedges to edges.</p>
-<p>Creates a new HypergraphLinkage with no hyperedges, where each
-hyperedge has been converted to its equivalent edges.</p>
+<p>Creates a new HypergraphLinkage with no hyperedges. Every
+hyperedge becomes the clique of its nodes — one edge per pair —
+since a rigid body holds each pair of its joints at a fixed
+distance. Pairs already joined by an edge are left as they are.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A new HypergraphLinkage with only nodes and edges.</p>
