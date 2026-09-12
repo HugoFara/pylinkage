@@ -203,6 +203,16 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **The tutorials run.** Ten of the eleven pages under
+  `docs/source/tutorials/` failed on 1.1.1: `pylinkage.joints`, keyword
+  arguments that never existed (`show_linkage(animated=…)`,
+  `generate_bounds(max_ratio=…)`), `len(result)` on a `SynthesisResult`,
+  tuple-unpacking an `Ensemble`, an invented hypergraph API, change-point
+  four-bars that no perturbation survives. `custom_joints`,
+  `graph_representation` and `visualization` are rewritten against the
+  current API; the others are corrected in place, with expected outputs
+  regenerated. Every code block of every tutorial now executes in order
+  with `DeprecationWarning` as an error.
 - **The SVG, DXF and STEP exporters draw the component API.** All three
   walked the legacy `linkage.joints` / `joint0` / `joint1` attributes, so
   `plot_linkage_svg()` produced joints and trajectories but no bars for a

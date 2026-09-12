@@ -34,15 +34,19 @@ First, create a linkage to analyze:
    from pylinkage.dyads import RRRDyad
    from pylinkage.simulation import Linkage
 
-   # Create a four-bar linkage
+   # Create a four-bar linkage (a crank-rocker: 1 + 3.5 < 3 + 2)
    A = Ground(0.0, 0.0, name="A")
-   D = Ground(4.0, 0.0, name="D")
+   D = Ground(3.5, 0.0, name="D")
    crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="crank")
    coupler = RRRDyad(
        anchor1=crank.output, anchor2=D,
        distance1=3.0, distance2=2.0, name="coupler",
    )
    linkage = Linkage([A, D, crank, coupler])
+
+Pick a design with some margin: a change-point four-bar (shortest plus
+longest link exactly equal to the other two) becomes unbuildable under the
+smallest perturbation, and its sensitivity comes out infinite.
 
 Sensitivity Analysis
 --------------------
@@ -68,10 +72,14 @@ Output:
 
 .. code-block:: text
 
-   Most sensitive: coupler_dist1
-     coupler_dist1: 0.0312
-     coupler_dist2: 0.0287
-     crank_radius: 0.0156
+   Most sensitive: coupler_dist2
+     coupler_dist2: 1.1059
+     coupler_dist1: 1.1058
+     crank_radius: 0.7426
+
+A sensitivity is the mean displacement of the output path per unit change
+of the constraint: 1.1 means that lengthening ``coupler_dist2`` by 0.01
+moves the output joint by 0.011 on average over a cycle.
 
 Understanding Constraint Names
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -91,11 +99,12 @@ By default, the last joint is analyzed. You can specify a different output:
 
 .. code-block:: python
 
-   # Analyze sensitivity for the crank output
-   analysis = linkage.analyze_sensitivity(output_joint=0)
+   # Analyze sensitivity for the crank output, by component index...
+   analysis = linkage.analyze_sensitivity(output_joint=2)
 
-   # Or by joint object
+   # ...or by component object
    analysis = linkage.analyze_sensitivity(output_joint=crank)
+   print(f"Crank path: {analysis.sensitivity_ranking}")
 
 Including Transmission Angle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -106,7 +115,7 @@ For four-bar linkages, you can also track transmission angle sensitivity:
 
    analysis = linkage.analyze_sensitivity(
        delta=0.01,
-       include_transmission=True
+       include_transmission=True,  # the default
    )
 
    print(f"Baseline transmission: {analysis.baseline_transmission:.1f}°")
@@ -131,10 +140,10 @@ Output:
 
 .. code-block:: text
 
-      constraint  sensitivity  perturbed_metric  perturbed_transmission
-   0  crank_radius     0.0156           0.00156                   89.5
-   1  coupler_dist1    0.0312           0.00312                   90.2
-   2  coupler_dist2    0.0287           0.00287                   89.8
+         constraint  sensitivity  perturbed_metric  perturbed_transmission
+   0   crank_radius     0.742633          0.007426               91.335097
+   1  coupler_dist1     1.105773          0.033173               90.266703
+   2  coupler_dist2     1.105910          0.022118               90.791385
 
 Tolerance Analysis
 ------------------
@@ -164,6 +173,14 @@ Tolerance analysis uses Monte Carlo simulation to assess manufacturing variabili
    print(f"Mean deviation: {result.mean_deviation:.4f}")
    print(f"Max deviation:  {result.max_deviation:.4f}")
    print(f"Std deviation:  {result.std_deviation:.4f}")
+
+Output:
+
+.. code-block:: text
+
+   Mean deviation: 0.1727
+   Max deviation:  0.3510
+   Std deviation:  0.0631
 
 Understanding the Results
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -226,14 +243,17 @@ Design linkages that are insensitive to manufacturing variation:
 
 .. code-block:: python
 
+   import pylinkage as pl
+
+
    @pl.kinematic_minimization
    def robust_linkage(loci, linkage=None, **kwargs):
        """Optimize for path shape while minimizing sensitivity."""
 
-       # Path shape objective (e.g., bounding box)
+       # Path shape objective: a wide, flat output path
        output_path = [step[-1] for step in loci]
-       bbox = pl.bounding_box(output_path)
-       path_error = compute_path_error(bbox)
+       min_y, max_x, max_y, min_x = pl.bounding_box(output_path)
+       path_error = (max_y - min_y) - 0.5 * (max_x - min_x)
 
        # Sensitivity penalty
        analysis = linkage.analyze_sensitivity(delta=0.01)
@@ -243,6 +263,17 @@ Design linkages that are insensitive to manufacturing variation:
        return path_error + 10.0 * max_sensitivity
 
 
+   bounds = pl.generate_bounds(linkage.get_constraints(), min_ratio=1.5, max_factor=1.5)
+   results = pl.particle_swarm_optimization(
+       robust_linkage, linkage, bounds=bounds, order_relation=min,
+       n_particles=10, iterations=10, verbose=False,
+   )
+   print(f"Best robust score: {results[0].score:.3f}")
+
+Sensitivity analysis simulates the linkage once per constraint, so this
+fitness costs a few times a plain one; keep the swarm small or the
+perturbation coarse while exploring.
+
 Tolerance-Based Constraints
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -250,21 +281,32 @@ Reject designs that exceed tolerance requirements:
 
 .. code-block:: python
 
-   from pylinkage.exceptions import UnbuildableError
-
    @pl.kinematic_minimization
    def tolerance_constrained(loci, linkage=None, **kwargs):
        """Optimize path, rejecting designs with excessive variation."""
 
        # Check tolerance
        tolerances = {"crank_radius": 0.1, "coupler_dist1": 0.2, "coupler_dist2": 0.2}
-       result = linkage.analyze_tolerance(tolerances, n_samples=100)
+       result = linkage.analyze_tolerance(tolerances, n_samples=100, seed=0)
 
        if result.max_deviation > 0.5:  # Reject if max deviation > 0.5mm
-           raise UnbuildableError("Excessive tolerance variation")
+           return float("inf")
 
-       # Path objective
-       return compute_path_score(loci)
+       # Path objective: a wide, flat output path
+       output_path = [step[-1] for step in loci]
+       min_y, max_x, max_y, min_x = pl.bounding_box(output_path)
+       return (max_y - min_y) - 0.5 * (max_x - min_x)
+
+
+   results = pl.particle_swarm_optimization(
+       tolerance_constrained, linkage, bounds=bounds, order_relation=min,
+       n_particles=10, iterations=10, verbose=False,
+   )
+   print(f"Best tolerance-constrained score: {results[0].score:.3f}")
+
+Returning ``inf`` (or ``-inf`` under ``@kinematic_maximization``) is how a
+fitness function rejects a candidate; it is what the decorator itself
+returns for an unbuildable geometry.
 
 Practical Guidelines
 --------------------
@@ -312,7 +354,7 @@ Example Complete Workflow
 
    # Create linkage
    A = Ground(0.0, 0.0, name="A")
-   D = Ground(4.0, 0.0, name="D")
+   D = Ground(3.5, 0.0, name="D")
    crank = Crank(anchor=A, radius=1.0, angular_velocity=0.1, name="crank")
    coupler = RRRDyad(
        anchor1=crank.output, anchor2=D,

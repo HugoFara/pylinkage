@@ -53,7 +53,7 @@ specific path:
    # Find linkages that achieve this path
    result = path_generation(precision_points)
 
-   print(f"Found {len(result)} candidate solutions")
+   print(f"Found {len(result.solutions)} candidate solutions")
 
    # Visualize the first solution
    if result.solutions:
@@ -64,10 +64,46 @@ specific path:
 
 .. code-block:: text
 
-   Found 4 candidate solutions
+   Found 10 candidate solutions
 
 The synthesis returns multiple candidate linkages because the mathematical
-problem typically has several solutions.
+problem typically has several solutions; ``max_solutions`` (default 10)
+caps how many are kept.
+
+Animating a Solution
+^^^^^^^^^^^^^^^^^^^^
+
+``result.solutions`` holds ready-to-simulate ``Linkage`` objects, but by
+default synthesis keeps every Grashof linkage, including double-rockers whose
+crank cannot turn fully. ``show_linkage`` drives the crank through a full
+turn and stops at the first position that cannot be assembled. Ask for
+crank-rockers only (``require_crank_rocker=True``), or let the crank sweep
+just its reachable range:
+
+.. code-block:: python
+
+   import math
+   from pylinkage.synthesis import crank_angle_limits, solution_to_linkage
+
+
+   def show(result, index=0):
+       """Animate one solution, oscillating the crank when it cannot turn fully."""
+       raw = result.raw_solutions[index]
+       limits = crank_angle_limits(
+           raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
+       )
+       linkage = result.solutions[index]
+       if limits is not None:
+           lo, hi = (math.degrees(a) for a in limits)
+           print(f"crank oscillates between {lo:.1f} and {hi:.1f} deg")
+           linkage = solution_to_linkage(raw._replace(arc_limits=limits), name=linkage.name)
+       pl.show_linkage(linkage)
+
+
+   show(result)
+
+With ``arc_limits`` set, ``solution_to_linkage`` builds the linkage around an
+``ArcCrank`` instead of a ``Crank``. The rest of this tutorial uses ``show()``.
 
 Function Generation
 -------------------
@@ -105,18 +141,19 @@ Example: Three Precision Points
    from pylinkage.synthesis import function_generation
    import pylinkage as pl
 
-   # Define input/output angle pairs (phi, psi) in radians
+   # Define input/output angle pairs (phi, psi) in radians, measured from
+   # the ground line. The rocker is to turn half as fast as the crank.
    angle_pairs = [
-       (0.0, 0.0),                    # Position 1
-       (math.pi / 6, math.pi / 4),    # Position 2: 30° -> 45°
-       (math.pi / 3, math.pi / 2),    # Position 3: 60° -> 90°
+       (math.radians(90), math.radians(100)),   # Position 1
+       (math.radians(120), math.radians(115)),  # Position 2
+       (math.radians(150), math.radians(130)),  # Position 3
    ]
 
-   # Synthesize the linkage
-   result = function_generation(angle_pairs)
+   # Synthesize the linkage; lengths are relative to the ground link
+   result = function_generation(angle_pairs, ground_length=2.0)
 
-   if result:
-       print(f"Found {len(result)} solutions")
+   if result.solutions:
+       print(f"Found {len(result.solutions)} solutions")
        for i, sol in enumerate(result.raw_solutions):
            print(f"\nSolution {i + 1}:")
            print(f"  Crank length (L1):   {sol.crank_length:.4f}")
@@ -126,7 +163,7 @@ Example: Three Precision Points
 
        # Visualize the first solution
        linkage = result.solutions[0]
-       pl.show_linkage(linkage)
+       show(result)
    else:
        print("No valid solutions found")
        for warning in result.warnings:
@@ -139,10 +176,16 @@ Example: Three Precision Points
    Found 1 solutions
 
    Solution 1:
-     Crank length (L1):   1.0000
-     Coupler length (L2): 2.4142
-     Rocker length (L3):  1.7321
+     Crank length (L1):   1.1694
+     Coupler length (L2): 1.9345
+     Rocker length (L3):  2.2873
      Ground length (L4):  2.0000
+
+Three angle pairs determine the three Freudenstein coefficients exactly, so
+there is one solution up to scale. Not every set of pairs corresponds to a
+real four-bar: when the fit yields a negative link length the result is
+empty and ``result.warnings`` says so. Pairs starting near 0 degrees are the
+usual culprit.
 
 .. figure:: /../assets/synthesis_function_generation.png
    :width: 800px
@@ -162,16 +205,12 @@ You can verify that the synthesized linkage achieves the desired angle mapping:
    from pylinkage.synthesis import verify_function_generation
 
    # Check if synthesized linkage achieves the angle pairs
-   errors = verify_function_generation(linkage, angle_pairs)
+   is_valid, errors = verify_function_generation(linkage, angle_pairs)
 
-   print("Verification results:")
-   for i, (phi, psi, error) in enumerate(zip(
-       [p[0] for p in angle_pairs],
-       [p[1] for p in angle_pairs],
-       errors
-   )):
+   print(f"Verification {'passed' if is_valid else 'failed'}:")
+   for i, ((phi, psi), error) in enumerate(zip(angle_pairs, errors)):
        print(f"  Point {i+1}: phi={math.degrees(phi):.1f}°, "
-             f"psi={math.degrees(psi):.1f}°, error={error:.6f}")
+             f"psi={math.degrees(psi):.1f}°, error={math.degrees(error):.4f}°")
 
 Path Generation
 ---------------
@@ -204,33 +243,36 @@ Basic Path Generation
        (5.0, -1.0),
    ]
 
-   result = path_generation(points)
+   result = path_generation(points, max_solutions=3)
 
-   print(f"Found {len(result)} solutions")
+   print(f"Found {len(result.solutions)} solutions")
    print(f"Warnings: {result.warnings}")
 
    # Examine each solution
-   for i, linkage in enumerate(result.solutions):
+   for i, (linkage, raw) in enumerate(zip(result.solutions, result.raw_solutions)):
        print(f"\nSolution {i + 1}:")
-       # Show the linkage dimensions
-       constraints = list(linkage.get_constraints())
+       # Link lengths from the raw solution
+       print(f"  Crank {raw.crank_length:.3f}, coupler {raw.coupler_length:.3f}, "
+             f"rocker {raw.rocker_length:.3f}, ground {raw.ground_length:.3f}")
+       # The Linkage's own constraints: crank radius, the two RRRDyad
+       # distances, then the coupler point's distance and angle
+       constraints = [round(float(c), 3) for c in linkage.get_constraints()]
        print(f"  Constraints: {constraints}")
-
-       # Verify the path
-       loci = list(linkage.step())
-       coupler_path = [step[-1] for step in loci]
-       print(f"  Path traces {len(coupler_path)} points")
 
 **Example result (may vary):**
 
 .. code-block:: text
 
    Found 3 solutions
-   Warnings: []
+   Warnings: ['299 candidate(s) rejected: coupler point did not pass through all precision points (assembly-mode mismatch).']
 
    Solution 1:
-     Constraints: [0.314, 1.5, 2.8, 1.2]
-     Path traces 20 points
+     Crank 3.843, coupler 4.560, rocker 1.799, ground 0.770
+     Constraints: [3.843, 4.56, 1.799, 1.02, -0.342]
+
+The last component of every path-generation linkage is a ``FixedDyad``
+named ``P``: the coupler point that traces the path. Its locus is
+``[step[-1] for step in linkage.step()]``.
 
 Path Generation with Timing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -241,20 +283,15 @@ Use ``path_generation_with_timing``:
 .. code-block:: python
 
    import math
-   from pylinkage.synthesis import path_generation_with_timing, PrecisionPoint
+   from pylinkage.synthesis import path_generation_with_timing
 
-   # Define points with associated crank angles
-   precision_points = [
-       PrecisionPoint(x=0.0, y=0.0, theta=0.0),
-       PrecisionPoint(x=2.0, y=1.0, theta=math.pi / 2),
-       PrecisionPoint(x=4.0, y=0.5, theta=math.pi),
-       PrecisionPoint(x=5.0, y=-1.0, theta=3 * math.pi / 2),
-   ]
+   # The same points, each with the crank angle at which to reach it
+   crank_angles = [0.0, math.pi / 2, math.pi, 3 * math.pi / 2]
 
-   result = path_generation_with_timing(precision_points)
+   result = path_generation_with_timing(points, crank_angles)
 
-   if result:
-       print(f"Found {len(result)} timed solutions")
+   if result.solutions:
+       print(f"Found {len(result.solutions)} timed solutions")
 
 Motion Generation
 -----------------
@@ -280,34 +317,41 @@ With exactly 3 poses, the solution is typically unique (or a small set):
    from pylinkage.synthesis import motion_generation, Pose
    import pylinkage as pl
 
-   # Define poses: (x, y, orientation_angle)
+   # Define poses: (x, y, orientation angle in radians)
    poses = [
-       Pose(x=0.0, y=0.0, theta=0.0),
-       Pose(x=2.0, y=1.0, theta=0.3),
-       Pose(x=3.0, y=0.5, theta=0.6),
+       Pose(x=0.0, y=0.0, angle=0.0),
+       Pose(x=2.0, y=1.0, angle=0.3),
+       Pose(x=3.0, y=0.5, angle=0.6),
    ]
 
    result = motion_generation(poses)
 
-   print(f"Found {len(result)} solutions")
+   print(f"Found {len(result.solutions)} solutions")
 
-   if result:
+   if result.solutions:
        linkage = result.solutions[0]
        print("\nLinkage configuration:")
-       for joint in linkage.joints:
-           print(f"  {joint.name}: ({joint.x:.2f}, {joint.y:.2f})")
+       for component in linkage.components:
+           print(f"  {component.name}: ({component.x:.2f}, {component.y:.2f})")
 
-       pl.show_linkage(linkage)
+       show(result)
 
-**Expected output:**
+**Example output (the solution curve is sampled, so values vary):**
 
 .. code-block:: text
 
-   Found 2 solutions
+   Found 10 solutions
 
    Linkage configuration:
-     Crank: (0.00, 1.00)
-     Output: (2.50, 0.75)
+     A: (2.77, -0.73)
+     D: (2.52, -0.17)
+     B: (0.91, -0.00)
+     C: (0.86, 0.31)
+     P: (0.00, -0.00)
+
+``A`` and ``D`` are the ground pivots, ``B`` the crank pin, ``C`` the
+coupler-rocker pin and ``P`` the guided body's reference point, which sits
+on the first pose.
 
 Four-Pose and Five-Pose Synthesis
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -317,9 +361,8 @@ or iterative methods:
 
 .. code-block:: python
 
-   from pylinkage.synthesis import motion_generation_3_poses, Pose
+   from pylinkage.synthesis import motion_generation, Pose
 
-   # For 4+ poses, use the iterative solver
    poses = [
        Pose(0.0, 0.0, 0.0),
        Pose(1.0, 0.5, 0.2),
@@ -327,12 +370,16 @@ or iterative methods:
        Pose(3.0, 0.6, 0.6),
    ]
 
-   # motion_generation handles this internally
+   # With four poses the circle points reduce to Burmester's curve, with
+   # five to at most four Burmester points; motion_generation handles both.
    result = motion_generation(poses)
 
-   if result:
-       print(f"Found {len(result)} approximate solutions")
-       # Solutions may not pass exactly through all poses
+   if result.solutions:
+       print(f"Found {len(result.solutions)} solutions")
+   else:
+       print("No solution; five poses in particular are often unreachable")
+       for warning in result.warnings:
+           print(f"  {warning}")
 
 Working with Synthesis Results
 ------------------------------
@@ -346,15 +393,22 @@ All synthesis functions return a ``SynthesisResult`` object:
    result = path_generation(points)
 
    # Check if solutions were found
-   if result:
+   if result.solutions:
        print("Solutions found!")
 
    # Number of solutions
-   print(f"Count: {len(result)}")
+   print(f"Count: {len(result.solutions)}")
 
    # Iterate over linkages
-   for linkage in result:
+   for linkage in result.solutions:
        print(linkage.name)
+
+   # Or take them as an Ensemble: batch simulation, ranking by link
+   # lengths, filtering, and visualization in one object
+   ensemble = result.ensemble
+   print(f"{ensemble.n_members} members, scores {list(ensemble.scores)}")
+   shortest_crank = ensemble.rank("crank_length")[0]
+   print(f"Shortest crank: {shortest_crank.scores['crank_length']:.3f}")
 
    # Access the underlying solutions with full parameters
    for sol in result.raw_solutions:
@@ -388,7 +442,7 @@ If you already know the link lengths, create a four-bar directly:
    from pylinkage.synthesis import grashof_check, is_crank_rocker
 
    grashof = grashof_check(1.0, 3.0, 3.0, 4.0)
-   print(f"Grashof type: {grashof}")
+   print(f"Grashof type: {grashof.name}")
 
    if is_crank_rocker(1.0, 3.0, 3.0, 4.0):
        print("This is a crank-rocker mechanism")
@@ -399,7 +453,7 @@ If you already know the link lengths, create a four-bar directly:
 
 .. code-block:: text
 
-   Grashof type: GrashofType.CRANK_ROCKER
+   Grashof type: GRASHOF_CRANK_ROCKER
    This is a crank-rocker mechanism
 
 Grashof Analysis
@@ -428,12 +482,14 @@ The Grashof criterion determines the type of motion a four-bar can achieve:
    # Get specific type
    grashof_type = grashof_check(L1, L2, L3, L4)
 
-   if grashof_type == GrashofType.CRANK_ROCKER:
+   if grashof_type == GrashofType.GRASHOF_CRANK_ROCKER:
        print("Crank makes full rotations, rocker oscillates")
-   elif grashof_type == GrashofType.DOUBLE_CRANK:
+   elif grashof_type == GrashofType.GRASHOF_DOUBLE_CRANK:
        print("Both crank and rocker make full rotations")
-   elif grashof_type == GrashofType.DOUBLE_ROCKER:
-       print("Both crank and rocker oscillate")
+   elif grashof_type == GrashofType.GRASHOF_ROCKER_CRANK:
+       print("Rocker makes full rotations, crank oscillates")
+   elif grashof_type == GrashofType.GRASHOF_DOUBLE_ROCKER:
+       print("Coupler makes full rotations, crank and rocker oscillate")
    elif grashof_type == GrashofType.CHANGE_POINT:
        print("Change-point mechanism (special case)")
    else:
@@ -460,16 +516,20 @@ computations:
        Pose(2, 0.5, 1.0),
    ]
 
-   # Compute relative rotation poles between poses
+   # Compute relative rotation poles between poses, as complex numbers
    poles = compute_all_poles(poses)
    print(f"Poles: {poles}")
 
-   # Compute the circle-point curve (locus of valid attachment points)
-   curve = compute_circle_point_curve(poses)
+   # Compute the circle-point and center-point curves (loci of valid
+   # attachment points on the body and on the ground)
+   curves = compute_circle_point_curve(poses)
+   print(f"{len(curves.circle_curve)} sampled circle points")
 
    # Select compatible dyad pairs to form a complete 4-bar
-   dyads = select_compatible_dyads(curve, poses)
+   dyads = select_compatible_dyads(curves, max_pairs=20)
    print(f"Found {len(dyads)} compatible dyad pairs")
+   left, right = dyads[0]
+   print(f"First pair: link lengths {left.link_length:.3f} and {right.link_length:.3f}")
 
 Synthesis vs Optimization
 -------------------------
@@ -499,7 +559,7 @@ point, then use PSO to fine-tune for additional objectives.
    points = [(0, 0), (1, 1), (2, 0.5), (3, -0.5)]
    result = path_generation(points)
 
-   if result:
+   if result.solutions:
        linkage = result.solutions[0]
 
        # Step 2: Fine-tune with PSO for additional objectives
@@ -519,15 +579,22 @@ point, then use PSO to fine-tune for additional objectives.
 
            return point_error + 0.1 * size
 
-       bounds = pl.generate_bounds(linkage.get_constraints())
+       # Search close to the synthesized design
+       bounds = pl.generate_bounds(
+           linkage.get_constraints(), min_ratio=1.2, max_factor=1.2,
+       )
        optimized = pl.particle_swarm_optimization(
            eval_func=combined_fitness,
            linkage=linkage,
            bounds=bounds,
+           order_relation=min,
+           n_particles=30,
+           iterations=30,
+           verbose=False,
        )
 
-       linkage.set_constraints(optimized[0][1])
-       pl.show_linkage(linkage)
+       print(f"Fine-tuned score: {optimized[0].score:.4f}")
+       optimized.show(0)
 
 Next Steps
 ----------

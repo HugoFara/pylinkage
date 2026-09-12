@@ -311,22 +311,25 @@ Example: Cam-Driven Four-Bar
        roller_radius=0.0,
    )
 
-   # Connect downstream rocker via RRRDyad
+   # Connect downstream rocker via RRRDyad. The follower travels from
+   # (0, 3) to (0, 4), between 4.2 and 5 units from the rocker pivot, so
+   # the two links must span that whole range.
    rocker = RRRDyad(
        anchor1=follower.output,  # Connects to follower output
        anchor2=rocker_pivot,
-       distance1=2.5,
-       distance2=2.0,
+       distance1=3.0,
+       distance2=2.5,
    )
 
    linkage = Linkage(
        components=[cam_center, guide, rocker_pivot, cam_crank, follower, rocker],
    )
 
-   # Simulate the complete mechanism
+   # Simulate the complete mechanism. A dyad is itself the joint it
+   # solves, so its position is read directly; only actuators and cam
+   # followers expose a separate ``output``.
    for positions in linkage.step():
-       rocker_pos = rocker.output.position
-       print(f"Rocker output at: {rocker_pos}")
+       print(f"Rocker joint at: {rocker.position}")
 
 Profile Analysis
 ----------------
