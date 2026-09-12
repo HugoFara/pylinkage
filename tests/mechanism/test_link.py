@@ -122,6 +122,28 @@ class TestLinkDistances:
         with pytest.raises(ValueError, match="not part of link"):
             link.get_distance(j1, j3)
 
+    def test_set_distance_overrides_cache_symmetrically(self):
+        j1 = RevoluteJoint("A", position=(0.0, 0.0))
+        j2 = RevoluteJoint("B", position=(3.0, 4.0))
+        link = Link("AB", joints=[j1, j2])
+        link.cache_distances()
+        link.set_distance(j1, j2, 7.5)
+        assert link.get_distance(j1, j2) == 7.5
+        assert link.get_distance(j2, j1) == 7.5
+        assert link.length == 7.5
+        # Positions are left alone: the solver moves the joints on the next step
+        assert j2.position == (3.0, 4.0)
+
+    def test_set_distance_rejects_bad_input(self):
+        j1 = RevoluteJoint("A", position=(0.0, 0.0))
+        j2 = RevoluteJoint("B", position=(1.0, 0.0))
+        j3 = RevoluteJoint("C", position=(2.0, 0.0))
+        link = Link("AB", joints=[j1, j2])
+        with pytest.raises(ValueError, match="not part of link"):
+            link.set_distance(j1, j3, 1.0)
+        with pytest.raises(ValueError, match="must be positive"):
+            link.set_distance(j1, j2, 0.0)
+
 
 class TestOtherJoint:
     """Tests for Link.other_joint()."""

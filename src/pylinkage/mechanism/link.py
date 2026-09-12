@@ -95,8 +95,10 @@ class Link:
     def length(self) -> float | None:
         """Return the length of a binary link.
 
-        Only meaningful for binary links (2 joints). Returns the
-        Euclidean distance between the two joint positions.
+        Only meaningful for binary links (2 joints). Returns the rigid
+        distance the solver maintains between the two joints (see
+        :meth:`get_distance`): the cached constraint once the mechanism is
+        built, the distance between the joint positions before that.
 
         Returns:
             Distance between joints, or None if not a binary link
@@ -106,16 +108,7 @@ class Link:
             return None
 
         j1, j2 = self.joints
-        if not j1.is_defined() or not j2.is_defined():
-            return None
-
-        x1, y1 = j1.position
-        x2, y2 = j2.position
-        # Type narrowing: is_defined() guarantees non-None
-        assert x1 is not None and y1 is not None
-        assert x2 is not None and y2 is not None
-
-        return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+        return self.get_distance(j1, j2)
 
     def cache_distances(self) -> None:
         """Cache distances between all pairs of joints.
@@ -173,6 +166,31 @@ class Link:
         assert x2 is not None and y2 is not None
 
         return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+
+    def set_distance(self, joint1: Joint, joint2: Joint, distance: float) -> None:
+        """Set the distance constraint between two joints on this link.
+
+        Changes the rigid dimension the solver maintains between the two
+        joints; their positions are not moved, the next simulation step
+        re-solves them against the new value.
+
+        Args:
+            joint1: First joint (must be in this link).
+            joint2: Second joint (must be in this link).
+            distance: New distance, must be positive.
+
+        Raises:
+            ValueError: If either joint is not part of this link, or if
+                ``distance`` is not positive.
+        """
+        if joint1 not in self.joints:
+            raise ValueError(f"Joint {joint1.id} is not part of link {self.id}")
+        if joint2 not in self.joints:
+            raise ValueError(f"Joint {joint2.id} is not part of link {self.id}")
+        if distance <= 0:
+            raise ValueError(f"Distance on link {self.id} must be positive, got {distance}")
+        self._cached_distances[(joint1.id, joint2.id)] = distance
+        self._cached_distances[(joint2.id, joint1.id)] = distance
 
     def other_joint(self, joint: Joint) -> Joint | None:
         """Get the other joint in a binary link.

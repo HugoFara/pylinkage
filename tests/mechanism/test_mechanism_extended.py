@@ -2,6 +2,8 @@
 
 import math
 
+import pytest
+
 from pylinkage.mechanism import (
     DriverLink,
     GroundJoint,
@@ -146,6 +148,38 @@ class TestMechanismConstraints:
         """set_constraints with fewer values than links should not crash."""
         mech = _build_four_bar()
         mech.set_constraints([1.5])  # Only set first constraint
+
+    def test_set_constraints_round_trip(self):
+        """get_constraints reads back what set_constraints wrote, before any step."""
+        mech = _build_four_bar()
+        target = [c * 1.2 for c in mech.get_constraints()]
+        mech.set_constraints(target)
+        assert mech.get_constraints() == pytest.approx(target)
+
+    @pytest.mark.parametrize("group_solver", [True, False])
+    def test_set_constraints_drives_the_simulation(self, group_solver):
+        """The solver maintains the new lengths, not the ones the mechanism was built with."""
+        mech = _build_four_bar()
+        mech._use_group_solver = group_solver
+        crank_r, coupler_l, rocker_l = 1.2, 3.6, 2.4
+        mech.set_constraints([crank_r, coupler_l, rocker_l])
+
+        for positions in mech.step(iterations=20):
+            pos = dict(zip([j.id for j in mech.joints], positions, strict=True))
+            assert math.dist(pos["O1"], pos["A"]) == pytest.approx(crank_r)
+            assert math.dist(pos["A"], pos["B"]) == pytest.approx(coupler_l)
+            assert math.dist(pos["O2"], pos["B"]) == pytest.approx(rocker_l)
+
+    def test_set_constraints_survives_serialization(self):
+        """A zero-length step re-solves the pose so to_dict/from_dict keeps the new lengths."""
+        from pylinkage.mechanism import mechanism_from_dict, mechanism_to_dict
+
+        mech = _build_four_bar()
+        target = [1.2, 3.6, 2.4]
+        mech.set_constraints(target)
+        next(mech.step(iterations=1, dt=0.0))
+        rebuilt = mechanism_from_dict(mechanism_to_dict(mech))
+        assert rebuilt.get_constraints() == pytest.approx(target)
 
 
 class TestMechanismJointPositions:
