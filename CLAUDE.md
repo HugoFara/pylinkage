@@ -185,9 +185,9 @@ Note: For backwards compatibility, `Ground`, `Crank`, `LinearActuator`, and `Lin
 **Optimization Flow:**
 
 1. Define a fitness function decorated with `@kinematic_minimization` or `@kinematic_maximization`
-2. Generate bounds with `generate_bounds(linkage.get_num_constraints())`
-3. Call `particle_swarm_optimization()` or `trials_and_errors_optimization()`
-4. Apply results via `linkage.set_num_constraints(position)`
+2. Generate bounds with `generate_bounds(linkage.get_constraints())`
+3. Call `particle_swarm_optimization()` or `trials_and_errors_optimization()`; every optimizer returns an `Ensemble`
+4. Apply results via `linkage.set_constraints(results[0].dimensions)` (or `results.show(0)` to draw a member)
 
 **Synthesis Flow (Design from requirements):**
 
@@ -206,8 +206,9 @@ Note: For backwards compatibility, `Ground`, `Crank`, `LinearActuator`, and `Lin
 
 **Constraint System:**
 
-- `get_num_constraints()`: Returns flat list of distances/angles
-- `set_num_constraints()`: Applies constraints back to joints
+- `get_constraints()`: Returns flat list of distances/angles
+- `set_constraints()`: Applies constraints back to joints
+- `get_num_constraints()`/`set_num_constraints()`: deprecated aliases since 1.2.0 (warn, removed in 2.0)
 - `get_coords()`/`set_coords()`: Joint positions (used for initial positions in optimization)
 
 **Exceptions:**
