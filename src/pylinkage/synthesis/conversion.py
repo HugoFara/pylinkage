@@ -55,6 +55,28 @@ def _compute_coupler_point_params(
     return distance, angle
 
 
+def _absolute_arc(
+    A: Point2D,
+    D: Point2D,
+    initial_angle: float,
+    arc_limits: tuple[float, float],
+) -> tuple[float, float]:
+    """Place crank angle limits, given relative to the ground line, in the world frame.
+
+    ``arc_limits`` describe the range above the ground line A->D; the
+    mirror range below it is its negation. The side is chosen so that the
+    crank's initial angle falls in (or nearest to) the returned range.
+    """
+    ground_angle = math.atan2(D[1] - A[1], D[0] - A[0])
+    relative = math.remainder(initial_angle - ground_angle, 2 * math.pi)
+    lo, hi = arc_limits
+    if relative < 0:
+        lo, hi = -hi, -lo
+    # Bring the range next to initial_angle rather than 2*pi away from it.
+    offset = initial_angle - relative
+    return offset + lo, offset + hi
+
+
 def solution_to_linkage(
     solution: FourBarSolution,
     name: str = "synthesized",
@@ -65,20 +87,29 @@ def solution_to_linkage(
     Creates a four-bar linkage with:
 
     - Two Ground components as ground pivots
-    - One Crank as motor input
+    - One Crank as motor input, or an ArcCrank sweeping
+      ``solution.arc_limits`` when those are set
     - One RRRDyad connecting crank to rocker
     - Optionally, a FixedDyad for the coupler point that traces the
       target path (only if ``solution.coupler_point`` is set)
 
+    ``arc_limits`` are crank angles relative to the ground line, from
+    pivot A towards pivot D, as :func:`crank_angle_limits` returns them.
+    Whichever side of the ground line the crank starts on, the arc is
+    placed there. Set them for a solution whose crank cannot turn fully
+    (a double-rocker, or a non-Grashof linkage); a plain Crank would
+    otherwise drive the linkage into an unbuildable position.
+
     Args:
         solution: FourBarSolution containing geometry.
         name: Name for the linkage.
-        iterations: Number of simulation steps per rotation.
+        iterations: Number of simulation steps per rotation (per sweep
+            of the arc, for an ArcCrank).
 
     Returns:
         SimLinkage object ready for simulation.
     """
-    from ..actuators import Crank
+    from ..actuators import ArcCrank, Crank
     from ..components import Ground
     from ..dyads import FixedDyad, RRRDyad
     from ..simulation import Linkage as SimLinkage
@@ -94,13 +125,26 @@ def solution_to_linkage(
     initial_angle = math.atan2(B[1] - A[1], B[0] - A[0])
     angular_velocity = 2 * math.pi / iterations
 
-    crank = Crank(
-        anchor=ground_a,
-        radius=solution.crank_length,
-        angular_velocity=angular_velocity,
-        initial_angle=initial_angle,
-        name="B",
-    )
+    crank: Crank | ArcCrank
+    if solution.arc_limits is None:
+        crank = Crank(
+            anchor=ground_a,
+            radius=solution.crank_length,
+            angular_velocity=angular_velocity,
+            initial_angle=initial_angle,
+            name="B",
+        )
+    else:
+        arc_start, arc_end = _absolute_arc(A, D, initial_angle, solution.arc_limits)
+        crank = ArcCrank(
+            anchor=ground_a,
+            radius=solution.crank_length,
+            angular_velocity=(arc_end - arc_start) / iterations,
+            arc_start=arc_start,
+            arc_end=arc_end,
+            initial_angle=min(max(initial_angle, arc_start), arc_end),
+            name="B",
+        )
 
     joint_c = RRRDyad(
         anchor1=crank.output,

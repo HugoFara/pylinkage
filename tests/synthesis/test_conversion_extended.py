@@ -57,6 +57,74 @@ class TestSolutionToLinkageCouplerPoint:
         assert len(linkage.components) == 5
 
 
+def _double_rocker(*, mirrored: bool, rotated: float = 0.0) -> FourBarSolution:
+    """A Grashof double-rocker (3, 1.5, 1.5, 2): its crank oscillates.
+
+    The crank starts at 40 degrees from the ground line (its range is 1 to 70), below it when
+    *mirrored*; the whole linkage is turned by *rotated* radians.
+    """
+    crank, coupler, rocker, ground = 3.0, 1.5, 1.5, 2.0
+    theta = math.radians(-40.0 if mirrored else 40.0) + rotated
+    A = (0.0, 0.0)
+    D = (ground * math.cos(rotated), ground * math.sin(rotated))
+    B = (crank * math.cos(theta), crank * math.sin(theta))
+    # C anywhere plausible: it is only the initial guess for branch selection.
+    C = ((B[0] + D[0]) / 2, (B[1] + D[1]) / 2 + (-0.5 if mirrored else 0.5))
+    return FourBarSolution(
+        ground_pivot_a=A,
+        ground_pivot_d=D,
+        crank_pivot_b=B,
+        coupler_pivot_c=C,
+        crank_length=crank,
+        coupler_length=coupler,
+        rocker_length=rocker,
+        ground_length=ground,
+    )
+
+
+class TestSolutionToLinkageArcLimits:
+    def test_without_arc_limits_a_double_rocker_cannot_turn(self):
+        from pylinkage.actuators import Crank
+        from pylinkage.exceptions import UnbuildableError
+
+        linkage = solution_to_linkage(_double_rocker(mirrored=False))
+        assert isinstance(linkage.components[2], Crank)
+        with pytest.raises(UnbuildableError):
+            list(linkage.step())
+
+    @pytest.mark.parametrize("mirrored", [False, True])
+    @pytest.mark.parametrize("rotated", [0.0, 2.5, -3.0])
+    def test_arc_limits_build_an_arc_crank_that_sweeps_its_range(self, mirrored, rotated):
+        from pylinkage.actuators import ArcCrank
+        from pylinkage.synthesis import crank_angle_limits
+
+        raw = _double_rocker(mirrored=mirrored, rotated=rotated)
+        limits = crank_angle_limits(
+            raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
+        )
+        assert limits is not None
+        linkage = solution_to_linkage(raw._replace(arc_limits=limits), iterations=90)
+
+        crank = linkage.components[2]
+        assert isinstance(crank, ArcCrank)
+        assert (crank.x, crank.y) == pytest.approx(raw.crank_pivot_b)
+        assert crank.arc_start <= crank.initial_angle <= crank.arc_end
+        assert crank.arc_end - crank.arc_start == pytest.approx(limits[1] - limits[0])
+        # The arc lies on the crank's side of the ground line, next to its start angle.
+        start = math.atan2(raw.crank_pivot_b[1], raw.crank_pivot_b[0])
+        assert crank.initial_angle == pytest.approx(start)
+
+        # A full oscillation builds at every step and visits both ends of the arc.
+        loci = list(linkage.step())
+        assert len(loci) == linkage.get_rotation_period() == 180
+        angles = [math.atan2(p[2][1], p[2][0]) for p in loci]
+        unwrapped = [
+            crank.arc_start + math.remainder(a - crank.arc_start, 2 * math.pi) for a in angles
+        ]
+        assert min(unwrapped) == pytest.approx(crank.arc_start, abs=crank.angular_velocity)
+        assert max(unwrapped) == pytest.approx(crank.arc_end, abs=crank.angular_velocity)
+
+
 class TestWattFromLengths:
     def test_basic(self):
         linkage = watt_from_lengths(

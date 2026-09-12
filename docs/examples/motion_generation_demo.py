@@ -38,10 +38,33 @@ import pylinkage as pl
 from pylinkage.synthesis import (
     FourBarSolution,
     Pose,
+    crank_angle_limits,
     grashof_check,
     motion_generation,
     motion_generation_3_poses,
+    solution_to_linkage,
 )
+
+
+def show(result, index=0):
+    """Animate one synthesized linkage.
+
+    A crank-rocker turns fully, so its Linkage animates as it comes. When the
+    crank can only oscillate (double-rocker, non-Grashof), the linkage is
+    rebuilt around an ArcCrank sweeping the reachable range: driven through a
+    full turn it would stop at an unbuildable position.
+    """
+    raw = result.raw_solutions[index]
+    limits = crank_angle_limits(
+        raw.crank_length, raw.coupler_length, raw.rocker_length, raw.ground_length
+    )
+    linkage = result.solutions[index]
+    if limits is not None:
+        lo, hi = (math.degrees(a) for a in limits)
+        print(f"  (crank oscillates between {lo:.1f} and {hi:.1f} deg from the ground line)")
+        linkage = solution_to_linkage(raw._replace(arc_limits=limits), name=linkage.name)
+    pl.show_linkage(linkage)
+
 
 
 def demo_basic_motion_generation():
@@ -73,15 +96,14 @@ def demo_basic_motion_generation():
         require_grashof=True,
     )
 
-    print(f"\nFound {len(result)} solution(s)")
+    print(f"\nFound {len(result.solutions)} solution(s)")
 
     if result.warnings:
         print("Warnings:")
         for warning in result.warnings:
             print(f"  - {warning}")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nBest solution - Link lengths:")
@@ -96,7 +118,7 @@ def demo_basic_motion_generation():
         print(f"  Grashof type: {grashof_type.name}")
 
         print("\nVisualizing synthesized linkage...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_3_pose_curve_sampling():
@@ -126,9 +148,9 @@ def demo_3_pose_curve_sampling():
         max_solutions=10,
     )
 
-    print(f"\nSampled {len(result)} solutions from the curve")
+    print(f"\nSampled {len(result.solutions)} solutions from the curve")
 
-    if result:
+    if result.solutions:
         print("\nSolution diversity (showing 5):")
         print("-" * 70)
         print(f"{'#':<3} {'Crank':<10} {'Coupler':<10} {'Rocker':<10} {'Ground':<10} {'Type':<15}")
@@ -146,7 +168,7 @@ def demo_3_pose_curve_sampling():
         print("-" * 70)
 
         print("\nVisualizing first sampled solution...")
-        pl.show_linkage(result.solutions[0])
+        show(result)
 
 
 def demo_4_pose_synthesis():
@@ -176,15 +198,14 @@ def demo_4_pose_synthesis():
         require_grashof=False,  # Accept all types
     )
 
-    print(f"\nFound {len(result)} Ball's point solution(s)")
+    print(f"\nFound {len(result.solutions)} Ball's point solution(s)")
 
     if result.warnings:
         print("Notes:")
         for warning in result.warnings:
             print(f"  - {warning}")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nBest solution:")
@@ -192,7 +213,7 @@ def demo_4_pose_synthesis():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing 4-pose mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_pick_and_place():
@@ -229,10 +250,9 @@ def demo_pick_and_place():
         require_grashof=True,
     )
 
-    print(f"\nFound {len(result)} pick-and-place mechanism(s)")
+    print(f"\nFound {len(result.solutions)} pick-and-place mechanism(s)")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nPick-and-place linkage:")
@@ -240,7 +260,7 @@ def demo_pick_and_place():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing pick-and-place mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_door_hatch_mechanism():
@@ -277,10 +297,9 @@ def demo_door_hatch_mechanism():
         require_grashof=False,  # Many door mechanisms are non-Grashof
     )
 
-    print(f"\nFound {len(result)} door mechanism(s)")
+    print(f"\nFound {len(result.solutions)} door mechanism(s)")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         grashof_type = grashof_check(
@@ -293,14 +312,19 @@ def demo_door_hatch_mechanism():
         print(f"  Type: {grashof_type.name}")
 
         print("\nVisualizing door mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
 
 
 def demo_constrained_ground():
     """Motion generation with fixed ground pivot locations.
 
-    In many practical designs, the frame attachment points
-    are predetermined by the overall system design.
+    In many practical designs, the frame attachment points are
+    predetermined by the overall system design. Three poses fix the
+    center-point curve, and both pivots have to lie on it, so arbitrary
+    frame points almost never work: the constraint selects among the
+    linkages the poses admit. Synthesize freely first, read off the
+    pivots the solutions propose, then fix the pair that suits the frame
+    (rounded to the tenth a layout drawing would use).
     """
     print("\n" + "=" * 60)
     print("Demo 6: Motion Generation with Ground Constraints")
@@ -312,13 +336,25 @@ def demo_constrained_ground():
         Pose(x=3.5, y=2.0, angle=0.5),
     ]
 
-    # Constrained ground pivots
-    ground_a = (0.0, 0.0)
-    ground_d = (4.0, 0.0)
-
     print("\nPrecision poses:")
     for i, pose in enumerate(poses, 1):
         print(f"  Pose {i}: ({pose.x:.2f}, {pose.y:.2f}, {math.degrees(pose.angle):.1f} deg)")
+
+    free = motion_generation(poses, max_solutions=5, require_grashof=False)
+    print(f"\nGround pivots proposed by {len(free.solutions)} free solution(s):")
+    for i, raw in enumerate(free.raw_solutions, 1):
+        print(
+            f"  {i}: A=({raw.ground_pivot_a[0]:.2f}, {raw.ground_pivot_a[1]:.2f})"
+            f"  D=({raw.ground_pivot_d[0]:.2f}, {raw.ground_pivot_d[1]:.2f})"
+        )
+    if not free.solutions:
+        print("No free solution to take the pivots from")
+        return
+
+    # Fix the first pair, as a designer would place it on a drawing
+    chosen = free.raw_solutions[0]
+    ground_a = tuple(round(float(v), 1) for v in chosen.ground_pivot_a)
+    ground_d = tuple(round(float(v), 1) for v in chosen.ground_pivot_d)
 
     print("\nGround constraints:")
     print(f"  Pivot A: {ground_a}")
@@ -332,10 +368,9 @@ def demo_constrained_ground():
         require_grashof=False,
     )
 
-    print(f"\nFound {len(result)} solution(s) with fixed ground")
+    print(f"\nFound {len(result.solutions)} solution(s) with fixed ground")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nConstrained solution:")
@@ -345,7 +380,7 @@ def demo_constrained_ground():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing constrained mechanism...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("No solutions found with the given ground constraints.")
         print("Try adjusting poses or removing ground constraints.")
@@ -382,15 +417,14 @@ def demo_5_pose_overconstrained():
         require_grashof=False,
     )
 
-    print(f"\nFound {len(result)} solution(s)")
+    print(f"\nFound {len(result.solutions)} solution(s)")
 
     if result.warnings:
         print("Warnings:")
         for warning in result.warnings:
             print(f"  - {warning}")
 
-    if result:
-        linkage = result.solutions[0]
+    if result.solutions:
         raw: FourBarSolution = result.raw_solutions[0]
 
         print("\nBest available solution:")
@@ -398,7 +432,7 @@ def demo_5_pose_overconstrained():
         print(f"  Rocker: {raw.rocker_length:.3f}, Ground: {raw.ground_length:.3f}")
 
         print("\nVisualizing (may not pass through all poses exactly)...")
-        pl.show_linkage(linkage)
+        show(result)
     else:
         print("\nAs expected, no exact solution exists for these 5 poses.")
         print("Options:")

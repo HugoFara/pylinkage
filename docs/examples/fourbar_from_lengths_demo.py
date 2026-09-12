@@ -35,12 +35,33 @@ import math
 
 import pylinkage as pl
 from pylinkage.synthesis import (
+    crank_angle_limits,
     fourbar_from_lengths,
     grashof_check,
     is_crank_rocker,
     is_grashof,
     linkage_to_synthesis_params,
+    solution_to_linkage,
 )
+
+
+def show(linkage):
+    """Animate a four-bar linkage.
+
+    A crank-rocker turns fully, so the Linkage animates as it comes. When
+    the crank can only oscillate (double-rocker, non-Grashof), the linkage
+    is rebuilt around an ArcCrank sweeping the reachable range: driven
+    through a full turn it would stop at an unbuildable position.
+    """
+    params = linkage_to_synthesis_params(linkage)
+    limits = crank_angle_limits(
+        params.crank_length, params.coupler_length, params.rocker_length, params.ground_length
+    )
+    if limits is not None:
+        lo, hi = (math.degrees(a) for a in limits)
+        print(f"  (crank oscillates between {lo:.1f} and {hi:.1f} deg from the ground line)")
+        linkage = solution_to_linkage(params._replace(arc_limits=limits), name=linkage.name)
+    pl.show_linkage(linkage)
 
 
 def demo_basic_fourbar():
@@ -79,7 +100,7 @@ def demo_basic_fourbar():
     print(f"  Is Crank-Rocker: {is_crank_rocker(crank, coupler, rocker, ground)}")
 
     print("\nVisualizing basic four-bar...")
-    pl.show_linkage(linkage)
+    show(linkage)
 
 
 def demo_grashof_types():
@@ -89,12 +110,15 @@ def demo_grashof_types():
     print("=" * 60)
 
     # Different configurations to show each type
+    # Assembled with the crank vertical: at angle 0 the crank points at
+    # the rocker pivot, the tightest position, where a rocker-crank cannot
+    # close.
     configurations = [
         # (name, crank, coupler, rocker, ground)
         ("Crank-Rocker", 1.0, 4.0, 3.0, 4.0),  # s=crank, can rotate
-        ("Double-Crank (Drag-Link)", 2.0, 4.0, 3.0, 1.0),  # s=ground, both rotate
-        ("Rocker-Crank", 3.0, 4.0, 1.0, 4.0),  # s=rocker
-        ("Double-Rocker", 3.0, 4.0, 3.0, 2.0),  # Non-Grashof
+        ("Double-Crank (Drag-Link)", 3.0, 4.0, 3.5, 1.0),  # s=ground, both rotate
+        ("Rocker-Crank", 2.5, 4.0, 1.0, 3.0),  # s=rocker
+        ("Double-Rocker", 2.0, 2.5, 3.0, 4.0),  # Non-Grashof: s+l > p+q
         ("Change-Point", 1.0, 3.0, 2.0, 4.0),  # s+l = p+q
     ]
 
@@ -116,6 +140,7 @@ def demo_grashof_types():
                 coupler_length=b,
                 rocker_length=c,
                 ground_length=d,
+                initial_crank_angle=math.pi / 2,
             )
             print("Linkage created successfully")
             del _linkage  # Created to verify assembly, not needed further
@@ -132,17 +157,17 @@ def demo_visualize_grashof_types():
     print("\n1. Crank-Rocker (most common industrial mechanism)")
     linkage_cr = fourbar_from_lengths(1.0, 4.0, 3.0, 4.0)
     print("   Crank can rotate fully, rocker oscillates")
-    pl.show_linkage(linkage_cr)
+    show(linkage_cr)
 
     print("\n2. Double-Crank (Drag-Link)")
-    linkage_dc = fourbar_from_lengths(2.0, 4.0, 3.0, 1.0)
+    linkage_dc = fourbar_from_lengths(3.0, 4.0, 3.5, 1.0)
     print("   Both crank and rocker can rotate fully")
-    pl.show_linkage(linkage_dc)
+    show(linkage_dc)
 
     print("\n3. Double-Rocker (Non-Grashof)")
-    linkage_dr = fourbar_from_lengths(3.0, 4.0, 3.0, 2.0)
+    linkage_dr = fourbar_from_lengths(2.0, 2.5, 3.0, 4.0)
     print("   Neither crank nor rocker can rotate fully")
-    pl.show_linkage(linkage_dr)
+    show(linkage_dr)
 
 
 def demo_transmission_angle():
@@ -195,7 +220,7 @@ def demo_transmission_angle():
         print(f"\nTransmission angle at initial position: {math.degrees(mu):.1f} deg")
 
     print("\nVisualizing mechanism...")
-    pl.show_linkage(linkage)
+    show(linkage)
 
 
 def demo_mechanical_advantage():
@@ -208,7 +233,7 @@ def demo_mechanical_advantage():
 
     configurations = [
         ("High torque (long rocker)", 1.0, 3.0, 4.0, 4.0),
-        ("Balanced", 1.5, 3.0, 2.5, 4.0),
+        ("Balanced", 1.5, 3.0, 2.5, 3.5),
         ("High speed (short rocker)", 2.0, 3.0, 1.5, 4.0),
     ]
 
@@ -222,7 +247,7 @@ def demo_mechanical_advantage():
         try:
             linkage = fourbar_from_lengths(a, b, c, d)
             print("  Visualizing...")
-            pl.show_linkage(linkage)
+            show(linkage)
         except ValueError as e:
             print(f"  Cannot assemble: {e}")
 
@@ -249,7 +274,7 @@ def demo_different_initial_angles():
                 ground_length=ground,
                 initial_crank_angle=angle,
             )
-            pl.show_linkage(linkage)
+            show(linkage)
         except ValueError as e:
             print(f"  Cannot assemble at this angle: {e}")
 
@@ -289,7 +314,7 @@ def demo_extract_parameters():
     print(f"  Ground length: {params.ground_length:.3f}")
 
     print("\nVisualizing...")
-    pl.show_linkage(original)
+    show(original)
 
 
 def demo_classic_linkages():
@@ -313,8 +338,8 @@ def demo_classic_linkages():
         print(f"  Grashof type: {grashof_type.name}")
 
         try:
-            linkage = fourbar_from_lengths(a, b, c, d)
-            pl.show_linkage(linkage)
+            linkage = fourbar_from_lengths(a, b, c, d, initial_crank_angle=math.pi / 2)
+            show(linkage)
         except ValueError as e:
             print(f"  Cannot assemble: {e}")
 

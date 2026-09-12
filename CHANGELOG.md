@@ -11,6 +11,14 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Added
 
+- **`solution_to_linkage()` honours `FourBarSolution.arc_limits`.** The field
+  existed but nothing in pylinkage read it. Set it — typically from
+  `crank_angle_limits()` — and the linkage is built around an `ArcCrank`
+  sweeping that range instead of a `Crank`, so a double-rocker or non-Grashof
+  solution can be stepped and animated; a full turn would stop at an
+  unbuildable position. The limits are relative to the ground line, as
+  `crank_angle_limits()` returns them, and are placed on whichever side the
+  crank starts.
 - **A defined public surface.** A name is public when it is in a package's
   `__all__`; modules inside a package are implementation; each name has one
   home. The rule is on the Deprecations page, and the surface is pinned name
@@ -185,6 +193,19 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **The example scripts run again.** The three synthesis demos still called
+  `len(result)` and `if result:` on a `SynthesisResult`, which lost those
+  since 1.0; every demo animated whatever came out of synthesis with a
+  full-turn `Crank`, which stops on a double-rocker; and the Grashof-type
+  table in `fourbar_from_lengths_demo.py` labelled two change-point linkages
+  as double-crank and double-rocker. The demos now animate through
+  `crank_angle_limits()` + `arc_limits`, the table's lengths match their
+  labels, and three demos that always came back empty — five-position
+  approximate function generation, the straight-line path (three collinear
+  points are degenerate for Burmester theory), and the two fixed-ground-pivot
+  demos (arbitrary frame points never lie on the center-point curve) — now
+  show the workflow that does produce a linkage. All twelve scripts under
+  `docs/examples/` run to completion with `DeprecationWarning` as an error.
 - **Optimizers accept every linkage again.** `Ensemble` compiled its numba
   solver template on construction, and since the solver started refusing
   dyads it cannot represent, every optimizer that returns an `Ensemble`
