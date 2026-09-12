@@ -7,28 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 What the version number promises, and how a name is retired, is in
 the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
-## [Unreleased]
+## [1.2.0] - 2026-09-12
 
 ### Added
 
-- **`Ensemble.to_pareto_front()`** — the members as a `ParetoFront`, one
-  objective per score column, for its `best_compromise()`, `filter()`,
-  `hypervolume()` and `plot()`. The inverse of `Ensemble.from_pareto_front()`.
-- **`PointTracker` in the numba solver.** It has `FixedDyad` geometry and
-  now gets the same kernel; before, `step_fast()` silently froze a tracker
-  at its initial position and returned that as its trajectory.
-- **Slider rails in every drawing backend.** `pylinkage.visualizer.core`
-  gains `get_rail_pairs()` / `build_rails()`, and `get_parent_pairs()` knows
-  `RRPDyad.revolute_anchor`, so a slider-crank draws its connecting rod and
-  the line it slides on in matplotlib, SVG, DXF and STEP alike.
-- **`solution_to_linkage()` honours `FourBarSolution.arc_limits`.** The field
-  existed but nothing in pylinkage read it. Set it — typically from
-  `crank_angle_limits()` — and the linkage is built around an `ArcCrank`
-  sweeping that range instead of a `Crank`, so a double-rocker or non-Grashof
-  solution can be stepped and animated; a full turn would stop at an
-  unbuildable position. The limits are relative to the ground line, as
-  `crank_angle_limits()` returns them, and are placed on whichever side the
-  crank starts.
 - **A defined public surface.** A name is public when it is in a package's
   `__all__`; modules inside a package are implementation; each name has one
   home. The rule is on the Deprecations page, and the surface is pinned name
@@ -44,13 +26,17 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   `Crank`, `ArcCrank`, `LinearActuator`, `RRRDyad`, `RRPDyad`, `PPDyad`,
   `FixedDyad`, alongside `Linkage`.
 
-- **`pylinkage.mechanism.TrackerJoint` and `ArcDriverLink`** are exported.
-  Both leggedsnake and the editor's backend were importing them from the
-  `mechanism.joint` and `mechanism.link` modules because the package did not
-  offer them.
+- **A deprecation policy, at `docs/source/deprecations.md`.** One page stating
+  what pylinkage promises about public names: a name is announced with a
+  `DeprecationWarning` naming its replacement and removal release, and is
+  removed no earlier than the next major version. It carries the table of
+  everything currently deprecated, and how to surface the warnings, which are
+  silent by default in Python.
 
-- **`pylinkage.dimensions` and `pylinkage.exceptions` have an `__all__`**
-  (`Dimensions`, `DriverAngle`; the four exception classes).
+- `pylinkage._deprecation`, the machinery behind that: deprecated names are
+  removed from their module's namespace and served by a module-level
+  `__getattr__` (PEP 562), so reading one warns while `from ... import Name`
+  keeps resolving exactly as before.
 
 - **A "Which API should I use?" section in the README**, naming
   `components` / `actuators` / `dyads` / `simulation` as the definition path
@@ -65,6 +51,15 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   name that only the editor's backend ever called; it now has a public name
   and a test that checks the returned bounds against the collinear positions.
 
+- **`solution_to_linkage()` honours `FourBarSolution.arc_limits`.** The field
+  existed but nothing in pylinkage read it. Set it — typically from
+  `crank_angle_limits()` — and the linkage is built around an `ArcCrank`
+  sweeping that range instead of a `Crank`, so a double-rocker or non-Grashof
+  solution can be stepped and animated; a full turn would stop at an
+  unbuildable position. The limits are relative to the ground line, as
+  `crank_angle_limits()` returns them, and are placed on whichever side the
+  crank starts.
+
 - **`orientation_resolution` on `path_generation()`**, replacing
   `n_orientation_samples`. It is the number of angles sampled per free
   orientation, so the cost model is now readable from the signature: the search
@@ -77,21 +72,30 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   return nothing. Calls whose grid exceeds a thousand candidates now warn up
   front, and the message is repeated in `SynthesisResult.warnings`.
 
+- **`Ensemble.to_pareto_front()`** — the members as a `ParetoFront`, one
+  objective per score column, for its `best_compromise()`, `filter()`,
+  `hypervolume()` and `plot()`. The inverse of `Ensemble.from_pareto_front()`.
+
+- **`PointTracker` in the numba solver.** It has `FixedDyad` geometry and
+  now gets the same kernel; before, `step_fast()` silently froze a tracker
+  at its initial position and returned that as its trajectory.
+
+- **Slider rails in every drawing backend.** `pylinkage.visualizer.core`
+  gains `get_rail_pairs()` / `build_rails()`, and `get_parent_pairs()` knows
+  `RRPDyad.revolute_anchor`, so a slider-crank draws its connecting rod and
+  the line it slides on in matplotlib, SVG, DXF and STEP alike.
+
+- **`pylinkage.mechanism.TrackerJoint` and `ArcDriverLink`** are exported.
+  Both leggedsnake and the editor's backend were importing them from the
+  `mechanism.joint` and `mechanism.link` modules because the package did not
+  offer them.
+
+- **`pylinkage.dimensions` and `pylinkage.exceptions` have an `__all__`**
+  (`Dimensions`, `DriverAngle`; the four exception classes).
+
 - **`pylinkage.synthesis.BurmesterDyad`**, the new name for what was
   `pylinkage.synthesis.Dyad`. Same class, same behaviour; the old name still
   works and now warns.
-
-- **A deprecation policy, at `docs/source/deprecations.md`.** One page stating
-  what pylinkage promises about public names: a name is announced with a
-  `DeprecationWarning` naming its replacement and removal release, and is
-  removed no earlier than the next major version. It carries the table of
-  everything currently deprecated, and how to surface the warnings, which are
-  silent by default in Python.
-
-- `pylinkage._deprecation`, the machinery behind that: deprecated names are
-  removed from their module's namespace and served by a module-level
-  `__getattr__` (PEP 562), so reading one warns while `from ... import Name`
-  keeps resolving exactly as before.
 
 ### Changed
 
@@ -203,50 +207,6 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
-- **The tutorials run.** Ten of the eleven pages under
-  `docs/source/tutorials/` failed on 1.1.1: `pylinkage.joints`, keyword
-  arguments that never existed (`show_linkage(animated=…)`,
-  `generate_bounds(max_ratio=…)`), `len(result)` on a `SynthesisResult`,
-  tuple-unpacking an `Ensemble`, an invented hypergraph API, change-point
-  four-bars that no perturbation survives. `custom_joints`,
-  `graph_representation` and `visualization` are rewritten against the
-  current API; the others are corrected in place, with expected outputs
-  regenerated. Every code block of every tutorial now executes in order
-  with `DeprecationWarning` as an error.
-- **The SVG, DXF and STEP exporters draw the component API.** All three
-  walked the legacy `linkage.joints` / `joint0` / `joint1` attributes, so
-  `plot_linkage_svg()` produced joints and trajectories but no bars for a
-  `simulation.Linkage`, and `plot_linkage_dxf()` / `build_linkage_3d()`
-  raised `AttributeError`. They now share `build_connections()` with the
-  matplotlib backend.
-- **`show_kinematics()`, `animate_kinematics()` and
-  `plot_linkage_plotly_with_velocity()` work on a `simulation.Linkage`.**
-  Same legacy attributes, plus an `omega` check that never saw the value
-  `set_input_velocity()` stores; their tests wrapped the linkage in an
-  adapter that mimicked the old API and passed around the bug.
-- **`Ensemble.show()`, `plot_plotly()` and `save_svg()` no longer require
-  a prior `simulate()`.** They simulated the member on the spot and then
-  looked for the trajectory in the batch cache, which the one-off
-  simulation does not fill, and raised `ValueError`.
-- **`step_fast()` refuses a component it cannot represent** — a custom
-  `Component`, say — with `NotImplementedError` naming it, instead of
-  typing it as a fixed point and reporting a frozen trajectory.
-- **`parallel_coordinates_plot()` with unbuildable particles.** A score of
-  `±inf` (the `kinematic_*` decorators' penalty) made the score axis NaN;
-  such particles now sit at the bad end of the axis.
-- **The example scripts run again.** The three synthesis demos still called
-  `len(result)` and `if result:` on a `SynthesisResult`, which lost those
-  since 1.0; every demo animated whatever came out of synthesis with a
-  full-turn `Crank`, which stops on a double-rocker; and the Grashof-type
-  table in `fourbar_from_lengths_demo.py` labelled two change-point linkages
-  as double-crank and double-rocker. The demos now animate through
-  `crank_angle_limits()` + `arc_limits`, the table's lengths match their
-  labels, and three demos that always came back empty — five-position
-  approximate function generation, the straight-line path (three collinear
-  points are degenerate for Burmester theory), and the two fixed-ground-pivot
-  demos (arbitrary frame points never lie on the center-point curve) — now
-  show the workflow that does produce a linkage. All twelve scripts under
-  `docs/examples/` run to completion with `DeprecationWarning` as an error.
 - **Optimizers accept every linkage again.** `Ensemble` compiled its numba
   solver template on construction, and since the solver started refusing
   dyads it cannot represent, every optimizer that returns an `Ensemble`
@@ -256,15 +216,6 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   solver for. The template is now compiled on first use (`Ensemble.template`,
   `simulate()`, `topology_key`), so those linkages optimize as they did in
   1.1.1 and the clear error only appears where batch simulation is asked for.
-- **`pip install pylinkage` works on Python 3.10.** `mechanism.builder`
-  imports `Self` from `typing_extensions` below 3.11 but the package never
-  declared it, so a fresh 3.10 environment failed at `import pylinkage`.
-- **The benchmarks page figures are regenerated** against the above, and its
-  breakdown of `path_generation()` is rewritten: Burmester synthesis over the
-  orientation grid is now 87% of the runtime and verification under 10%, the
-  reverse of what the page described. It also now warns that cost grows
-  exponentially in the number of precision points — five points can take seconds
-  and return nothing — which no documentation said.
 
 - **`step_fast()` silently returned NaN for every dyad except `RRRDyad`.**
   `linkage_to_solver_data()` typed every dyad as `JOINT_REVOLUTE` and read
@@ -285,6 +236,68 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   `update_solver_constraints()` shares the same table, so the two cannot drift.
   `step()` and `step_fast()` now agree bit for bit on all three supported dyad
   types, and are tested to.
+
+- **`step_fast()` refuses a component it cannot represent** — a custom
+  `Component`, say — with `NotImplementedError` naming it, instead of
+  typing it as a fixed point and reporting a frozen trajectory.
+
+- **The SVG, DXF and STEP exporters draw the component API.** All three
+  walked the legacy `linkage.joints` / `joint0` / `joint1` attributes, so
+  `plot_linkage_svg()` produced joints and trajectories but no bars for a
+  `simulation.Linkage`, and `plot_linkage_dxf()` / `build_linkage_3d()`
+  raised `AttributeError`. They now share `build_connections()` with the
+  matplotlib backend.
+
+- **`show_kinematics()`, `animate_kinematics()` and
+  `plot_linkage_plotly_with_velocity()` work on a `simulation.Linkage`.**
+  Same legacy attributes, plus an `omega` check that never saw the value
+  `set_input_velocity()` stores; their tests wrapped the linkage in an
+  adapter that mimicked the old API and passed around the bug.
+
+- **`Ensemble.show()`, `plot_plotly()` and `save_svg()` no longer require
+  a prior `simulate()`.** They simulated the member on the spot and then
+  looked for the trajectory in the batch cache, which the one-off
+  simulation does not fill, and raised `ValueError`.
+
+- **`parallel_coordinates_plot()` with unbuildable particles.** A score of
+  `±inf` (the `kinematic_*` decorators' penalty) made the score axis NaN;
+  such particles now sit at the bad end of the axis.
+
+- **`pip install pylinkage` works on Python 3.10.** `mechanism.builder`
+  imports `Self` from `typing_extensions` below 3.11 but the package never
+  declared it, so a fresh 3.10 environment failed at `import pylinkage`.
+
+- **The tutorials run.** Ten of the eleven pages under
+  `docs/source/tutorials/` failed on 1.1.1: `pylinkage.joints`, keyword
+  arguments that never existed (`show_linkage(animated=…)`,
+  `generate_bounds(max_ratio=…)`), `len(result)` on a `SynthesisResult`,
+  tuple-unpacking an `Ensemble`, an invented hypergraph API, change-point
+  four-bars that no perturbation survives. `custom_joints`,
+  `graph_representation` and `visualization` are rewritten against the
+  current API; the others are corrected in place, with expected outputs
+  regenerated. Every code block of every tutorial now executes in order
+  with `DeprecationWarning` as an error.
+
+- **The example scripts run again.** The three synthesis demos still called
+  `len(result)` and `if result:` on a `SynthesisResult`, which lost those
+  since 1.0; every demo animated whatever came out of synthesis with a
+  full-turn `Crank`, which stops on a double-rocker; and the Grashof-type
+  table in `fourbar_from_lengths_demo.py` labelled two change-point linkages
+  as double-crank and double-rocker. The demos now animate through
+  `crank_angle_limits()` + `arc_limits`, the table's lengths match their
+  labels, and three demos that always came back empty — five-position
+  approximate function generation, the straight-line path (three collinear
+  points are degenerate for Burmester theory), and the two fixed-ground-pivot
+  demos (arbitrary frame points never lie on the center-point curve) — now
+  show the workflow that does produce a linkage. All twelve scripts under
+  `docs/examples/` run to completion with `DeprecationWarning` as an error.
+
+- **The benchmarks page figures are regenerated** against the above, and its
+  breakdown of `path_generation()` is rewritten: Burmester synthesis over the
+  orientation grid is now 87% of the runtime and verification under 10%, the
+  reverse of what the page described. It also now warns that cost grows
+  exponentially in the number of precision points — five points can take seconds
+  and return nothing — which no documentation said.
 
 - **The benchmarks page gave wrong advice about `path_generation()`.** It
   attributed the cost to the orientation sweep and said lowering

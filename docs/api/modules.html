@@ -6,21 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage &mdash; pylinkage 0.8.0 documentation</title>
+  <title>pylinkage &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pylinkage package" href="pylinkage.html" />
-    <link rel="prev" title="Custom Joint Creation" href="../tutorials/custom_joints.html" /> 
+    <link rel="prev" title="Custom Components" href="../tutorials/custom_joints.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,6 +46,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -93,140 +95,240 @@
              
   <section id="pylinkage">
 <h1>pylinkage<a class="headerlink" href="#pylinkage" title="Link to this heading"></a></h1>
+<p>The packages below are listed alphabetically. To define and simulate a
+mechanism you need four of them, in this order: <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.components</span></code>
+(frame points), <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.actuators</span></code> (motor inputs),
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code> (the constrained pairs that close the loops) and
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.simulation</span></code> (the <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> container). The
+<a class="reference internal" href="../tutorials/getting_started.html"><span class="doc">getting started tutorial</span></a> walks through
+them; the rest are what you reach for afterwards.</p>
+<p>A name is public when it appears in a package’s <code class="docutils literal notranslate"><span class="pre">__all__</span></code>; modules inside a
+package are implementation. See <a class="reference internal" href="../deprecations.html"><span class="doc">Deprecations</span></a> for the rule and for
+every name currently on its way out.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.collections.html">pylinkage.collections package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.collections.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.collections.html#module-pylinkage.collections.agent">pylinkage.collections.agent module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.collections.html#module-pylinkage.collections.mutable_agent">pylinkage.collections.mutable_agent module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.collections.html#module-pylinkage.collections">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.actuators.html">pylinkage.actuators package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html#module-pylinkage.actuators.arc_crank">pylinkage.actuators.arc_crank module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html#module-pylinkage.actuators.crank">pylinkage.actuators.crank module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html#module-pylinkage.actuators.linear">pylinkage.actuators.linear module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.assur.html">pylinkage.assur package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.analysis">pylinkage.assur.analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.assur_mechanism">pylinkage.assur.assur_mechanism module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.decomposition">pylinkage.assur.decomposition module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.graph">pylinkage.assur.graph module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.groups">pylinkage.assur.groups module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.hypergraph_conversion">pylinkage.assur.hypergraph_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.mechanism_conversion">pylinkage.assur.mechanism_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.serialization">pylinkage.assur.serialization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-pylinkage.assur.signature">pylinkage.assur.signature module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.bridge.html">pylinkage.bridge package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.bridge.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.bridge.html#module-pylinkage.bridge.solver_conversion">pylinkage.bridge.solver_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.bridge.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.cam.html">pylinkage.cam package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html#module-pylinkage.cam.motion_laws">pylinkage.cam.motion_laws module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html#module-pylinkage.cam.profiles">pylinkage.cam.profiles module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.components.html">pylinkage.components package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html#module-pylinkage.components.ground">pylinkage.components.ground module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html#module-pylinkage.components.point_tracker">pylinkage.components.point_tracker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.dyads.html">pylinkage.dyads package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.factory">pylinkage.dyads.factory module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.fixed">pylinkage.dyads.fixed module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.oscillating_cam">pylinkage.dyads.oscillating_cam module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.pp">pylinkage.dyads.pp module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.rrp">pylinkage.dyads.rrp module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.rrr">pylinkage.dyads.rrr module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-pylinkage.dyads.translating_cam">pylinkage.dyads.translating_cam module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.geometry.html">pylinkage.geometry package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html#module-pylinkage.geometry.core">pylinkage.geometry.core module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html#module-pylinkage.geometry.secants">pylinkage.geometry.secants module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html#module-pylinkage.geometry">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html#module-contents">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.joints.html">pylinkage.joints package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.crank">pylinkage.joints.crank module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.fixed">pylinkage.joints.fixed module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.joint">pylinkage.joints.joint module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.prismatic">pylinkage.joints.prismatic module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.revolute">pylinkage.joints.revolute module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints.static">pylinkage.joints.static module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.joints.html#module-pylinkage.joints">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.hypergraph.html">pylinkage.hypergraph package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.core">pylinkage.hypergraph.core module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.graph">pylinkage.hypergraph.graph module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.hierarchy">pylinkage.hypergraph.hierarchy module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.mechanism_conversion">pylinkage.hypergraph.mechanism_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.serialization">pylinkage.hypergraph.serialization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-pylinkage.hypergraph.sim_conversion">pylinkage.hypergraph.sim_conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage.analysis">pylinkage.linkage.analysis module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage.linkage">pylinkage.linkage.linkage module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage.sensitivity">pylinkage.linkage.sensitivity module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage.transmission">pylinkage.linkage.transmission module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-pylinkage.linkage">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.mechanism.html">pylinkage.mechanism package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.builder">pylinkage.mechanism.builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.factories">pylinkage.mechanism.factories module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.joint">pylinkage.mechanism.joint module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.link">pylinkage.mechanism.link module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.mechanism">pylinkage.mechanism.mechanism module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-pylinkage.mechanism.serialization">pylinkage.mechanism.serialization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.async_optimization">pylinkage.optimization.async_optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.co_optimization_types">pylinkage.optimization.co_optimization_types module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.grid_search">pylinkage.optimization.grid_search module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.mixed_variable">pylinkage.optimization.mixed_variable module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.multi_objective">pylinkage.optimization.multi_objective module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.operators">pylinkage.optimization.operators module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.particle_swarm">pylinkage.optimization.particle_swarm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.scipy_optimize">pylinkage.optimization.scipy_optimize module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.topology_neighborhood">pylinkage.optimization.topology_neighborhood module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.utils">pylinkage.optimization.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-pylinkage.optimization.warm_start">pylinkage.optimization.warm_start module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.population.html">pylinkage.population package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.population.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.simulation.html">pylinkage.simulation package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html#module-pylinkage.simulation.linkage">pylinkage.simulation.linkage module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.solver.html">pylinkage.solver package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.acceleration">pylinkage.solver.acceleration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.groups">pylinkage.solver.groups module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.joints">pylinkage.solver.joints module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.simulation">pylinkage.solver.simulation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.solve">pylinkage.solver.solve module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.types">pylinkage.solver.types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-pylinkage.solver.velocity">pylinkage.solver.velocity module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.symbolic.html">pylinkage.symbolic package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.conversion">pylinkage.symbolic.conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.geometry">pylinkage.symbolic.geometry module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.joints">pylinkage.symbolic.joints module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.linkage">pylinkage.symbolic.linkage module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.optimization">pylinkage.symbolic.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-pylinkage.symbolic.solver">pylinkage.symbolic.solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.synthesis.html">pylinkage.synthesis package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.burmester">pylinkage.synthesis.burmester module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.conversion">pylinkage.synthesis.conversion module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.core">pylinkage.synthesis.core module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.function_generation">pylinkage.synthesis.function_generation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.generalized">pylinkage.synthesis.generalized module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.motion_generation">pylinkage.synthesis.motion_generation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.multi_topology">pylinkage.synthesis.multi_topology module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.path_generation">pylinkage.synthesis.path_generation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.ranking">pylinkage.synthesis.ranking module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.six_bar">pylinkage.synthesis.six_bar module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.topology_types">pylinkage.synthesis.topology_types module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-pylinkage.synthesis.utils">pylinkage.synthesis.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.topology.html">pylinkage.topology package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#module-pylinkage.topology.analysis">pylinkage.topology.analysis module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#module-pylinkage.topology.catalog">pylinkage.topology.catalog module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#module-pylinkage.topology.enumeration">pylinkage.topology.enumeration module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#module-pylinkage.topology.isomorphism">pylinkage.topology.isomorphism module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.animated">pylinkage.visualizer.animated module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.core">pylinkage.visualizer.core module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.drawsvg_viz">pylinkage.visualizer.drawsvg_viz module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.dxf_export">pylinkage.visualizer.dxf_export module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.kinematics">pylinkage.visualizer.kinematics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.plotly_viz">pylinkage.visualizer.plotly_viz module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.pso_plots">pylinkage.visualizer.pso_plots module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.static">pylinkage.visualizer.static module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer">Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.step_export">pylinkage.visualizer.step_export module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-pylinkage.visualizer.symbols">pylinkage.visualizer.symbols module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-pylinkage.dimensions">pylinkage.dimensions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions"><code class="docutils literal notranslate"><span class="pre">Dimensions</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.copy"><code class="docutils literal notranslate"><span class="pre">Dimensions.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.driver_angles"><code class="docutils literal notranslate"><span class="pre">Dimensions.driver_angles</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.edge_distances"><code class="docutils literal notranslate"><span class="pre">Dimensions.edge_distances</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.from_dict"><code class="docutils literal notranslate"><span class="pre">Dimensions.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.get_driver_angle"><code class="docutils literal notranslate"><span class="pre">Dimensions.get_driver_angle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.get_edge_distance"><code class="docutils literal notranslate"><span class="pre">Dimensions.get_edge_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.get_hyperedge_distance"><code class="docutils literal notranslate"><span class="pre">Dimensions.get_hyperedge_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.get_node_position"><code class="docutils literal notranslate"><span class="pre">Dimensions.get_node_position()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.hyperedge_constraints"><code class="docutils literal notranslate"><span class="pre">Dimensions.hyperedge_constraints</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.name"><code class="docutils literal notranslate"><span class="pre">Dimensions.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.node_positions"><code class="docutils literal notranslate"><span class="pre">Dimensions.node_positions</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.to_dict"><code class="docutils literal notranslate"><span class="pre">Dimensions.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.Dimensions.validate_against"><code class="docutils literal notranslate"><span class="pre">Dimensions.validate_against()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.DriverAngle"><code class="docutils literal notranslate"><span class="pre">DriverAngle</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.DriverAngle.angular_velocity"><code class="docutils literal notranslate"><span class="pre">DriverAngle.angular_velocity</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.DriverAngle.from_dict"><code class="docutils literal notranslate"><span class="pre">DriverAngle.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.DriverAngle.initial_angle"><code class="docutils literal notranslate"><span class="pre">DriverAngle.initial_angle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.dimensions.DriverAngle.to_dict"><code class="docutils literal notranslate"><span class="pre">DriverAngle.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.OptimizationError"><code class="docutils literal notranslate"><span class="pre">OptimizationError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.UnbuildableError"><code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.exceptions.UnderconstrainedError"><code class="docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-pylinkage">Module contents</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.ComponentId"><code class="docutils literal notranslate"><span class="pre">ComponentId</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.EdgeId"><code class="docutils literal notranslate"><span class="pre">EdgeId</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.HyperedgeId"><code class="docutils literal notranslate"><span class="pre">HyperedgeId</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.HypostaticError"><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.JointType"><code class="docutils literal notranslate"><span class="pre">JointType</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.GROUND"><code class="docutils literal notranslate"><span class="pre">JointType.GROUND</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.PRISMATIC"><code class="docutils literal notranslate"><span class="pre">JointType.PRISMATIC</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.REVOLUTE"><code class="docutils literal notranslate"><span class="pre">JointType.REVOLUTE</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.JointType.TRACKER"><code class="docutils literal notranslate"><span class="pre">JointType.TRACKER</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage"><code class="docutils literal notranslate"><span class="pre">Linkage</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.analyze_stroke"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_stroke()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.analyze_transmission"><code class="docutils literal notranslate"><span class="pre">Linkage.analyze_transmission()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.compile"><code class="docutils literal notranslate"><span class="pre">Linkage.compile()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.from_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.from_json"><code class="docutils literal notranslate"><span class="pre">Linkage.from_json()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_accelerations"><code class="docutils literal notranslate"><span class="pre">Linkage.get_accelerations()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_coords"><code class="docutils literal notranslate"><span class="pre">Linkage.get_coords()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_num_constraints"><code class="docutils literal notranslate"><span class="pre">Linkage.get_num_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_rotation_period"><code class="docutils literal notranslate"><span class="pre">Linkage.get_rotation_period()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.get_velocities"><code class="docutils literal notranslate"><span class="pre">Linkage.get_velocities()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.indeterminacy"><code class="docutils literal notranslate"><span class="pre">Linkage.indeterminacy()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.joints"><code class="docutils literal notranslate"><span class="pre">Linkage.joints</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.name"><code class="docutils literal notranslate"><span class="pre">Linkage.name</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.rebuild"><code class="docutils literal notranslate"><span class="pre">Linkage.rebuild()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.sensitivity_analysis"><code class="docutils literal notranslate"><span class="pre">Linkage.sensitivity_analysis()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_completely"><code class="docutils literal notranslate"><span class="pre">Linkage.set_completely()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_coords"><code class="docutils literal notranslate"><span class="pre">Linkage.set_coords()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_input_velocity"><code class="docutils literal notranslate"><span class="pre">Linkage.set_input_velocity()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.set_num_constraints"><code class="docutils literal notranslate"><span class="pre">Linkage.set_num_constraints()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.simulation"><code class="docutils literal notranslate"><span class="pre">Linkage.simulation()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step"><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.step_fast_with_kinematics"><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast_with_kinematics()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.stroke_position"><code class="docutils literal notranslate"><span class="pre">Linkage.stroke_position()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_dict"><code class="docutils literal notranslate"><span class="pre">Linkage.to_dict()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.to_json"><code class="docutils literal notranslate"><span class="pre">Linkage.to_json()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.tolerance_analysis"><code class="docutils literal notranslate"><span class="pre">Linkage.tolerance_analysis()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Linkage.transmission_angle"><code class="docutils literal notranslate"><span class="pre">Linkage.transmission_angle()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NodeId"><code class="docutils literal notranslate"><span class="pre">NodeId</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole"><code class="docutils literal notranslate"><span class="pre">NodeRole</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.DRIVEN"><code class="docutils literal notranslate"><span class="pre">NodeRole.DRIVEN</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.DRIVER"><code class="docutils literal notranslate"><span class="pre">NodeRole.DRIVER</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.NodeRole.GROUND"><code class="docutils literal notranslate"><span class="pre">NodeRole.GROUND</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.NotCompletelyDefinedError"><code class="docutils literal notranslate"><span class="pre">NotCompletelyDefinedError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.OptimizationError"><code class="docutils literal notranslate"><span class="pre">OptimizationError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.PortId"><code class="docutils literal notranslate"><span class="pre">PortId</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.Simulation"><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Simulation.iterations"><code class="docutils literal notranslate"><span class="pre">Simulation.iterations</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="pylinkage.html#pylinkage.Simulation.linkage"><code class="docutils literal notranslate"><span class="pre">Simulation.linkage</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.UnbuildableError"><code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.UnderconstrainedError"><code class="docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.bounding_box"><code class="docutils literal notranslate"><span class="pre">bounding_box()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.circle_intersect"><code class="docutils literal notranslate"><span class="pre">circle_intersect()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.cyl_to_cart"><code class="docutils literal notranslate"><span class="pre">cyl_to_cart()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.intersection"><code class="docutils literal notranslate"><span class="pre">intersection()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.kinematic_default_test"><code class="docutils literal notranslate"><span class="pre">kinematic_default_test()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.norm"><code class="docutils literal notranslate"><span class="pre">norm()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#pylinkage.sqr_dist"><code class="docutils literal notranslate"><span class="pre">sqr_dist()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="pylinkage.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -237,7 +339,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tutorials/custom_joints.html" class="btn btn-neutral float-left" title="Custom Joint Creation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/custom_joints.html" class="btn btn-neutral float-left" title="Custom Components" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pylinkage.html" class="btn btn-neutral float-right" title="pylinkage package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

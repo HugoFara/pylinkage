@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deprecations &mdash; pylinkage 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials/index.html" />
+    <link rel="prev" title="Benchmarks" href="benchmarks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Deprecations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-public">What is public</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-deprecation-works-here">How deprecation works here</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#currently-deprecated">Currently deprecated</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-the-dyads-re-exports-are-going-away">Why the <code class="docutils literal notranslate"><span class="pre">dyads</span></code> re-exports are going away</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-mobilityresult-and-structuralanalysis-are-going-away">Why <code class="docutils literal notranslate"><span class="pre">MobilityResult</span></code> and <code class="docutils literal notranslate"><span class="pre">StructuralAnalysis</span></code> are going away</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-the-dyad-names-are-going-away">Why the <code class="docutils literal notranslate"><span class="pre">Dyad</span></code> names are going away</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-n-orientation-samples-is-going-away">Why <code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> is going away</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migrating">Migrating</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Deprecations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/deprecations.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="deprecations">
+<h1>Deprecations<a class="headerlink" href="#deprecations" title="Link to this heading"></a></h1>
+<p>Names that still work but are on their way out, with what to use instead.</p>
+<section id="what-is-public">
+<h2>What is public<a class="headerlink" href="#what-is-public" title="Link to this heading"></a></h2>
+<p>A name is public when it is listed in the <code class="docutils literal notranslate"><span class="pre">__all__</span></code> of a package, and a
+package is public when it is reachable as an attribute of <code class="docutils literal notranslate"><span class="pre">pylinkage</span></code>
+(<code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.optimization.collections</span></code>, …). That is the
+whole rule. The policy below applies to those names and nothing else.</p>
+<p>Two consequences:</p>
+<ul class="simple">
+<li><p><strong>Modules inside a package are implementation.</strong> <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pylinkage.synthesis.path_generation</span> <span class="pre">import</span> <span class="pre">path_generation</span></code> works today and
+may stop working without notice; <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">pylinkage.synthesis</span> <span class="pre">import</span> <span class="pre">path_generation</span></code> is the promise. Newer modules carry a leading underscore
+to make this visible (<code class="docutils literal notranslate"><span class="pre">population._member</span></code>, <code class="docutils literal notranslate"><span class="pre">synthesis._types</span></code>); older ones
+will be renamed as they are touched.</p></li>
+<li><p><strong>Each name has one home.</strong> <code class="docutils literal notranslate"><span class="pre">Ground</span></code> lives in <code class="docutils literal notranslate"><span class="pre">pylinkage.components</span></code>, not
+also in <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code>. The top-level package re-exports the definition
+path (<code class="docutils literal notranslate"><span class="pre">Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>, …) for convenience; every
+other second location is a deprecated alias, listed below.</p></li>
+</ul>
+<p>The surface is pinned name by name in <code class="docutils literal notranslate"><span class="pre">tests/test_public_api.py</span></code>, so it cannot
+change without a diff in that file.</p>
+<p>Some public names are <strong>provisional</strong>: exported and documented, but their
+shape may still change in a minor release. They are the newer subsystems —
+<code class="docutils literal notranslate"><span class="pre">pylinkage.topology</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.solver</span></code>, the co-design family in
+<code class="docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code> (<code class="docutils literal notranslate"><span class="pre">co_optimize</span></code>, <code class="docutils literal notranslate"><span class="pre">CoOptimizationConfig</span></code>, …), the
+multi-topology synthesis in <code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code> (<code class="docutils literal notranslate"><span class="pre">NBarSolution</span></code>,
+<code class="docutils literal notranslate"><span class="pre">generalized_synthesis</span></code>, …), hierarchical composition in
+<code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code>, and the CAD export in <code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code>. A change
+to one is announced in the changelog, not through a warning.</p>
+</section>
+<section id="how-deprecation-works-here">
+<h2>How deprecation works here<a class="headerlink" href="#how-deprecation-works-here" title="Link to this heading"></a></h2>
+<p>pylinkage follows <a class="reference external" href="https://semver.org/spec/v2.0.0.html">semantic versioning</a>.
+A public name is never removed without notice:</p>
+<ol class="arabic simple">
+<li><p><strong>Announced.</strong> The name keeps working and keeps resolving to the same
+object, but reading it raises a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> naming the replacement
+and the release that will drop it.</p></li>
+<li><p><strong>Removed.</strong> No earlier than the next <em>major</em> release.</p></li>
+</ol>
+<p><code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> is silent by default in Python, so nothing in your output
+changes until you go looking. To see them:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-W<span class="w"> </span>error::DeprecationWarning<span class="w"> </span>your_script.py<span class="w">   </span><span class="c1"># fail on any use</span>
+python<span class="w"> </span>-W<span class="w"> </span>default::DeprecationWarning<span class="w"> </span>your_script.py<span class="w"> </span><span class="c1"># just print them</span>
+</pre></div>
+</div>
+<p>Under pytest, <code class="docutils literal notranslate"><span class="pre">filterwarnings</span> <span class="pre">=</span> <span class="pre">[&quot;error::DeprecationWarning&quot;]</span></code> in your config
+turns each one into a test failure, which is the cheapest way to find out
+whether an upgrade will affect you.</p>
+</section>
+<section id="currently-deprecated">
+<h2>Currently deprecated<a class="headerlink" href="#currently-deprecated" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Use instead</p></th>
+<th class="head"><p>Removed in</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Dyad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Component</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.ConnectedDyad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.ConnectedComponent</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Dyad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Component</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.ConnectedDyad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.ConnectedComponent</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.Dyad</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.BurmesterDyad</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Ground</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Ground</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.PointTracker</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.PointTracker</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Component</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Component</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.ConnectedComponent</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.ConnectedComponent</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Crank</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.actuators.Crank</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.ArcCrank</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.actuators.ArcCrank</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.LinearActuator</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.actuators.LinearActuator</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Linkage</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization.Ensemble</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.population.Ensemble</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.MobilityResult</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.topology.MobilityInfo</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.StructuralAnalysis</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.topology.compute_mobility()</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">path_generation(n_orientation_samples=...)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">orientation_resolution=</span></code></p></td>
+<td><p>2.0.0</p></td>
+</tr>
+</tbody>
+</table>
+<section id="why-the-dyads-re-exports-are-going-away">
+<h3>Why the <code class="docutils literal notranslate"><span class="pre">dyads</span></code> re-exports are going away<a class="headerlink" href="#why-the-dyads-re-exports-are-going-away" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code> used to re-export the frame, actuator and container classes
+“for convenience”, so <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Ground</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.components.Ground</span></code>
+were both correct and tutorials disagreed on which to use. Under the one-home
+rule above, <code class="docutils literal notranslate"><span class="pre">dyads</span></code> defines dyads. The objects are unchanged.</p>
+</section>
+<section id="why-mobilityresult-and-structuralanalysis-are-going-away">
+<h3>Why <code class="docutils literal notranslate"><span class="pre">MobilityResult</span></code> and <code class="docutils literal notranslate"><span class="pre">StructuralAnalysis</span></code> are going away<a class="headerlink" href="#why-mobilityresult-and-structuralanalysis-are-going-away" title="Link to this heading"></a></h3>
+<p>They were exported from <code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code> with no function anywhere in the
+package that produced them. The mobility analysis that exists is
+<code class="docutils literal notranslate"><span class="pre">pylinkage.topology.compute_mobility()</span></code>, which returns a <code class="docutils literal notranslate"><span class="pre">MobilityInfo</span></code>.</p>
+</section>
+<section id="why-the-dyad-names-are-going-away">
+<h3>Why the <code class="docutils literal notranslate"><span class="pre">Dyad</span></code> names are going away<a class="headerlink" href="#why-the-dyad-names-are-going-away" title="Link to this heading"></a></h3>
+<p>Three unrelated classes were reachable as <code class="docutils literal notranslate"><span class="pre">Dyad</span></code>, and only two of them were
+dyads at all:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.Dyad</span></code> — an Assur group. A genuine dyad, and <strong>unaffected</strong>;
+it keeps its name.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.Dyad</span></code> — a Burmester dyad: a circle point paired with a
+center point. Also a genuine dyad, but a specific kind, now named
+<code class="docutils literal notranslate"><span class="pre">BurmesterDyad</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage.components.Dyad</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Dyad</span></code> — plain aliases of
+<code class="docutils literal notranslate"><span class="pre">Component</span></code>. Never dyads. A <code class="docutils literal notranslate"><span class="pre">Ground</span></code> point is a <code class="docutils literal notranslate"><span class="pre">Component</span></code>, and calling it a
+dyad is simply wrong.</p></li>
+</ul>
+<p>The practical cost was that documentation cross-references could not tell the
+three apart, so a link on one class would take you to another. Since
+<code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code> annotated its anchor parameters with the alias, the anchor
+type on every <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">PPDyad</span></code> and <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code> pointed at a class
+the code never referred to.</p>
+</section>
+<section id="why-n-orientation-samples-is-going-away">
+<h3>Why <code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> is going away<a class="headerlink" href="#why-n-orientation-samples-is-going-away" title="Link to this heading"></a></h3>
+<p>It never denoted a number of samples. The value was folded into a per-axis grid
+resolution through <code class="docutils literal notranslate"><span class="pre">max(6,</span> <span class="pre">round(n_samples</span> <span class="pre">**</span> <span class="pre">(1</span> <span class="pre">/</span> <span class="pre">free)))</span></code>, so the floor
+swallowed it: with four precision points, every value from 6 to 216 produced the
+same search. Measured on the README’s points, <code class="docutils literal notranslate"><span class="pre">6</span></code>, <code class="docutils literal notranslate"><span class="pre">12</span></code>, <code class="docutils literal notranslate"><span class="pre">36</span></code> and <code class="docutils literal notranslate"><span class="pre">72</span></code> all took
+the same time and returned the same ten solutions.</p>
+<p><code class="docutils literal notranslate"><span class="pre">orientation_resolution</span></code> is that per-axis number directly, so the cost model is
+readable: the grid holds <code class="docutils literal notranslate"><span class="pre">orientation_resolution</span> <span class="pre">**</span> <span class="pre">(n_points</span> <span class="pre">-</span> <span class="pre">1)</span></code> candidates.
+The default of 6 reproduces exactly what the old default did, and a value passed
+to <code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> is translated through the old formula, so neither
+changes any result.</p>
+<p>Lowering the resolution is rarely a good trade. A coarser grid tends to return
+<em>no</em> solutions rather than fewer – on three of six test point sets, shrinking it
+took the result from ten solutions to zero. Use <code class="docutils literal notranslate"><span class="pre">max_solutions</span></code> to control cost;
+that one is monotone.</p>
+</section>
+<section id="migrating">
+<h3>Migrating<a class="headerlink" href="#migrating" title="Link to this heading"></a></h3>
+<p>Renaming the import is the whole change — the objects are unchanged, and the
+aliases still point at exactly what they always did:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dyad</span><span class="p">,</span> <span class="n">ConnectedDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dyad</span>
+
+<span class="c1"># After</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">ConnectedComponent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">BurmesterDyad</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span><span class="p">,</span> <span class="n">Crank</span><span class="p">,</span> <span class="n">RRRDyad</span><span class="p">,</span> <span class="n">Linkage</span>
+
+<span class="c1"># After -- one home per name, or the top-level shortcut</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span><span class="p">,</span> <span class="n">Crank</span><span class="p">,</span> <span class="n">RRRDyad</span><span class="p">,</span> <span class="n">Linkage</span>  <span class="c1"># equivalent</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ensemble</span>
+
+<span class="c1"># After</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.population</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ensemble</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before</span>
+<span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">n_orientation_samples</span><span class="o">=</span><span class="mi">36</span><span class="p">)</span>
+
+<span class="c1"># After -- same search, and the cost model is now visible</span>
+<span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">orientation_resolution</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">isinstance</span></code> checks keep working through the transition, because the deprecated
+name and its replacement are the same object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage.dyads</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pylinkage</span><span class="o">.</span><span class="n">dyads</span><span class="o">.</span><span class="n">Dyad</span> <span class="ow">is</span> <span class="n">Component</span>   <span class="c1"># emits DeprecationWarning</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="benchmarks.html" class="btn btn-neutral float-left" title="Benchmarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

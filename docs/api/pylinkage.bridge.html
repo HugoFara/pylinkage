@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylinkage.bridge package &mdash; pylinkage 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage.cam package" href="pylinkage.cam.html" />
+    <link rel="prev" title="pylinkage.assur package" href="pylinkage.assur.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html">pylinkage.actuators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html">pylinkage.assur package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pylinkage.bridge package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html">pylinkage.cam package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html">pylinkage.components package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html">pylinkage.dyads package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html">pylinkage.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html">pylinkage.hypergraph package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html">pylinkage.mechanism package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.population.html">pylinkage.population package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html">pylinkage.simulation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html">pylinkage.solver package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html">pylinkage.symbolic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html">pylinkage.synthesis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html">pylinkage.topology package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.dimensions">pylinkage.dimensions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pylinkage</a></li>
+          <li class="breadcrumb-item"><a href="pylinkage.html">pylinkage package</a></li>
+      <li class="breadcrumb-item active">pylinkage.bridge package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/pylinkage.bridge.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pylinkage-bridge-package">
+<h1>pylinkage.bridge package<a class="headerlink" href="#pylinkage-bridge-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pylinkage.bridge.solver_conversion">
+<span id="pylinkage-bridge-solver-conversion-module"></span><h2>pylinkage.bridge.solver_conversion module<a class="headerlink" href="#module-pylinkage.bridge.solver_conversion" title="Link to this heading"></a></h2>
+<p>Conversion between Linkage objects and SolverData arrays.</p>
+<p>This module provides the bridge between the user-friendly Linkage/Component
+API and the numba-optimized numeric arrays used by the solver.</p>
+<p>This bridge module exists to keep the solver module pure (only numpy/numba
+dependencies) while allowing conversion from Python objects when needed.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.bridge.solver_conversion.linkage_to_solver_data">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.solver_conversion.</span></span><span class="sig-name descname"><span class="pre">linkage_to_solver_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></span><a class="headerlink" href="#pylinkage.bridge.solver_conversion.linkage_to_solver_data" title="Link to this definition"></a></dt>
+<dd><p>Convert a Linkage object to numba-compatible SolverData.</p>
+<p>Extracts all joint positions, constraints, and topology into
+contiguous numpy arrays for efficient numba processing.</p>
+<p>Works with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code> (component/actuator/dyad API)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mechanism.Mechanism</span></code> (Links + Joints model — dispatched separately)</p></li>
+<li><p>any container with a <code class="docutils literal notranslate"><span class="pre">.joints</span></code> or <code class="docutils literal notranslate"><span class="pre">.components</span></code> attribute that
+can be classified through <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage._compat</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>linkage</strong> – The linkage to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SolverData containing all numeric arrays needed for simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.bridge.solver_conversion.solver_data_to_linkage">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.solver_conversion.</span></span><span class="sig-name descname"><span class="pre">solver_data_to_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.bridge.solver_conversion.solver_data_to_linkage" title="Link to this definition"></a></dt>
+<dd><p>Update linkage joint positions and velocities from solver data.</p>
+<p>Synchronizes the numeric positions and velocities back to the
+Component objects after simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData containing updated positions and optionally velocities.</p></li>
+<li><p><strong>linkage</strong> – Linkage to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.bridge.solver_conversion.update_solver_constraints">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.solver_conversion.</span></span><span class="sig-name descname"><span class="pre">update_solver_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.bridge.solver_conversion.update_solver_constraints" title="Link to this definition"></a></dt>
+<dd><p>Update solver constraints from linkage.</p>
+<p>Call after modifying joint constraints via <code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code> to keep
+the solver data in sync.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData to update.</p></li>
+<li><p><strong>linkage</strong> – Linkage containing updated constraints.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.bridge.solver_conversion.update_solver_positions">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.solver_conversion.</span></span><span class="sig-name descname"><span class="pre">update_solver_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.bridge.solver_conversion.update_solver_positions" title="Link to this definition"></a></dt>
+<dd><p>Update solver positions from linkage.</p>
+<p>Call after modifying joint positions via <code class="docutils literal notranslate"><span class="pre">set_coord()</span></code> to keep the
+solver data in sync.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData to update.</p></li>
+<li><p><strong>linkage</strong> – Linkage containing updated positions.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<p>Bridge module for converting between high-level and low-level representations.</p>
+<p>This module provides conversion functions that bridge:
+- Linkage (Python objects) ↔ SolverData (numpy arrays)</p>
+<p>The bridge module sits at a higher abstraction level than both the solver
+(which is pure numerics) and the linkage module (which is the user API).
+This separation keeps the solver free of Python object dependencies for
+maximum performance.</p>
+<dl>
+<dt>Typical usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.bridge</span><span class="w"> </span><span class="kn">import</span> <span class="n">linkage_to_solver_data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">simulate</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span> <span class="o">=</span> <span class="n">create_my_linkage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">linkage_to_solver_data</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">constraints</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">joint_types</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">.</span><span class="n">parent_indices</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">constraint_offsets</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">data</span><span class="o">.</span><span class="n">solve_order</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.</span></span><span class="sig-name descname"><span class="pre">linkage_to_solver_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></span></dt>
+<dd><p>Convert a Linkage object to numba-compatible SolverData.</p>
+<p>Extracts all joint positions, constraints, and topology into
+contiguous numpy arrays for efficient numba processing.</p>
+<p>Works with:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code> (component/actuator/dyad API)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mechanism.Mechanism</span></code> (Links + Joints model — dispatched separately)</p></li>
+<li><p>any container with a <code class="docutils literal notranslate"><span class="pre">.joints</span></code> or <code class="docutils literal notranslate"><span class="pre">.components</span></code> attribute that
+can be classified through <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage._compat</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>linkage</strong> – The linkage to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SolverData containing all numeric arrays needed for simulation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.</span></span><span class="sig-name descname"><span class="pre">solver_data_to_linkage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Update linkage joint positions and velocities from solver data.</p>
+<p>Synchronizes the numeric positions and velocities back to the
+Component objects after simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData containing updated positions and optionally velocities.</p></li>
+<li><p><strong>linkage</strong> – Linkage to update.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.</span></span><span class="sig-name descname"><span class="pre">update_solver_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Update solver constraints from linkage.</p>
+<p>Call after modifying joint constraints via <code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code> to keep
+the solver data in sync.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData to update.</p></li>
+<li><p><strong>linkage</strong> – Linkage containing updated constraints.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.bridge.</span></span><span class="sig-name descname"><span class="pre">update_solver_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.solver.html#pylinkage.solver.types.SolverData" title="pylinkage.solver.types.SolverData"><span class="pre">SolverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linkage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Update solver positions from linkage.</p>
+<p>Call after modifying joint positions via <code class="docutils literal notranslate"><span class="pre">set_coord()</span></code> to keep the
+solver data in sync.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – SolverData to update.</p></li>
+<li><p><strong>linkage</strong> – Linkage containing updated positions.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pylinkage.assur.html" class="btn btn-neutral float-left" title="pylinkage.assur package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pylinkage.cam.html" class="btn btn-neutral float-right" title="pylinkage.cam package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

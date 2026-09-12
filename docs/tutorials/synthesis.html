@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Linkage Synthesis &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Linkage Synthesis &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
@@ -47,6 +47,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -70,7 +72,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="symbolic.html">Symbolic Computation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="graph_representation.html">Graph-Based Linkage Representation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_joints.html">Custom Components</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
@@ -161,7 +163,7 @@ specific path:</p>
 <span class="c1"># Find linkages that achieve this path</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">precision_points</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> candidate solutions&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> candidate solutions&quot;</span><span class="p">)</span>
 
 <span class="c1"># Visualize the first solution</span>
 <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
@@ -170,11 +172,44 @@ specific path:</p>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 4 candidate solutions
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 10 candidate solutions
 </pre></div>
 </div>
 <p>The synthesis returns multiple candidate linkages because the mathematical
-problem typically has several solutions.</p>
+problem typically has several solutions; <code class="docutils literal notranslate"><span class="pre">max_solutions</span></code> (default 10)
+caps how many are kept.</p>
+<section id="animating-a-solution">
+<h3>Animating a Solution<a class="headerlink" href="#animating-a-solution" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">result.solutions</span></code> holds ready-to-simulate <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> objects, but by
+default synthesis keeps every Grashof linkage, including double-rockers whose
+crank cannot turn fully. <code class="docutils literal notranslate"><span class="pre">show_linkage</span></code> drives the crank through a full
+turn and stops at the first position that cannot be assembled. Ask for
+crank-rockers only (<code class="docutils literal notranslate"><span class="pre">require_crank_rocker=True</span></code>), or let the crank sweep
+just its reachable range:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">crank_angle_limits</span><span class="p">,</span> <span class="n">solution_to_linkage</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Animate one solution, oscillating the crank when it cannot turn fully.&quot;&quot;&quot;</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_solutions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">limits</span> <span class="o">=</span> <span class="n">crank_angle_limits</span><span class="p">(</span>
+        <span class="n">raw</span><span class="o">.</span><span class="n">crank_length</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">coupler_length</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">rocker_length</span><span class="p">,</span> <span class="n">raw</span><span class="o">.</span><span class="n">ground_length</span>
+    <span class="p">)</span>
+    <span class="n">linkage</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">limits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">limits</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;crank oscillates between </span><span class="si">{</span><span class="n">lo</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">hi</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> deg&quot;</span><span class="p">)</span>
+        <span class="n">linkage</span> <span class="o">=</span> <span class="n">solution_to_linkage</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">_replace</span><span class="p">(</span><span class="n">arc_limits</span><span class="o">=</span><span class="n">limits</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">linkage</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+
+
+<span class="n">show</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">arc_limits</span></code> set, <code class="docutils literal notranslate"><span class="pre">solution_to_linkage</span></code> builds the linkage around an
+<code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code> instead of a <code class="docutils literal notranslate"><span class="pre">Crank</span></code>. The rest of this tutorial uses <code class="docutils literal notranslate"><span class="pre">show()</span></code>.</p>
+</section>
 </section>
 <section id="function-generation">
 <h2>Function Generation<a class="headerlink" href="#function-generation" title="Link to this heading"></a></h2>
@@ -200,18 +235,19 @@ thus determine the link ratios.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_generation</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 
-<span class="c1"># Define input/output angle pairs (phi, psi) in radians</span>
+<span class="c1"># Define input/output angle pairs (phi, psi) in radians, measured from</span>
+<span class="c1"># the ground line. The rocker is to turn half as fast as the crank.</span>
 <span class="n">angle_pairs</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>                    <span class="c1"># Position 1</span>
-    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">6</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">),</span>    <span class="c1"># Position 2: 30° -&gt; 45°</span>
-    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>    <span class="c1"># Position 3: 60° -&gt; 90°</span>
+    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">100</span><span class="p">)),</span>   <span class="c1"># Position 1</span>
+    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">120</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">115</span><span class="p">)),</span>  <span class="c1"># Position 2</span>
+    <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">150</span><span class="p">),</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">130</span><span class="p">)),</span>  <span class="c1"># Position 3</span>
 <span class="p">]</span>
 
-<span class="c1"># Synthesize the linkage</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">function_generation</span><span class="p">(</span><span class="n">angle_pairs</span><span class="p">)</span>
+<span class="c1"># Synthesize the linkage; lengths are relative to the ground link</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">function_generation</span><span class="p">(</span><span class="n">angle_pairs</span><span class="p">,</span> <span class="n">ground_length</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sol</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">raw_solutions</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solution </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Crank length (L1):   </span><span class="si">{</span><span class="n">sol</span><span class="o">.</span><span class="n">crank_length</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -221,7 +257,7 @@ thus determine the link ratios.</p>
 
     <span class="c1"># Visualize the first solution</span>
     <span class="n">linkage</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+    <span class="n">show</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No valid solutions found&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
@@ -232,12 +268,17 @@ thus determine the link ratios.</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 1 solutions
 
 Solution 1:
-  Crank length (L1):   1.0000
-  Coupler length (L2): 2.4142
-  Rocker length (L3):  1.7321
+  Crank length (L1):   1.1694
+  Coupler length (L2): 1.9345
+  Rocker length (L3):  2.2873
   Ground length (L4):  2.0000
 </pre></div>
 </div>
+<p>Three angle pairs determine the three Freudenstein coefficients exactly, so
+there is one solution up to scale. Not every set of pairs corresponds to a
+real four-bar: when the fit yields a negative link length the result is
+empty and <code class="docutils literal notranslate"><span class="pre">result.warnings</span></code> says so. Pairs starting near 0 degrees are the
+usual culprit.</p>
 <figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/synthesis_function_generation.png"><img alt="Function generation" src="../_images/synthesis_function_generation.png" style="width: 800px;" />
 </a>
@@ -253,16 +294,12 @@ the right plot shows the input-output angle relationship.</span><a class="header
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">verify_function_generation</span>
 
 <span class="c1"># Check if synthesized linkage achieves the angle pairs</span>
-<span class="n">errors</span> <span class="o">=</span> <span class="n">verify_function_generation</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">angle_pairs</span><span class="p">)</span>
+<span class="n">is_valid</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">verify_function_generation</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">angle_pairs</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Verification results:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">angle_pairs</span><span class="p">],</span>
-    <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">angle_pairs</span><span class="p">],</span>
-    <span class="n">errors</span>
-<span class="p">)):</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Verification </span><span class="si">{</span><span class="s1">&#39;passed&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">is_valid</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;failed&#39;</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">((</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">),</span> <span class="n">error</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">angle_pairs</span><span class="p">,</span> <span class="n">errors</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Point </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: phi=</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°, &quot;</span>
-          <span class="sa">f</span><span class="s2">&quot;psi=</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°, error=</span><span class="si">{</span><span class="n">error</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+          <span class="sa">f</span><span class="s2">&quot;psi=</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">°, error=</span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -292,53 +329,50 @@ of dyads (ground-coupler connections), we can construct four-bar linkages.</p>
     <span class="p">(</span><span class="mf">5.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">max_solutions</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warnings: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Examine each solution</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">linkage</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_solutions</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solution </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
-    <span class="c1"># Show the linkage dimensions</span>
-    <span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+    <span class="c1"># Link lengths from the raw solution</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Crank </span><span class="si">{</span><span class="n">raw</span><span class="o">.</span><span class="n">crank_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, coupler </span><span class="si">{</span><span class="n">raw</span><span class="o">.</span><span class="n">coupler_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;rocker </span><span class="si">{</span><span class="n">raw</span><span class="o">.</span><span class="n">rocker_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, ground </span><span class="si">{</span><span class="n">raw</span><span class="o">.</span><span class="n">ground_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># The Linkage&#39;s own constraints: crank radius, the two RRRDyad</span>
+    <span class="c1"># distances, then the coupler point&#39;s distance and angle</span>
+    <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()]</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Constraints: </span><span class="si">{</span><span class="n">constraints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Verify the path</span>
-    <span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
-    <span class="n">coupler_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Path traces </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coupler_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Example result (may vary):</strong></p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 3 solutions
-Warnings: []
+Warnings: [&#39;299 candidate(s) rejected: coupler point did not pass through all precision points (assembly-mode mismatch).&#39;]
 
 Solution 1:
-  Constraints: [0.314, 1.5, 2.8, 1.2]
-  Path traces 20 points
+  Crank 3.843, coupler 4.560, rocker 1.799, ground 0.770
+  Constraints: [3.843, 4.56, 1.799, 1.02, -0.342]
 </pre></div>
 </div>
+<p>The last component of every path-generation linkage is a <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>
+named <code class="docutils literal notranslate"><span class="pre">P</span></code>: the coupler point that traces the path. Its locus is
+<code class="docutils literal notranslate"><span class="pre">[step[-1]</span> <span class="pre">for</span> <span class="pre">step</span> <span class="pre">in</span> <span class="pre">linkage.step()]</span></code>.</p>
 </section>
 <section id="path-generation-with-timing">
 <h3>Path Generation with Timing<a class="headerlink" href="#path-generation-with-timing" title="Link to this heading"></a></h3>
 <p>Sometimes you need the coupler to reach each point at a specific crank angle.
 Use <code class="docutils literal notranslate"><span class="pre">path_generation_with_timing</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">path_generation_with_timing</span><span class="p">,</span> <span class="n">PrecisionPoint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">path_generation_with_timing</span>
 
-<span class="c1"># Define points with associated crank angles</span>
-<span class="n">precision_points</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">PrecisionPoint</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
-    <span class="n">PrecisionPoint</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="n">PrecisionPoint</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">4.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">),</span>
-    <span class="n">PrecisionPoint</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mi">3</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
-<span class="p">]</span>
+<span class="c1"># The same points, each with the crank angle at which to reach it</span>
+<span class="n">crank_angles</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation_with_timing</span><span class="p">(</span><span class="n">precision_points</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation_with_timing</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">crank_angles</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> timed solutions&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> timed solutions&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -360,42 +394,47 @@ fixed pivots on the ground.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">motion_generation</span><span class="p">,</span> <span class="n">Pose</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 
-<span class="c1"># Define poses: (x, y, orientation_angle)</span>
+<span class="c1"># Define poses: (x, y, orientation angle in radians)</span>
 <span class="n">poses</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
-    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.3</span><span class="p">),</span>
-    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="mf">0.6</span><span class="p">),</span>
+    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">),</span>
+    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.3</span><span class="p">),</span>
+    <span class="n">Pose</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.6</span><span class="p">),</span>
 <span class="p">]</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">motion_generation</span><span class="p">(</span><span class="n">poses</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
     <span class="n">linkage</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Linkage configuration:&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: (</span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">component</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: (</span><span class="si">{</span><span class="n">component</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">component</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-    <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+    <span class="n">show</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 2 solutions
+<p><strong>Example output (the solution curve is sampled, so values vary):</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 10 solutions
 
 Linkage configuration:
-  Crank: (0.00, 1.00)
-  Output: (2.50, 0.75)
+  A: (2.77, -0.73)
+  D: (2.52, -0.17)
+  B: (0.91, -0.00)
+  C: (0.86, 0.31)
+  P: (0.00, -0.00)
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">D</span></code> are the ground pivots, <code class="docutils literal notranslate"><span class="pre">B</span></code> the crank pin, <code class="docutils literal notranslate"><span class="pre">C</span></code> the
+coupler-rocker pin and <code class="docutils literal notranslate"><span class="pre">P</span></code> the guided body’s reference point, which sits
+on the first pose.</p>
 </section>
 <section id="four-pose-and-five-pose-synthesis">
 <h3>Four-Pose and Five-Pose Synthesis<a class="headerlink" href="#four-pose-and-five-pose-synthesis" title="Link to this heading"></a></h3>
 <p>With more poses, the problem becomes over-constrained, requiring least-squares
 or iterative methods:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">motion_generation_3_poses</span><span class="p">,</span> <span class="n">Pose</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">motion_generation</span><span class="p">,</span> <span class="n">Pose</span>
 
-<span class="c1"># For 4+ poses, use the iterative solver</span>
 <span class="n">poses</span> <span class="o">=</span> <span class="p">[</span>
     <span class="n">Pose</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
     <span class="n">Pose</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
@@ -403,12 +442,16 @@ or iterative methods:</p>
     <span class="n">Pose</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="c1"># motion_generation handles this internally</span>
+<span class="c1"># With four poses the circle points reduce to Burmester&#39;s curve, with</span>
+<span class="c1"># five to at most four Burmester points; motion_generation handles both.</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">motion_generation</span><span class="p">(</span><span class="n">poses</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2"> approximate solutions&quot;</span><span class="p">)</span>
-    <span class="c1"># Solutions may not pass exactly through all poses</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2"> solutions&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No solution; five poses in particular are often unreachable&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">warning</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -421,15 +464,22 @@ or iterative methods:</p>
 <span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
 <span class="c1"># Check if solutions were found</span>
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solutions found!&quot;</span><span class="p">)</span>
 
 <span class="c1"># Number of solutions</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Count: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Iterate over linkages</span>
-<span class="k">for</span> <span class="n">linkage</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">linkage</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># Or take them as an Ensemble: batch simulation, ranking by link</span>
+<span class="c1"># lengths, filtering, and visualization in one object</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">ensemble</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ensemble</span><span class="o">.</span><span class="n">n_members</span><span class="si">}</span><span class="s2"> members, scores </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">scores</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">shortest_crank</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="s2">&quot;crank_length&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shortest crank: </span><span class="si">{</span><span class="n">shortest_crank</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="s1">&#39;crank_length&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Access the underlying solutions with full parameters</span>
 <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">raw_solutions</span><span class="p">:</span>
@@ -461,7 +511,7 @@ or iterative methods:</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">grashof_check</span><span class="p">,</span> <span class="n">is_crank_rocker</span>
 
 <span class="n">grashof</span> <span class="o">=</span> <span class="n">grashof_check</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grashof type: </span><span class="si">{</span><span class="n">grashof</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grashof type: </span><span class="si">{</span><span class="n">grashof</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">is_crank_rocker</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is a crank-rocker mechanism&quot;</span><span class="p">)</span>
@@ -470,7 +520,7 @@ or iterative methods:</p>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Grashof type: GrashofType.CRANK_ROCKER
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Grashof type: GRASHOF_CRANK_ROCKER
 This is a crank-rocker mechanism
 </pre></div>
 </div>
@@ -497,12 +547,14 @@ crank-rocker, double-crank, double-rocker, and non-Grashof.</span><a class="head
 <span class="c1"># Get specific type</span>
 <span class="n">grashof_type</span> <span class="o">=</span> <span class="n">grashof_check</span><span class="p">(</span><span class="n">L1</span><span class="p">,</span> <span class="n">L2</span><span class="p">,</span> <span class="n">L3</span><span class="p">,</span> <span class="n">L4</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">CRANK_ROCKER</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">GRASHOF_CRANK_ROCKER</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Crank makes full rotations, rocker oscillates&quot;</span><span class="p">)</span>
-<span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">DOUBLE_CRANK</span><span class="p">:</span>
+<span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">GRASHOF_DOUBLE_CRANK</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both crank and rocker make full rotations&quot;</span><span class="p">)</span>
-<span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">DOUBLE_ROCKER</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both crank and rocker oscillate&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">GRASHOF_ROCKER_CRANK</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rocker makes full rotations, crank oscillates&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">GRASHOF_DOUBLE_ROCKER</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Coupler makes full rotations, crank and rocker oscillate&quot;</span><span class="p">)</span>
 <span class="k">elif</span> <span class="n">grashof_type</span> <span class="o">==</span> <span class="n">GrashofType</span><span class="o">.</span><span class="n">CHANGE_POINT</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Change-point mechanism (special case)&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
@@ -527,16 +579,20 @@ computations:</p>
     <span class="n">Pose</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="c1"># Compute relative rotation poles between poses</span>
+<span class="c1"># Compute relative rotation poles between poses, as complex numbers</span>
 <span class="n">poles</span> <span class="o">=</span> <span class="n">compute_all_poles</span><span class="p">(</span><span class="n">poses</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Poles: </span><span class="si">{</span><span class="n">poles</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Compute the circle-point curve (locus of valid attachment points)</span>
-<span class="n">curve</span> <span class="o">=</span> <span class="n">compute_circle_point_curve</span><span class="p">(</span><span class="n">poses</span><span class="p">)</span>
+<span class="c1"># Compute the circle-point and center-point curves (loci of valid</span>
+<span class="c1"># attachment points on the body and on the ground)</span>
+<span class="n">curves</span> <span class="o">=</span> <span class="n">compute_circle_point_curve</span><span class="p">(</span><span class="n">poses</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">curves</span><span class="o">.</span><span class="n">circle_curve</span><span class="p">)</span><span class="si">}</span><span class="s2"> sampled circle points&quot;</span><span class="p">)</span>
 
 <span class="c1"># Select compatible dyad pairs to form a complete 4-bar</span>
-<span class="n">dyads</span> <span class="o">=</span> <span class="n">select_compatible_dyads</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span> <span class="n">poses</span><span class="p">)</span>
+<span class="n">dyads</span> <span class="o">=</span> <span class="n">select_compatible_dyads</span><span class="p">(</span><span class="n">curves</span><span class="p">,</span> <span class="n">max_pairs</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dyads</span><span class="p">)</span><span class="si">}</span><span class="s2"> compatible dyad pairs&quot;</span><span class="p">)</span>
+<span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">dyads</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First pair: link lengths </span><span class="si">{</span><span class="n">left</span><span class="o">.</span><span class="n">link_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">right</span><span class="o">.</span><span class="n">link_length</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -564,7 +620,7 @@ point, then use PSO to fine-tune for additional objectives.</p>
 <span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)]</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
     <span class="n">linkage</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># Step 2: Fine-tune with PSO for additional objectives</span>
@@ -584,15 +640,22 @@ point, then use PSO to fine-tune for additional objectives.</p>
 
         <span class="k">return</span> <span class="n">point_error</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">size</span>
 
-    <span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+    <span class="c1"># Search close to the synthesized design</span>
+    <span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span>
+        <span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">(),</span> <span class="n">min_ratio</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">max_factor</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">optimized</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
         <span class="n">eval_func</span><span class="o">=</span><span class="n">combined_fitness</span><span class="p">,</span>
         <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+        <span class="n">n_particles</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">optimized</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fine-tuned score: </span><span class="si">{</span><span class="n">optimized</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">optimized</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

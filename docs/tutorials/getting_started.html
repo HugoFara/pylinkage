@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Getting Started &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -46,6 +46,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -124,110 +126,135 @@ building and simulating your first linkage mechanism.</p>
 </section>
 <section id="core-concepts">
 <h2>Core Concepts<a class="headerlink" href="#core-concepts" title="Link to this heading"></a></h2>
-<p>Pylinkage models planar linkage mechanisms using three main components:</p>
+<p>Pylinkage models planar linkage mechanisms with three kinds of objects from
+the <code class="docutils literal notranslate"><span class="pre">components</span></code> / <code class="docutils literal notranslate"><span class="pre">actuators</span></code> / <code class="docutils literal notranslate"><span class="pre">dyads</span></code> packages, plus a thin
+container. This is the recommended way to define a mechanism; the other
+representations (<code class="docutils literal notranslate"><span class="pre">mechanism</span></code>, <code class="docutils literal notranslate"><span class="pre">hypergraph</span></code>, <code class="docutils literal notranslate"><span class="pre">assur</span></code>) are covered in
+later tutorials and convert to and from this one.</p>
 <ol class="arabic simple">
-<li><p><strong>Joints</strong>: Points that connect linkage members (bars). Different joint types
-define different motion constraints.</p></li>
-<li><p><strong>Linkage</strong>: A collection of joints that form a complete mechanism.</p></li>
-<li><p><strong>Simulation</strong>: The process of computing joint positions as the mechanism moves.</p></li>
+<li><p><strong>Components</strong>: building blocks of the mechanism (<code class="docutils literal notranslate"><span class="pre">Ground</span></code> anchors,
+<code class="docutils literal notranslate"><span class="pre">Crank</span></code> / <code class="docutils literal notranslate"><span class="pre">LinearActuator</span></code> drivers, and dyads such as <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>).</p></li>
+<li><p><strong>Linkage</strong>: a <code class="xref py py-class docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code> that orders those
+components and advances them through a motion cycle.</p></li>
+<li><p><strong>Simulation</strong>: either the <code class="docutils literal notranslate"><span class="pre">linkage.step()</span></code> generator or the
+numba-accelerated <code class="docutils literal notranslate"><span class="pre">linkage.step_fast()</span></code> / <code class="docutils literal notranslate"><span class="pre">step_fast_with_kinematics()</span></code>.</p></li>
 </ol>
-<section id="joint-types">
-<h3>Joint Types<a class="headerlink" href="#joint-types" title="Link to this heading"></a></h3>
-<p>Pylinkage provides several joint types:</p>
+<section id="component-types">
+<h3>Component Types<a class="headerlink" href="#component-types" title="Link to this heading"></a></h3>
+<p>Pylinkage provides several component types:</p>
 <ul class="simple">
-<li><p><strong>Static</strong>: A fixed point in space (used as an anchor/frame)</p></li>
-<li><p><strong>Crank</strong>: A rotating motor joint that drives the mechanism</p></li>
-<li><p><strong>Revolute</strong>: A pin joint connecting two parent joints with distance constraints</p></li>
-<li><p><strong>Fixed</strong>: A joint with fixed distance constraints to two parents</p></li>
-<li><p><strong>Linear</strong>: A joint constrained to move along a line</p></li>
+<li><p><strong>Ground</strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.components</span></code>): a fixed point in space (used as
+an anchor on the frame).</p></li>
+<li><p><strong>Crank</strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.actuators</span></code>): a rotating motor that drives the
+mechanism, given a ground anchor, a radius and an angular velocity.</p></li>
+<li><p><strong>RRRDyad</strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code>): a pin joint constrained to a pair of
+anchors via circle-circle intersection (two distances).</p></li>
+<li><p><strong>FixedDyad</strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code>): a point that sits at a fixed
+distance and angle from two anchors (rigidly attached to a link).</p></li>
+<li><p><strong>RRPDyad</strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code>): a slider — a pin joint whose
+position is constrained by a line through two anchors.</p></li>
 </ul>
 </section>
 </section>
 <section id="your-first-linkage-four-bar-mechanism">
 <h2>Your First Linkage: Four-Bar Mechanism<a class="headerlink" href="#your-first-linkage-four-bar-mechanism" title="Link to this heading"></a></h2>
-<p>A four-bar linkage is the simplest closed-loop mechanism. Let’s build one step by step.</p>
-<section id="step-1-import-pylinkage">
-<h3>Step 1: Import pylinkage<a class="headerlink" href="#step-1-import-pylinkage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<p>A four-bar linkage is the simplest closed-loop mechanism. Let’s build one
+step by step.</p>
+<section id="step-1-import-the-building-blocks">
+<h3>Step 1: Import the building blocks<a class="headerlink" href="#step-1-import-the-building-blocks" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 </pre></div>
 </div>
 </section>
-<section id="step-2-define-the-joints">
-<h3>Step 2: Define the Joints<a class="headerlink" href="#step-2-define-the-joints" title="Link to this heading"></a></h3>
-<p>We need a crank (motor) and a revolute joint to close the loop:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the crank (motor) joint</span>
-<span class="c1"># - Fixed at origin (0, 0)</span>
-<span class="c1"># - Rotates with radius 1</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                    <span class="c1"># Initial position</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>               <span class="c1"># Anchor point (fixed in space)</span>
-    <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>                  <span class="c1"># Initial angle (radians)</span>
-    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                  <span class="c1"># Crank arm length</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<section id="step-2-define-the-components">
+<h3>Step 2: Define the components<a class="headerlink" href="#step-2-define-the-components" title="Link to this heading"></a></h3>
+<p>We need two ground anchors, a crank (motor), and an RRR dyad that closes
+the loop:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+
+<span class="c1"># Ground anchors — two fixed points on the frame.</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+
+<span class="c1"># Crank — rotates about A with radius 1, one step = 0.31 rad.</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
+    <span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Create the revolute joint (closes the loop)</span>
-<span class="c1"># - Connects to the crank and a fixed point</span>
-<span class="c1"># - Constrained by two distances</span>
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>                    <span class="c1"># Initial position</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>                <span class="c1"># First parent: the crank</span>
-    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>               <span class="c1"># Second parent: fixed point</span>
-    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>                 <span class="c1"># Distance from crank</span>
-    <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                 <span class="c1"># Distance from fixed point</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+<span class="c1"># Coupler-rocker pin joint — closes the loop between the crank tip</span>
+<span class="c1"># and the ground anchor D.</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>   <span class="c1"># tip of the crank</span>
+    <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>          <span class="c1"># coupler length (B → C)</span>
+    <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>          <span class="c1"># rocker length  (C → D)</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="step-3-create-the-linkage">
-<h3>Step 3: Create the Linkage<a class="headerlink" href="#step-3-create-the-linkage" title="Link to this heading"></a></h3>
-<p>Wrap the joints in a <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
-    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>         <span class="c1"># All joints in the mechanism</span>
-    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>          <span class="c1"># Order to solve (crank first, then pin)</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span>
+<h3>Step 3: Create the linkage<a class="headerlink" href="#step-3-create-the-linkage" title="Link to this heading"></a></h3>
+<p>Wrap the components in a <code class="xref py py-class docutils literal notranslate"><span class="pre">Linkage</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="step-4-simulate-the-motion">
-<h3>Step 4: Simulate the Motion<a class="headerlink" href="#step-4-simulate-the-motion" title="Link to this heading"></a></h3>
-<p>Run a simulation to see the mechanism move through a complete cycle:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simulate one complete revolution</span>
-<span class="c1"># Returns positions of all joints at each step</span>
+<h3>Step 4: Simulate the motion<a class="headerlink" href="#step-4-simulate-the-motion" title="Link to this heading"></a></h3>
+<p>Run the generator through one full revolution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ``linkage.step()`` yields the positions of every component at each step.</span>
 <span class="n">loci</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 
-<span class="c1"># Each element in loci is a tuple of joint positions</span>
-<span class="c1"># loci[0] = ((crank_x, crank_y), (pin_x, pin_y)) at step 0</span>
+<span class="c1"># loci[i] is a tuple of (x, y) coordinates in the component order.</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulation steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final crank position: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final output position: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final crank tip: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final output point: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>For a numba-accelerated simulation that returns a contiguous numpy array,
+call <code class="docutils literal notranslate"><span class="pre">linkage.step_fast()</span></code> instead — same result, one to two orders of
+magnitude faster for large iteration counts.</p>
 </section>
 <section id="step-5-visualize-the-linkage">
-<h3>Step 5: Visualize the Linkage<a class="headerlink" href="#step-5-visualize-the-linkage" title="Link to this heading"></a></h3>
-<p>Use the built-in visualizer to see the mechanism in action:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show an animated visualization</span>
+<h3>Step 5: Visualize the linkage<a class="headerlink" href="#step-5-visualize-the-linkage" title="Link to this heading"></a></h3>
+<p>Use the built-in visualizer to watch the mechanism move:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This opens a matplotlib window showing the linkage animating through its motion cycle.</p>
+<p>This opens a matplotlib window with the linkage animating through its motion
+cycle.</p>
 <figure class="align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/fourbar_static.png"><img alt="Four-bar linkage with joint paths" src="../_images/fourbar_static.png" style="width: 600px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">A four-bar linkage showing the paths traced by each joint during simulation.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-text">A four-bar linkage showing the paths traced by each joint during
+simulation.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>To see multiple positions of the linkage overlaid, you can run the simulation
-and plot at different crank angles:</p>
+<p>To see multiple positions of the linkage overlaid, you can run the
+simulation and plot at different crank angles:</p>
 <figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="../_images/fourbar_multiposition.png"><img alt="Four-bar linkage at multiple positions" src="../_images/fourbar_multiposition.png" style="width: 600px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">The same four-bar shown at 8 different positions throughout its motion cycle.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-text">The same four-bar shown at 8 different positions throughout its motion
+cycle.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -236,31 +263,25 @@ and plot at different crank angles:</p>
 <h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
 <p>Here’s the complete code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 
-<span class="c1"># Define joints</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
-    <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+<span class="c1"># Components</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">pin</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
+    <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">pin</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
-    <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
-    <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
-<span class="p">)</span>
-
-<span class="c1"># Create linkage</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
-    <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>
-    <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">),</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span>
-<span class="p">)</span>
+<span class="c1"># Linkage</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span><span class="p">)</span>
 
 <span class="c1"># Visualize</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
@@ -269,31 +290,32 @@ and plot at different crank angles:</p>
 </section>
 <section id="understanding-the-constraint-system">
 <h2>Understanding the Constraint System<a class="headerlink" href="#understanding-the-constraint-system" title="Link to this heading"></a></h2>
-<p>Each joint has constraints that define its relationship to parent joints.
-You can get and set these constraints programmatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all constraints as a flat list</span>
-<span class="n">constraints</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+<p>Each component has one or more geometric constraints (a crank radius, two
+distances on an RRR dyad, a distance and an angle on a fixed dyad, …). The
+linkage exposes them as a flat list so optimization code can treat every
+constraint uniformly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all constraints as a flat list.</span>
+<span class="n">constraints</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constraints: </span><span class="si">{</span><span class="n">constraints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="c1"># Output: [0.31, 1, 3, 1]</span>
-<span class="c1"># (crank angle, crank distance, revolute distance0, revolute distance1)</span>
+<span class="c1"># → [1.0, 3.0, 1.0]  (crank radius, d1, d2 on the RRR dyad)</span>
 
-<span class="c1"># Modify constraints</span>
-<span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Change crank angle</span>
-<span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+<span class="c1"># Modify and apply.</span>
+<span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.5</span>          <span class="c1"># Bigger crank radius</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
 
-<span class="c1"># Get joint positions</span>
+<span class="c1"># Joint positions</span>
 <span class="n">coords</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Joint positions: </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Component positions: </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="handling-errors">
 <h2>Handling Errors<a class="headerlink" href="#handling-errors" title="Link to this heading"></a></h2>
 <p>Some configurations are geometrically impossible. Pylinkage raises
-<code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code> when a linkage cannot be assembled:</p>
+<a class="reference internal" href="../api/pylinkage.html#pylinkage.exceptions.UnbuildableError" title="pylinkage.exceptions.UnbuildableError"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnbuildableError</span></code></a> when a linkage cannot be
+assembled:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="c1"># Try to step with invalid constraints</span>
-    <span class="n">invalid_linkage</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">tuple</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 <span class="k">except</span> <span class="n">pl</span><span class="o">.</span><span class="n">UnbuildableError</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Linkage cannot be built with these constraints&quot;</span><span class="p">)</span>
 </pre></div>
@@ -303,9 +325,9 @@ You can get and set these constraints programmatically:</p>
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <p>Now that you understand the basics:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Joint Creation</span></a> - Learn to create custom joint types</p></li>
-<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize linkage geometry with PSO</p></li>
-<li><p>See the <a class="reference internal" href="../examples/examples.html"><span class="doc">Example Scripts</span></a> for more complex mechanisms</p></li>
+<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Components</span></a> - Build custom component types.</p></li>
+<li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize linkage geometry with PSO.</p></li>
+<li><p>See the <a class="reference internal" href="../examples/examples.html"><span class="doc">Example Scripts</span></a> gallery for more complex mechanisms.</p></li>
 </ul>
 </section>
 </section>

@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Visualization Backends &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Visualization Backends &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -46,6 +46,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -119,13 +121,33 @@
 <h1>Visualization Backends<a class="headerlink" href="#visualization-backends" title="Link to this heading"></a></h1>
 <p>Pylinkage provides multiple visualization and export backends:</p>
 <ul class="simple">
-<li><p><strong>Matplotlib</strong>: Animations and static plots (default)</p></li>
-<li><p><strong>Plotly</strong>: Interactive HTML visualizations</p></li>
-<li><p><strong>drawsvg</strong>: Publication-quality SVG output</p></li>
+<li><p><strong>Matplotlib</strong>: Animations and static plots (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[viz]</span></code>)</p></li>
+<li><p><strong>Plotly</strong>: Interactive HTML visualizations (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[plotly]</span></code>)</p></li>
+<li><p><strong>drawsvg</strong>: Publication-quality SVG output (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[svg]</span></code>)</p></li>
 <li><p><strong>DXF</strong>: 2D CAD export for AutoCAD/CNC (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[cad]</span></code>)</p></li>
 <li><p><strong>STEP</strong>: 3D CAD interchange format (requires <code class="docutils literal notranslate"><span class="pre">pylinkage[cad]</span></code>)</p></li>
 </ul>
-<p>This tutorial covers each backend with practical examples.</p>
+<p>This tutorial covers each backend with practical examples. Every example
+draws the same four-bar linkage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+
+<span class="c1"># Every backend accepts precomputed loci; computing them once saves a</span>
+<span class="c1"># simulation per figure</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2"> frames per turn of the crank&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <figure class="align-center" id="id1">
 <a class="reference internal image-reference" href="../_images/visualization_comparison.png"><img alt="Visualization backends comparison" src="../_images/visualization_comparison.png" style="width: 800px;" />
 </a>
@@ -151,7 +173,7 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <tbody>
 <tr class="row-even"><td><p>Matplotlib</p></td>
 <td><p>Quick visualization, GIF animations</p></td>
-<td><p>PNG, GIF, PDF, interactive window</p></td>
+<td><p>PNG, GIF, MP4, interactive window</p></td>
 </tr>
 <tr class="row-odd"><td><p>Plotly</p></td>
 <td><p>Interactive exploration, web embedding</p></td>
@@ -177,112 +199,87 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <p>The default backend for quick visualization and animations.</p>
 <section id="basic-visualization">
 <h3>Basic Visualization<a class="headerlink" href="#basic-visualization" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
+<p><code class="docutils literal notranslate"><span class="pre">show_linkage</span></code> opens a window with the static diagram on the left and
+the animation on the right, keeps it up for <code class="docutils literal notranslate"><span class="pre">duration</span></code> seconds, and
+returns the <code class="docutils literal notranslate"><span class="pre">FuncAnimation</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
 
-<span class="c1"># Create a four-bar linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-
-<span class="c1"># Quick visualization (opens matplotlib window)</span>
+<span class="c1"># Quick visualization (opens a matplotlib window for 5 seconds)</span>
 <span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+
+<span class="c1"># Longer, with more frames per turn, and a title</span>
+<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="mi">720</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="static-frame-visualization">
 <h3>Static Frame Visualization<a class="headerlink" href="#static-frame-visualization" title="Link to this heading"></a></h3>
-<p>Show the linkage at a specific position:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<p><code class="docutils literal notranslate"><span class="pre">plot_static_linkage</span></code> draws on axes of your own: the mechanism at the
+first frame, the joint trajectories, optional ghost outlines through the
+cycle.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_static_linkage</span>
 
-<span class="c1"># Show without animation</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plot_static_linkage</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span>
+    <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">n_ghosts</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>                  <span class="c1"># outlines at six positions of the cycle</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Four-bar Linkage - Initial Position&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="c1"># Customize the plot</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Four-bar Linkage - Initial Position&quot;</span><span class="p">)</span>
+<span class="c1"># Customize the plot like any matplotlib axes</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;linkage_static.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<p><strong>Result</strong>: A static image showing the linkage in its initial configuration.</p>
+<p><strong>Result</strong>: A static image showing the linkage in its initial configuration,
+with ghost outlines tracing the motion.</p>
 </section>
 <section id="animated-gif-output">
 <h3>Animated GIF Output<a class="headerlink" href="#animated-gif-output" title="Link to this heading"></a></h3>
-<p>Create animated GIFs for documentation or presentations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
+<p><code class="docutils literal notranslate"><span class="pre">plot_kinematic_linkage</span></code> builds the animation on axes of your own;
+matplotlib’s writers then save it in any format they support:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_kinematic_linkage</span>
 
-<span class="c1"># Create animated GIF</span>
-<span class="n">show_linkage</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;four_bar_animation.gif&quot;</span><span class="p">,</span>
-    <span class="n">fps</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>                    <span class="c1"># Frames per second</span>
-    <span class="n">duration</span><span class="o">=</span><span class="mi">3000</span><span class="p">,</span>             <span class="c1"># Total duration in ms</span>
-    <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                 <span class="c1"># Show joint paths</span>
-<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="c1"># A static frame first, so the axes extents cover the whole motion</span>
+<span class="n">plot_static_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">show_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">animation</span> <span class="o">=</span> <span class="n">plot_kinematic_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
 
+<span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;four_bar_animation.gif&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;pillow&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Animation saved to four_bar_animation.gif&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Result</strong>: An animated GIF showing the linkage cycling through its motion.</p>
-</section>
-<section id="customizing-appearance">
-<h3>Customizing Appearance<a class="headerlink" href="#customizing-appearance" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">show_linkage</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="c1"># Display options</span>
-    <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                 <span class="c1"># Show joint trajectories</span>
-    <span class="n">show_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># Add legend</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Custom Four-bar&quot;</span><span class="p">,</span>
-
-    <span class="c1"># Style options</span>
-    <span class="n">joint_color</span><span class="o">=</span><span class="s1">&#39;#E63946&#39;</span><span class="p">,</span>     <span class="c1"># Joint marker color</span>
-    <span class="n">link_color</span><span class="o">=</span><span class="s1">&#39;#1D3557&#39;</span><span class="p">,</span>      <span class="c1"># Link line color</span>
-    <span class="n">locus_color</span><span class="o">=</span><span class="s1">&#39;#A8DADC&#39;</span><span class="p">,</span>     <span class="c1"># Trajectory line color</span>
-    <span class="n">joint_size</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>             <span class="c1"># Marker size</span>
-
-    <span class="c1"># Animation options (if animated=True)</span>
-    <span class="n">animated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>               <span class="c1"># ms between frames</span>
-<span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
+<p><strong>Result</strong>: An animated GIF showing the linkage cycling through its motion.
+<code class="docutils literal notranslate"><span class="pre">show_linkage(linkage,</span> <span class="pre">save=True)</span></code> does the same in one call, writing
+<code class="docutils literal notranslate"><span class="pre">Kinematic</span> <span class="pre">&lt;name&gt;.mp4</span></code> through ffmpeg.</p>
 </section>
 <section id="showing-multiple-linkages">
 <h3>Showing Multiple Linkages<a class="headerlink" href="#showing-multiple-linkages" title="Link to this heading"></a></h3>
-<p>Compare different configurations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<p>Compare different configurations side by side:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_fourbar</span><span class="p">(</span><span class="n">coupler</span><span class="p">,</span> <span class="n">rocker</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">coupler</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="n">rocker</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
-<span class="c1"># Create two different four-bars</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_fourbar</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                         <span class="n">distance0</span><span class="o">=</span><span class="n">d0</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">d1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="n">linkage1</span> <span class="o">=</span> <span class="n">make_fourbar</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;Short rocker&quot;</span><span class="p">)</span>
+<span class="n">linkage2</span> <span class="o">=</span> <span class="n">make_fourbar</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;Long rocker&quot;</span><span class="p">)</span>
 
-<span class="n">linkage1</span> <span class="o">=</span> <span class="n">make_fourbar</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Short rocker&quot;</span><span class="p">)</span>
-<span class="n">linkage2</span> <span class="o">=</span> <span class="n">make_fourbar</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Long rocker&quot;</span><span class="p">)</span>
-
-<span class="c1"># Plot side by side</span>
 <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">linkage1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-
-<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage2</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">linkage2</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">lk</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">((</span><span class="n">linkage1</span><span class="p">,</span> <span class="n">ax1</span><span class="p">),</span> <span class="p">(</span><span class="n">linkage2</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)):</span>
+    <span class="n">plot_static_linkage</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">lk</span><span class="o">.</span><span class="n">step</span><span class="p">()),</span> <span class="n">n_ghosts</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">lk</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;comparison.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
@@ -296,17 +293,19 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <p>Interactive HTML visualizations ideal for web embedding and exploration.</p>
 <section id="basic-interactive-plot">
 <h3>Basic Interactive Plot<a class="headerlink" href="#basic-interactive-plot" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly</span>
 
-<span class="c1"># Create linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-
-<span class="c1"># Create interactive plot</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="c1"># Static interactive diagram: bars, joints, trajectories</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span>
+    <span class="n">linkage</span><span class="p">,</span>
+    <span class="n">loci</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">,</span>
+    <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># joint trajectories</span>
+    <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>        <span class="c1"># joint names</span>
+    <span class="n">show_dimensions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>    <span class="c1"># link lengths</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># Display in notebook or browser</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -315,61 +314,44 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;interactive_linkage.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Result</strong>: An interactive HTML page where you can:</p>
-<ul class="simple">
-<li><p>Zoom and pan</p></li>
-<li><p>Hover over joints for coordinates</p></li>
-<li><p>Toggle visibility of elements</p></li>
-<li><p>Rotate through animation frames</p></li>
-</ul>
+<p><strong>Result</strong>: An interactive HTML page where you can zoom and pan, hover over
+joints for coordinates, and toggle elements from the legend.</p>
 </section>
 <section id="animation-with-slider">
 <h3>Animation with Slider<a class="headerlink" href="#animation-with-slider" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly</span>
+<p><code class="docutils literal notranslate"><span class="pre">animate_linkage_plotly</span></code> adds play/pause buttons and a frame slider:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">animate_linkage_plotly</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">animate_linkage_plotly</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
-    <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>            <span class="c1"># Show joint trajectories</span>
-    <span class="n">show_slider</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>          <span class="c1"># Add frame slider</span>
-    <span class="n">frame_count</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>            <span class="c1"># Number of animation frames</span>
+    <span class="n">loci</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Interactive Four-bar&quot;</span><span class="p">,</span>
+    <span class="n">frame_duration</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>       <span class="c1"># ms per frame</span>
 <span class="p">)</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;animated_linkage.html&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Result</strong>: HTML with a slider to scrub through the animation manually.</p>
+<p>In a Jupyter notebook, <code class="docutils literal notranslate"><span class="pre">interactive_linkage_plotly(linkage)</span></code> returns an
+ipywidgets box with the same controls bound to a live <code class="docutils literal notranslate"><span class="pre">FigureWidget</span></code>.</p>
 </section>
 <section id="customizing-plotly-appearance">
 <h3>Customizing Plotly Appearance<a class="headerlink" href="#customizing-plotly-appearance" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+<p>The returned object is a plain plotly <code class="docutils literal notranslate"><span class="pre">Figure</span></code>: restyle it with the plotly
+API.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Styled Four-bar&quot;</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="c1"># Colors</span>
-    <span class="n">joint_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
-    <span class="n">link_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
-    <span class="n">locus_color</span><span class="o">=</span><span class="s1">&#39;rgba(0, 255, 0, 0.5)&#39;</span><span class="p">,</span>
-
-    <span class="c1"># Sizes</span>
-    <span class="n">joint_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-    <span class="n">link_width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-
-    <span class="c1"># Layout</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Styled Four-bar&quot;</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Further customization using plotly API</span>
+<span class="c1"># Further customization using the plotly API</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
-    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
-    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">,</span>
+    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
+    <span class="n">paper_bgcolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>
     <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">14</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gridwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;lightgray&#39;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gridwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s1">&#39;lightgray&#39;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gridwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s2">&quot;lightgray&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">showgrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">gridwidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gridcolor</span><span class="o">=</span><span class="s2">&quot;lightgray&quot;</span><span class="p">)</span>
+<span class="c1"># Thicker bars: the link traces are the ones drawn with lines only</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">line_width</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">))</span>
 
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -377,12 +359,10 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 </section>
 <section id="embedding-in-web-pages">
 <h3>Embedding in Web Pages<a class="headerlink" href="#embedding-in-web-pages" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_plotly</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Get HTML div for embedding</span>
-<span class="n">div_html</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">include_plotlyjs</span><span class="o">=</span><span class="s1">&#39;cdn&#39;</span><span class="p">,</span> <span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># Get an HTML div for embedding</span>
+<span class="n">div_html</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">include_plotlyjs</span><span class="o">=</span><span class="s2">&quot;cdn&quot;</span><span class="p">,</span> <span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Write to file with custom wrapper</span>
 <span class="n">full_html</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
@@ -414,93 +394,45 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <p>Publication-quality vector graphics for papers and documentation.</p>
 <section id="basic-svg-output">
 <h3>Basic SVG Output<a class="headerlink" href="#basic-svg-output" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg</span>
-
-<span class="c1"># Create linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg</span>
 
 <span class="c1"># Save as SVG</span>
-<span class="n">save_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.svg&quot;</span><span class="p">)</span>
+<span class="n">save_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.svg&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Result</strong>: A crisp SVG file that scales perfectly at any resolution.</p>
 </section>
 <section id="customizing-svg-style">
 <h3>Customizing SVG Style<a class="headerlink" href="#customizing-svg-style" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_svg</span>
 
-<span class="n">save_linkage_svg</span><span class="p">(</span>
+<span class="n">drawing</span> <span class="o">=</span> <span class="n">plot_linkage_svg</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
-    <span class="s2">&quot;styled_linkage.svg&quot;</span><span class="p">,</span>
-
-    <span class="c1"># Dimensions</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
-    <span class="n">margin</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-
-    <span class="c1"># Colors (CSS color strings)</span>
-    <span class="n">joint_color</span><span class="o">=</span><span class="s1">&#39;#2E86AB&#39;</span><span class="p">,</span>
-    <span class="n">link_color</span><span class="o">=</span><span class="s1">&#39;#A23B72&#39;</span><span class="p">,</span>
-    <span class="n">ground_color</span><span class="o">=</span><span class="s1">&#39;#F18F01&#39;</span><span class="p">,</span>
-    <span class="n">locus_color</span><span class="o">=</span><span class="s1">&#39;#C73E1D&#39;</span><span class="p">,</span>
-
-    <span class="c1"># Stroke widths</span>
-    <span class="n">link_width</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">locus_width</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-
-    <span class="c1"># Joint markers</span>
-    <span class="n">joint_radius</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-
-    <span class="c1"># Show elements</span>
+    <span class="n">loci</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">,</span>
+    <span class="n">link_style</span><span class="o">=</span><span class="s2">&quot;bone&quot;</span><span class="p">,</span>         <span class="c1"># &quot;bar&quot; (default), &quot;bone&quot; or &quot;line&quot;</span>
+    <span class="n">show_dimensions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>      <span class="c1"># link lengths along the bars</span>
     <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show_ground</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">scale</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>                  <span class="c1"># pixels per unit</span>
+    <span class="n">padding</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span>                <span class="c1"># canvas margin in pixels</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Canvas: </span><span class="si">{</span><span class="n">drawing</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2"> x </span><span class="si">{</span><span class="n">drawing</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2"> px&quot;</span><span class="p">)</span>
+
+<span class="c1"># The drawsvg Drawing can be edited before saving</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">save_svg</span><span class="p">(</span><span class="s2">&quot;styled_linkage.svg&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="multi-frame-svg">
-<h3>Multi-Frame SVG<a class="headerlink" href="#multi-frame-svg" title="Link to this heading"></a></h3>
-<p>Show multiple positions in one image:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg_multiframe</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
-
-<span class="c1"># Show 5 evenly spaced positions</span>
-<span class="n">save_linkage_svg_multiframe</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="s2">&quot;multiframe.svg&quot;</span><span class="p">,</span>
-    <span class="n">num_frames</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">frame_opacity</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>        <span class="c1"># Transparency of intermediate frames</span>
-    <span class="n">highlight_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>     <span class="c1"># Make first frame solid</span>
-    <span class="n">highlight_last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>      <span class="c1"># Make last frame solid</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Result</strong>: SVG showing the linkage at multiple positions, ideal for illustrating motion.</p>
+<p>The same keyword arguments go through <code class="docutils literal notranslate"><span class="pre">save_linkage_svg(linkage,</span> <span class="pre">path,</span>
+<span class="pre">loci,</span> <span class="pre">**kwargs)</span></code>. Colors follow the joint type: ground supports, crank
+pins, revolute pins and sliders each have their own symbol and color.</p>
 </section>
 <section id="svg-for-latex">
 <h3>SVG for LaTeX<a class="headerlink" href="#svg-for-latex" title="Link to this heading"></a></h3>
-<p>Generate SVGs optimized for LaTeX documents:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_svg</span>
-
-<span class="n">save_linkage_svg</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="s2">&quot;latex_figure.svg&quot;</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>                 <span class="c1"># Points (LaTeX-friendly)</span>
-    <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-    <span class="n">font_family</span><span class="o">=</span><span class="s2">&quot;serif&quot;</span><span class="p">,</span>       <span class="c1"># Match LaTeX fonts</span>
-    <span class="n">font_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">label_offset</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-<span class="p">)</span>
+<p>Rasterize with <code class="docutils literal notranslate"><span class="pre">drawing.save_png()</span></code> (needs <code class="docutils literal notranslate"><span class="pre">drawsvg[raster]</span></code>) or keep
+the SVG and include it with <code class="docutils literal notranslate"><span class="pre">\includesvg</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">drawing</span> <span class="o">=</span> <span class="n">plot_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">drawing</span><span class="o">.</span><span class="n">save_svg</span><span class="p">(</span><span class="s2">&quot;latex_figure.svg&quot;</span><span class="p">)</span>
 
 <span class="c1"># Include in LaTeX:</span>
 <span class="c1"># \begin{figure}</span>
@@ -526,20 +458,14 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="dxf-export-2d-cad">
 <h3>DXF Export (2D CAD)<a class="headerlink" href="#dxf-export-2d-cad" title="Link to this heading"></a></h3>
 <p>Export to DXF format for AutoCAD, CNC machines, and laser cutters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_dxf</span><span class="p">,</span> <span class="n">plot_linkage_dxf</span>
-
-<span class="c1"># Create linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_dxf</span><span class="p">,</span> <span class="n">save_linkage_dxf</span>
 
 <span class="c1"># Save to DXF file</span>
-<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.dxf&quot;</span><span class="p">)</span>
+<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.dxf&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 
 <span class="c1"># Or get the ezdxf Drawing object for further customization</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">plot_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">plot_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Layers: </span><span class="si">{</span><span class="p">[</span><span class="n">layer</span><span class="o">.</span><span class="n">dxf</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">layer</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">doc</span><span class="o">.</span><span class="n">layers</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">doc</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s2">&quot;custom_linkage.dxf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -554,17 +480,12 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="customizing-dxf-output">
 <h3>Customizing DXF Output<a class="headerlink" href="#customizing-dxf-output" title="Link to this heading"></a></h3>
 <p>Control dimensions and export a specific frame:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_dxf</span>
-
-<span class="c1"># Run simulation to get all positions</span>
-<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
-
-<span class="c1"># Export frame 25 with custom dimensions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export frame 10 of the 20 with custom dimensions</span>
 <span class="n">save_linkage_dxf</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
-    <span class="s2">&quot;frame25.dxf&quot;</span><span class="p">,</span>
-    <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
-    <span class="n">frame_index</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>          <span class="c1"># Export this frame (0 = first)</span>
+    <span class="s2">&quot;frame10.dxf&quot;</span><span class="p">,</span>
+    <span class="n">loci</span><span class="p">,</span>
+    <span class="n">frame_index</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>          <span class="c1"># Export this frame (0 = first)</span>
     <span class="n">link_width</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>          <span class="c1"># Link bar width in world units</span>
     <span class="n">joint_radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>        <span class="c1"># Joint symbol radius</span>
 <span class="p">)</span>
@@ -574,21 +495,14 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="step-export-3d-cad">
 <h3>STEP Export (3D CAD)<a class="headerlink" href="#step-export-3d-cad" title="Link to this heading"></a></h3>
 <p>Export to STEP format for 3D CAD applications (FreeCAD, SolidWorks, Fusion 360):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_step</span><span class="p">,</span> <span class="n">build_linkage_3d</span>
-
-<span class="c1"># Create linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_linkage_3d</span><span class="p">,</span> <span class="n">save_linkage_step</span>
 
 <span class="c1"># Save to STEP file (dimensions auto-scaled to fit linkage)</span>
-<span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.step&quot;</span><span class="p">)</span>
+<span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.step&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 
 <span class="c1"># Or get the build123d Compound for further manipulation</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">build_linkage_3d</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">export_step</span><span class="p">(</span><span class="s2">&quot;custom_linkage.step&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">build_linkage_3d</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solids</span><span class="p">()))</span><span class="si">}</span><span class="s2"> solids&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>3D Geometry</strong>: The STEP export creates:</p>
@@ -602,29 +516,26 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="customizing-step-dimensions">
 <h3>Customizing STEP Dimensions<a class="headerlink" href="#customizing-step-dimensions" title="Link to this heading"></a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">LinkProfile</span></code> and <code class="docutils literal notranslate"><span class="pre">JointProfile</span></code> to control 3D geometry:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">save_linkage_step</span><span class="p">,</span>
-    <span class="n">LinkProfile</span><span class="p">,</span>
-    <span class="n">JointProfile</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointProfile</span><span class="p">,</span> <span class="n">LinkProfile</span>
 
 <span class="c1"># Define custom link cross-section</span>
 <span class="n">link_profile</span> <span class="o">=</span> <span class="n">LinkProfile</span><span class="p">(</span>
-    <span class="n">width</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>              <span class="c1"># Link bar width (mm or your units)</span>
-    <span class="n">thickness</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>           <span class="c1"># Extrusion depth in Z</span>
-    <span class="n">fillet_radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>       <span class="c1"># Edge rounding (0 for sharp)</span>
+    <span class="n">width</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>               <span class="c1"># Link bar width (in the linkage&#39;s units)</span>
+    <span class="n">thickness</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>           <span class="c1"># Extrusion depth in Z</span>
+    <span class="n">fillet_radius</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>      <span class="c1"># Edge rounding (0 for sharp)</span>
 <span class="p">)</span>
 
 <span class="c1"># Define custom joint pins</span>
 <span class="n">joint_profile</span> <span class="o">=</span> <span class="n">JointProfile</span><span class="p">(</span>
-    <span class="n">radius</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>              <span class="c1"># Pin radius</span>
-    <span class="n">length</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>              <span class="c1"># Pin length in Z</span>
+    <span class="n">radius</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>             <span class="c1"># Pin radius</span>
+    <span class="n">length</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>              <span class="c1"># Pin length in Z</span>
 <span class="p">)</span>
 
 <span class="c1"># Export with custom profiles</span>
 <span class="n">save_linkage_step</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
     <span class="s2">&quot;machined_linkage.step&quot;</span><span class="p">,</span>
+    <span class="n">loci</span><span class="p">,</span>
     <span class="n">link_profile</span><span class="o">=</span><span class="n">link_profile</span><span class="p">,</span>
     <span class="n">joint_profile</span><span class="o">=</span><span class="n">joint_profile</span><span class="p">,</span>
     <span class="n">frame_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>           <span class="c1"># Which position to export</span>
@@ -636,17 +547,12 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="exporting-multiple-frames">
 <h3>Exporting Multiple Frames<a class="headerlink" href="#exporting-multiple-frames" title="Link to this heading"></a></h3>
 <p>Export different positions of the mechanism:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_step</span>
-
-<span class="c1"># Pre-compute trajectory</span>
-<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
-
-<span class="c1"># Export key positions</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">]):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Export key positions</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">]):</span>
     <span class="n">save_linkage_step</span><span class="p">(</span>
         <span class="n">linkage</span><span class="p">,</span>
         <span class="sa">f</span><span class="s2">&quot;linkage_position_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.step&quot;</span><span class="p">,</span>
-        <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
+        <span class="n">loci</span><span class="p">,</span>
         <span class="n">frame_index</span><span class="o">=</span><span class="n">frame_idx</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exported frame </span><span class="si">{</span><span class="n">frame_idx</span><span class="si">}</span><span class="s2"> to linkage_position_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">.step&quot;</span><span class="p">)</span>
@@ -656,37 +562,37 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 <section id="cad-export-workflow">
 <h3>CAD Export Workflow<a class="headerlink" href="#cad-export-workflow" title="Link to this heading"></a></h3>
 <p>A typical workflow from simulation to fabrication:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">show_linkage</span><span class="p">,</span>
-    <span class="n">save_linkage_svg</span><span class="p">,</span>
+    <span class="n">LinkProfile</span><span class="p">,</span>
     <span class="n">save_linkage_dxf</span><span class="p">,</span>
     <span class="n">save_linkage_step</span><span class="p">,</span>
-    <span class="n">LinkProfile</span><span class="p">,</span>
+    <span class="n">save_linkage_svg</span><span class="p">,</span>
+    <span class="n">show_linkage</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="n">Path</span><span class="p">(</span><span class="s2">&quot;documentation&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Path</span><span class="p">(</span><span class="s2">&quot;fabrication&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <span class="c1"># 1. Design and simulate</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
 <span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 
 <span class="c1"># 2. Quick visualization to verify</span>
 <span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">)</span>
 
 <span class="c1"># 3. Publication figure (SVG)</span>
-<span class="n">save_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;documentation/linkage.svg&quot;</span><span class="p">,</span> <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">save_linkage_svg</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;documentation/linkage.svg&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># 4. 2D CAD for laser cutting (DXF)</span>
-<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;fabrication/linkage_2d.dxf&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">)</span>
+<span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;fabrication/linkage_2d.dxf&quot;</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 
 <span class="c1"># 5. 3D CAD for machining/printing (STEP)</span>
-<span class="n">profile</span> <span class="o">=</span> <span class="n">LinkProfile</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">LinkProfile</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">save_linkage_step</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
     <span class="s2">&quot;fabrication/linkage_3d.step&quot;</span><span class="p">,</span>
-    <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">,</span>
+    <span class="n">loci</span><span class="p">,</span>
     <span class="n">link_profile</span><span class="o">=</span><span class="n">profile</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -697,50 +603,66 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 </section>
 <section id="pso-visualization">
 <h2>PSO Visualization<a class="headerlink" href="#pso-visualization" title="Link to this heading"></a></h2>
-<p>Visualize particle swarm optimization progress:</p>
+<p>Visualize particle swarm optimization progress. The PSO plots consume a
+history: one <code class="docutils literal notranslate"><span class="pre">(iteration,</span> <span class="pre">swarm)</span></code> pair per iteration, where a swarm is
+the list of <code class="docutils literal notranslate"><span class="pre">(score,</span> <span class="pre">dimensions,</span> <span class="pre">initial_positions)</span></code> evaluated in it.
+Record it by wrapping the fitness function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">plot_pso_convergence</span><span class="p">,</span>
-    <span class="n">plot_pso_particles</span><span class="p">,</span>
-    <span class="n">create_pso_dashboard</span><span class="p">,</span>
+    <span class="n">animate_dashboard</span><span class="p">,</span>
+    <span class="n">dashboard_layout</span><span class="p">,</span>
+    <span class="n">parallel_coordinates_plot</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Create and optimize linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
 
-<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
-    <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Minimize height</span>
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_maximization</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stride</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Horizontal travel of the output joint.&quot;&quot;&quot;</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 
-<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
 
-<span class="c1"># Run optimization with history tracking</span>
-<span class="n">results</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span>
-    <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-    <span class="n">n_particles</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-    <span class="n">iters</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">return_history</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">recorded_stride</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">stride</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+    <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">score</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">dims</span><span class="p">),</span> <span class="n">pos</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">score</span>
+
+
+<span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">15</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">(),</span> <span class="n">min_ratio</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">max_factor</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
+    <span class="n">recorded_stride</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">n_particles</span><span class="o">=</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Plot convergence</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_pso_convergence</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;convergence.png&quot;</span><span class="p">)</span>
+<span class="c1"># Group the evaluations per iteration (the first swarm is the initial one)</span>
+<span class="n">swarms</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">n_particles</span><span class="p">:(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">n_particles</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_particles</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">dim_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;crank radius&quot;</span><span class="p">,</span> <span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="s2">&quot;rocker&quot;</span><span class="p">]</span>
+<span class="n">dim_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">]</span>
 
-<span class="c1"># Plot particle distribution</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_pso_particles</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="n">iteration</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;particles_iter25.png&quot;</span><span class="p">)</span>
+<span class="c1"># Parallel coordinates of the final swarm, colored by score</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">parallel_coordinates_plot</span><span class="p">(</span><span class="n">swarms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">dim_names</span><span class="p">,</span> <span class="n">dim_types</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;pso_parallel_coordinates.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
 
-<span class="c1"># Create full dashboard</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">create_pso_dashboard</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+<span class="c1"># Dashboard: score history, the swarm, and the best linkage</span>
+<span class="n">score_history</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">agent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">agent</span> <span class="ow">in</span> <span class="n">swarm</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">swarm</span> <span class="ow">in</span> <span class="n">swarms</span><span class="p">]</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">dashboard_layout</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">swarms</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">score_history</span><span class="p">,</span> <span class="n">dim_names</span><span class="p">,</span> <span class="n">dim_types</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;pso_dashboard.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+<span class="c1"># Animated dashboard over the iterations</span>
+<span class="n">animation</span> <span class="o">=</span> <span class="n">animate_dashboard</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">swarms</span><span class="p">,</span> <span class="n">dim_names</span><span class="p">,</span> <span class="n">dim_types</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;pso_dashboard.gif&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;pillow&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The strider example (<code class="docutils literal notranslate"><span class="pre">docs/examples/pso_visualization_demo.py</span></code>) runs the
+same plots on an eight-parameter walking mechanism.</p>
 </section>
 <section id="visualization-with-kinematics">
 <h2>Visualization with Kinematics<a class="headerlink" href="#visualization-with-kinematics" title="Link to this heading"></a></h2>
@@ -753,14 +675,9 @@ Plotly (interactive HTML), and drawsvg (publication SVG).</span><a class="header
 angular velocity of the input crank.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_kinematics</span><span class="p">,</span> <span class="n">animate_kinematics</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">animate_kinematics</span><span class="p">,</span> <span class="n">show_kinematics</span>
 
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
-
-<span class="c1"># Set angular velocity</span>
+<span class="c1"># Set the crank&#39;s physical angular velocity (rad/s)</span>
 <span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
 
 <span class="c1"># Show single frame with velocity vectors</span>
@@ -768,8 +685,8 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
     <span class="n">linkage</span><span class="p">,</span>
     <span class="n">frame_index</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_acceleration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">velocity_scale</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>       <span class="c1"># Scale factor for arrow length</span>
-    <span class="n">velocity_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;velocities.png&quot;</span><span class="p">)</span>
 
@@ -777,10 +694,15 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
 <span class="n">animate_kinematics</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
     <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">duration</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
     <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;velocity_animation.gif&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>Plotly and drawsvg have velocity variants too:
+<code class="docutils literal notranslate"><span class="pre">plot_linkage_plotly_with_velocity(linkage,</span> <span class="pre">frame_index=10)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">save_linkage_svg_with_velocity(linkage,</span> <span class="pre">path,</span> <span class="pre">positions,</span> <span class="pre">velocities)</span></code>;
+see <a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a>.</p>
 </section>
 <section id="choosing-the-right-backend">
 <h2>Choosing the Right Backend<a class="headerlink" href="#choosing-the-right-backend" title="Link to this heading"></a></h2>
@@ -822,24 +744,30 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
 </section>
 <section id="example-complete-visualization-workflow">
 <h2>Example: Complete Visualization Workflow<a class="headerlink" href="#example-complete-visualization-workflow" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">show_linkage</span><span class="p">,</span>
-    <span class="n">plot_linkage_plotly</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">animate_linkage_plotly</span><span class="p">,</span>
+    <span class="n">plot_kinematic_linkage</span><span class="p">,</span>
+    <span class="n">plot_static_linkage</span><span class="p">,</span>
     <span class="n">save_linkage_svg</span><span class="p">,</span>
+    <span class="n">show_linkage</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Create an optimized linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="n">distance0</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Optimized Four-bar&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+    <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Optimized Four-bar&quot;</span><span class="p">)</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 
 <span class="c1"># 1. Quick check with Matplotlib</span>
-<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="o">=</span><span class="n">loci</span><span class="p">)</span>
 
 <span class="c1"># 2. Interactive exploration with Plotly</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plot_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_slider</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">animate_linkage_plotly</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">loci</span><span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">write_html</span><span class="p">(</span><span class="s2">&quot;explore.html&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Open explore.html in browser for interactive view&quot;</span><span class="p">)</span>
 
@@ -847,23 +775,19 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
 <span class="n">save_linkage_svg</span><span class="p">(</span>
     <span class="n">linkage</span><span class="p">,</span>
     <span class="s2">&quot;figure1.svg&quot;</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+    <span class="n">loci</span><span class="p">,</span>
     <span class="n">show_loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">show_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">joint_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-    <span class="n">link_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-    <span class="n">locus_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span>
+    <span class="n">link_style</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Publication figure saved to figure1.svg&quot;</span><span class="p">)</span>
 
 <span class="c1"># 4. Animation for presentation</span>
-<span class="n">show_linkage</span><span class="p">(</span>
-    <span class="n">linkage</span><span class="p">,</span>
-    <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;presentation.gif&quot;</span><span class="p">,</span>
-    <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-    <span class="n">loci</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">plot_static_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">show_labels</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">animation</span> <span class="o">=</span> <span class="n">plot_kinematic_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">loci</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">))</span>
+<span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;presentation.gif&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="s2">&quot;pillow&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Animation saved to presentation.gif&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -873,7 +797,7 @@ angular velocity of the input crank.</span><a class="headerlink" href="#id2" tit
 <ul class="simple">
 <li><p><a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> - Basic linkage creation</p></li>
 <li><p><a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a> - Velocity visualization</p></li>
-<li><p>See <a class="reference internal" href="../api/pylinkage.visualizer.html#module-pylinkage.visualizer" title="pylinkage.visualizer"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code></a> for complete API reference</p></li>
+<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code> for complete API reference</p></li>
 </ul>
 </section>
 </section>

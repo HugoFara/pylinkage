@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pylinkage &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Pylinkage &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=486e5634"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
@@ -45,23 +45,27 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Readme</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#related-projects">Related Projects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#define-and-visualize-a-four-bar-linkage">Define and Visualize a Four-Bar Linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#which-api-should-i-use">Which API should I use?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#alternative-links-first-builder">Alternative: Links-First Builder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#synthesize-a-linkage-from-requirements">Synthesize a Linkage from Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#optimize-with-pso">Optimize with PSO</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#symbolic-analysis">Symbolic Analysis</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#features-overview">Features Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tutorials">Tutorials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-else-can-it-do">What Else Can It Do?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#stability">Stability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-projects">Related Projects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -108,29 +112,26 @@
 <h1>Pylinkage<a class="headerlink" href="#pylinkage" title="Link to this heading"></a></h1>
 <p><a class="reference external" href="https://pypi.python.org/pypi/pylinkage/"><img alt="PyPI version fury.io" src="https://badge.fury.io/py/pylinkage.svg" /></a>
 <a class="reference external" href="https://pepy.tech/project/pylinkage"><img alt="Downloads" src="https://static.pepy.tech/personalized-badge/pylinkage?period=total&amp;units=international_system&amp;left_color=grey&amp;right_color=green&amp;left_text=Downloads" /></a>
-<a class="reference external" href="https://codecov.io/gh/HugoFara/pylinkage"><img alt="Coverage" src="https://img.shields.io/badge/coverage-87%25-brightgreen" /></a>
-<a class="reference external" href="https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a></p>
-<p>Pylinkage is a comprehensive Python library for planar linkage mechanisms. It provides tools to:</p>
-<ul class="simple">
-<li><p><strong>Define</strong> linkages using joints (<code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">Revolute</span></code>, <code class="docutils literal notranslate"><span class="pre">Linear</span></code>, etc.)</p></li>
-<li><p><strong>Simulate</strong> kinematic motion with high-performance numba-compiled solvers</p></li>
-<li><p><strong>Optimize</strong> geometry using Particle Swarm Optimization (PSO)</p></li>
-<li><p><strong>Synthesize</strong> linkages from motion requirements (Burmester theory, Freudenstein’s equation)</p></li>
-<li><p><strong>Analyze</strong> symbolically using SymPy for closed-form expressions</p></li>
-<li><p><strong>Visualize</strong> with multiple backends (Matplotlib, Plotly, SVG)</p></li>
-</ul>
-<p>📚 <strong><a class="reference external" href="https://hugofara.github.io/pylinkage/">Full Documentation</a></strong> — Complete tutorials, API reference, and examples.</p>
-<section id="related-projects">
-<h2>Related Projects<a class="headerlink" href="#related-projects" title="Link to this heading"></a></h2>
-<ul class="simple">
-<li><p><strong><a class="reference external" href="https://github.com/HugoFara/pylinkage-editor">pylinkage-editor</a></strong> — Visual linkage design tool with an easy-to-use interface. Draw mechanisms interactively, run synthesis from the GUI, and export results.</p></li>
-<li><p><strong><a class="reference external" href="https://github.com/HugoFara/leggedsnake">leggedsnake</a></strong> — Dynamic walking simulation built on pylinkage. Adds pymunk physics, genetic algorithm optimization, and walking-specific fitness evaluation.</p></li>
-</ul>
-</section>
+<a class="reference external" href="https://codecov.io/gh/HugoFara/pylinkage"><img alt="Coverage" src="https://img.shields.io/badge/coverage-92%25-brightgreen" /></a>
+<a class="reference external" href="https://raw.githubusercontent.com/HugoFara/pylinkage/main/LICENSE.rst"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
+<a class="reference external" href="https://doi.org/10.5281/zenodo.21207486"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.21207486.svg" /></a></p>
+<p>Pylinkage lets you design <a class="reference external" href="https://en.wikipedia.org/wiki/Linkage_(mechanical)">planar linkage mechanisms</a> by specifying the motion you need. Tell it where you want a coupler point to go, and it finds mechanism dimensions automatically using classical synthesis theory (<a class="reference external" href="https://en.wikipedia.org/wiki/Burmester_theory">Burmester</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Ferdinand_Freudenstein">Freudenstein</a>) and metaheuristic optimization (<a class="reference external" href="https://en.wikipedia.org/wiki/Particle_swarm_optimization">PSO</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Differential_evolution">differential evolution</a>). You can then simulate, analyze, visualize, and export to DXF or STEP for fabrication.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">path_generation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
+
+<span class="c1"># &quot;I need a coupler that passes through these four points&quot;</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+<span class="n">show_linkage</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To run that example: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[scipy,viz]</span></code>. Synthesis needs SciPy and
+plotting needs Matplotlib; both are <a class="reference internal" href="#installation">optional extras</a>, so a plain
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage</span></code> gives you the core library without them.</p>
+<p><img alt="Path generation result" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/synthesis_path_generation.gif" /></p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="w">            </span><span class="c1"># Core only (~35 MB): define, simulate, and build linkages</span>
-pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="o">[</span>full<span class="o">]</span><span class="w">      </span><span class="c1"># Everything (~400 MB): all optional backends included</span>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="w">            </span><span class="c1"># Core only: define, simulate, and build linkages</span>
+pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="o">[</span>full<span class="o">]</span><span class="w">      </span><span class="c1"># Everything: all optional backends included</span>
 </pre></div>
 </div>
 <p>Install only what you need:</p>
@@ -147,24 +148,24 @@ pip<span class="w"> </span>install<span class="w"> </span>pylinkage<span class="
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scipy</span></code></p></td>
 <td><p>Differential evolution optimizer, synthesis solvers</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pso</span></code></p></td>
-<td><p>Particle Swarm Optimization via pyswarms</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">symbolic</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">symbolic</span></code></p></td>
 <td><p>SymPy-based closed-form expressions and gradient optimization</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">viz</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">viz</span></code></p></td>
 <td><p>Matplotlib visualization and animation</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plotly</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plotly</span></code></p></td>
 <td><p>Interactive HTML visualization</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">svg</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">svg</span></code></p></td>
 <td><p>Publication-quality SVG export via drawsvg</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">moo</span></code></p></td>
+<td><p>Multi-objective optimization (NSGA-II/III via pymoo)</p></td>
 </tr>
 </tbody>
 </table>
-<p>Extras can be combined: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[viz,scipy,pso]</span></code></p>
+<p>Extras can be combined: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[viz,scipy,numba]</span></code></p>
 <p>For development:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/HugoFara/pylinkage.git
 <span class="nb">cd</span><span class="w"> </span>pylinkage
@@ -175,13 +176,13 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <section id="define-and-visualize-a-four-bar-linkage">
-<h3>Define and Visualize a Four-Bar Linkage<a class="headerlink" href="#define-and-visualize-a-four-bar-linkage" title="Link to this heading"></a></h3>
+<h3>Define and Visualize a <a class="reference external" href="https://en.wikipedia.org/wiki/Four-bar_linkage">Four-Bar Linkage</a><a class="headerlink" href="#define-and-visualize-a-four-bar-linkage" title="Link to this heading"></a></h3>
 <p>Using the component-based API (recommended). Visualization requires <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[viz]</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>  <span class="c1"># requires viz extra</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">show_linkage</span>
 
 <span class="c1"># Define ground pivots</span>
 <span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
@@ -204,6 +205,36 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 </pre></div>
 </div>
 <p><img alt="A four-bar linkage animated" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/Kinematic%20My%20four-bar%20linkage.gif" /></p>
+</section>
+<section id="which-api-should-i-use">
+<h3>Which API should I use?<a class="headerlink" href="#which-api-should-i-use" title="Link to this heading"></a></h3>
+<p>The one above. <code class="docutils literal notranslate"><span class="pre">components</span></code> (frame points), <code class="docutils literal notranslate"><span class="pre">actuators</span></code> (motor inputs),
+<code class="docutils literal notranslate"><span class="pre">dyads</span></code> (the constrained pairs that close the loops) and <code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code>
+(the container) are <em>the</em> way to define a mechanism, and every tutorial starts
+there. The same names are importable straight from <code class="docutils literal notranslate"><span class="pre">pylinkage</span></code> as a shortcut.</p>
+<p>Pylinkage has other representations, each with a job:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Representation</p></th>
+<th class="head"><p>Use it when</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mechanism.MechanismBuilder</span></code></p></td>
+<td><p>you think in link lengths first, joints second (below)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hypergraph</span></code></p></td>
+<td><p>you compose mechanisms from reusable sub-assemblies, or need a topology (not geometry) to reason about</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">assur</span></code></p></td>
+<td><p>you want the structural decomposition of a mechanism into Assur groups</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mechanism.Mechanism</span></code></p></td>
+<td><p>you need the low-level links-and-joints model everything else lowers to</p></td>
+</tr>
+</tbody>
+</table>
+<p>They all convert to and from each other; none is needed to get started.</p>
 </section>
 <section id="alternative-links-first-builder">
 <h3>Alternative: Links-First Builder<a class="headerlink" href="#alternative-links-first-builder" title="Link to this heading"></a></h3>
@@ -229,35 +260,25 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 </pre></div>
 </div>
 </section>
-<section id="synthesize-a-linkage-from-requirements">
-<h3>Synthesize a Linkage from Requirements<a class="headerlink" href="#synthesize-a-linkage-from-requirements" title="Link to this heading"></a></h3>
-<p>Requires <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[scipy]</span></code>. Design a four-bar where the coupler passes through specific points:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.synthesis</span><span class="w"> </span><span class="kn">import</span> <span class="n">path_generation</span>
-
-<span class="c1"># Find linkages where coupler traces through these points</span>
-<span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">path_generation</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">linkage</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="p">:</span>
-    <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
 <section id="optimize-with-pso">
 <h3>Optimize with PSO<a class="headerlink" href="#optimize-with-pso" title="Link to this heading"></a></h3>
-<p>Requires <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[pso]</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
+<p>PSO is built-in (no extra needed).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+
+<span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">_</span><span class="p">):</span>
-    <span class="c1"># Define your objective based on joint trajectories</span>
     <span class="n">tip_locus</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">tip_locus</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Minimize min_y</span>
 
-<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">my_linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
-<span class="n">score</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">coords</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">my_linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">())</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
     <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="n">my_linkage</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span>
-<span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">best</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">top</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">my_linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="n">best</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><img alt="PSO optimization result" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/pso_optimization.png" /></p>
 </section>
 <section id="symbolic-analysis">
 <h3>Symbolic Analysis<a class="headerlink" href="#symbolic-analysis" title="Link to this heading"></a></h3>
@@ -270,10 +291,99 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <span class="n">trajectories</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 </pre></div>
 </div>
+<p><img alt="Symbolic equations" src="https://github.com/HugoFara/pylinkage/raw/main/docs/assets/symbolic_equations.png" /></p>
 </section>
 </section>
-<section id="features-overview">
-<h2>Features Overview<a class="headerlink" href="#features-overview" title="Link to this heading"></a></h2>
+<section id="tutorials">
+<h2>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading"></a></h2>
+<p>The <a class="reference external" href="https://github.com/HugoFara/pylinkage/tree/main/docs/notebooks"><code class="docutils literal notranslate"><span class="pre">docs/notebooks/</span></code></a> directory contains hands-on tutorials that walk through each major feature:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>#</p></th>
+<th class="head"><p>Notebook</p></th>
+<th class="head"><p>What you’ll learn</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>01</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/01_straight_line_synthesis.ipynb">Straight-Line Synthesis</a></p></td>
+<td><p>Design a mechanism that traces a straight line from scratch</p></td>
+</tr>
+<tr class="row-odd"><td><p>02</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/02_optimize_coupler_curve.ipynb">Optimize a Coupler Curve</a></p></td>
+<td><p>Use PSO to shape a four-bar coupler path</p></td>
+</tr>
+<tr class="row-even"><td><p>03</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/03_tolerance_analysis.ipynb">Tolerance Analysis</a></p></td>
+<td><p>Monte Carlo analysis for manufacturing variation</p></td>
+</tr>
+<tr class="row-odd"><td><p>04</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/04_cam_follower_timing.ipynb">Cam-Follower Timing</a></p></td>
+<td><p>Design cam profiles with motion laws</p></td>
+</tr>
+<tr class="row-even"><td><p>05</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/05_symbolic_coupler_curve.ipynb">Symbolic Coupler Curve</a></p></td>
+<td><p>Closed-form trajectory expressions with SymPy</p></td>
+</tr>
+<tr class="row-odd"><td><p>06</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/06_function_generation.ipynb">Function Generation</a></p></td>
+<td><p>Match input/output angle relationships (<a class="reference external" href="https://en.wikipedia.org/wiki/Ferdinand_Freudenstein">Freudenstein</a>)</p></td>
+</tr>
+<tr class="row-even"><td><p>07</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/07_motion_generation.ipynb">Motion Generation</a></p></td>
+<td><p>Guide a rigid body through specified poses (<a class="reference external" href="https://en.wikipedia.org/wiki/Burmester_theory">Burmester</a>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>08</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/08_velocity_acceleration.ipynb">Velocity &amp; Acceleration</a></p></td>
+<td><p>Compute joint velocities and accelerations</p></td>
+</tr>
+<tr class="row-even"><td><p>09</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/09_transmission_angle_and_dof.ipynb">Transmission Angle &amp; DOF</a></p></td>
+<td><p>Evaluate mechanism quality and <a class="reference external" href="https://en.wikipedia.org/wiki/Degree_of_freedom_(mechanics)">mobility</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/10_mechanism_builder.ipynb">Mechanism Builder</a></p></td>
+<td><p>Link-first definition with <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/11_multi_objective_and_scipy_optimization.ipynb">Multi-Objective Optimization</a></p></td>
+<td><p>Pareto-optimal design with NSGA-II and scipy</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/12_three_synthesis_problems.ipynb">Three Synthesis Problems</a></p></td>
+<td><p>Side-by-side comparison of path, function, and motion synthesis</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/13_population_abstractions.ipynb">Population Abstractions</a></p></td>
+<td><p>Batch simulation, ranking, and filtering of mechanism families</p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/14_topology_enumeration_and_synthesis.ipynb">Topology Enumeration</a></p></td>
+<td><p>Enumerate and synthesize across all valid topologies</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p><a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/docs/notebooks/15_hypergraph_composition.ipynb">Hypergraph Composition</a></p></td>
+<td><p>Compose mechanisms hierarchically from reusable hypergraph components</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-else-can-it-do">
+<h2>What Else Can It Do?<a class="headerlink" href="#what-else-can-it-do" title="Link to this heading"></a></h2>
+<p>Pylinkage also supports velocity and acceleration analysis, <a class="reference external" href="https://en.wikipedia.org/wiki/Cam_(mechanism)">cam-follower</a> mechanisms with configurable motion laws, transmission angle evaluation, <a class="reference external" href="https://en.wikipedia.org/wiki/Monte_Carlo_method">Monte Carlo</a> tolerance analysis for manufacturing, <a class="reference external" href="https://en.wikipedia.org/wiki/Multi-objective_optimization">multi-objective optimization</a> (NSGA-II/III via pymoo), and export to DXF and STEP for CNC and CAD workflows. See the <a class="reference internal" href="#tutorials">tutorials</a> for details.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Level 0: Geometry       → Pure math primitives (numba-accelerated when installed)
+Level 1: Solver         → Assur group solvers (numba-accelerated when installed)
+Level 2: Components     → Ground, Crank, RRRDyad, LinearActuator, cam-followers
+Level 3: Simulation     → Linkage orchestration, step(), step_fast()
+Level 4: Applications   → Optimization, Synthesis, Symbolic, Visualization
+</pre></div>
+</div>
+<p><strong>Performance</strong>: With the <code class="docutils literal notranslate"><span class="pre">numba</span></code> extra, <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> achieves 1.5-2.5M steps/sec (4-7x faster than <code class="docutils literal notranslate"><span class="pre">step()</span></code>). Without numba, the same code runs in pure Python/NumPy.</p>
+<details>
+<summary>Full module reference</summary>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Module</p></th>
@@ -291,7 +401,7 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <td><p>—</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code></p></td>
-<td><p>Assur groups: <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code></p></td>
+<td><p><a class="reference external" href="https://en.wikipedia.org/wiki/Assur_group">Assur groups</a>: <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code></p></td>
 <td><p>—</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.simulation</span></code></p></td>
@@ -302,21 +412,13 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <td><p>Low-level Links+Joints model and <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code></p></td>
 <td><p>—</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code></p></td>
-<td><p>Assur group decomposition and graph representation</p></td>
-<td><p>—</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code></p></td>
-<td><p>Hierarchical component-based linkage definition</p></td>
-<td><p>—</p></td>
-</tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.solver</span></code></p></td>
 <td><p>High-performance numba-compiled simulation backend</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">numba</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code></p></td>
 <td><p>PSO, differential evolution, grid search</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">pso</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scipy</span></code> (DE only)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code></p></td>
 <td><p>Classical synthesis: function/path/motion generation</p></td>
@@ -327,35 +429,47 @@ uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># or pip
 <td><p><code class="docutils literal notranslate"><span class="pre">symbolic</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code></p></td>
-<td><p>Matplotlib, Plotly, and SVG visualization backends</p></td>
+<td><p>Matplotlib, Plotly, SVG, DXF, and STEP export</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">viz</span></code>, <code class="docutils literal notranslate"><span class="pre">plotly</span></code>, <code class="docutils literal notranslate"><span class="pre">svg</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.assur</span></code></p></td>
+<td><p>Assur group decomposition and graph representation</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code></p></td>
+<td><p>Hierarchical component-based linkage definition</p></td>
+<td><p>—</p></td>
 </tr>
 </tbody>
 </table>
+</details>
 </section>
-<section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Level 0: Geometry       → Pure math primitives (numba-accelerated when installed)
-Level 1: Solver         → Assur group solvers (numba-accelerated when installed)
-Level 2: Hypergraph     → Abstract graph structures for linkage topology
-Level 3: Assur          → Formal kinematic theory (DyadRRR, DyadRRP)
-Level 4: User API       → Joint classes + Linkage orchestration
-Level 5: Applications   → Optimization, Synthesis, Symbolic, Visualization
-</pre></div>
-</div>
-<p><strong>Performance</strong>: With the <code class="docutils literal notranslate"><span class="pre">numba</span></code> extra, <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> achieves 1.5-2.5M steps/sec (4-7x faster than <code class="docutils literal notranslate"><span class="pre">step()</span></code>). Without numba, the same code runs in pure Python/NumPy.</p>
+<section id="stability">
+<h2>Stability<a class="headerlink" href="#stability" title="Link to this heading"></a></h2>
+<p>Pylinkage follows <a class="reference external" href="https://semver.org/spec/v2.0.0.html">semantic versioning</a>.
+What that covers, and how a name is retired, is on one page:
+<a class="reference external" href="https://hugofara.github.io/pylinkage/deprecations.html">Deprecations</a>.
+The public surface is pinned in
+<a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/tests/test_public_api.py"><code class="docutils literal notranslate"><span class="pre">tests/test_public_api.py</span></code></a>.</p>
 </section>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Python ≥ 3.10</p></li>
+<li><p>Python &gt;= 3.10</p></li>
 <li><p>Core: numpy, tqdm</p></li>
-<li><p>Optional (via extras): numba, scipy, sympy, pyswarms, matplotlib, plotly, drawsvg</p></li>
+<li><p>Optional (via extras): numba, scipy, sympy, matplotlib, plotly, drawsvg</p></li>
+</ul>
+</section>
+<section id="related-projects">
+<h2>Related Projects<a class="headerlink" href="#related-projects" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong><a class="reference external" href="https://github.com/HugoFara/pylinkage-editor">pylinkage-editor</a></strong> — Visual linkage design tool with an easy-to-use interface. Draw mechanisms interactively, run synthesis from the GUI, and export results. Its Python backend (an HTTP server over pylinkage) lives in that repository too.</p></li>
+<li><p><strong><a class="reference external" href="https://github.com/HugoFara/leggedsnake">leggedsnake</a></strong> — Dynamic walking simulation built on pylinkage. Adds pymunk physics, genetic algorithm optimization, and walking-specific fitness evaluation.</p></li>
 </ul>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
-<p>Contributions welcome! Please see <a class="reference internal" href="#CONTRIBUTING.md"><span class="xref myst">CONTRIBUTING.md</span></a> and respect the <a class="reference internal" href="#CODE_OF_CONDUCT.md"><span class="xref myst">CODE_OF_CONDUCT.md</span></a>.</p>
+<p>Contributions welcome! Please see <a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> and respect the <a class="reference external" href="https://github.com/HugoFara/pylinkage/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a>.</p>
 </section>
 </section>
 

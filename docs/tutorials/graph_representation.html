@@ -6,20 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Graph-Based Linkage Representation &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Graph-Based Linkage Representation &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Custom Joint Creation" href="custom_joints.html" />
+    <link rel="next" title="Custom Components" href="custom_joints.html" />
     <link rel="prev" title="Symbolic Computation" href="symbolic.html" /> 
 </head>
 
@@ -46,6 +47,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -56,17 +59,14 @@
 <li class="toctree-l3"><a class="reference internal" href="synthesis.html">Linkage Synthesis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="symbolic.html">Symbolic Computation</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Graph-Based Linkage Representation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#assur-group-theory">Assur Group Theory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#hypergraph-representation">Hypergraph Representation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#converting-between-representations">Converting Between Representations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#practical-example-stephenson-six-bar">Practical Example: Stephenson Six-bar</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assur-group-theory">Assur Group Theory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#analysis-applications">Analysis Applications</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#serialization">Serialization</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#when-to-use-graph-representations">When to Use Graph Representations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="custom_joints.html">Custom Joint Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_joints.html">Custom Components</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#quick-reference">Quick Reference</a></li>
@@ -115,560 +115,481 @@
 <h1>Graph-Based Linkage Representation<a class="headerlink" href="#graph-based-linkage-representation" title="Link to this heading"></a></h1>
 <p>This tutorial covers pylinkage’s graph-based representations for linkages:</p>
 <ul class="simple">
-<li><p><strong>Assur module</strong>: Formal kinematic decomposition using Assur group theory</p></li>
-<li><p><strong>Hypergraph module</strong>: Hierarchical component-based linkage definition</p></li>
+<li><p><strong>Hypergraph module</strong>: the topology of a mechanism — joints, links and
+rigid bodies — with the geometry kept in a separate <code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> object</p></li>
+<li><p><strong>Assur module</strong>: formal kinematic decomposition of that topology into
+a driver and zero-DOF Assur groups</p></li>
+<li><p><strong>Topology module</strong>: mobility, isomorphism and a catalog of known
+topologies</p></li>
 </ul>
 <p>These representations are useful for:</p>
 <ul class="simple">
 <li><p>Structural analysis of linkage topology</p></li>
-<li><p>Building complex mechanisms from reusable components</p></li>
+<li><p>Building complex mechanisms from reusable sub-assemblies</p></li>
 <li><p>Automated linkage generation and transformation</p></li>
 <li><p>Research in mechanism theory</p></li>
 </ul>
-<section id="assur-group-theory">
-<h2>Assur Group Theory<a class="headerlink" href="#assur-group-theory" title="Link to this heading"></a></h2>
+<p>The examples build one four-bar and hand it from module to module, so run
+them in order.</p>
+<section id="hypergraph-representation">
+<h2>Hypergraph Representation<a class="headerlink" href="#hypergraph-representation" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id2">
-<a class="reference internal image-reference" href="../_images/assur_decomposition.png"><img alt="Assur group decomposition" src="../_images/assur_decomposition.png" style="width: 800px;" />
+<a class="reference internal image-reference" href="../_images/hypergraph_components.png"><img alt="Hypergraph component-based design" src="../_images/hypergraph_components.png" style="width: 800px;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Decomposition of a six-bar linkage into a driver (crank) and two RRR dyads.
-Each Assur group has zero degrees of freedom and can be solved independently.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+<p><span class="caption-text">Component-based linkage design: a library of reusable components (left),
+hierarchical composition (middle), and the flattened result (right).</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <section id="overview">
 <h3>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">HypergraphLinkage</span></code> is pure topology:</p>
+<ul class="simple">
+<li><p><strong>Node</strong>: a joint, with a <code class="docutils literal notranslate"><span class="pre">role</span></code> (<code class="docutils literal notranslate"><span class="pre">GROUND</span></code>, <code class="docutils literal notranslate"><span class="pre">DRIVER</span></code> or <code class="docutils literal notranslate"><span class="pre">DRIVEN</span></code>)
+and a <code class="docutils literal notranslate"><span class="pre">joint_type</span></code> (<code class="docutils literal notranslate"><span class="pre">REVOLUTE</span></code> or <code class="docutils literal notranslate"><span class="pre">PRISMATIC</span></code>). No position.</p></li>
+<li><p><strong>Edge</strong>: a binary link between two joints. No length.</p></li>
+<li><p><strong>Hyperedge</strong>: an N-way rigid body — a ternary link, a chassis.</p></li>
+</ul>
+<p>Geometry — joint positions, link lengths, driver speeds — lives in a
+<code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> object, so one topology can be paired with many geometries.</p>
+</section>
+<section id="creating-a-hypergraph-linkage">
+<h3>Creating a Hypergraph Linkage<a class="headerlink" href="#creating-a-hypergraph-linkage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">HypergraphLinkage</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">NodeRole</span>
+
+<span class="c1"># A four-bar: two grounded joints, one motor-driven crank pin, one</span>
+<span class="c1"># passive coupler-rocker pin</span>
+<span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;FourBar&quot;</span><span class="p">)</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">))</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+
+<span class="c1"># Three binary links: crank A-B, coupler B-C, rocker C-D. The ground</span>
+<span class="c1"># link between A and D is implied by their role.</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">))</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;BC&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">))</span>
+<span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">hg</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="p">[(</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="o">.</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="o">.</span><span class="n">target</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">hg</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Grounds: </span><span class="si">{</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">hg</span><span class="o">.</span><span class="n">ground_nodes</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Drivers: </span><span class="si">{</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">hg</span><span class="o">.</span><span class="n">driver_nodes</span><span class="p">()]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;]
+Edges: [(&#39;AB&#39;, &#39;A&#39;, &#39;B&#39;), (&#39;BC&#39;, &#39;B&#39;, &#39;C&#39;), (&#39;CD&#39;, &#39;C&#39;, &#39;D&#39;)]
+Grounds: [&#39;A&#39;, &#39;D&#39;]
+Drivers: [&#39;B&#39;]
+</pre></div>
+</div>
+</section>
+<section id="attaching-dimensions">
+<h3>Attaching Dimensions<a class="headerlink" href="#attaching-dimensions" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> names the same nodes and edges: an assembly position for
+every joint, a length for every edge, and an angular velocity (radians
+per step) for every driver. Positions are only the starting configuration;
+they also pick the assembly branch, so place <code class="docutils literal notranslate"><span class="pre">C</span></code> on the side you want.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dimensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dimensions</span><span class="p">,</span> <span class="n">DriverAngle</span>
+
+<span class="n">CRANK</span><span class="p">,</span> <span class="n">COUPLER</span><span class="p">,</span> <span class="n">ROCKER</span><span class="p">,</span> <span class="n">GROUND</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span>
+<span class="n">OMEGA</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tau</span> <span class="o">/</span> <span class="mi">60</span>  <span class="c1"># one full turn in 60 steps</span>
+
+<span class="c1"># Crank along +x at phase 0; C on the upper branch, where the coupler</span>
+<span class="c1"># and rocker circles intersect</span>
+<span class="n">bx</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">CRANK</span><span class="p">,</span> <span class="mf">0.0</span>
+<span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">GROUND</span><span class="p">,</span> <span class="mf">0.0</span>
+<span class="n">half</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">dx</span> <span class="o">-</span> <span class="n">bx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">-</span> <span class="n">by</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="o">=</span> <span class="p">(</span><span class="n">bx</span> <span class="o">+</span> <span class="n">dx</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">COUPLER</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">half</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">dims</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span>
+    <span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">bx</span><span class="p">,</span> <span class="n">by</span><span class="p">),</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)},</span>
+    <span class="n">driver_angles</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="n">DriverAngle</span><span class="p">(</span><span class="n">angular_velocity</span><span class="o">=</span><span class="n">OMEGA</span><span class="p">)},</span>
+    <span class="n">edge_distances</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;AB&quot;</span><span class="p">:</span> <span class="n">CRANK</span><span class="p">,</span> <span class="s2">&quot;BC&quot;</span><span class="p">:</span> <span class="n">COUPLER</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">:</span> <span class="n">ROCKER</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Consistency check without raising: an empty list means valid</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dims</span><span class="o">.</span><span class="n">validate_against</span><span class="p">(</span><span class="n">hg</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">hg</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+</pre></div>
+</div>
+</section>
+<section id="converting-to-a-mechanism">
+<h3>Converting to a Mechanism<a class="headerlink" href="#converting-to-a-mechanism" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_mechanism</span>
+
+<span class="n">mechanism</span> <span class="o">=</span> <span class="n">to_mechanism</span><span class="p">(</span><span class="n">hg</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
+<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mechanism</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mechanism joints: </span><span class="si">{</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">mechanism</span><span class="o">.</span><span class="n">joints</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulation steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># The Mechanism draws and animates like a Linkage</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">mechanism</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Mechanism joints: [&#39;A&#39;, &#39;D&#39;, &#39;B&#39;, &#39;C&#39;]
+Simulation steps: 60
+</pre></div>
+</div>
+</section>
+<section id="ternary-links-via-hyperedge">
+<h3>Ternary Links via Hyperedge<a class="headerlink" href="#ternary-links-via-hyperedge" title="Link to this heading"></a></h3>
+<p>A coupler point <code class="docutils literal notranslate"><span class="pre">P</span></code> rigidly attached to the coupler makes B-C-P one
+rigid triangle. A <code class="docutils literal notranslate"><span class="pre">Hyperedge</span></code> records that the three joints share one
+body, which topology analysis needs to count links correctly. The
+hyperedge is membership only: to <em>constrain</em> the triangle, add its three
+edges with their lengths.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hyperedge</span>
+
+<span class="n">hg_coupler</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;CouplerFourBar&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">role</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="p">))</span>
+
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">))</span>
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">))</span>
+<span class="c1"># All three sides of the coupler triangle: this is what makes it rigid</span>
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;BC&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">))</span>
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;BP&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">))</span>
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;CP&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">))</span>
+<span class="c1"># The hyperedge labels the triangle as one body for topology analysis</span>
+<span class="n">hg_coupler</span><span class="o">.</span><span class="n">add_hyperedge</span><span class="p">(</span><span class="n">Hyperedge</span><span class="p">(</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;P&quot;</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;coupler triangle&quot;</span><span class="p">))</span>
+
+<span class="c1"># P sits one unit above the middle of B-C</span>
+<span class="n">ux</span><span class="p">,</span> <span class="n">uy</span> <span class="o">=</span> <span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">bx</span><span class="p">)</span> <span class="o">/</span> <span class="n">COUPLER</span><span class="p">,</span> <span class="p">(</span><span class="n">cy</span> <span class="o">-</span> <span class="n">by</span><span class="p">)</span> <span class="o">/</span> <span class="n">COUPLER</span>
+<span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="n">bx</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">bx</span><span class="p">)</span> <span class="o">-</span> <span class="n">uy</span><span class="p">,</span> <span class="n">by</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">cy</span> <span class="o">-</span> <span class="n">by</span><span class="p">)</span> <span class="o">+</span> <span class="n">ux</span>
+
+<span class="n">dims_coupler</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span>
+    <span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">bx</span><span class="p">,</span> <span class="n">by</span><span class="p">),</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">),</span> <span class="s2">&quot;P&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">),</span> <span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">)},</span>
+    <span class="n">driver_angles</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="n">DriverAngle</span><span class="p">(</span><span class="n">angular_velocity</span><span class="o">=</span><span class="n">OMEGA</span><span class="p">)},</span>
+    <span class="n">edge_distances</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;AB&quot;</span><span class="p">:</span> <span class="n">CRANK</span><span class="p">,</span> <span class="s2">&quot;CD&quot;</span><span class="p">:</span> <span class="n">ROCKER</span><span class="p">,</span> <span class="s2">&quot;BC&quot;</span><span class="p">:</span> <span class="n">COUPLER</span><span class="p">,</span>
+        <span class="s2">&quot;BP&quot;</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="n">bx</span><span class="p">,</span> <span class="n">py</span> <span class="o">-</span> <span class="n">by</span><span class="p">),</span>
+        <span class="s2">&quot;CP&quot;</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="n">cx</span><span class="p">,</span> <span class="n">py</span> <span class="o">-</span> <span class="n">cy</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">coupler_mechanism</span> <span class="o">=</span> <span class="n">to_mechanism</span><span class="p">(</span><span class="n">hg_coupler</span><span class="p">,</span> <span class="n">dims_coupler</span><span class="p">)</span>
+<span class="n">coupler_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">coupler_mechanism</span><span class="o">.</span><span class="n">step</span><span class="p">()]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;P traces </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">coupler_path</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="building-hierarchical-linkages">
+<h3>Building Hierarchical Linkages<a class="headerlink" href="#building-hierarchical-linkages" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ComponentInstance</span></code> wraps a hypergraph with named <strong>ports</strong> — internal
+nodes promoted for external connection. A <code class="docutils literal notranslate"><span class="pre">HierarchicalLinkage</span></code> holds
+instances plus <code class="docutils literal notranslate"><span class="pre">Connection</span></code> objects that fuse one instance’s port with
+another’s; <code class="docutils literal notranslate"><span class="pre">flatten()</span></code> returns a single hypergraph.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComponentInstance</span><span class="p">,</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">HierarchicalLinkage</span>
+
+<span class="c1"># A reusable leg: motor M, knee K, foot F, hip H</span>
+<span class="n">leg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;leg&quot;</span><span class="p">)</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;MK&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;KF&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">))</span>
+<span class="n">leg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;FH&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">))</span>
+
+<span class="c1"># Two legs sharing their hip pivot</span>
+<span class="n">left</span> <span class="o">=</span> <span class="n">ComponentInstance</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="n">leg</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hip&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">})</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">ComponentInstance</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="n">leg</span><span class="p">,</span> <span class="n">ports</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;hip&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">})</span>
+
+<span class="n">chassis</span> <span class="o">=</span> <span class="n">HierarchicalLinkage</span><span class="p">(</span>
+    <span class="n">instances</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="n">left</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="n">right</span><span class="p">},</span>
+    <span class="n">connections</span><span class="o">=</span><span class="p">[</span><span class="n">Connection</span><span class="p">(</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;hip&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;hip&quot;</span><span class="p">)],</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;two-leg chassis&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">flat</span> <span class="o">=</span> <span class="n">chassis</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flattened: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">flat</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">edge</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">edge</span><span class="o">.</span><span class="n">source</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">edge</span><span class="o">.</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Flattened: 7 nodes, 6 edges
+  left.MK: left.M -&gt; left.K
+  left.KF: left.K -&gt; left.F
+  left.FH: left.F -&gt; left.H
+  right.MK: right.M -&gt; right.K
+  right.KF: right.K -&gt; right.F
+  right.FH: right.F -&gt; left.H
+</pre></div>
+</div>
+<p>Both hips became the single node <code class="docutils literal notranslate"><span class="pre">left.H</span></code> (the <code class="docutils literal notranslate"><span class="pre">from</span></code> side of the
+connection is canonical). Instance ids prefix every node and edge, so a
+flattened graph takes <code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> keyed the same way.</p>
+</section>
+</section>
+<section id="assur-group-theory">
+<h2>Assur Group Theory<a class="headerlink" href="#assur-group-theory" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/assur_decomposition.png"><img alt="Assur group decomposition" src="../_images/assur_decomposition.png" style="width: 800px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Decomposition of a six-bar linkage into a driver (crank) and two RRR dyads.
+Each Assur group has zero degrees of freedom and can be solved independently.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<section id="id1">
+<h3>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Assur groups are the fundamental building blocks of planar linkages. Any
 planar linkage can be decomposed into:</p>
 <ol class="arabic simple">
 <li><p>A <strong>driver</strong> (typically a crank)</p></li>
 <li><p>One or more <strong>Assur groups</strong> (zero-DOF kinematic chains)</p></li>
 </ol>
-<p>The main Assur group types in planar mechanisms are:</p>
-<ul class="simple">
-<li><p><strong>RRR dyad</strong>: Three revolute joints forming a triangle</p></li>
-<li><p><strong>RRP dyad</strong>: Two revolute joints and one prismatic joint</p></li>
-<li><p><strong>RPR dyad</strong>: Revolute-prismatic-revolute configuration</p></li>
-<li><p><strong>PRR dyad</strong>: Prismatic-revolute-revolute configuration</p></li>
-</ul>
+<p>The groups pylinkage recognises are dyads — two links, three joints — named
+by their joint types (<code class="docutils literal notranslate"><span class="pre">RRR</span></code>, <code class="docutils literal notranslate"><span class="pre">RRP</span></code>, <code class="docutils literal notranslate"><span class="pre">RPR</span></code>, <code class="docutils literal notranslate"><span class="pre">PRR</span></code>, <code class="docutils literal notranslate"><span class="pre">PP</span></code>) — and the
+six-joint triad. The same classification drives the numeric solver: each
+group class maps to one solver kernel (<code class="docutils literal notranslate"><span class="pre">circle_circle</span></code> for an RRR dyad).</p>
 </section>
-<section id="creating-a-linkage-graph">
-<h3>Creating a Linkage Graph<a class="headerlink" href="#creating-a-linkage-graph" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinkageGraph</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Edge</span>
+<section id="decomposing-a-linkage">
+<h3>Decomposing a Linkage<a class="headerlink" href="#decomposing-a-linkage" title="Link to this heading"></a></h3>
+<p>The Assur module works on a <code class="docutils literal notranslate"><span class="pre">LinkageGraph</span></code>; <code class="docutils literal notranslate"><span class="pre">from_hypergraph</span></code> converts
+the topology built above.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">decompose_assur_groups</span><span class="p">,</span> <span class="n">from_hypergraph</span>
 
-<span class="c1"># Create nodes (joints)</span>
-<span class="n">ground_a</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_ground</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ground_b</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_ground</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">crank_tip</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">coupler</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">from_hypergraph</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
 
-<span class="c1"># Create edges (links)</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-<span class="n">link_cd</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-<span class="n">link_bd</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;rocker&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
-
-<span class="c1"># Assemble the graph</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span>
-    <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="n">ground_a</span><span class="p">,</span> <span class="n">ground_b</span><span class="p">,</span> <span class="n">crank_tip</span><span class="p">,</span> <span class="n">coupler</span><span class="p">],</span>
-    <span class="n">edges</span><span class="o">=</span><span class="p">[</span><span class="n">crank</span><span class="p">,</span> <span class="n">link_cd</span><span class="p">,</span> <span class="n">link_bd</span><span class="p">],</span>
-    <span class="n">driver_edge</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Driver: </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">driver_edge</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground joints: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">ground</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Drivers:       </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">drivers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assur groups:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_signature</span><span class="si">}</span><span class="s2">: &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;solves </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_nodes</span><span class="si">}</span><span class="s2"> from </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">anchor_nodes</span><span class="si">}</span><span class="s2"> &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;through links </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_edges</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Nodes: [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;, &#39;D&#39;]
-Edges: [&#39;crank&#39;, &#39;coupler&#39;, &#39;rocker&#39;]
-Driver: crank
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Ground joints: [&#39;A&#39;, &#39;D&#39;]
+Drivers:       [&#39;B&#39;]
+Assur groups:  1
+  Dyad RRR: solves (&#39;C&#39;,) from (&#39;B&#39;, &#39;D&#39;) through links (&#39;BC&#39;, &#39;CD&#39;)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">validate_decomposition</span></code> returns a list of problems — an empty list
+means every joint is either ground, driven by a motor, or solved by a
+group:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_decomposition</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Problems: </span><span class="si">{</span><span class="n">validate_decomposition</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="decomposing-into-assur-groups">
-<h3>Decomposing into Assur Groups<a class="headerlink" href="#decomposing-into-assur-groups" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">decompose_assur_groups</span>
+<section id="converting-graph-to-mechanism">
+<h3>Converting Graph to Mechanism<a class="headerlink" href="#converting-graph-to-mechanism" title="Link to this heading"></a></h3>
+<p>A <code class="docutils literal notranslate"><span class="pre">LinkageGraph</span></code> plus <code class="docutils literal notranslate"><span class="pre">Dimensions</span></code> gives a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> too, and the
+conversion runs both ways:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_to_mechanism</span><span class="p">,</span> <span class="n">mechanism_to_graph</span>
 
-<span class="c1"># Decompose the linkage</span>
-<span class="n">groups</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+<span class="n">mechanism</span> <span class="o">=</span> <span class="n">graph_to_mechanism</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created mechanism with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mechanism</span><span class="o">.</span><span class="n">joints</span><span class="p">)</span><span class="si">}</span><span class="s2"> joints&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">mechanism</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups:&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Group </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Joints: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Links: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">link_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Back from any Mechanism, e.g. one from MechanismBuilder or synthesis</span>
+<span class="n">graph_back</span><span class="p">,</span> <span class="n">dims_back</span> <span class="o">=</span> <span class="n">mechanism_to_graph</span><span class="p">(</span><span class="n">mechanism</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Recovered </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">graph_back</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, lengths </span><span class="si">{</span><span class="n">dims_back</span><span class="o">.</span><span class="n">edge_distances</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Found 1 Assur groups:
-
-Group 1: DyadRRR
-  Joints: [&#39;C&#39;, &#39;D&#39;]
-  Links: [&#39;coupler&#39;, &#39;rocker&#39;]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Created mechanism with 4 joints
+  A: GroundJoint
+  D: GroundJoint
+  B: RevoluteJoint
+  C: RevoluteJoint
+Recovered 4 nodes, lengths {&#39;edge_0&#39;: 4.0, &#39;edge_1&#39;: 1.0, &#39;edge_2&#39;: 3.0, &#39;edge_3&#39;: 3.0}
 </pre></div>
 </div>
+<p>The recovered graph names its edges <code class="docutils literal notranslate"><span class="pre">edge_0</span></code> … and includes the ground
+link explicitly; the topology is the same, the labels are not.</p>
 </section>
-<section id="assur-group-types">
-<h3>Assur Group Types<a class="headerlink" href="#assur-group-types" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">DyadRRR</span><span class="p">,</span> <span class="n">DyadRRP</span><span class="p">,</span> <span class="n">DyadRPR</span><span class="p">,</span> <span class="n">DyadPRR</span>
+<section id="assurmechanism">
+<h3>AssurMechanism<a class="headerlink" href="#assurmechanism" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">AssurMechanism</span></code> bundles a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> with its decomposition:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">AssurMechanism</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.mechanism</span><span class="w"> </span><span class="kn">import</span> <span class="n">fourbar</span>
 
-<span class="c1"># RRR Dyad: All revolute joints (most common)</span>
-<span class="c1"># Used when both constraints are distance-based</span>
-<span class="n">rrr</span> <span class="o">=</span> <span class="n">DyadRRR</span><span class="p">(</span>
-    <span class="n">joint_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span>
-    <span class="n">link_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="s2">&quot;rocker&quot;</span><span class="p">],</span>
-    <span class="n">parent_joints</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">],</span>
-    <span class="n">distances</span><span class="o">=</span><span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span>
-<span class="p">)</span>
+<span class="n">assur</span> <span class="o">=</span> <span class="n">AssurMechanism</span><span class="o">.</span><span class="n">from_mechanism</span><span class="p">(</span><span class="n">fourbar</span><span class="p">(</span><span class="n">crank</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">coupler</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">rocker</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">ground</span><span class="o">=</span><span class="mf">4.0</span><span class="p">))</span>
 
-<span class="c1"># RRP Dyad: Two revolute, one prismatic</span>
-<span class="c1"># Used when one joint slides along a line</span>
-<span class="n">rrp</span> <span class="o">=</span> <span class="n">DyadRRP</span><span class="p">(</span>
-    <span class="n">joint_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">],</span>
-    <span class="n">link_ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="s2">&quot;slider&quot;</span><span class="p">],</span>
-    <span class="n">parent_joints</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">],</span>
-    <span class="n">distance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
-    <span class="n">line_angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Angle of sliding line</span>
-<span class="p">)</span>
-
-<span class="c1"># Each dyad can be solved independently</span>
-<span class="n">position_c</span><span class="p">,</span> <span class="n">position_d</span> <span class="o">=</span> <span class="n">rrr</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
-    <span class="n">parent_positions</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span>
-    <span class="n">initial_guess</span><span class="o">=</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="converting-graph-to-linkage">
-<h3>Converting Graph to Linkage<a class="headerlink" href="#converting-graph-to-linkage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_to_linkage</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-
-<span class="c1"># Convert graph representation to simulatable Linkage</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">graph_to_linkage</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Created linkage with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">)</span><span class="si">}</span><span class="s2"> joints&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">joint</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">joints</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">joint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">joint</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Now use standard simulation and visualization</span>
-<span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOF: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">degree_of_freedom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assur groups: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">num_assur_groups</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Valid: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">is_valid</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Group signatures: </span><span class="si">{</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">joint_signature</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">assur</span><span class="o">.</span><span class="n">assur_groups</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Created linkage with 2 joints
-  C: Crank
-  D: Revolute
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DOF: 1
+Assur groups: 1
+Valid: True
+Group signatures: [&#39;RRR&#39;]
+</pre></div>
+</div>
+</section>
+<section id="assur-signatures">
+<h3>Assur Signatures<a class="headerlink" href="#assur-signatures" title="Link to this heading"></a></h3>
+<p>A signature string names a group by its joint types. <code class="docutils literal notranslate"><span class="pre">parse_signature</span></code>
+classifies it, and <code class="docutils literal notranslate"><span class="pre">signature_to_hypergraph</span></code> produces the group’s
+topology — anchors plus internal joints — ready to be composed into a
+larger mechanism:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_signature</span><span class="p">,</span> <span class="n">signature_to_hypergraph</span>
+
+<span class="n">signature</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRP&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">signature</span><span class="o">.</span><span class="n">raw_string</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">signature</span><span class="o">.</span><span class="n">group_class</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, joints </span><span class="si">{</span><span class="p">[</span><span class="n">j</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">signature</span><span class="o">.</span><span class="n">joints</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">dyad</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;d1_&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dyad</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Edges: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">dyad</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>RRP: DYAD, joints [&#39;REVOLUTE&#39;, &#39;REVOLUTE&#39;, &#39;PRISMATIC&#39;]
+Nodes: [&#39;d1_anchor_0&#39;, &#39;d1_anchor_1&#39;, &#39;d1_internal_0&#39;]
+Edges: [&#39;d1_link_0&#39;, &#39;d1_link_1&#39;]
 </pre></div>
 </div>
 </section>
 <section id="serializing-linkage-graphs">
 <h3>Serializing Linkage Graphs<a class="headerlink" href="#serializing-linkage-graphs" title="Link to this heading"></a></h3>
-<p>Save and load graph representations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinkageGraph</span><span class="p">,</span> <span class="n">graph_to_json</span><span class="p">,</span> <span class="n">graph_from_json</span>
+<p>Both graph flavours are plain data. <code class="docutils literal notranslate"><span class="pre">graph_to_dict</span></code> gives a JSON-ready
+dictionary; <code class="docutils literal notranslate"><span class="pre">graph_to_json</span></code> writes a file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="c1"># Save to JSON</span>
-<span class="n">json_str</span> <span class="o">=</span> <span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">graph_from_json</span><span class="p">,</span> <span class="n">graph_to_dict</span><span class="p">,</span> <span class="n">graph_to_json</span>
 
-<span class="c1"># Load from JSON</span>
-<span class="n">loaded_graph</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">graph_to_dict</span><span class="p">(</span><span class="n">graph</span><span class="p">)[</span><span class="s2">&quot;nodes&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
 
-<span class="c1"># Save to file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;linkage_graph.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
-
-<span class="c1"># Load from file</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;linkage_graph.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">graph</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;fourbar_assur.json&quot;</span>
+    <span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="n">loaded</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reloaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loaded</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loaded</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The hypergraph module has the same four functions for <code class="docutils literal notranslate"><span class="pre">HypergraphLinkage</span></code>
+(<code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph.graph_to_json</span></code> …) plus <code class="docutils literal notranslate"><span class="pre">hierarchical_to_json</span></code> /
+<code class="docutils literal notranslate"><span class="pre">hierarchical_from_json</span></code> for a <code class="docutils literal notranslate"><span class="pre">HierarchicalLinkage</span></code>.</p>
 </section>
-</section>
-<section id="hypergraph-representation">
-<h2>Hypergraph Representation<a class="headerlink" href="#hypergraph-representation" title="Link to this heading"></a></h2>
-<figure class="align-center" id="id3">
-<a class="reference internal image-reference" href="../_images/hypergraph_components.png"><img alt="Hypergraph component-based design" src="../_images/hypergraph_components.png" style="width: 800px;" />
-</a>
-<figcaption>
-<p><span class="caption-text">Component-based linkage design: a library of reusable components (left),
-hierarchical composition (middle), and the flattened result (right).</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-<section id="id1">
-<h3>Overview<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<p>The hypergraph module provides a higher-level abstraction for building
-complex linkages from reusable components. Key concepts:</p>
-<ul class="simple">
-<li><p><strong>Node</strong>: A point in the linkage (joint location)</p></li>
-<li><p><strong>Edge</strong>: A binary connection (link between two nodes)</p></li>
-<li><p><strong>Hyperedge</strong>: A connection involving multiple nodes (complex joints)</p></li>
-<li><p><strong>Component</strong>: A reusable subgraph with ports for connection</p></li>
-<li><p><strong>HierarchicalLinkage</strong>: A linkage built from component instances</p></li>
-</ul>
-</section>
-<section id="creating-a-hypergraph-linkage">
-<h3>Creating a Hypergraph Linkage<a class="headerlink" href="#creating-a-hypergraph-linkage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">HypergraphLinkage</span><span class="p">,</span>
-    <span class="n">Node</span><span class="p">,</span>
-    <span class="n">Edge</span><span class="p">,</span>
-    <span class="n">Hyperedge</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Create a simple four-bar as a hypergraph</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">()</span>
-
-<span class="c1"># Add nodes</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-
-<span class="c1"># Add edges (links)</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">1.0</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;coupler_link&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.0</span><span class="p">))</span>
-<span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;rocker&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">3.0</span><span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hypergraph has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="defining-reusable-components">
-<h3>Defining Reusable Components<a class="headerlink" href="#defining-reusable-components" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">Component</span><span class="p">,</span> <span class="n">Port</span>
-
-<span class="c1"># Define a four-bar component with configurable ports</span>
-<span class="n">fourbar_component</span> <span class="o">=</span> <span class="n">Component</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;FourBar&quot;</span><span class="p">,</span>
-    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A standard four-bar linkage&quot;</span><span class="p">,</span>
-
-    <span class="c1"># Define connection ports</span>
-    <span class="n">ports</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">Port</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Crank output&quot;</span><span class="p">),</span>
-        <span class="n">Port</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Coupler point&quot;</span><span class="p">),</span>
-        <span class="n">Port</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fixed pivot A&quot;</span><span class="p">),</span>
-        <span class="n">Port</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span> <span class="n">node</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fixed pivot B&quot;</span><span class="p">),</span>
-    <span class="p">],</span>
-
-    <span class="c1"># Define parameters</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;crank_length&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s2">&quot;coupler_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-        <span class="s2">&quot;rocker_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-        <span class="s2">&quot;ground_length&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
-    <span class="p">},</span>
-<span class="p">)</span>
-
-<span class="c1"># Add the internal structure</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{ground_length}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_fixed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{crank_length}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;crank&quot;</span><span class="p">,</span>
-    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span>
-    <span class="n">length</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{crank_length}</span><span class="s2">&quot;</span>
-<span class="p">))</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;coupler_link&quot;</span><span class="p">,</span>
-    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;crank_tip&quot;</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span>
-    <span class="n">length</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{coupler_length}</span><span class="s2">&quot;</span>
-<span class="p">))</span>
-<span class="n">fourbar_component</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;rocker&quot;</span><span class="p">,</span>
-    <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ground_b&quot;</span><span class="p">,</span>
-    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;coupler&quot;</span><span class="p">,</span>
-    <span class="n">length</span><span class="o">=</span><span class="s2">&quot;$</span><span class="si">{rocker_length}</span><span class="s2">&quot;</span>
-<span class="p">))</span>
-</pre></div>
-</div>
-</section>
-<section id="using-built-in-components">
-<h3>Using Built-in Components<a class="headerlink" href="#using-built-in-components" title="Link to this heading"></a></h3>
-<p>Pylinkage provides pre-built components:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">FOURBAR</span><span class="p">,</span> <span class="n">DYAD</span><span class="p">,</span> <span class="n">CRANK_SLIDER</span>
-
-<span class="c1"># Use the built-in four-bar component</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FOURBAR ports: </span><span class="si">{</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">FOURBAR</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;FOURBAR parameters: </span><span class="si">{</span><span class="n">FOURBAR</span><span class="o">.</span><span class="n">parameters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Use the built-in dyad component</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DYAD ports: </span><span class="si">{</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">id</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">DYAD</span><span class="o">.</span><span class="n">ports</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Expected output:</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>FOURBAR ports: [&#39;input&#39;, &#39;output&#39;, &#39;ground_a&#39;, &#39;ground_b&#39;]
-FOURBAR parameters: {&#39;crank_length&#39;: 1.0, &#39;coupler_length&#39;: 3.0, ...}
-DYAD ports: [&#39;input_a&#39;, &#39;input_b&#39;, &#39;output&#39;]
-</pre></div>
-</div>
-</section>
-<section id="building-hierarchical-linkages">
-<h3>Building Hierarchical Linkages<a class="headerlink" href="#building-hierarchical-linkages" title="Link to this heading"></a></h3>
-<p>Compose complex mechanisms from component instances:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">HierarchicalLinkage</span><span class="p">,</span>
-    <span class="n">ComponentInstance</span><span class="p">,</span>
-    <span class="n">Connection</span><span class="p">,</span>
-    <span class="n">FOURBAR</span><span class="p">,</span>
-    <span class="n">DYAD</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Create a hierarchical linkage</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">HierarchicalLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Double Four-bar&quot;</span><span class="p">)</span>
-
-<span class="c1"># Add component instances</span>
-<span class="n">linkage</span><span class="o">.</span><span class="n">add_instance</span><span class="p">(</span><span class="n">ComponentInstance</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fourbar1&quot;</span><span class="p">,</span>
-    <span class="n">component</span><span class="o">=</span><span class="n">FOURBAR</span><span class="p">,</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;crank_length&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s2">&quot;coupler_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-        <span class="s2">&quot;rocker_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-        <span class="s2">&quot;ground_length&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">))</span>
-
-<span class="n">linkage</span><span class="o">.</span><span class="n">add_instance</span><span class="p">(</span><span class="n">ComponentInstance</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;fourbar2&quot;</span><span class="p">,</span>
-    <span class="n">component</span><span class="o">=</span><span class="n">FOURBAR</span><span class="p">,</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;crank_length&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
-        <span class="s2">&quot;coupler_length&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
-        <span class="s2">&quot;rocker_length&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
-        <span class="s2">&quot;ground_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">))</span>
-
-<span class="c1"># Connect the two four-bars</span>
-<span class="n">linkage</span><span class="o">.</span><span class="n">add_connection</span><span class="p">(</span><span class="n">Connection</span><span class="p">(</span>
-    <span class="n">source_instance</span><span class="o">=</span><span class="s2">&quot;fourbar1&quot;</span><span class="p">,</span>
-    <span class="n">source_port</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>
-    <span class="n">target_instance</span><span class="o">=</span><span class="s2">&quot;fourbar2&quot;</span><span class="p">,</span>
-    <span class="n">target_port</span><span class="o">=</span><span class="s2">&quot;ground_a&quot;</span><span class="p">,</span>
-<span class="p">))</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Hierarchical linkage has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">instances</span><span class="p">)</span><span class="si">}</span><span class="s2"> instances&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="flattening-to-hypergraph">
-<h3>Flattening to Hypergraph<a class="headerlink" href="#flattening-to-hypergraph" title="Link to this heading"></a></h3>
-<p>Convert a hierarchical linkage to a flat hypergraph:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Flatten the hierarchy</span>
-<span class="n">flat_graph</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flattened graph has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">flat_graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flattened graph has </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">flat_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges&quot;</span><span class="p">)</span>
-
-<span class="c1"># Convert to simulatable Linkage</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_linkage</span>
-
-<span class="n">sim_linkage</span> <span class="o">=</span> <span class="n">to_linkage</span><span class="p">(</span><span class="n">flat_graph</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="converting-between-representations">
-<h2>Converting Between Representations<a class="headerlink" href="#converting-between-representations" title="Link to this heading"></a></h2>
-<section id="hypergraph-to-assur-graph">
-<h3>Hypergraph to Assur Graph<a class="headerlink" href="#hypergraph-to-assur-graph" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_assur_graph</span>
-
-<span class="n">assur_graph</span> <span class="o">=</span> <span class="n">to_assur_graph</span><span class="p">(</span><span class="n">flat_graph</span><span class="p">)</span>
-
-<span class="c1"># Now use Assur decomposition</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">decompose_assur_groups</span>
-
-<span class="n">groups</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">assur_graph</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Decomposed into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="linkage-to-hypergraph">
-<h3>Linkage to Hypergraph<a class="headerlink" href="#linkage-to-hypergraph" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">from_linkage</span>
-
-<span class="c1"># Create a standard linkage</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span> <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span><span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">))</span>
-
-<span class="c1"># Convert to hypergraph</span>
-<span class="n">graph</span> <span class="o">=</span> <span class="n">from_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converted to hypergraph with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="practical-example-stephenson-six-bar">
-<h2>Practical Example: Stephenson Six-bar<a class="headerlink" href="#practical-example-stephenson-six-bar" title="Link to this heading"></a></h2>
-<p>Build a Stephenson Type I six-bar linkage using components:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">HierarchicalLinkage</span><span class="p">,</span>
-    <span class="n">ComponentInstance</span><span class="p">,</span>
-    <span class="n">Connection</span><span class="p">,</span>
-    <span class="n">FOURBAR</span><span class="p">,</span>
-    <span class="n">DYAD</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Stephenson I: Four-bar with a dyad attached to the coupler</span>
-<span class="n">stephenson</span> <span class="o">=</span> <span class="n">HierarchicalLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Stephenson Type I&quot;</span><span class="p">)</span>
-
-<span class="c1"># Base four-bar</span>
-<span class="n">stephenson</span><span class="o">.</span><span class="n">add_instance</span><span class="p">(</span><span class="n">ComponentInstance</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;base_fourbar&quot;</span><span class="p">,</span>
-    <span class="n">component</span><span class="o">=</span><span class="n">FOURBAR</span><span class="p">,</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;crank_length&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s2">&quot;coupler_length&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
-        <span class="s2">&quot;rocker_length&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
-        <span class="s2">&quot;ground_length&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">))</span>
-
-<span class="c1"># Additional dyad attached to coupler</span>
-<span class="n">stephenson</span><span class="o">.</span><span class="n">add_instance</span><span class="p">(</span><span class="n">ComponentInstance</span><span class="p">(</span>
-    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;extra_dyad&quot;</span><span class="p">,</span>
-    <span class="n">component</span><span class="o">=</span><span class="n">DYAD</span><span class="p">,</span>
-    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;length_a&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
-        <span class="s2">&quot;length_b&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
-    <span class="p">},</span>
-<span class="p">))</span>
-
-<span class="c1"># Connect dyad to four-bar coupler and ground</span>
-<span class="n">stephenson</span><span class="o">.</span><span class="n">add_connection</span><span class="p">(</span><span class="n">Connection</span><span class="p">(</span>
-    <span class="n">source_instance</span><span class="o">=</span><span class="s2">&quot;base_fourbar&quot;</span><span class="p">,</span>
-    <span class="n">source_port</span><span class="o">=</span><span class="s2">&quot;coupler_point&quot;</span><span class="p">,</span>
-    <span class="n">target_instance</span><span class="o">=</span><span class="s2">&quot;extra_dyad&quot;</span><span class="p">,</span>
-    <span class="n">target_port</span><span class="o">=</span><span class="s2">&quot;input_a&quot;</span><span class="p">,</span>
-<span class="p">))</span>
-
-<span class="n">stephenson</span><span class="o">.</span><span class="n">add_connection</span><span class="p">(</span><span class="n">Connection</span><span class="p">(</span>
-    <span class="n">source_instance</span><span class="o">=</span><span class="s2">&quot;base_fourbar&quot;</span><span class="p">,</span>
-    <span class="n">source_port</span><span class="o">=</span><span class="s2">&quot;ground_c&quot;</span><span class="p">,</span>  <span class="c1"># Additional ground point</span>
-    <span class="n">target_instance</span><span class="o">=</span><span class="s2">&quot;extra_dyad&quot;</span><span class="p">,</span>
-    <span class="n">target_port</span><span class="o">=</span><span class="s2">&quot;input_b&quot;</span><span class="p">,</span>
-<span class="p">))</span>
-
-<span class="c1"># Flatten and simulate</span>
-<span class="n">flat</span> <span class="o">=</span> <span class="n">stephenson</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">to_linkage</span><span class="p">(</span><span class="n">flat</span><span class="p">)</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-</pre></div>
-</div>
 </section>
 <section id="analysis-applications">
 <h2>Analysis Applications<a class="headerlink" href="#analysis-applications" title="Link to this heading"></a></h2>
 <section id="mobility-analysis">
 <h3>Mobility Analysis<a class="headerlink" href="#mobility-analysis" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_mobility</span>
+<p><code class="docutils literal notranslate"><span class="pre">compute_mobility</span></code> applies the Kutzbach–Grübler equation
+<span class="math notranslate nohighlight">\(M = 3(n - 1) - 2 j_1 - j_2\)</span> to a hypergraph. Every edge counts as
+one binary link, every hyperedge as one rigid body, plus the ground; every
+node is a one-DOF joint.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_dof</span><span class="p">,</span> <span class="n">compute_mobility</span>
 
-<span class="c1"># Gruebler&#39;s equation: M = 3(n-1) - 2*j1 - j2</span>
-<span class="c1"># n = number of links, j1 = 1-DOF joints, j2 = 2-DOF joints</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">compute_mobility</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Links: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">num_links</span><span class="si">}</span><span class="s2">, full joints: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">num_full_joints</span><span class="si">}</span><span class="s2">, DOF: </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">dof</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="n">mobility</span> <span class="o">=</span> <span class="n">compute_mobility</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mechanism mobility (DOF): </span><span class="si">{</span><span class="n">mobility</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
+<span class="n">mobility</span> <span class="o">=</span> <span class="n">compute_dof</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">mobility</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Single-DOF mechanism (typical linkage)&quot;</span><span class="p">)</span>
 <span class="k">elif</span> <span class="n">mobility</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Structure (no motion)&quot;</span><span class="p">)</span>
-<span class="k">elif</span> <span class="n">mobility</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+<span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Under-constrained (</span><span class="si">{</span><span class="n">mobility</span><span class="si">}</span><span class="s2"> DOF)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="structural-classification">
-<h3>Structural Classification<a class="headerlink" href="#structural-classification" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">classify_structure</span>
-
-<span class="n">classification</span> <span class="o">=</span> <span class="n">classify_structure</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Structure type: </span><span class="si">{</span><span class="n">classification</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is overconstrained: </span><span class="si">{</span><span class="n">classification</span><span class="o">.</span><span class="n">is_overconstrained</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is underconstrained: </span><span class="si">{</span><span class="n">classification</span><span class="o">.</span><span class="n">is_underconstrained</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Redundant constraints: </span><span class="si">{</span><span class="n">classification</span><span class="o">.</span><span class="n">redundant_constraints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Links: 4, full joints: 4, DOF: 1
+Single-DOF mechanism (typical linkage)
 </pre></div>
 </div>
+<p>Because a hyperedge is a link of its own, a ternary link meant for
+mobility analysis is a hyperedge with <strong>no</strong> edges among its nodes — the
+convention the topology catalog below follows. The coupler four-bar above
+adds the triangle’s edges so that <code class="docutils literal notranslate"><span class="pre">to_mechanism</span></code> can solve it, and
+<code class="docutils literal notranslate"><span class="pre">compute_dof</span></code> then counts the same body four times; for its mobility,
+analyze the topology without the coupler point, or rebuild it
+hyperedge-only.</p>
 </section>
 <section id="isomorphism-detection">
 <h3>Isomorphism Detection<a class="headerlink" href="#isomorphism-detection" title="Link to this heading"></a></h3>
-<p>Check if two linkages have the same topology:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">are_isomorphic</span>
+<p>Two linkages have the same topology when their graphs are isomorphic,
+whatever the node names or the dimensions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">are_isomorphic</span><span class="p">,</span> <span class="n">canonical_hash</span>
 
-<span class="n">graph1</span> <span class="o">=</span> <span class="n">create_fourbar_graph</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-<span class="n">graph2</span> <span class="o">=</span> <span class="n">create_fourbar_graph</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># Different dimensions, same topology</span>
+<span class="n">other</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;renamed&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">role</span> <span class="ow">in</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">),</span>
+<span class="p">]:</span>
+    <span class="n">other</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="p">))</span>
+<span class="n">other</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;e1&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">))</span>
+<span class="n">other</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;e2&quot;</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">))</span>
+<span class="n">other</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;e3&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">))</span>
 
-<span class="k">if</span> <span class="n">are_isomorphic</span><span class="p">(</span><span class="n">graph1</span><span class="p">,</span> <span class="n">graph2</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Linkages have the same topology&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Different topologies&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same topology: </span><span class="si">{</span><span class="n">are_isomorphic</span><span class="p">(</span><span class="n">hg</span><span class="p">,</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Same hash: </span><span class="si">{</span><span class="n">canonical_hash</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">canonical_hash</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coupler four-bar is a four-bar: </span><span class="si">{</span><span class="n">are_isomorphic</span><span class="p">(</span><span class="n">hg</span><span class="p">,</span><span class="w"> </span><span class="n">hg_coupler</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Same topology: True
+Same hash: True
+Coupler four-bar is a four-bar: False
 </pre></div>
 </div>
 </section>
-</section>
-<section id="serialization">
-<h2>Serialization<a class="headerlink" href="#serialization" title="Link to this heading"></a></h2>
-<p>Save and load hypergraph representations:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">hypergraph_to_json</span><span class="p">,</span>
-    <span class="n">hypergraph_from_json</span><span class="p">,</span>
-    <span class="n">component_to_json</span><span class="p">,</span>
-    <span class="n">component_from_json</span><span class="p">,</span>
-<span class="p">)</span>
+<section id="the-topology-catalog">
+<h3>The Topology Catalog<a class="headerlink" href="#the-topology-catalog" title="Link to this heading"></a></h3>
+<p>Known one-DOF topologies up to eight links ship as a catalog, each with
+its Assur decomposition and a ready-made hypergraph:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.topology</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_catalog</span>
 
-<span class="c1"># Save hypergraph</span>
-<span class="n">json_str</span> <span class="o">=</span> <span class="n">hypergraph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;linkage.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_str</span><span class="p">)</span>
+<span class="n">catalog</span> <span class="o">=</span> <span class="n">load_catalog</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">by_num_links</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">num_joints</span><span class="si">}</span><span class="s2"> joints, groups </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">assur_groups</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Load hypergraph</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;linkage.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">loaded</span> <span class="o">=</span> <span class="n">hypergraph_from_json</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-
-<span class="c1"># Save custom components for reuse</span>
-<span class="n">component_json</span> <span class="o">=</span> <span class="n">component_to_json</span><span class="p">(</span><span class="n">fourbar_component</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;fourbar_component.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">component_json</span><span class="p">)</span>
+<span class="n">stephenson</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stephenson&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_graph</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stephenson: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stephenson</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stephenson</span><span class="o">.</span><span class="n">hyperedges</span><span class="p">)</span><span class="si">}</span><span class="s2"> ternary links&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p><strong>Expected output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>watt: Watt six-bar, 7 joints, groups (&#39;RRR&#39;, &#39;RRR&#39;)
+stephenson: Stephenson six-bar, 7 joints, groups (&#39;RRRRRR&#39;,)
+Stephenson: 7 nodes, 2 ternary links
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.multi_topology_synthesize</span></code> searches this catalog for
+mechanisms whose coupler passes through given points; see <a class="reference internal" href="synthesis.html"><span class="doc">Linkage Synthesis</span></a>.</p>
+</section>
 </section>
 <section id="when-to-use-graph-representations">
 <h2>When to Use Graph Representations<a class="headerlink" href="#when-to-use-graph-representations" title="Link to this heading"></a></h2>
-<p><strong>Use Assur module when:</strong></p>
+<p><strong>Use the Hypergraph module when:</strong></p>
+<ul class="simple">
+<li><p>You’re building complex mechanisms from parts</p></li>
+<li><p>You need a topology without geometry to reason about — enumeration,
+isomorphism, mobility</p></li>
+<li><p>You want to pair one topology with many dimension sets</p></li>
+</ul>
+<p><strong>Use the Assur module when:</strong></p>
 <ul class="simple">
 <li><p>You need formal kinematic analysis</p></li>
 <li><p>You want to understand the structure of a linkage</p></li>
 <li><p>You’re implementing new solving algorithms</p></li>
-<li><p>You need to verify linkage properties</p></li>
 </ul>
-<p><strong>Use Hypergraph module when:</strong></p>
-<ul class="simple">
-<li><p>You’re building complex mechanisms from parts</p></li>
-<li><p>You want reusable component libraries</p></li>
-<li><p>You need to transform or manipulate linkage topology</p></li>
-<li><p>You’re doing research on linkage generation</p></li>
-</ul>
-<p><strong>Use standard Linkage class when:</strong></p>
+<p><strong>Use the component API (``Linkage``) or ``MechanismBuilder`` when:</strong></p>
 <ul class="simple">
 <li><p>You just need simulation and visualization</p></li>
 <li><p>You’re doing optimization</p></li>
 <li><p>You have a simple mechanism</p></li>
-<li><p>Performance is critical</p></li>
 </ul>
 </section>
 <section id="next-steps">
@@ -676,8 +597,9 @@ DYAD ports: [&#39;input_a&#39;, &#39;input_b&#39;, &#39;output&#39;]
 <ul class="simple">
 <li><p><a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> - Basic linkage simulation</p></li>
 <li><p><a class="reference internal" href="synthesis.html"><span class="doc">Linkage Synthesis</span></a> - Design linkages from requirements</p></li>
-<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.assur</span></code> for Assur group API</p></li>
-<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code> for hypergraph API</p></li>
+<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code> for the hypergraph API</p></li>
+<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.assur</span></code> for the Assur group API</p></li>
+<li><p>See <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.topology</span></code> for mobility, isomorphism and the catalog</p></li>
 </ul>
 </section>
 </section>
@@ -687,7 +609,7 @@ DYAD ports: [&#39;input_a&#39;, &#39;input_b&#39;, &#39;output&#39;]
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="symbolic.html" class="btn btn-neutral float-left" title="Symbolic Computation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="custom_joints.html" class="btn btn-neutral float-right" title="Custom Joint Creation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="custom_joints.html" class="btn btn-neutral float-right" title="Custom Components" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
