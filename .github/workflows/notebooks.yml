@@ -1,6 +1,8 @@
-# Executes every tutorial notebook so a breaking API change cannot silently
-# leave the docs teaching a signature that no longer exists.
-name: Notebooks
+# Executes the documentation's code -- every tutorial notebook, every example
+# script and every code block of every tutorial page -- so a breaking API
+# change cannot silently leave the docs teaching a signature that no longer
+# exists.
+name: Executable docs
 
 on:
   push:
@@ -43,3 +45,19 @@ jobs:
             fi
           done
           exit $status
+
+  # docs/examples/*.py and the python blocks of docs/source/tutorials/*.rst,
+  # through tests/docs (deselected from the default pytest run by marker).
+  examples-and-tutorials:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+      - name: Install dependencies
+        run: uv sync --extra full --extra cad --extra analysis
+      - name: Execute example scripts and tutorial pages
+        run: uv run --extra full --extra cad --extra analysis pytest -m docs
