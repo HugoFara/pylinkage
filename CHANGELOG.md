@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 What the version number promises, and how a name is retired, is in
 the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
+## [Unreleased]
+
+### Added
+
+- **The documentation's code runs in CI.** `tests/docs` executes every
+  script under `docs/examples/` and every python block of every page under
+  `docs/source/tutorials/`, in a subprocess with `DeprecationWarning` as an
+  error. Marked `docs` and deselected from the default `pytest` run (minutes,
+  every optional backend); the "Executable docs" workflow runs them next to
+  the notebooks. Four examples and ten tutorials had been broken for a
+  release without anything noticing.
+
 ## [1.2.0] - 2026-09-12
 
 ### Added

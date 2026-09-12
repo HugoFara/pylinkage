@@ -91,7 +91,10 @@ packages = ["src/pylinkage"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v"
+# tests/docs executes the example scripts and tutorial pages: minutes, and
+# every optional backend. Select them explicitly with `-m docs`.
+addopts = "-v -m 'not docs'"
+markers = ["docs: executes the documentation's code (slow, needs all extras)"]
 
 [tool.mypy]
 python_version = "3.10"
