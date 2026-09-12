@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any, overload
 import numpy as np
 from numpy.typing import NDArray
 
+from .._compat import get_parts
 from ..bridge.solver_conversion import linkage_to_solver_data
 from ..optimization.collections.agent import Agent
 from ..optimization.collections.pareto import ParetoFront
@@ -54,7 +55,11 @@ class Ensemble:
         scores: dict[str, NDArray[np.float64]] | None = None,
     ) -> None:
         self._linkage = linkage
-        self._template: SolverData = linkage_to_solver_data(linkage)
+        # Compiled on first use: an Ensemble is also the return type of every
+        # optimizer, and an optimizer never needs the numba solver. Compiling
+        # eagerly would refuse linkages the solver cannot represent (PPDyad,
+        # cam followers, duck-typed containers) before any optimization ran.
+        self._template: SolverData | None = None
         self._dimensions = np.ascontiguousarray(dimensions, dtype=np.float64)
         self._initial_positions = np.ascontiguousarray(
             initial_positions,
@@ -85,7 +90,20 @@ class Ensemble:
     @property
     def n_joints(self) -> int:
         """Number of joints in the shared topology."""
-        return self._template.n_joints
+        return int(self._initial_positions.shape[1])
+
+    @property
+    def template(self) -> SolverData:
+        """Shared solver data for the topology, compiled on first access.
+
+        Raises:
+            NotImplementedError: If the numba solver cannot represent the
+                linkage. Such an Ensemble still holds its members and scores;
+                only batch simulation is unavailable.
+        """
+        if self._template is None:
+            self._template = linkage_to_solver_data(self._linkage)
+        return self._template
 
     @property
     def dimensions(self) -> NDArray[np.float64]:
@@ -119,7 +137,7 @@ class Ensemble:
         Two linkages with the same topology_key are structurally identical
         and can be merged into one Ensemble.
         """
-        t = self._template
+        t = self.template
         return (
             tuple(int(x) for x in t.joint_types),
             tuple(tuple(int(x) for x in row) for row in t.parent_indices),
@@ -185,7 +203,7 @@ class Ensemble:
             iterations = self._linkage.get_rotation_period()
 
         result = simulate_batch(
-            self._template,
+            self.template,
             self._dimensions,
             self._initial_positions,
             iterations,
@@ -215,7 +233,7 @@ class Ensemble:
 
         # One-off simulation for a single member
         traj = simulate_batch(
-            self._template,
+            self.template,
             self._dimensions[idx : idx + 1],
             self._initial_positions[idx : idx + 1],
             iterations,
@@ -271,8 +289,7 @@ class Ensemble:
             linkage: The linkage that was optimized.
             agents: Results from PSO, grid search, etc.
         """
-        template = linkage_to_solver_data(linkage)
-        n_joints = template.n_joints
+        n_joints = len(get_parts(linkage))
 
         dims = np.array([np.asarray(a.dimensions) for a in agents], dtype=np.float64)
         scores_arr = np.array([a.score for a in agents], dtype=np.float64)
@@ -305,8 +322,7 @@ class Ensemble:
             linkage: The linkage that was optimized.
             front: Pareto front result.
         """
-        template = linkage_to_solver_data(linkage)
-        n_joints = template.n_joints
+        n_joints = len(get_parts(linkage))
 
         dims = np.array(
             [np.asarray(s.dimensions) for s in front.solutions],
@@ -470,7 +486,7 @@ class Ensemble:
 
         ens = Ensemble.__new__(Ensemble)
         ens._linkage = self._linkage
-        ens._template = self._template  # shared, read-only
+        ens._template = self._template  # shared, read-only; None until compiled
         ens._dimensions = np.ascontiguousarray(new_dims)
         ens._initial_positions = np.ascontiguousarray(new_pos)
         ens._scores = new_scores

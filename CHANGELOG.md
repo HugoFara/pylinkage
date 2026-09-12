@@ -185,6 +185,18 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **Optimizers accept every linkage again.** `Ensemble` compiled its numba
+  solver template on construction, and since the solver started refusing
+  dyads it cannot represent, every optimizer that returns an `Ensemble`
+  (`particle_swarm_optimization`, `multi_objective_optimization`, …) raised
+  `NotImplementedError` for a linkage holding a `PPDyad`, a cam follower, or
+  leggedsnake's `Walker` — none of which the optimizer itself needed the
+  solver for. The template is now compiled on first use (`Ensemble.template`,
+  `simulate()`, `topology_key`), so those linkages optimize as they did in
+  1.1.1 and the clear error only appears where batch simulation is asked for.
+- **`pip install pylinkage` works on Python 3.10.** `mechanism.builder`
+  imports `Self` from `typing_extensions` below 3.11 but the package never
+  declared it, so a fresh 3.10 environment failed at `import pylinkage`.
 - **The benchmarks page figures are regenerated** against the above, and its
   breakdown of `path_generation()` is rewritten: Burmester synthesis over the
   orientation grid is now 87% of the runtime and verification under 10%, the
