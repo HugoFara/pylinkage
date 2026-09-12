@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from .core import build_connections, build_rails, get_components
 from .symbols import SymbolType, get_symbol_spec
 
 if TYPE_CHECKING:
@@ -278,7 +279,7 @@ def build_linkage_3d(
     frame_positions = loci[frame_index]
     current_positions: dict[object, tuple[float, float]] = {
         joint: (frame_positions[i][0] or 0.0, frame_positions[i][1] or 0.0)
-        for i, joint in enumerate(linkage.joints)
+        for i, joint in enumerate(get_components(linkage))
     }
 
     def get_position(joint: object) -> tuple[float, float]:
@@ -288,104 +289,55 @@ def build_linkage_3d(
         coord = joint.coord()  # type: ignore[attr-defined]
         return (coord[0] or 0.0, coord[1] or 0.0)
 
-    from .core import is_prismatic_like, is_revolute_like
-
-    # Collect all parts
+    # Collect all parts: links, then slider rails, each on its own z level
+    components = get_components(linkage)
     parts: list[Any] = []
     link_index = 0
-    drawn_links: set[tuple[int, int]] = set()
+    for p_idx, c_idx in build_connections(linkage, components):
+        parent_pos = get_position(components[p_idx])
+        pos = get_position(components[c_idx])
+        # Stagger links in z to avoid intersection
+        link_z = z_offset + link_index * link_profile.thickness * 0.1
+        link_part = _create_link_bar(
+            bd,
+            parent_pos[0],
+            parent_pos[1],
+            pos[0],
+            pos[1],
+            link_profile,
+            z_offset=link_z,
+            hole_radius=joint_profile.radius if include_pins else None,
+        )
+        if link_part is not None:
+            parts.append(link_part)
+            link_index += 1
 
-    # Build links
-    for joint in linkage.joints:
-        pos = get_position(joint)
-
-        # Link to joint0
-        joint0 = getattr(joint, "joint0", None)
-        if joint0 is not None:
-            parent_pos = get_position(joint0)
-
-            joint_ids = (id(joint), id(joint0))
-            rev_ids = (id(joint0), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                # Calculate z-offset for this link to avoid intersection
-                link_z = z_offset + link_index * link_profile.thickness * 0.1
-
-                link_part = _create_link_bar(
-                    bd,
-                    parent_pos[0],
-                    parent_pos[1],
-                    pos[0],
-                    pos[1],
-                    link_profile,
-                    z_offset=link_z,
-                    hole_radius=joint_profile.radius if include_pins else None,
-                )
-                if link_part is not None:
-                    parts.append(link_part)
-                    drawn_links.add(joint_ids)
-                    link_index += 1
-
-        # Link to joint1 for applicable joint types
-        joint1 = getattr(joint, "joint1", None)
-        if joint1 is not None and is_revolute_like(joint):
-            parent_pos = get_position(joint1)
-
-            joint_ids = (id(joint), id(joint1))
-            rev_ids = (id(joint1), id(joint))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_z = z_offset + link_index * link_profile.thickness * 0.1
-
-                link_part = _create_link_bar(
-                    bd,
-                    parent_pos[0],
-                    parent_pos[1],
-                    pos[0],
-                    pos[1],
-                    link_profile,
-                    z_offset=link_z,
-                    hole_radius=joint_profile.radius if include_pins else None,
-                )
-                if link_part is not None:
-                    parts.append(link_part)
-                    drawn_links.add(joint_ids)
-                    link_index += 1
-
-        # Prismatic constraint link
-        p_joint1 = getattr(joint, "joint1", None)
-        p_joint2 = getattr(joint, "joint2", None)
-        if is_prismatic_like(joint) and p_joint1 is not None and p_joint2 is not None:
-            p1_pos = get_position(p_joint1)
-            p2_pos = get_position(p_joint2)
-
-            joint_ids = (id(p_joint1), id(p_joint2))
-            rev_ids = (id(p_joint2), id(p_joint1))
-            if joint_ids not in drawn_links and rev_ids not in drawn_links:
-                link_z = z_offset + link_index * link_profile.thickness * 0.1
-
-                # Slider rail is thinner
-                rail_profile = LinkProfile(
-                    width=link_profile.width * 0.8,
-                    thickness=link_profile.thickness,
-                    fillet_radius=link_profile.fillet_radius,
-                )
-                link_part = _create_link_bar(
-                    bd,
-                    p1_pos[0],
-                    p1_pos[1],
-                    p2_pos[0],
-                    p2_pos[1],
-                    rail_profile,
-                    z_offset=link_z,
-                    hole_radius=None,
-                )
-                if link_part is not None:
-                    parts.append(link_part)
-                    drawn_links.add(joint_ids)
-                    link_index += 1
+    rail_profile = LinkProfile(
+        width=link_profile.width * 0.8,
+        thickness=link_profile.thickness,
+        fillet_radius=link_profile.fillet_radius,
+    )
+    for i1, i2 in build_rails(components):
+        p1_pos = get_position(components[i1])
+        p2_pos = get_position(components[i2])
+        link_z = z_offset + link_index * link_profile.thickness * 0.1
+        link_part = _create_link_bar(
+            bd,
+            p1_pos[0],
+            p1_pos[1],
+            p2_pos[0],
+            p2_pos[1],
+            rail_profile,
+            z_offset=link_z,
+            hole_radius=None,
+        )
+        if link_part is not None:
+            parts.append(link_part)
+            link_index += 1
 
     # Build joint pins
     if include_pins:
-        for joint in linkage.joints:
+        for joint in get_components(linkage):
             pos = get_position(joint)
             spec = get_symbol_spec(joint)
 

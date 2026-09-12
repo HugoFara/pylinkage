@@ -358,6 +358,30 @@ class Ensemble:
         """Convert all members back to legacy Agents."""
         return [self._member_at(i).to_agent() for i in range(self.n_members)]
 
+    def to_pareto_front(self) -> ParetoFront:
+        """Members as a :class:`~pylinkage.optimization.collections.ParetoFront`.
+
+        Every score column becomes one objective, in insertion order, so
+        the front carries the ``objective_names`` given to
+        :func:`~pylinkage.optimization.multi_objective_optimization`. Use
+        it for the front's own tools: ``best_compromise()``, ``filter()``,
+        ``hypervolume()`` and ``plot()``.
+        """
+        from ..optimization.collections.pareto import ParetoSolution
+
+        names = tuple(self._scores)
+        solutions = [
+            ParetoSolution(
+                scores=tuple(float(self._scores[k][i]) for k in names),
+                dimensions=self._dimensions[i].copy(),
+                initial_positions=[
+                    (float(x), float(y)) for x, y in self._initial_positions[i]
+                ],
+            )
+            for i in range(self.n_members)
+        ]
+        return ParetoFront(solutions=solutions, objective_names=names)
+
     # ------------------------------------------------------------------
     # Visualization
     # ------------------------------------------------------------------
@@ -382,12 +406,9 @@ class Ensemble:
         """
         from ..visualizer.animated import show_linkage
 
-        member = self._member_at(idx)
-        if member.trajectory is None:
-            self.simulate_member(idx, iterations=iterations)
-            member = self._member_at(idx)
+        loci = self._member_loci(idx, iterations)
 
-        return show_linkage(self._linkage, loci=member.to_loci(), **kwargs)
+        return show_linkage(self._linkage, loci=loci, **kwargs)
 
     def plot_plotly(
         self,
@@ -409,14 +430,11 @@ class Ensemble:
         """
         from ..visualizer.plotly_viz import plot_linkage_plotly
 
-        member = self._member_at(idx)
-        if member.trajectory is None:
-            self.simulate_member(idx, iterations=iterations)
-            member = self._member_at(idx)
+        loci = self._member_loci(idx, iterations)
 
         return plot_linkage_plotly(
             self._linkage,
-            loci=member.to_loci(),
+            loci=loci,
             **kwargs,
         )
 
@@ -439,12 +457,9 @@ class Ensemble:
         """
         from ..visualizer.drawsvg_viz import save_linkage_svg
 
-        member = self._member_at(idx)
-        if member.trajectory is None:
-            self.simulate_member(idx, iterations=iterations)
-            member = self._member_at(idx)
+        loci = self._member_loci(idx, iterations)
 
-        save_linkage_svg(self._linkage, path, loci=member.to_loci(), **kwargs)
+        save_linkage_svg(self._linkage, path, loci=loci, **kwargs)
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -463,6 +478,26 @@ class Ensemble:
         if len(self._scores) == 1:
             return next(iter(self._scores.values()))
         raise KeyError(f"No score named {key!r}; available: {list(self._scores)}")
+
+    def _member_loci(
+        self,
+        idx: int,
+        iterations: int | None,
+    ) -> tuple[tuple[tuple[float, float], ...], ...]:
+        """Loci of one member, simulated on the spot if no batch is cached.
+
+        ``simulate_member`` deliberately does not write into the batch
+        array, so its result is handed to the Member directly.
+        """
+        member = self._member_at(idx)
+        if member.trajectory is None:
+            member = Member(
+                dimensions=member.dimensions,
+                initial_positions=member.initial_positions,
+                scores=member.scores,
+                trajectory=self.simulate_member(idx, iterations=iterations),
+            )
+        return member.to_loci()
 
     def _member_at(self, idx: int) -> Member:
         """Build a Member for the given index."""

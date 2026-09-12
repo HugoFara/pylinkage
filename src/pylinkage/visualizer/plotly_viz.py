@@ -553,10 +553,12 @@ def plot_linkage_plotly_with_velocity(
 
     components = _get_components(linkage)
 
-    # Check that omega is set (legacy Linkage.Crank exposes an ``omega`` attr
-    # used by ``step_fast_with_kinematics``).
+    # Check that omega is set. ``Linkage.set_input_velocity`` stores it on
+    # the crank as ``_omega``; ``omega`` is accepted from duck-typed cranks.
     has_omega = any(
-        type(j).__name__ == "Crank" and getattr(j, "omega", 0) not in (None, 0) for j in components
+        type(j).__name__ == "Crank"
+        and (getattr(j, "_omega", None) or getattr(j, "omega", None))
+        for j in components
     )
     if not has_omega:
         raise ValueError(

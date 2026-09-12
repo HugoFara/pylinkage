@@ -430,3 +430,28 @@ class TestSaveLinkageSvgWithVelocity:
         )
         contents = (tmp_path / "kin2.svg").read_text()
         assert "<svg" in contents
+
+
+class TestModernLinkageBars:
+    """Bars come from the component API's anchors, not legacy joint0/joint1."""
+
+    def test_fourbar_draws_three_bars(self):
+        lk, _ = _fourbar()
+        drawing = plot_linkage_svg(lk, show_loci=False, show_labels=False)
+        svg = drawing.as_svg()
+        # Each bar is a filled path with the 0.9 opacity of _draw_link
+        assert svg.count('opacity="0.9"') == 3
+
+    def test_slider_crank_draws_rod_and_rail(self):
+        O1 = Ground(0.0, 0.0, name="O1")
+        L1 = Ground(0.0, -1.0, name="L1")
+        L2 = Ground(4.0, -1.0, name="L2")
+        crank = Crank(anchor=O1, radius=1.0, angular_velocity=0.1, name="crank")
+        slider = RRPDyad(
+            revolute_anchor=crank.output, line_anchor1=L1, line_anchor2=L2, distance=2.0,
+            name="slider",
+        )
+        lk = Linkage([O1, L1, L2, crank, slider], name="SliderCrank")
+        svg = plot_linkage_svg(lk, show_loci=False, show_labels=False).as_svg()
+        # crank, connecting rod, rail
+        assert svg.count('opacity="0.9"') == 3

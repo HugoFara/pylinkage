@@ -11,6 +11,16 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Added
 
+- **`Ensemble.to_pareto_front()`** — the members as a `ParetoFront`, one
+  objective per score column, for its `best_compromise()`, `filter()`,
+  `hypervolume()` and `plot()`. The inverse of `Ensemble.from_pareto_front()`.
+- **`PointTracker` in the numba solver.** It has `FixedDyad` geometry and
+  now gets the same kernel; before, `step_fast()` silently froze a tracker
+  at its initial position and returned that as its trajectory.
+- **Slider rails in every drawing backend.** `pylinkage.visualizer.core`
+  gains `get_rail_pairs()` / `build_rails()`, and `get_parent_pairs()` knows
+  `RRPDyad.revolute_anchor`, so a slider-crank draws its connecting rod and
+  the line it slides on in matplotlib, SVG, DXF and STEP alike.
 - **`solution_to_linkage()` honours `FourBarSolution.arc_limits`.** The field
   existed but nothing in pylinkage read it. Set it — typically from
   `crank_angle_limits()` — and the linkage is built around an `ArcCrank`
@@ -193,6 +203,27 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **The SVG, DXF and STEP exporters draw the component API.** All three
+  walked the legacy `linkage.joints` / `joint0` / `joint1` attributes, so
+  `plot_linkage_svg()` produced joints and trajectories but no bars for a
+  `simulation.Linkage`, and `plot_linkage_dxf()` / `build_linkage_3d()`
+  raised `AttributeError`. They now share `build_connections()` with the
+  matplotlib backend.
+- **`show_kinematics()`, `animate_kinematics()` and
+  `plot_linkage_plotly_with_velocity()` work on a `simulation.Linkage`.**
+  Same legacy attributes, plus an `omega` check that never saw the value
+  `set_input_velocity()` stores; their tests wrapped the linkage in an
+  adapter that mimicked the old API and passed around the bug.
+- **`Ensemble.show()`, `plot_plotly()` and `save_svg()` no longer require
+  a prior `simulate()`.** They simulated the member on the spot and then
+  looked for the trajectory in the batch cache, which the one-off
+  simulation does not fill, and raised `ValueError`.
+- **`step_fast()` refuses a component it cannot represent** — a custom
+  `Component`, say — with `NotImplementedError` naming it, instead of
+  typing it as a fixed point and reporting a frozen trajectory.
+- **`parallel_coordinates_plot()` with unbuildable particles.** A score of
+  `±inf` (the `kinematic_*` decorators' penalty) made the score axis NaN;
+  such particles now sit at the bad end of the axis.
 - **The example scripts run again.** The three synthesis demos still called
   `len(result)` and `if result:` on a `SynthesisResult`, which lost those
   since 1.0; every demo animated whatever came out of synthesis with a

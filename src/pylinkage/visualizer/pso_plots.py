@@ -126,8 +126,15 @@ def parallel_coordinates_plot(
     else:
         norm_dims = normalize_data(dimensions)
 
-    # Normalize scores
-    score_min, score_max = scores.min(), scores.max()
+    # Normalize scores. An unbuildable particle scores +/-inf (the
+    # kinematic_* decorators' penalty); it is drawn at the bad end of the
+    # score axis rather than poisoning the range with NaN.
+    finite = np.isfinite(scores)
+    if finite.any():
+        score_min, score_max = scores[finite].min(), scores[finite].max()
+    else:
+        score_min = score_max = 0.0
+    scores = np.clip(scores, score_min, score_max)
     if score_max - score_min > 0:
         norm_scores = (scores - score_min) / (score_max - score_min)
     else:

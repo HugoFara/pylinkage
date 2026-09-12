@@ -77,6 +77,19 @@ class TestParallelCoordinatesPlot:
         ax = parallel_coordinates_plot((0, []), ["a"])
         assert ax is not None
 
+    def test_infinite_scores_do_not_poison_the_range(self):
+        """Unbuildable particles score -inf; they must not turn the axis to NaN."""
+        import warnings
+
+        lk = _fourbar()
+        agents, _, coords = _build_agents(lk, n=4)
+        agents[1] = (float("-inf"), agents[1][1], coords)
+        n_dims = len(agents[0][1])
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            ax = parallel_coordinates_plot((0, agents), [f"d{i}" for i in range(n_dims)])
+        assert ax is not None
+
     def test_with_bounds(self):
         lk = _fourbar()
         agents, constraints, _ = _build_agents(lk, n=4)

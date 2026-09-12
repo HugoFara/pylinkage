@@ -34,6 +34,9 @@ _DYAD_SOLVER_SPECS: dict[str, tuple[int, tuple[str, ...], tuple[str, ...]]] = {
     "RRRDyad": (JOINT_REVOLUTE, ("anchor1", "anchor2"), ("distance1", "distance2")),
     "BinaryDyad": (JOINT_REVOLUTE, ("anchor1", "anchor2"), ("distance1", "distance2")),
     "FixedDyad": (JOINT_FIXED, ("anchor1", "anchor2"), ("distance", "angle")),
+    # A PointTracker is a FixedDyad that reports rather than constrains:
+    # same distance/angle geometry, same kernel.
+    "PointTracker": (JOINT_FIXED, ("anchor1", "anchor2"), ("distance", "angle")),
     "RRPDyad": (
         JOINT_PRISMATIC,
         ("revolute_anchor", "line_anchor1", "line_anchor2"),
@@ -146,8 +149,13 @@ def linkage_to_solver_data(linkage: Any) -> SolverData:
             counts.append(len(constraint_attrs))
 
         else:
-            joint_types[i] = JOINT_STATIC
-            counts.append(0)
+            # Anything else -- a custom Component, say -- would have been
+            # frozen at its initial position and reported as a trajectory.
+            raise NotImplementedError(
+                f"The numba solver cannot represent {type(part).__name__} "
+                f"({part.name!r}). Use Linkage.step() instead of step_fast() "
+                f"for this mechanism."
+            )
 
     # Build solve order — use the linkage's own order if available
     solve_order_list: list[int] = []
