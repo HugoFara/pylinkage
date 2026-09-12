@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from .._types import JointType, NodeRole
+
 if TYPE_CHECKING:
     from ..hypergraph.graph import HypergraphLinkage
 
@@ -40,11 +42,21 @@ def compute_dof(graph: HypergraphLinkage) -> int:
     - j1 = number of 1-DOF joints (revolute, prismatic)
     - j2 = number of 2-DOF joints (higher pairs)
 
-    Links are counted from edges and hyperedges. Each edge is one binary
-    link. Each hyperedge is one rigid body (one link regardless of how
-    many joints it has). The ground link is always counted as 1.
+    Links are the rigid bodies of the graph: the ground (every
+    ``GROUND`` node, or an implicit link when there is none), one body
+    per edge and one per hyperedge, except that bodies sharing two or
+    more nodes are pinned together and count as one. A hyperedge over a
+    triangle whose sides are also edges is therefore one link, as is an
+    edge between two ground nodes.
 
-    All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.
+    Joints are counted per node: a node shared by ``k`` bodies is
+    ``k - 1`` joints, so a coupler point that belongs to a single body
+    is not a joint and a pin shared by three links is two. A
+    ``PRISMATIC`` node is a slider block of its own with one prismatic
+    joint to the hyperedge it slides along. All joints are 1-DOF.
+
+    Three edges closing a triangle are counted as three bars pinned
+    together rather than one body; the DOF is the same either way.
 
     Args:
         graph: A HypergraphLinkage (topology only, no dimensions needed).
@@ -83,17 +95,16 @@ def compute_mobility(graph: HypergraphLinkage) -> MobilityInfo:
     Returns:
         MobilityInfo with DOF, link count, and joint counts.
     """
-    # Count links (rigid bodies):
-    # - 1 ground link (always present)
-    # - Each edge is one binary link (connects 2 joints)
-    # - Each hyperedge is one rigid body (connects 3+ joints)
-    n_links = 1  # ground
-    n_links += len(graph.edges)
-    n_links += len(graph.hyperedges)
+    bodies, n_prismatic = _rigid_bodies(graph)
+    has_ground = any(n.role == NodeRole.GROUND for n in graph.nodes.values())
+    n_links = len(bodies) + (0 if has_ground else 1)
 
-    # Count joints:
-    # Each node is a joint. All current types (REVOLUTE, PRISMATIC) are 1-DOF.
-    j1 = len(graph.nodes)  # full joints (1-DOF)
+    # A node shared by k bodies is k - 1 one-DOF joints; a slider adds
+    # the prismatic joint to its guide.
+    j1 = n_prismatic
+    for node_id in graph.nodes:
+        k = sum(1 for body in bodies if node_id in body)
+        j1 += max(k - 1, 0)
     j2 = 0  # half joints (2-DOF) — none currently supported
 
     dof = 3 * (n_links - 1) - 2 * j1 - j2
@@ -104,3 +115,46 @@ def compute_mobility(graph: HypergraphLinkage) -> MobilityInfo:
         num_full_joints=j1,
         num_half_joints=j2,
     )
+
+
+def _rigid_bodies(graph: HypergraphLinkage) -> tuple[list[frozenset[str]], int]:
+    """Partition the graph into rigid bodies.
+
+    Returns the bodies as node sets, and the number of prismatic
+    joints. Bodies that share two or more nodes are merged: two links
+    pinned at two points cannot move relative to each other.
+    """
+    prismatic = {
+        n.id for n in graph.nodes.values() if n.joint_type == JointType.PRISMATIC
+    }
+    bodies: list[frozenset[str]] = []
+    ground = frozenset(n.id for n in graph.nodes.values() if n.role == NodeRole.GROUND)
+    if ground:
+        bodies.append(ground)
+    bodies.extend(frozenset((e.source, e.target)) for e in graph.edges.values())
+    n_prismatic = 0
+    for he in graph.hyperedges.values():
+        sliders = [n for n in he.nodes if n in prismatic]
+        guide = frozenset(n for n in he.nodes if n not in prismatic)
+        if guide:
+            bodies.append(guide)
+        # Each slider is a block of its own, joined to the guide by a
+        # prismatic joint.
+        for slider in sliders:
+            bodies.append(frozenset((slider,)))
+            n_prismatic += 1
+
+    merged = True
+    while merged:
+        merged = False
+        result: list[frozenset[str]] = []
+        for body in bodies:
+            for i, other in enumerate(result):
+                if len(body & other) >= 2:
+                    result[i] = other | body
+                    merged = True
+                    break
+            else:
+                result.append(body)
+        bodies = result
+    return bodies, n_prismatic

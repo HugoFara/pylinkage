@@ -1,6 +1,13 @@
 """Tests for the topology analysis module (DOF calculator)."""
 
-from pylinkage.hypergraph import Edge, Hyperedge, HypergraphLinkage, Node, NodeRole
+from pylinkage.hypergraph import (
+    Edge,
+    Hyperedge,
+    HypergraphLinkage,
+    JointType,
+    Node,
+    NodeRole,
+)
 from pylinkage.topology import compute_dof, compute_mobility
 
 
@@ -66,27 +73,17 @@ class TestComputeDof:
         assert compute_dof(hg) == 1
 
     def test_single_crank_dof_is_1(self):
-        """A single crank (ground + driver) has DOF=1.
+        """A crank pinned to the ground and free at its tip has DOF=1.
 
-        2 nodes, 1 edge + ground = 2 links.
-        DOF = 3*(2-1) - 2*2 = 3 - 4 = -1?
-        No — a crank is 1 ground + 1 driver with 1 link between them.
-        DOF = 3*(2-1) - 2*2 = -1 ... that's overconstrained in Grübler
-        because the crank rotation is already constrained by the single
-        revolute. The motor provides the input, not a DOF.
-
-        Actually: ground is 1 link, crank arm is another = 2 links.
-        The ground joint A and the crank output B are 2 joints.
-        DOF = 3*(2-1) - 2*2 = -1. Grübler says -1, but physically it's 1
-        because the crank input is a driver. This is the well-known issue
-        that Grübler counts drivers as constraints.
+        2 links (ground, crank arm) and 1 joint: the tip ``B`` belongs to
+        the crank alone, so it is not a joint.
+        DOF = 3*(2-1) - 2*1 = 1
         """
         hg = HypergraphLinkage()
         hg.add_node(Node("A", role=NodeRole.GROUND))
         hg.add_node(Node("B", role=NodeRole.DRIVER))
         hg.add_edge(Edge("AB", "A", "B"))
-        # DOF = 3*(2-1) - 2*2 = -1 (Grübler raw)
-        assert compute_dof(hg) == -1
+        assert compute_dof(hg) == 1
 
     def test_empty_graph_dof_is_0(self):
         """An empty graph has DOF=0 (just ground, no joints)."""
@@ -145,14 +142,11 @@ class TestComputeMobility:
         assert info.num_full_joints == 7
 
     def test_triangle_is_rigid(self):
-        """A triangle (3 links, 3 joints) has DOF=0.
+        """A triangle with one side on the ground is a structure (DOF=0).
 
-        3 nodes, 3 edges = 3 links + 1 ground = 4 links? No.
-        Actually: 3 edges + 1 ground = 4 links, 3 joints.
-        DOF = 3*(4-1) - 2*3 = 9 - 6 = 3.
-        That's a free-floating triangle.
-
-        For a grounded triangle:
+        The edge between the two ground nodes is part of the ground
+        link: 3 links (ground, BC, CA) and 3 joints.
+        DOF = 3*(3-1) - 2*3 = 0
         """
         hg = HypergraphLinkage()
         hg.add_node(Node("A", role=NodeRole.GROUND))
@@ -162,11 +156,124 @@ class TestComputeMobility:
         hg.add_edge(Edge("BC", "B", "C"))
         hg.add_edge(Edge("CA", "C", "A"))
         info = compute_mobility(hg)
-        # 3 edges + 1 ground = 4 links, 3 joints
-        # DOF = 3*(4-1) - 2*3 = 9 - 6 = 3
-        # But this is a free triangle. With the ground link
-        # AB this is over-constrained. Grübler doesn't account
-        # for the ground constraint directly — it's in the link count.
-        assert info.num_links == 4
+        assert info.num_links == 3
         assert info.num_full_joints == 3
-        assert info.dof == 3
+        assert info.dof == 0
+
+
+def _make_coupler_four_bar(inner_edges: bool, hyperedge: bool) -> HypergraphLinkage:
+    """Four-bar with a coupler point ``P`` rigid with the coupler B-C.
+
+    The triangle B-C-P can be written as its three edges, as a hyperedge,
+    or as both (what ``Linkage.to_hypergraph`` emits for a ``FixedDyad``).
+    """
+    hg = HypergraphLinkage(name="Coupler four-bar")
+    for node_id, role in [
+        ("A", NodeRole.GROUND), ("B", NodeRole.DRIVER), ("C", NodeRole.DRIVEN),
+        ("P", NodeRole.DRIVEN), ("D", NodeRole.GROUND),
+    ]:
+        hg.add_node(Node(node_id, role=role))
+    hg.add_edge(Edge("AB", "A", "B"))
+    hg.add_edge(Edge("CD", "C", "D"))
+    if inner_edges or not hyperedge:
+        hg.add_edge(Edge("BC", "B", "C"))
+    if inner_edges:
+        hg.add_edge(Edge("BP", "B", "P"))
+        hg.add_edge(Edge("CP", "C", "P"))
+    if hyperedge:
+        hg.add_hyperedge(Hyperedge("coupler", ("B", "C", "P")))
+    return hg
+
+
+class TestRigidBodies:
+    """Links are rigid bodies, whichever way the graph spells them."""
+
+    def test_hyperedge_over_its_own_edges_is_one_link(self):
+        """A hyperedge labelling a triangle of edges does not add links."""
+        info = compute_mobility(_make_coupler_four_bar(inner_edges=True, hyperedge=True))
+        assert info.num_links == 4
+        assert info.num_full_joints == 4
+        assert info.dof == 1
+
+    def test_hyperedge_only_triangle(self):
+        """A hyperedge with no edges among its nodes is one link."""
+        info = compute_mobility(_make_coupler_four_bar(inner_edges=False, hyperedge=True))
+        assert info.num_links == 4
+        assert info.num_full_joints == 4
+        assert info.dof == 1
+
+    def test_edge_triangle_has_same_dof(self):
+        """Three bars closing a triangle count as bars, with the same DOF."""
+        info = compute_mobility(_make_coupler_four_bar(inner_edges=True, hyperedge=False))
+        assert info.num_links == 6
+        assert info.num_full_joints == 7
+        assert info.dof == 1
+
+    def test_coupler_point_is_not_a_joint(self):
+        """A node in a single body adds no joint."""
+        plain = compute_mobility(_make_four_bar())
+        with_point = compute_mobility(_make_coupler_four_bar(inner_edges=False, hyperedge=True))
+        assert with_point.num_full_joints == plain.num_full_joints
+
+    def test_pin_shared_by_three_links_is_two_joints(self):
+        """Two ternary links and a bar meeting at one pin: a multiple joint."""
+        hg = HypergraphLinkage()
+        for node_id, role in [
+            ("A", NodeRole.GROUND), ("B", NodeRole.DRIVER), ("C", NodeRole.DRIVEN),
+            ("D", NodeRole.GROUND), ("E", NodeRole.DRIVEN), ("F", NodeRole.GROUND),
+        ]:
+            hg.add_node(Node(node_id, role=role))
+        hg.add_edge(Edge("AB", "A", "B"))
+        hg.add_edge(Edge("CD", "C", "D"))
+        hg.add_edge(Edge("CE", "C", "E"))
+        hg.add_edge(Edge("EF", "E", "F"))
+        hg.add_hyperedge(Hyperedge("coupler", ("B", "C")))
+        info = compute_mobility(hg)
+        # ground, AB, coupler, CD, CE, EF
+        assert info.num_links == 6
+        # A, B, D, E, F once; C joins coupler, CD and CE: twice
+        assert info.num_full_joints == 7
+        assert info.dof == 1
+
+    def test_slider_crank_with_prismatic_node(self):
+        """A slider block on a ground guide: 4 links, 4 joints, DOF=1."""
+        hg = HypergraphLinkage()
+        hg.add_node(Node("A", role=NodeRole.GROUND))
+        hg.add_node(Node("B", role=NodeRole.DRIVER))
+        hg.add_node(Node("S", role=NodeRole.DRIVEN, joint_type=JointType.PRISMATIC))
+        hg.add_node(Node("D", role=NodeRole.GROUND))
+        hg.add_edge(Edge("AB", "A", "B"))
+        hg.add_edge(Edge("BS", "B", "S"))
+        # The guide line A-D with the slider on it
+        hg.add_hyperedge(Hyperedge("guide", ("A", "D", "S")))
+        info = compute_mobility(hg)
+        assert info.num_links == 4
+        assert info.num_full_joints == 4
+        assert info.dof == 1
+
+    def test_catalog_counts_are_unchanged(self):
+        """The built-in catalog records the counts it was generated with."""
+        from pylinkage.topology import load_catalog
+
+        for entry in load_catalog():
+            info = compute_mobility(entry.to_graph())
+            assert (info.num_links, info.dof) == (entry.num_links, entry.dof), entry.id
+
+    def test_fixed_dyad_round_trip(self):
+        """``Linkage.to_hypergraph`` of a coupler point stays a four-bar."""
+        from pylinkage.actuators import Crank
+        from pylinkage.components import Ground
+        from pylinkage.dyads import FixedDyad, RRRDyad
+        from pylinkage.simulation import Linkage
+
+        a = Ground(0, 0, name="A")
+        d = Ground(3, 0, name="D")
+        crank = Crank(anchor=a, radius=1, angular_velocity=0.1, name="B")
+        c = RRRDyad(anchor1=crank.output, anchor2=d, distance1=2.5, distance2=2.0, name="C")
+        p = FixedDyad(anchor1=crank.output, anchor2=c, distance=1.5, angle=0.8, name="P")
+        linkage = Linkage([a, d, crank, c, p])
+        linkage.rebuild()
+        hg, _ = linkage.to_hypergraph()
+        info = compute_mobility(hg)
+        assert info.num_links == 4
+        assert info.dof == 1

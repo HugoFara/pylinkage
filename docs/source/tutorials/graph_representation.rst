@@ -140,9 +140,10 @@ Ternary Links via Hyperedge
 
 A coupler point ``P`` rigidly attached to the coupler makes B-C-P one
 rigid triangle. A ``Hyperedge`` records that the three joints share one
-body, which topology analysis needs to count links correctly. The
-hyperedge is membership only: to *constrain* the triangle, add its three
-edges with their lengths.
+body: ``to_mechanism`` holds every pair of its nodes at the distance
+their initial positions give, and mobility analysis counts it as one
+link. Edges inside the hyperedge are optional — here they carry the
+side lengths so that ``Dimensions`` fully describes the triangle.
 
 .. code-block:: python
 
@@ -419,9 +420,12 @@ Mobility Analysis
 ^^^^^^^^^^^^^^^^^
 
 ``compute_mobility`` applies the Kutzbach–Grübler equation
-:math:`M = 3(n - 1) - 2 j_1 - j_2` to a hypergraph. Every edge counts as
-one binary link, every hyperedge as one rigid body, plus the ground; every
-node is a one-DOF joint.
+:math:`M = 3(n - 1) - 2 j_1 - j_2` to a hypergraph. Links are rigid
+bodies: the ground, one per edge and one per hyperedge — except that
+bodies pinned together at two or more nodes are one body, so a hyperedge
+over a triangle of edges is a single link. A node shared by :math:`k`
+bodies is :math:`k - 1` one-DOF joints: a coupler point that belongs to
+one body only is not a joint, and a pin where three links meet is two.
 
 .. code-block:: python
 
@@ -445,13 +449,24 @@ node is a one-DOF joint.
    Links: 4, full joints: 4, DOF: 1
    Single-DOF mechanism (typical linkage)
 
-Because a hyperedge is a link of its own, a ternary link meant for
-mobility analysis is a hyperedge with **no** edges among its nodes — the
-convention the topology catalog below follows. The coupler four-bar above
-adds the triangle's edges so that ``to_mechanism`` can solve it, and
-``compute_dof`` then counts the same body four times; for its mobility,
-analyze the topology without the coupler point, or rebuild it
-hyperedge-only.
+The coupler four-bar above, with its hyperedge and the three edges
+inside it, is therefore still four links and one degree of freedom:
+
+.. code-block:: python
+
+   info = compute_mobility(hg_coupler)
+   print(f"Coupler four-bar: {info.num_links} links, DOF {info.dof}")
+
+**Expected output:**
+
+.. code-block:: text
+
+   Coupler four-bar: 4 links, DOF 1
+
+Three edges closing a triangle *without* a hyperedge are counted as three
+bars pinned together; the degree of freedom comes out the same, only the
+link count differs. The topology catalog below writes every ternary link
+as a hyperedge with no edges among its nodes.
 
 Isomorphism Detection
 ^^^^^^^^^^^^^^^^^^^^^

@@ -6,7 +6,7 @@ import pytest
 
 from pylinkage._types import NodeRole
 from pylinkage.dimensions import Dimensions, DriverAngle
-from pylinkage.hypergraph.core import Edge, Node
+from pylinkage.hypergraph.core import Edge, Hyperedge, Node
 from pylinkage.hypergraph.graph import HypergraphLinkage
 from pylinkage.hypergraph.mechanism_conversion import from_mechanism, to_mechanism
 from pylinkage.mechanism import (
@@ -162,6 +162,26 @@ class TestToMechanism:
         mech = to_mechanism(hg, dims)
         dl = [lk for lk in mech.links if isinstance(lk, DriverLink)][0]
         assert dl.angular_velocity == pytest.approx(math.tau / 360)
+
+    @pytest.mark.parametrize("order", [("B", "C", "P"), ("B", "P", "C"), ("P", "B", "C")])
+    def test_hyperedge_only_coupler_point(self, order):
+        """A ternary link written as a hyperedge alone is solvable.
+
+        The coupler point ``P`` has no edge of its own; the hyperedge
+        must give it both B and C as parents whatever its node order.
+        """
+        hg, dims = _make_fourbar_hypergraph()
+        hg.add_node(Node(id="P", role=NodeRole.DRIVEN, name="P"))
+        hg.add_hyperedge(Hyperedge("coupler", order))
+        dims.node_positions["P"] = (1.5, 3.0)
+        b, c, p = dims.node_positions["B"], dims.node_positions["C"], (1.5, 3.0)
+
+        mech = to_mechanism(hg, dims)
+        for _ in mech.step(iterations=30):
+            pass
+        pos = {j.id: j.position for j in mech.joints}
+        assert math.dist(pos["B"], pos["P"]) == pytest.approx(math.dist(b, p))
+        assert math.dist(pos["C"], pos["P"]) == pytest.approx(math.dist(c, p))
 
 
 class TestFromMechanism:
