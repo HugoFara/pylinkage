@@ -19,6 +19,32 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   the notebooks. Four examples and ten tutorials had been broken for a
   release without anything noticing.
 
+### Fixed
+
+- **`compute_mobility` / `compute_dof` count rigid bodies, not graph
+  elements.** They used to count every edge and every hyperedge as a link
+  and every node as a joint, which is only true of the topology catalog's
+  hyperedge-only graphs. Any geometric graph — a coupler point, a `Hyperedge`
+  labelling a triangle of edges, what `Linkage.to_hypergraph()` emits for a
+  `FixedDyad`, every classical walker leggedsnake ships — came out with
+  nonsense (8 DOF for a coupler four-bar, 17 for a Jansen leg). Links are now
+  the ground, one body per edge and per hyperedge, merged whenever two share
+  two or more nodes; a node in `k` bodies is `k - 1` joints, so coupler
+  points are not joints and multiple joints count; a `PRISMATIC` node is a
+  slider block with a prismatic joint to its guide hyperedge. The 19 catalog
+  entries are unchanged; a grounded triangle now reports DOF 0 and a lone
+  crank DOF 1, which the old tests documented as wrong.
+- **`HypergraphLinkage.to_simple_graph()` expands a hyperedge to its
+  clique**, one edge per pair of nodes, as `topology.isomorphism` and
+  `assur.from_hypergraph` already did. It produced a chain of `N - 1` edges,
+  so `to_mechanism()` could not solve a ternary link written as a hyperedge
+  alone ("Could not determine solve order") unless its edges were repeated by
+  hand. Pairs already joined by an edge are kept, not duplicated.
+  `Hyperedge.to_edges()` still returns the documented chain.
+- The graph tutorial's mobility section describes the counting rules and
+  no longer tells the reader to analyze a coupler mechanism "without the
+  coupler point".
+
 ## [1.2.0] - 2026-09-12
 
 ### Added

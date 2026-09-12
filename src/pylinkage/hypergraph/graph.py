@@ -311,8 +311,10 @@ class HypergraphLinkage:
     def to_simple_graph(self) -> "HypergraphLinkage":
         """Convert to a simple graph by expanding hyperedges to edges.
 
-        Creates a new HypergraphLinkage with no hyperedges, where each
-        hyperedge has been converted to its equivalent edges.
+        Creates a new HypergraphLinkage with no hyperedges. Every
+        hyperedge becomes the clique of its nodes — one edge per pair —
+        since a rigid body holds each pair of its joints at a fixed
+        distance. Pairs already joined by an edge are left as they are.
 
         Returns:
             A new HypergraphLinkage with only nodes and edges.
@@ -340,12 +342,17 @@ class HypergraphLinkage:
                 )
             )
 
-        # Convert hyperedges to edges
+        # Expand hyperedges to cliques, skipping pairs already joined
+        joined = {frozenset((e.source, e.target)) for e in self.edges.values()}
         for hyperedge in self.hyperedges.values():
-            for new_edge in hyperedge.to_edges():
-                # Avoid duplicate edges
-                if new_edge.id not in result.edges:
-                    result.add_edge(new_edge)
+            nodes = list(hyperedge.nodes)
+            for i, n1 in enumerate(nodes):
+                for n2 in nodes[i + 1:]:
+                    pair = frozenset((n1, n2))
+                    if pair in joined:
+                        continue
+                    joined.add(pair)
+                    result.add_edge(Edge(id=f"{hyperedge.id}_{n1}_{n2}", source=n1, target=n2))
 
         return result
 

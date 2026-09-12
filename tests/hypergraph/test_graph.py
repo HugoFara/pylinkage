@@ -184,8 +184,23 @@ class TestHypergraphLinkage:
 
         simple = graph.to_simple_graph()
         assert len(simple.hyperedges) == 0
-        # Hyperedge with 3 nodes creates 2 edges (chain)
-        assert len(simple.edges) == 2
+        # A rigid triangle holds all three pairs at fixed distance
+        assert len(simple.edges) == 3
+        assert {frozenset((e.source, e.target)) for e in simple.edges.values()} == {
+            frozenset("AB"), frozenset("BC"), frozenset("AC"),
+        }
+
+    def test_to_simple_graph_keeps_existing_edges(self):
+        """Pairs already joined by an edge are not duplicated."""
+        graph = HypergraphLinkage(name="Test")
+        for node_id in "ABC":
+            graph.add_node(Node(node_id))
+        graph.add_edge(Edge("AB", "A", "B"))
+        graph.add_hyperedge(Hyperedge("tri", ("A", "B", "C")))
+
+        simple = graph.to_simple_graph()
+        assert len(simple.edges) == 3
+        assert "AB" in simple.edges
 
     def test_copy(self):
         """Test deep copying graph."""
