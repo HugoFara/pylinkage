@@ -516,8 +516,12 @@ class Mechanism:
         """Set distance constraints from a flat list.
 
         Used for optimization. Applies constraints in the same order
-        as :meth:`get_constraints`. Invalidates any cached SolverData
-        so the next :meth:`step_fast` recompiles.
+        as :meth:`get_constraints`: the radius of each driver and the
+        length of each binary link. The values become the rigid
+        dimensions the solver maintains, so the next :meth:`step`
+        re-solves every joint against them (a driver's output joint is
+        moved right away, keeping its current angle). Invalidates any
+        cached SolverData so the next :meth:`step_fast` recompiles.
 
         Args:
             values: List of constraint values to apply.
@@ -533,30 +537,29 @@ class Mechanism:
                 break
 
             if isinstance(link, (DriverLink, ArcDriverLink)):
-                # Update driver radius by moving output joint
+                output = link.output_joint
+                if output is None or link.motor_joint is None or link.radius is None:
+                    continue
                 new_radius = values[idx]
                 idx += 1
-
-                output = link.output_joint
-                if output is None or link.motor_joint is None:
-                    continue
+                link.set_distance(link.motor_joint, output, new_radius)
 
                 mx, my = link.motor_joint.position
                 if mx is None or my is None:
                     continue
-
                 # Recompute output position with new radius
                 new_x = mx + new_radius * math.cos(link.current_angle)
                 new_y = my + new_radius * math.sin(link.current_angle)
                 output.set_coord(new_x, new_y)
 
-            elif len(link.joints) == 2:
-                # Binary link: update the movable joint's position
-                # (This is a simplified approach; full implementation
-                # would need to track which joint is the dependent one)
-                _new_length = values[idx]
+            elif link.length is not None:
+                # Binary link: the joints move when the mechanism is next solved
+                link.set_distance(link.joints[0], link.joints[1], values[idx])
                 idx += 1
-                # Position update happens during simulation
+
+        # The group solver keeps its own copy of the dimensions
+        if self._use_group_solver:
+            self._build_decomposition()
 
     # Cross-API aliases — ``simulation.Linkage`` and the legacy Linkage
     # both used the ``*_num_constraints`` / ``*_coords`` spellings, and

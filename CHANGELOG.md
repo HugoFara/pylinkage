@@ -9,6 +9,19 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+### Fixed
+
+- **`Mechanism.set_constraints()` now changes the mechanism.** Link lengths
+  live in per-link distance caches and in the Assur-group solver's
+  `Dimensions`, both captured when the mechanism is built; `set_constraints`
+  only moved the crank tip, so the next `step()` snapped every joint back to
+  the original geometry and `get_constraints()` read the old lengths. Every
+  optimizer run on a `Mechanism` was a no-op since 0.8.0. The values are now
+  written to the caches (new `Link.set_distance()`), the group solver is
+  rebuilt, and `Link.length` reads the maintained constraint like
+  `DriverLink.radius` does. Only binary links and driver radii are part of
+  the constraint vector, as before.
+
 ## [1.2.1] - 2026-09-12
 
 ### Added
