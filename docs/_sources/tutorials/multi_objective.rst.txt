@@ -38,6 +38,10 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
 .. code-block:: python
 
    import pylinkage as pl
+   from pylinkage.actuators import Crank
+   from pylinkage.components import Ground
+   from pylinkage.dyads import RRRDyad
+   from pylinkage.simulation import Linkage
    from pylinkage.optimization import (
        multi_objective_optimization,
        kinematic_minimization,
@@ -46,15 +50,14 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
 
    # Create the linkage
    def create_fourbar():
-       crank = pl.Crank(
-           x=0, y=1, joint0=(0, 0),
-           angle=0.31, distance=1, name="Crank"
+       A = Ground(0.0, 0.0, name="A")
+       D = Ground(3.0, 0.0, name="D")
+       crank = Crank(anchor=A, radius=1.0, angular_velocity=0.31, name="Crank")
+       output = RRRDyad(
+           anchor1=crank.output, anchor2=D,
+           distance1=3.0, distance2=2.0, name="Output",
        )
-       output = pl.Revolute(
-           x=3, y=2, joint0=crank, joint1=(3, 0),
-           distance0=3, distance1=1, name="Output"
-       )
-       return pl.Linkage(joints=(crank, output), order=(crank, output))
+       return Linkage([A, D, crank, output])
 
 
    # Objective 1: Minimize path error
@@ -75,50 +78,59 @@ Let's optimize a four-bar linkage for both path accuracy and transmission angle:
    # Objective 2: Minimize transmission angle deviation from 90 degrees
    @kinematic_minimization
    def transmission_penalty(loci, linkage=None, **kwargs):
-       """Penalize poor transmission angles."""
-       # Simple approximation: use the coupler angle variation
-       output_path = [step[-1] for step in loci]
-       crank_path = [step[0] for step in loci]
-
-       angles = []
-       for (cx, cy), (ox, oy) in zip(crank_path, output_path):
-           import math
-           angle = math.atan2(oy - cy, ox - cx)
-           angles.append(abs(math.degrees(angle) % 180 - 90))
-
-       return sum(angles) / len(angles)
+       """Penalize poor transmission angles (coupler-rocker angle far from 90°)."""
+       analysis = linkage.analyze_transmission()
+       return analysis.max_deviation
 
 
    # Run multi-objective optimization
    linkage = create_fourbar()
-   bounds = pl.generate_bounds(linkage.get_num_constraints())
+   bounds = pl.generate_bounds(linkage.get_constraints())
 
-   pareto = multi_objective_optimization(
+   results = multi_objective_optimization(
        objectives=[path_error, transmission_penalty],
        linkage=linkage,
        bounds=bounds,
        objective_names=["Path Error", "Transmission Penalty"],
-       n_generations=50,
-       pop_size=50,
-       verbose=True,
+       n_generations=30,
+       pop_size=40,
+       seed=42,
+       verbose=False,
    )
 
-   print(f"Found {len(pareto)} Pareto-optimal solutions")
+   print(f"Found {len(results)} Pareto-optimal solutions")
 
 Understanding the Pareto Front
 ------------------------------
 
-The ``ParetoFront`` object contains all non-dominated solutions:
+Like every optimizer, ``multi_objective_optimization`` returns an
+``Ensemble``; here its members are the non-dominated solutions, and it
+carries one score column per objective, named as requested:
 
 .. code-block:: python
 
    # Iterate over solutions
-   for solution in pareto:
-       print(f"Scores: {solution.scores}")
-       print(f"Constraints: {solution.dimensions}")
+   for member in results:
+       print(f"Scores: {member.scores}")
+       print(f"Constraints: {member.dimensions}")
 
-   # Get scores as numpy array
-   scores = pareto.scores_array()  # Shape: (n_solutions, n_objectives)
+   # Scores as numpy arrays, one per objective
+   print(f"Objectives: {list(results.scores)}")
+   path_errors = results.scores["Path Error"]  # shape (n_solutions,)
+
+   # Rank along one objective
+   most_accurate = results.rank("Path Error")[0]
+   print(f"Most accurate path: {most_accurate.scores}")
+
+The front's own tools live on ``ParetoFront``; ``to_pareto_front()``
+converts the Ensemble when you need them:
+
+.. code-block:: python
+
+   pareto = results.to_pareto_front()
+
+   # Get scores as one array, shape (n_solutions, n_objectives)
+   scores = pareto.scores_array()
 
    # Number of objectives
    print(f"Objectives: {pareto.n_objectives}")
@@ -160,14 +172,8 @@ Plot the Pareto front to understand the trade-offs:
    fig = pareto.plot(s=100, alpha=0.8, c='blue')
    plt.show()
 
-3D Pareto Front (3+ Objectives)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-   # For 3 objectives, pass 3 indices
-   fig = pareto.plot(objective_indices=(0, 1, 2))
-   plt.show()
+With three objectives, pass three indices — ``plot(objective_indices=(0, 1,
+2))`` — for a 3D scatter; see the three-objective example below.
 
 Selecting a Solution
 --------------------
@@ -186,7 +192,8 @@ Select a balanced solution using normalized weighted sum:
    best = pareto.best_compromise(weights=[0.8, 0.2])
 
    # Apply to linkage
-   linkage.set_num_constraints(best.dimensions)
+   linkage.set_constraints(best.dimensions)
+   linkage.set_coords(best.initial_positions)
    pl.show_linkage(linkage)
 
 Filtering Solutions
@@ -209,43 +216,10 @@ Measure the quality of the Pareto front:
 .. code-block:: python
 
    # Reference point should be worse than all solutions
-   reference = [10.0, 90.0]  # Adjust based on your objective ranges
+   reference = scores.max(axis=0) * 1.1
 
    hv = pareto.hypervolume(reference_point=reference)
    print(f"Hypervolume: {hv}")
-
-Algorithm Selection
--------------------
-
-NSGA-II (Default)
-^^^^^^^^^^^^^^^^^
-
-Best for 2-3 objectives:
-
-.. code-block:: python
-
-   pareto = multi_objective_optimization(
-       objectives=[obj1, obj2],
-       linkage=linkage,
-       algorithm="nsga2",  # Default
-       n_generations=100,
-       pop_size=100,
-   )
-
-NSGA-III
-^^^^^^^^
-
-Better for many objectives (4+):
-
-.. code-block:: python
-
-   pareto = multi_objective_optimization(
-       objectives=[obj1, obj2, obj3, obj4],
-       linkage=linkage,
-       algorithm="nsga3",
-       n_generations=100,
-       pop_size=100,
-   )
 
 Advanced Usage
 --------------
@@ -261,7 +235,7 @@ Use the built-in transmission angle analysis:
    def transmission_objective(loci, linkage=None, **kwargs):
        """Use built-in transmission analysis."""
        analysis = linkage.analyze_transmission()
-       # Minimize deviation from ideal 90 degrees
+       # Minimize deviation of the mean from the ideal 90 degrees
        return abs(90 - analysis.mean_angle)
 
 
@@ -282,18 +256,6 @@ Three-Objective Example
 .. code-block:: python
 
    @kinematic_minimization
-   def path_error(loci, **kwargs):
-       # ... path accuracy metric
-       return error
-
-
-   @kinematic_minimization
-   def transmission_penalty(loci, linkage=None, **kwargs):
-       # ... transmission angle metric
-       return penalty
-
-
-   @kinematic_minimization
    def compactness(loci, **kwargs):
        """Minimize mechanism bounding box area."""
        all_points = [p for step in loci for p in step]
@@ -303,16 +265,61 @@ Three-Objective Example
        return width * height
 
 
-   pareto = multi_objective_optimization(
+   results = multi_objective_optimization(
        objectives=[path_error, transmission_penalty, compactness],
-       linkage=linkage,
+       linkage=create_fourbar(),
+       bounds=bounds,
        objective_names=["Path Error", "Transmission", "Size"],
        algorithm="nsga2",
-       n_generations=100,
+       n_generations=30,
+       pop_size=40,
+       seed=42,
+       verbose=False,
    )
 
    # 3D visualization
-   fig = pareto.plot(objective_indices=(0, 1, 2))
+   fig = results.to_pareto_front().plot(objective_indices=(0, 1, 2))
+
+Algorithm Selection
+-------------------
+
+NSGA-II (Default)
+^^^^^^^^^^^^^^^^^
+
+Best for 2-3 objectives:
+
+.. code-block:: python
+
+   results = multi_objective_optimization(
+       objectives=[path_error, transmission_penalty],
+       linkage=create_fourbar(),
+       bounds=bounds,
+       algorithm="nsga2",  # Default
+       n_generations=20,
+       pop_size=40,
+       seed=42,
+       verbose=False,
+   )
+
+NSGA-III
+^^^^^^^^
+
+Better for many objectives (4+); it spreads the population over
+reference directions instead of crowding distance:
+
+.. code-block:: python
+
+   results = multi_objective_optimization(
+       objectives=[path_error, transmission_penalty, compactness],
+       linkage=create_fourbar(),
+       bounds=bounds,
+       algorithm="nsga3",
+       n_generations=20,
+       pop_size=40,
+       seed=42,
+       verbose=False,
+   )
+   print(f"NSGA-III kept {len(results)} solutions")
 
 Reproducibility
 ^^^^^^^^^^^^^^^
@@ -321,9 +328,10 @@ Set a random seed for reproducible results:
 
 .. code-block:: python
 
-   pareto = multi_objective_optimization(
-       objectives=[obj1, obj2],
+   results = multi_objective_optimization(
+       objectives=[path_error, transmission_penalty],
        linkage=linkage,
+       bounds=bounds,
        seed=42,
    )
 

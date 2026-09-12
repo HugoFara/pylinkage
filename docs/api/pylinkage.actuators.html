@@ -1,0 +1,955 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylinkage.actuators package &mdash; pylinkage 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage.assur package" href="pylinkage.assur.html" />
+    <link rel="prev" title="pylinkage package" href="pylinkage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pylinkage.actuators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html">pylinkage.assur package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.bridge.html">pylinkage.bridge package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html">pylinkage.cam package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html">pylinkage.components package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html">pylinkage.dyads package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html">pylinkage.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html">pylinkage.hypergraph package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html">pylinkage.mechanism package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.population.html">pylinkage.population package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html">pylinkage.simulation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html">pylinkage.solver package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html">pylinkage.symbolic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html">pylinkage.synthesis package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.topology.html">pylinkage.topology package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.dimensions">pylinkage.dimensions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pylinkage</a></li>
+          <li class="breadcrumb-item"><a href="pylinkage.html">pylinkage package</a></li>
+      <li class="breadcrumb-item active">pylinkage.actuators package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/pylinkage.actuators.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pylinkage-actuators-package">
+<h1>pylinkage.actuators package<a class="headerlink" href="#pylinkage-actuators-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pylinkage.actuators.arc_crank">
+<span id="pylinkage-actuators-arc-crank-module"></span><h2>pylinkage.actuators.arc_crank module<a class="headerlink" href="#module-pylinkage.actuators.arc_crank" title="Link to this heading"></a></h2>
+<p>Arc crank actuator - motor-driven oscillating rotary input.</p>
+<p>An arc crank is a driver link that oscillates between angle limits
+at a constant angular velocity, reversing direction at boundaries.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.arc_crank.</span></span><span class="sig-name descname"><span class="pre">ArcCrank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.017453292519943295</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.141592653589793</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven oscillating rotary input (arc crank).</p>
+<p>An arc crank oscillates around a ground anchor between two angle limits
+at constant angular velocity, producing an output point that traces an arc.
+Direction reverses (“bounces”) when reaching angle limits, similar to
+LinearActuator behavior at stroke limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this arc crank rotates around.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Distance from anchor to output.</p></li>
+<li><p><strong>angular_velocity</strong> (<em>float</em>) – Rotation rate magnitude in radians per step.</p></li>
+<li><p><strong>arc_start</strong> (<em>float</em>) – Minimum angle limit in radians.</p></li>
+<li><p><strong>arc_end</strong> (<em>float</em>) – Maximum angle limit in radians.</p></li>
+<li><p><strong>initial_angle</strong> (<em>float</em>) – Starting angle in radians (must be between arc_start and arc_end).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc_crank</span> <span class="o">=</span> <span class="n">ArcCrank</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">arc_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">arc_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc_crank</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(1.0, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.anchor">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.anchor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.anchors">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.anchors" title="Link to this definition"></a></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.angle">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.angle" title="Link to this definition"></a></dt>
+<dd><p>Return current angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.angular_velocity">
+<span class="sig-name descname"><span class="pre">angular_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.angular_velocity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.arc_end">
+<span class="sig-name descname"><span class="pre">arc_end</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.arc_end" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.arc_start">
+<span class="sig-name descname"><span class="pre">arc_start</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.arc_start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.get_constraints">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Return optimizable constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing (radius, arc_start, arc_end).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.initial_angle">
+<span class="sig-name descname"><span class="pre">initial_angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.initial_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.output">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.output" title="Link to this definition"></a></dt>
+<dd><p>Return the output joint (end of the arc crank).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the arc crank output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.radius" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.reload" title="Link to this definition"></a></dt>
+<dd><p>Advance the arc crank by one step.</p>
+<p>Rotates the arc crank position by angular_velocity * dt radians,
+reversing direction when hitting angle limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.arc_crank.ArcCrank.set_constraints">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.arc_crank.ArcCrank.set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Set the constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> – New radius value.</p></li>
+<li><p><strong>arc_start</strong> – New arc_start value.</p></li>
+<li><p><strong>arc_end</strong> – New arc_end value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.actuators.crank">
+<span id="pylinkage-actuators-crank-module"></span><h2>pylinkage.actuators.crank module<a class="headerlink" href="#module-pylinkage.actuators.crank" title="Link to this heading"></a></h2>
+<p>Crank actuator - motor-driven rotary input.</p>
+<p>A crank is a driver link that rotates around a ground anchor
+at a constant angular velocity.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.crank.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.017453292519943295</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.actuators.crank.Crank" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven rotary input (crank).</p>
+<p>A crank rotates around a ground anchor at constant angular velocity,
+producing an output point that traces a circle. This is the primary
+input driver for most linkage mechanisms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this crank rotates around.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Distance from anchor to output.</p></li>
+<li><p><strong>angular_velocity</strong> (<em>float</em>) – Rotation rate in radians per step.</p></li>
+<li><p><strong>initial_angle</strong> (<em>float</em>) – Starting angle in radians.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(1.0, 0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>  <span class="c1"># Same as crank.position</span>
+<span class="go">(1.0, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.anchor">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.anchor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.anchors">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.anchors" title="Link to this definition"></a></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.angular_velocity">
+<span class="sig-name descname"><span class="pre">angular_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.angular_velocity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.get_constraints">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Return the radius (optimizable constraint).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the crank radius.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.initial_angle">
+<span class="sig-name descname"><span class="pre">initial_angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.initial_angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.output">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.output" title="Link to this definition"></a></dt>
+<dd><p>Return the output joint (end of the crank).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the crank output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.radius" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.reload" title="Link to this definition"></a></dt>
+<dd><p>Advance the crank by one step.</p>
+<p>Rotates the crank position by angular_velocity * dt radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.Crank.set_constraints">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.crank.Crank.set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Set the radius constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distance</strong> – New radius value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="pylinkage.actuators.crank.DEFAULT_ANGULAR_VELOCITY">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.crank.</span></span><span class="sig-name descname"><span class="pre">DEFAULT_ANGULAR_VELOCITY</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.017453292519943295</span></span><a class="headerlink" href="#pylinkage.actuators.crank.DEFAULT_ANGULAR_VELOCITY" title="Link to this definition"></a></dt>
+<dd><p>one degree per step (360 steps per full rotation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Default angular velocity</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.actuators.linear">
+<span id="pylinkage-actuators-linear-module"></span><h2>pylinkage.actuators.linear module<a class="headerlink" href="#module-pylinkage.actuators.linear" title="Link to this heading"></a></h2>
+<p>Linear actuator - motor-driven linear input.</p>
+<p>A linear actuator is a driver that moves along a straight line
+at constant velocity, oscillating between 0 and stroke limits.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.linear.</span></span><span class="sig-name descname"><span class="pre">LinearActuator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven linear input (linear actuator).</p>
+<p>A linear actuator moves along a line from its anchor at constant
+speed, producing an output point that oscillates between 0
+and the stroke limit. This provides linear reciprocating motion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this actuator extends from.</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Direction angle in radians (from +x axis).</p></li>
+<li><p><strong>stroke</strong> (<em>float</em>) – Maximum extension distance.</p></li>
+<li><p><strong>speed</strong> (<em>float</em>) – Linear speed magnitude (units per step).</p></li>
+<li><p><strong>initial_extension</strong> (<em>float</em>) – Starting extension from anchor.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span> <span class="o">=</span> <span class="n">LinearActuator</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(0.0, 0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">position</span>  <span class="c1"># Moved 0.1 units along x-axis</span>
+<span class="go">(0.1, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.anchor">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.anchor" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.anchors">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.anchors" title="Link to this definition"></a></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.angle">
+<span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.angle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.extension">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.extension" title="Link to this definition"></a></dt>
+<dd><p>Return current extension from anchor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.get_constraints">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.get_constraints" title="Link to this definition"></a></dt>
+<dd><p>Return the stroke and speed (optimizable constraints).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing (stroke, speed).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.initial_extension">
+<span class="sig-name descname"><span class="pre">initial_extension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.initial_extension" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.output">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.output" title="Link to this definition"></a></dt>
+<dd><p>Return the output joint (end of the actuator).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the actuator output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.reload" title="Link to this definition"></a></dt>
+<dd><p>Advance the actuator by one step.</p>
+<p>Moves the actuator position by speed * dt, reversing
+direction when hitting stroke limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.set_constraints">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.set_constraints" title="Link to this definition"></a></dt>
+<dd><p>Set the constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stroke</strong> – New stroke value (must be positive).</p></li>
+<li><p><strong>speed</strong> – New speed value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.speed">
+<span class="sig-name descname"><span class="pre">speed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.speed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.actuators.linear.LinearActuator.stroke">
+<span class="sig-name descname"><span class="pre">stroke</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pylinkage.actuators.linear.LinearActuator.stroke" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<p>Actuators - motor-driven input drivers for linkage mechanisms.</p>
+<p>This module provides actuator classes that provide input motion to mechanisms:</p>
+<dl class="simple">
+<dt>Classes:</dt><dd><p>Crank: Motor-driven rotary input (rotating around a ground point)
+ArcCrank: Motor-driven oscillating rotary input (oscillates between angle limits)
+LinearActuator: Motor-driven linear input (oscillating piston/cylinder)</p>
+</dd>
+</dl>
+<p>Actuators are input drivers that actively move during simulation, as opposed
+to passive dyads which react to their parent positions.</p>
+<p class="rubric">Example</p>
+<p>Create a crank that rotates around a ground point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+
+<span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create an arc crank that oscillates between angle limits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArcCrank</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="n">arc_crank</span> <span class="o">=</span> <span class="n">ArcCrank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">arc_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arc_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a linear actuator:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearActuator</span>
+
+<span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="n">actuator</span> <span class="o">=</span> <span class="n">LinearActuator</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.</span></span><span class="sig-name descname"><span class="pre">ArcCrank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.017453292519943295</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">3.141592653589793</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven oscillating rotary input (arc crank).</p>
+<p>An arc crank oscillates around a ground anchor between two angle limits
+at constant angular velocity, producing an output point that traces an arc.
+Direction reverses (“bounces”) when reaching angle limits, similar to
+LinearActuator behavior at stroke limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this arc crank rotates around.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Distance from anchor to output.</p></li>
+<li><p><strong>angular_velocity</strong> (<em>float</em>) – Rotation rate magnitude in radians per step.</p></li>
+<li><p><strong>arc_start</strong> (<em>float</em>) – Minimum angle limit in radians.</p></li>
+<li><p><strong>arc_end</strong> (<em>float</em>) – Maximum angle limit in radians.</p></li>
+<li><p><strong>initial_angle</strong> (<em>float</em>) – Starting angle in radians (must be between arc_start and arc_end).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc_crank</span> <span class="o">=</span> <span class="n">ArcCrank</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">arc_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">arc_end</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arc_crank</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(1.0, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd><p>Return current angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">angular_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">arc_end</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">arc_start</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Return optimizable constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing (radius, arc_start, arc_end).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">initial_angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span></dt>
+<dd><p>Return the output joint (end of the arc crank).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the arc crank output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Advance the arc crank by one step.</p>
+<p>Rotates the arc crank position by angular_velocity * dt radians,
+reversing direction when hitting angle limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arc_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Set the constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>radius</strong> – New radius value.</p></li>
+<li><p><strong>arc_start</strong> – New arc_start value.</p></li>
+<li><p><strong>arc_end</strong> – New arc_end value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.</span></span><span class="sig-name descname"><span class="pre">Crank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_velocity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.017453292519943295</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven rotary input (crank).</p>
+<p>A crank rotates around a ground anchor at constant angular velocity,
+producing an output point that traces a circle. This is the primary
+input driver for most linkage mechanisms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this crank rotates around.</p></li>
+<li><p><strong>radius</strong> (<em>float</em>) – Distance from anchor to output.</p></li>
+<li><p><strong>angular_velocity</strong> (<em>float</em>) – Rotation rate in radians per step.</p></li>
+<li><p><strong>initial_angle</strong> (<em>float</em>) – Starting angle in radians.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(1.0, 0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>  <span class="c1"># Same as crank.position</span>
+<span class="go">(1.0, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">angular_velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Return the radius (optimizable constraint).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing the crank radius.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">initial_angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span></dt>
+<dd><p>Return the output joint (end of the crank).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the crank output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Advance the crank by one step.</p>
+<p>Rotates the crank position by angular_velocity * dt radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Set the radius constraint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distance</strong> – New radius value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.actuators.</span></span><span class="sig-name descname"><span class="pre">LinearActuator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">anchor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_extension</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectedComponent</span></code></p>
+<p>A motor-driven linear input (linear actuator).</p>
+<p>A linear actuator moves along a line from its anchor at constant
+speed, producing an output point that oscillates between 0
+and the stroke limit. This provides linear reciprocating motion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>anchor</strong> (<a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><em>Ground</em></a>) – The ground point this actuator extends from.</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Direction angle in radians (from +x axis).</p></li>
+<li><p><strong>stroke</strong> (<em>float</em>) – Maximum extension distance.</p></li>
+<li><p><strong>speed</strong> (<em>float</em>) – Linear speed magnitude (units per step).</p></li>
+<li><p><strong>initial_extension</strong> (<em>float</em>) – Starting extension from anchor.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">O1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;O1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span> <span class="o">=</span> <span class="n">LinearActuator</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">O1</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">stroke</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">speed</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">position</span>
+<span class="go">(0.0, 0.0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">actuator</span><span class="o">.</span><span class="n">position</span>  <span class="c1"># Moved 0.1 units along x-axis</span>
+<span class="go">(0.1, 0.0)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">anchor</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">anchors</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.components.html#pylinkage.components.ground.Ground" title="pylinkage.components.ground.Ground"><span class="pre">Ground</span></a><span class="p"><span class="pre">]</span></span></span></dt>
+<dd><p>Return the parent dyads (just the ground anchor).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">angle</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd><p>Return current extension from anchor.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Return the stroke and speed (optimizable constraints).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple containing (stroke, speed).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">initial_extension</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">output</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">_AnchorProxy</span></span></dt>
+<dd><p>Return the output joint (end of the actuator).</p>
+<p>This proxy can be used as an anchor for other dyads.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An anchor proxy representing the actuator output.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Advance the actuator by one step.</p>
+<p>Moves the actuator position by speed * dt, reversing
+direction when hitting stroke limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dt</strong> – Time step multiplier.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If anchor position is undefined.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stroke</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Set the constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stroke</strong> – New stroke value (must be positive).</p></li>
+<li><p><strong>speed</strong> – New speed value.</p></li>
+<li><p><strong>*args</strong> – Ignored (for interface compatibility).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">speed</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">stroke</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pylinkage.html" class="btn btn-neutral float-left" title="pylinkage package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pylinkage.assur.html" class="btn btn-neutral float-right" title="pylinkage.assur package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

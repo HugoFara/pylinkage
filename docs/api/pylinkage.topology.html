@@ -1,0 +1,981 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pylinkage.topology package &mdash; pylinkage 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pylinkage.topology.data package" href="pylinkage.topology.data.html" />
+    <link rel="prev" title="pylinkage.synthesis package" href="pylinkage.synthesis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pylinkage</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pylinkage.html">pylinkage package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pylinkage.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.actuators.html">pylinkage.actuators package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.assur.html">pylinkage.assur package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.bridge.html">pylinkage.bridge package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.cam.html">pylinkage.cam package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.components.html">pylinkage.components package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.dyads.html">pylinkage.dyads package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.geometry.html">pylinkage.geometry package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.hypergraph.html">pylinkage.hypergraph package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.linkage.html">pylinkage.linkage package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.mechanism.html">pylinkage.mechanism package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.optimization.html">pylinkage.optimization package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.population.html">pylinkage.population package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.simulation.html">pylinkage.simulation package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.solver.html">pylinkage.solver package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.symbolic.html">pylinkage.symbolic package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.synthesis.html">pylinkage.synthesis package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">pylinkage.topology package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pylinkage.visualizer.html">pylinkage.visualizer package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.dimensions">pylinkage.dimensions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-pylinkage.exceptions">pylinkage.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pylinkage.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pylinkage</a></li>
+          <li class="breadcrumb-item"><a href="pylinkage.html">pylinkage package</a></li>
+      <li class="breadcrumb-item active">pylinkage.topology package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/pylinkage.topology.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pylinkage-topology-package">
+<h1>pylinkage.topology package<a class="headerlink" href="#pylinkage-topology-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pylinkage.topology.data.html">pylinkage.topology.data package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pylinkage.topology.data.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-pylinkage.topology.analysis">
+<span id="pylinkage-topology-analysis-module"></span><h2>pylinkage.topology.analysis module<a class="headerlink" href="#module-pylinkage.topology.analysis" title="Link to this heading"></a></h2>
+<p>Topological analysis of planar linkages.</p>
+<p>Provides DOF (degree of freedom) computation using Grübler’s formula
+and related mobility analysis, operating on pure topology (no dimensions).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.MobilityInfo">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.analysis.</span></span><span class="sig-name descname"><span class="pre">MobilityInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_full_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_half_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.topology.analysis.MobilityInfo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Result of Grübler mobility analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dof</strong> (<em>int</em>) – Degree of freedom of the mechanism.</p></li>
+<li><p><strong>num_links</strong> (<em>int</em>) – Number of links (including ground).</p></li>
+<li><p><strong>num_full_joints</strong> (<em>int</em>) – Number of 1-DOF joints (revolute, prismatic).</p></li>
+<li><p><strong>num_half_joints</strong> (<em>int</em>) – Number of 2-DOF joints (higher pairs).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.MobilityInfo.dof">
+<span class="sig-name descname"><span class="pre">dof</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pylinkage.topology.analysis.MobilityInfo.dof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.MobilityInfo.num_full_joints">
+<span class="sig-name descname"><span class="pre">num_full_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pylinkage.topology.analysis.MobilityInfo.num_full_joints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.MobilityInfo.num_half_joints">
+<span class="sig-name descname"><span class="pre">num_half_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#pylinkage.topology.analysis.MobilityInfo.num_half_joints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.MobilityInfo.num_links">
+<span class="sig-name descname"><span class="pre">num_links</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><a class="headerlink" href="#pylinkage.topology.analysis.MobilityInfo.num_links" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.compute_dof">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.analysis.</span></span><span class="sig-name descname"><span class="pre">compute_dof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pylinkage.topology.analysis.compute_dof" title="Link to this definition"></a></dt>
+<dd><p>Compute the degree of freedom of a planar linkage using Grübler’s formula.</p>
+<p>DOF = 3*(n - 1) - 2*j1 - j2</p>
+<p>where:
+- n = number of links (including ground)
+- j1 = number of 1-DOF joints (revolute, prismatic)
+- j2 = number of 2-DOF joints (higher pairs)</p>
+<p>Links are counted from edges and hyperedges. Each edge is one binary
+link. Each hyperedge is one rigid body (one link regardless of how
+many joints it has). The ground link is always counted as 1.</p>
+<p>All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only, no dimensions needed).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>1: Single-input mechanism (four-bar, slider-crank)</p></li>
+<li><p>0: Rigid structure (truss)</p></li>
+<li><p>&lt;0: Over-constrained (statically indeterminate)</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The computed degree of freedom. Typical values</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">HypergraphLinkage</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">NodeRole</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Four-bar linkage: 4 nodes, 3 driven edges + ground = 4 links, 4 joints</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;BC&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_dof</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.analysis.compute_mobility">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.analysis.</span></span><span class="sig-name descname"><span class="pre">compute_mobility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.analysis.MobilityInfo" title="pylinkage.topology.analysis.MobilityInfo"><span class="pre">MobilityInfo</span></a></span></span><a class="headerlink" href="#pylinkage.topology.analysis.compute_mobility" title="Link to this definition"></a></dt>
+<dd><p>Compute full mobility analysis of a planar linkage.</p>
+<p>See <a class="reference internal" href="#pylinkage.topology.analysis.compute_dof" title="pylinkage.topology.analysis.compute_dof"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_dof()</span></code></a> for the formula and link/joint counting rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MobilityInfo with DOF, link count, and joint counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.topology.catalog">
+<span id="pylinkage-topology-catalog-module"></span><h2>pylinkage.topology.catalog module<a class="headerlink" href="#module-pylinkage.topology.catalog" title="Link to this heading"></a></h2>
+<p>Topology catalog: a collection of known planar linkage topologies.</p>
+<p>Provides a built-in catalog of all 1-DOF planar linkage topologies up to
+8 links (19 total: 1 four-bar, 2 six-bars, 16 eight-bars), validated
+against published atlases (Mruthyunjaya 1984).</p>
+<p>The catalog is stored as a JSON file and loaded at runtime via
+<a class="reference internal" href="#pylinkage.topology.catalog.load_catalog" title="pylinkage.topology.catalog.load_catalog"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_catalog()</span></code></a>. Each entry contains the topology as a serialized
+HypergraphLinkage plus metadata (link count, Assur group decomposition,
+human-readable name, etc.).</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.catalog.</span></span><span class="sig-name descname"><span class="pre">CatalogEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_assortment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assur_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_graph_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A single topology in the catalog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Unique identifier (e.g., “four-bar”, “watt”, “stephenson”).</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Human-readable name.</p></li>
+<li><p><strong>num_links</strong> (<em>int</em>) – Number of links including ground.</p></li>
+<li><p><strong>num_joints</strong> (<em>int</em>) – Number of joints.</p></li>
+<li><p><strong>dof</strong> (<em>int</em>) – Degree of freedom.</p></li>
+<li><p><strong>link_assortment</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em>) – Sorted degree sequence of links.</p></li>
+<li><p><strong>assur_groups</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em>) – List of Assur group signatures in solving order.</p></li>
+<li><p><strong>family</strong> (<em>str</em>) – Family name (“four-bar”, “six-bar”, “eight-bar”).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.assur_groups">
+<span class="sig-name descname"><span class="pre">assur_groups</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.assur_groups" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.dof">
+<span class="sig-name descname"><span class="pre">dof</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.dof" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.family">
+<span class="sig-name descname"><span class="pre">family</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.family" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.id">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.link_assortment">
+<span class="sig-name descname"><span class="pre">link_assortment</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.link_assortment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.name" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.num_joints">
+<span class="sig-name descname"><span class="pre">num_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.num_joints" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.num_links">
+<span class="sig-name descname"><span class="pre">num_links</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.num_links" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.CatalogEntry.to_graph">
+<span class="sig-name descname"><span class="pre">to_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.CatalogEntry.to_graph" title="Link to this definition"></a></dt>
+<dd><p>Deserialize the stored graph data into a HypergraphLinkage.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.catalog.</span></span><span class="sig-name descname"><span class="pre">TopologyCatalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~pylinkage.topology.catalog.CatalogEntry]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collection of known linkage topologies.</p>
+<p>Loaded from the built-in JSON catalog or constructed programmatically.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.all_graphs">
+<span class="sig-name descname"><span class="pre">all_graphs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.all_graphs" title="Link to this definition"></a></dt>
+<dd><p>Return all topologies as HypergraphLinkage objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.by_family">
+<span class="sig-name descname"><span class="pre">by_family</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.by_family" title="Link to this definition"></a></dt>
+<dd><p>Get all topologies in a family.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.by_num_links">
+<span class="sig-name descname"><span class="pre">by_num_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.by_num_links" title="Link to this definition"></a></dt>
+<dd><p>Get all topologies with n links.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.compatible_topologies">
+<span class="sig-name descname"><span class="pre">compatible_topologies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.compatible_topologies" title="Link to this definition"></a></dt>
+<dd><p>Get all topologies up to max_links.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.entries">
+<span class="sig-name descname"><span class="pre">entries</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.entries" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.from_json">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.from_json" title="Link to this definition"></a></dt>
+<dd><p>Load a catalog from a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.get" title="Link to this definition"></a></dt>
+<dd><p>Look up a topology by ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.load_builtin">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">load_builtin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.load_builtin" title="Link to this definition"></a></dt>
+<dd><p>Load the built-in catalog shipped with pylinkage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.to_json">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.to_json" title="Link to this definition"></a></dt>
+<dd><p>Save catalog to a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.topology_by_index">
+<span class="sig-name descname"><span class="pre">topology_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.topology_by_index" title="Link to this definition"></a></dt>
+<dd><p>Look up a topology by integer index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – Integer index (0-based).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The CatalogEntry at that index.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>IndexError</strong> – If index is out of range.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.TopologyCatalog.topology_index">
+<span class="sig-name descname"><span class="pre">topology_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pylinkage.topology.catalog.TopologyCatalog.topology_index" title="Link to this definition"></a></dt>
+<dd><p>Return the integer index of a topology (stable within a catalog instance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topology_id</strong> – ID to look up.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Integer index (0-based).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If topology_id is not in the catalog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.generate_catalog">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.catalog.</span></span><span class="sig-name descname"><span class="pre">generate_catalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.generate_catalog" title="Link to this definition"></a></dt>
+<dd><p>Generate the catalog by running the enumerator.</p>
+<p>This is used to produce the static JSON file. Not needed at runtime.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>max_links</strong> – Maximum number of links to enumerate (default 8).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A TopologyCatalog with all enumerated topologies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.catalog.load_catalog">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.catalog.</span></span><span class="sig-name descname"><span class="pre">load_catalog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span><a class="headerlink" href="#pylinkage.topology.catalog.load_catalog" title="Link to this definition"></a></dt>
+<dd><p>Load the built-in topology catalog.</p>
+<p>Convenience function equivalent to <code class="docutils literal notranslate"><span class="pre">TopologyCatalog.load_builtin()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A TopologyCatalog with all built-in topologies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.topology.enumeration">
+<span id="pylinkage-topology-enumeration-module"></span><h2>pylinkage.topology.enumeration module<a class="headerlink" href="#module-pylinkage.topology.enumeration" title="Link to this heading"></a></h2>
+<p>Systematic enumeration of planar linkage topologies.</p>
+<p>Enumerates all non-isomorphic 1-DOF planar linkage topologies up to a given
+number of links, using link-adjacency graph generation and isomorphism
+filtering. Validated against published atlases (Mruthyunjaya 1984).</p>
+<p>The enumeration works at the link-adjacency level (links = vertices,
+joints = edges), which is the standard representation in mechanism atlas
+literature. Results are converted to the joint-first HypergraphLinkage
+representation used by the rest of pylinkage.</p>
+<dl class="simple">
+<dt>Expected topology counts for DOF=1 (revolute only):</dt><dd><ul class="simple">
+<li><p>4 links:  1  (four-bar)</p></li>
+<li><p>6 links:  2  (Watt, Stephenson)</p></li>
+<li><p>8 links: 16  (per Mruthyunjaya 1984)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.enumeration.enumerate_all">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.enumeration.</span></span><span class="sig-name descname"><span class="pre">enumerate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.enumeration.enumerate_all" title="Link to this definition"></a></dt>
+<dd><p>Enumerate all topologies up to max_links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_links</strong> – Maximum number of links (default 8).</p></li>
+<li><p><strong>dof</strong> – Target degree of freedom (default 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict mapping num_links -&gt; list of topologies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.enumeration.enumerate_topologies">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.enumeration.</span></span><span class="sig-name descname"><span class="pre">enumerate_topologies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.enumeration.enumerate_topologies" title="Link to this definition"></a></dt>
+<dd><p>Enumerate all non-isomorphic planar linkage topologies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_links</strong> – Number of links including ground (4, 6, 8, …).</p></li>
+<li><p><strong>dof</strong> – Target degree of freedom (default 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of HypergraphLinkage topologies, one per isomorphism class.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If num_links doesn’t yield integer joint count,
+    or if num_links &lt; 4.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pylinkage.topology.isomorphism">
+<span id="pylinkage-topology-isomorphism-module"></span><h2>pylinkage.topology.isomorphism module<a class="headerlink" href="#module-pylinkage.topology.isomorphism" title="Link to this heading"></a></h2>
+<p>Graph isomorphism detection for planar linkage topologies.</p>
+<p>Provides canonical forms and isomorphism checking for HypergraphLinkage
+graphs using WL-1 (Weisfeiler-Leman) color refinement with backtracking
+verification for small graphs.</p>
+<p>For the graph sizes in planar linkage enumeration (up to ~10 nodes for
+8-link mechanisms), this approach is both correct and fast.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.isomorphism.are_isomorphic">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.isomorphism.</span></span><span class="sig-name descname"><span class="pre">are_isomorphic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">g2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pylinkage.topology.isomorphism.are_isomorphic" title="Link to this definition"></a></dt>
+<dd><p>Check whether two topologies are isomorphic.</p>
+<p>Two topologies are isomorphic if there exists a node permutation
+that preserves adjacency, joint_type, and role.</p>
+<p>Uses canonical_hash as a fast reject, then definitive verification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g1</strong> – First HypergraphLinkage.</p></li>
+<li><p><strong>g2</strong> – Second HypergraphLinkage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the topologies are isomorphic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.isomorphism.canonical_form">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.isomorphism.</span></span><span class="sig-name descname"><span class="pre">canonical_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pylinkage.topology.isomorphism.canonical_form" title="Link to this definition"></a></dt>
+<dd><p>Compute a canonical adjacency representation.</p>
+<p>Returns a sorted tuple-of-tuples encoding the adjacency matrix
+under the canonical node ordering. This is hashable and can be
+used as a dict key or set element.</p>
+<p>Two graphs have the same canonical_form if and only if they are
+isomorphic. This is guaranteed by exhaustive permutation search
+within WL-1 color classes for ambiguous cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A hashable canonical adjacency representation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pylinkage.topology.isomorphism.canonical_hash">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.isomorphism.</span></span><span class="sig-name descname"><span class="pre">canonical_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pylinkage.topology.isomorphism.canonical_hash" title="Link to this definition"></a></dt>
+<dd><p>Compute a canonical hash for a topology using WL-1 color refinement.</p>
+<p>Two graphs with the same hash are <em>probably</em> isomorphic.
+For a definitive check, use <a class="reference internal" href="#pylinkage.topology.isomorphism.are_isomorphic" title="pylinkage.topology.isomorphism.are_isomorphic"><code class="xref py py-func docutils literal notranslate"><span class="pre">are_isomorphic()</span></code></a>.</p>
+<p>The hash accounts for joint_type, role, and adjacency structure.
+Hyperedges are expanded to cliques before hashing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer hash. Equal hashes suggest isomorphism; different
+hashes guarantee non-isomorphism.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Link to this heading"></a></h2>
+<p>Topology analysis and enumeration tools for planar linkages.</p>
+<p>This module provides:
+- DOF computation using Grübler’s formula
+- Graph isomorphism detection for topology deduplication
+- Systematic enumeration of all valid 1-DOF topologies
+- A built-in catalog of known topologies (up to 8 links)</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">CatalogEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">link_assortment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple[int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assur_groups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">...]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_graph_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~typing.Any]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A single topology in the catalog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – Unique identifier (e.g., “four-bar”, “watt”, “stephenson”).</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Human-readable name.</p></li>
+<li><p><strong>num_links</strong> (<em>int</em>) – Number of links including ground.</p></li>
+<li><p><strong>num_joints</strong> (<em>int</em>) – Number of joints.</p></li>
+<li><p><strong>dof</strong> (<em>int</em>) – Degree of freedom.</p></li>
+<li><p><strong>link_assortment</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>...</em><em>]</em>) – Sorted degree sequence of links.</p></li>
+<li><p><strong>assur_groups</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>...</em><em>]</em>) – List of Assur group signatures in solving order.</p></li>
+<li><p><strong>family</strong> (<em>str</em>) – Family name (“four-bar”, “six-bar”, “eight-bar”).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">assur_groups</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">dof</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">family</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">id</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">link_assortment</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">num_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">num_links</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">to_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></span></dt>
+<dd><p>Deserialize the stored graph data into a HypergraphLinkage.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">MobilityInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_full_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_half_joints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Result of Grübler mobility analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dof</strong> (<em>int</em>) – Degree of freedom of the mechanism.</p></li>
+<li><p><strong>num_links</strong> (<em>int</em>) – Number of links (including ground).</p></li>
+<li><p><strong>num_full_joints</strong> (<em>int</em>) – Number of 1-DOF joints (revolute, prismatic).</p></li>
+<li><p><strong>num_half_joints</strong> (<em>int</em>) – Number of 2-DOF joints (higher pairs).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">dof</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">num_full_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">num_half_joints</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">num_links</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></span></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">TopologyCatalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entries</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~pylinkage.topology.catalog.CatalogEntry]</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Collection of known linkage topologies.</p>
+<p>Loaded from the built-in JSON catalog or constructed programmatically.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">all_graphs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Return all topologies as HypergraphLinkage objects.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">by_family</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Get all topologies in a family.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">by_num_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Get all topologies with n links.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">compatible_topologies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Get all topologies up to max_links.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">entries</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="p"><span class="pre">]</span></span></span></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span></dt>
+<dd><p>Load a catalog from a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span></dt>
+<dd><p>Look up a topology by ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">load_builtin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span></dt>
+<dd><p>Load the built-in catalog shipped with pylinkage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Save catalog to a JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">topology_by_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.CatalogEntry" title="pylinkage.topology.catalog.CatalogEntry"><span class="pre">CatalogEntry</span></a></span></span></dt>
+<dd><p>Look up a topology by integer index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – Integer index (0-based).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The CatalogEntry at that index.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>IndexError</strong> – If index is out of range.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">topology_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">topology_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span></dt>
+<dd><p>Return the integer index of a topology (stable within a catalog instance).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>topology_id</strong> – ID to look up.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Integer index (0-based).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If topology_id is not in the catalog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">are_isomorphic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">g2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span></dt>
+<dd><p>Check whether two topologies are isomorphic.</p>
+<p>Two topologies are isomorphic if there exists a node permutation
+that preserves adjacency, joint_type, and role.</p>
+<p>Uses canonical_hash as a fast reject, then definitive verification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g1</strong> – First HypergraphLinkage.</p></li>
+<li><p><strong>g2</strong> – Second HypergraphLinkage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the topologies are isomorphic.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">canonical_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Compute a canonical adjacency representation.</p>
+<p>Returns a sorted tuple-of-tuples encoding the adjacency matrix
+under the canonical node ordering. This is hashable and can be
+used as a dict key or set element.</p>
+<p>Two graphs have the same canonical_form if and only if they are
+isomorphic. This is guaranteed by exhaustive permutation search
+within WL-1 color classes for ambiguous cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A hashable canonical adjacency representation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">canonical_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span></dt>
+<dd><p>Compute a canonical hash for a topology using WL-1 color refinement.</p>
+<p>Two graphs with the same hash are <em>probably</em> isomorphic.
+For a definitive check, use <code class="xref py py-func docutils literal notranslate"><span class="pre">are_isomorphic()</span></code>.</p>
+<p>The hash accounts for joint_type, role, and adjacency structure.
+Hyperedges are expanded to cliques before hashing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer hash. Equal hashes suggest isomorphism; different
+hashes guarantee non-isomorphism.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">compute_dof</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span></dt>
+<dd><p>Compute the degree of freedom of a planar linkage using Grübler’s formula.</p>
+<p>DOF = 3*(n - 1) - 2*j1 - j2</p>
+<p>where:
+- n = number of links (including ground)
+- j1 = number of 1-DOF joints (revolute, prismatic)
+- j2 = number of 2-DOF joints (higher pairs)</p>
+<p>Links are counted from edges and hyperedges. Each edge is one binary
+link. Each hyperedge is one rigid body (one link regardless of how
+many joints it has). The ground link is always counted as 1.</p>
+<p>All current joint types (REVOLUTE, PRISMATIC) are 1-DOF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only, no dimensions needed).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>1: Single-input mechanism (four-bar, slider-crank)</p></li>
+<li><p>0: Rigid structure (truss)</p></li>
+<li><p>&lt;0: Over-constrained (statically indeterminate)</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The computed degree of freedom. Typical values</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.hypergraph</span><span class="w"> </span><span class="kn">import</span> <span class="n">HypergraphLinkage</span><span class="p">,</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">NodeRole</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Four-bar linkage: 4 nodes, 3 driven edges + ground = 4 links, 4 joints</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVEN</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;BC&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;CD&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">compute_dof</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">compute_mobility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.analysis.MobilityInfo" title="pylinkage.topology.analysis.MobilityInfo"><span class="pre">MobilityInfo</span></a></span></span></dt>
+<dd><p>Compute full mobility analysis of a planar linkage.</p>
+<p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">compute_dof()</span></code> for the formula and link/joint counting rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> – A HypergraphLinkage (topology only).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>MobilityInfo with DOF, link count, and joint counts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">enumerate_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Enumerate all topologies up to max_links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_links</strong> – Maximum number of links (default 8).</p></li>
+<li><p><strong>dof</strong> – Target degree of freedom (default 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict mapping num_links -&gt; list of topologies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">enumerate_topologies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">dof</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pylinkage.hypergraph.html#pylinkage.hypergraph.graph.HypergraphLinkage" title="pylinkage.hypergraph.graph.HypergraphLinkage"><span class="pre">HypergraphLinkage</span></a><span class="p"><span class="pre">]</span></span></span></span></dt>
+<dd><p>Enumerate all non-isomorphic planar linkage topologies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_links</strong> – Number of links including ground (4, 6, 8, …).</p></li>
+<li><p><strong>dof</strong> – Target degree of freedom (default 1).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of HypergraphLinkage topologies, one per isomorphism class.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If num_links doesn’t yield integer joint count,
+    or if num_links &lt; 4.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">pylinkage.topology.</span></span><span class="sig-name descname"><span class="pre">load_catalog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pylinkage.topology.catalog.TopologyCatalog" title="pylinkage.topology.catalog.TopologyCatalog"><span class="pre">TopologyCatalog</span></a></span></span></dt>
+<dd><p>Load the built-in topology catalog.</p>
+<p>Convenience function equivalent to <code class="docutils literal notranslate"><span class="pre">TopologyCatalog.load_builtin()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A TopologyCatalog with all built-in topologies.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pylinkage.synthesis.html" class="btn btn-neutral float-left" title="pylinkage.synthesis package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pylinkage.topology.data.html" class="btn btn-neutral float-right" title="pylinkage.topology.data package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

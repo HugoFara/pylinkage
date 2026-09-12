@@ -3,15 +3,237 @@ Graph-Based Linkage Representation
 
 This tutorial covers pylinkage's graph-based representations for linkages:
 
-- **Assur module**: Formal kinematic decomposition using Assur group theory
-- **Hypergraph module**: Hierarchical component-based linkage definition
+- **Hypergraph module**: the topology of a mechanism — joints, links and
+  rigid bodies — with the geometry kept in a separate ``Dimensions`` object
+- **Assur module**: formal kinematic decomposition of that topology into
+  a driver and zero-DOF Assur groups
+- **Topology module**: mobility, isomorphism and a catalog of known
+  topologies
 
 These representations are useful for:
 
 - Structural analysis of linkage topology
-- Building complex mechanisms from reusable components
+- Building complex mechanisms from reusable sub-assemblies
 - Automated linkage generation and transformation
 - Research in mechanism theory
+
+The examples build one four-bar and hand it from module to module, so run
+them in order.
+
+Hypergraph Representation
+-------------------------
+
+.. figure:: /../assets/hypergraph_components.png
+   :width: 800px
+   :align: center
+   :alt: Hypergraph component-based design
+
+   Component-based linkage design: a library of reusable components (left),
+   hierarchical composition (middle), and the flattened result (right).
+
+Overview
+^^^^^^^^
+
+A ``HypergraphLinkage`` is pure topology:
+
+- **Node**: a joint, with a ``role`` (``GROUND``, ``DRIVER`` or ``DRIVEN``)
+  and a ``joint_type`` (``REVOLUTE`` or ``PRISMATIC``). No position.
+- **Edge**: a binary link between two joints. No length.
+- **Hyperedge**: an N-way rigid body — a ternary link, a chassis.
+
+Geometry — joint positions, link lengths, driver speeds — lives in a
+``Dimensions`` object, so one topology can be paired with many geometries.
+
+Creating a Hypergraph Linkage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   from pylinkage.hypergraph import Edge, HypergraphLinkage, Node, NodeRole
+
+   # A four-bar: two grounded joints, one motor-driven crank pin, one
+   # passive coupler-rocker pin
+   hg = HypergraphLinkage(name="FourBar")
+   hg.add_node(Node("A", role=NodeRole.GROUND))
+   hg.add_node(Node("B", role=NodeRole.DRIVER))
+   hg.add_node(Node("C", role=NodeRole.DRIVEN))
+   hg.add_node(Node("D", role=NodeRole.GROUND))
+
+   # Three binary links: crank A-B, coupler B-C, rocker C-D. The ground
+   # link between A and D is implied by their role.
+   hg.add_edge(Edge("AB", "A", "B"))
+   hg.add_edge(Edge("BC", "B", "C"))
+   hg.add_edge(Edge("CD", "C", "D"))
+
+   print(f"Nodes: {list(hg.nodes)}")
+   print(f"Edges: {[(e.id, e.source, e.target) for e in hg.edges.values()]}")
+   print(f"Grounds: {[n.id for n in hg.ground_nodes()]}")
+   print(f"Drivers: {[n.id for n in hg.driver_nodes()]}")
+
+**Expected output:**
+
+.. code-block:: text
+
+   Nodes: ['A', 'B', 'C', 'D']
+   Edges: [('AB', 'A', 'B'), ('BC', 'B', 'C'), ('CD', 'C', 'D')]
+   Grounds: ['A', 'D']
+   Drivers: ['B']
+
+Attaching Dimensions
+^^^^^^^^^^^^^^^^^^^^
+
+``Dimensions`` names the same nodes and edges: an assembly position for
+every joint, a length for every edge, and an angular velocity (radians
+per step) for every driver. Positions are only the starting configuration;
+they also pick the assembly branch, so place ``C`` on the side you want.
+
+.. code-block:: python
+
+   import math
+   from pylinkage.dimensions import Dimensions, DriverAngle
+
+   CRANK, COUPLER, ROCKER, GROUND = 1.0, 3.0, 3.0, 4.0
+   OMEGA = math.tau / 60  # one full turn in 60 steps
+
+   # Crank along +x at phase 0; C on the upper branch, where the coupler
+   # and rocker circles intersect
+   bx, by = CRANK, 0.0
+   dx, dy = GROUND, 0.0
+   half = math.hypot(dx - bx, dy - by) / 2
+   cx, cy = (bx + dx) / 2, math.sqrt(COUPLER**2 - half**2)
+
+   dims = Dimensions(
+       node_positions={"A": (0, 0), "B": (bx, by), "C": (cx, cy), "D": (dx, dy)},
+       driver_angles={"B": DriverAngle(angular_velocity=OMEGA)},
+       edge_distances={"AB": CRANK, "BC": COUPLER, "CD": ROCKER},
+   )
+
+   # Consistency check without raising: an empty list means valid
+   print(dims.validate_against(hg.nodes.keys(), hg.edges.keys()))
+
+Converting to a Mechanism
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   from pylinkage.hypergraph import to_mechanism
+
+   mechanism = to_mechanism(hg, dims)
+   loci = list(mechanism.step())
+
+   print(f"Mechanism joints: {[j.id for j in mechanism.joints]}")
+   print(f"Simulation steps: {len(loci)}")
+
+   # The Mechanism draws and animates like a Linkage
+   import pylinkage as pl
+   pl.show_linkage(mechanism)
+
+**Expected output:**
+
+.. code-block:: text
+
+   Mechanism joints: ['A', 'D', 'B', 'C']
+   Simulation steps: 60
+
+Ternary Links via Hyperedge
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A coupler point ``P`` rigidly attached to the coupler makes B-C-P one
+rigid triangle. A ``Hyperedge`` records that the three joints share one
+body, which topology analysis needs to count links correctly. The
+hyperedge is membership only: to *constrain* the triangle, add its three
+edges with their lengths.
+
+.. code-block:: python
+
+   from pylinkage.hypergraph import Hyperedge
+
+   hg_coupler = HypergraphLinkage(name="CouplerFourBar")
+   for node_id, role in [
+       ("A", NodeRole.GROUND), ("B", NodeRole.DRIVER), ("C", NodeRole.DRIVEN),
+       ("P", NodeRole.DRIVEN), ("D", NodeRole.GROUND),
+   ]:
+       hg_coupler.add_node(Node(node_id, role=role))
+
+   hg_coupler.add_edge(Edge("AB", "A", "B"))
+   hg_coupler.add_edge(Edge("CD", "C", "D"))
+   # All three sides of the coupler triangle: this is what makes it rigid
+   hg_coupler.add_edge(Edge("BC", "B", "C"))
+   hg_coupler.add_edge(Edge("BP", "B", "P"))
+   hg_coupler.add_edge(Edge("CP", "C", "P"))
+   # The hyperedge labels the triangle as one body for topology analysis
+   hg_coupler.add_hyperedge(Hyperedge("coupler", ("B", "C", "P"), name="coupler triangle"))
+
+   # P sits one unit above the middle of B-C
+   ux, uy = (cx - bx) / COUPLER, (cy - by) / COUPLER
+   px, py = bx + 0.5 * (cx - bx) - uy, by + 0.5 * (cy - by) + ux
+
+   dims_coupler = Dimensions(
+       node_positions={"A": (0, 0), "B": (bx, by), "C": (cx, cy), "P": (px, py), "D": (dx, dy)},
+       driver_angles={"B": DriverAngle(angular_velocity=OMEGA)},
+       edge_distances={
+           "AB": CRANK, "CD": ROCKER, "BC": COUPLER,
+           "BP": math.hypot(px - bx, py - by),
+           "CP": math.hypot(px - cx, py - cy),
+       },
+   )
+
+   coupler_mechanism = to_mechanism(hg_coupler, dims_coupler)
+   coupler_path = [step[-1] for step in coupler_mechanism.step()]
+   print(f"P traces {len(coupler_path)} points")
+
+Building Hierarchical Linkages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``ComponentInstance`` wraps a hypergraph with named **ports** — internal
+nodes promoted for external connection. A ``HierarchicalLinkage`` holds
+instances plus ``Connection`` objects that fuse one instance's port with
+another's; ``flatten()`` returns a single hypergraph.
+
+.. code-block:: python
+
+   from pylinkage.hypergraph import ComponentInstance, Connection, HierarchicalLinkage
+
+   # A reusable leg: motor M, knee K, foot F, hip H
+   leg = HypergraphLinkage(name="leg")
+   leg.add_node(Node("M", role=NodeRole.GROUND))
+   leg.add_node(Node("K", role=NodeRole.DRIVER))
+   leg.add_node(Node("F", role=NodeRole.DRIVEN))
+   leg.add_node(Node("H", role=NodeRole.GROUND))
+   leg.add_edge(Edge("MK", "M", "K"))
+   leg.add_edge(Edge("KF", "K", "F"))
+   leg.add_edge(Edge("FH", "F", "H"))
+
+   # Two legs sharing their hip pivot
+   left = ComponentInstance(id="left", topology=leg, ports={"hip": "H"})
+   right = ComponentInstance(id="right", topology=leg, ports={"hip": "H"})
+
+   chassis = HierarchicalLinkage(
+       instances={"left": left, "right": right},
+       connections=[Connection("left", "hip", "right", "hip")],
+       name="two-leg chassis",
+   )
+
+   flat = chassis.flatten()
+   print(f"Flattened: {len(flat.nodes)} nodes, {len(flat.edges)} edges")
+   for edge in flat.edges.values():
+       print(f"  {edge.id}: {edge.source} -> {edge.target}")
+
+**Expected output:**
+
+.. code-block:: text
+
+   Flattened: 7 nodes, 6 edges
+     left.MK: left.M -> left.K
+     left.KF: left.K -> left.F
+     left.FH: left.F -> left.H
+     right.MK: right.M -> right.K
+     right.KF: right.K -> right.F
+     right.FH: right.F -> left.H
+
+Both hips became the single node ``left.H`` (the ``from`` side of the
+connection is canonical). Instance ids prefix every node and edge, so a
+flattened graph takes ``Dimensions`` keyed the same way.
 
 Assur Group Theory
 ------------------
@@ -33,457 +255,162 @@ planar linkage can be decomposed into:
 1. A **driver** (typically a crank)
 2. One or more **Assur groups** (zero-DOF kinematic chains)
 
-The main Assur group types in planar mechanisms are:
+The groups pylinkage recognises are dyads — two links, three joints — named
+by their joint types (``RRR``, ``RRP``, ``RPR``, ``PRR``, ``PP``) — and the
+six-joint triad. The same classification drives the numeric solver: each
+group class maps to one solver kernel (``circle_circle`` for an RRR dyad).
 
-- **RRR dyad**: Three revolute joints forming a triangle
-- **RRP dyad**: Two revolute joints and one prismatic joint
-- **RPR dyad**: Revolute-prismatic-revolute configuration
-- **PRR dyad**: Prismatic-revolute-revolute configuration
+Decomposing a Linkage
+^^^^^^^^^^^^^^^^^^^^^
 
-Creating a Linkage Graph
-^^^^^^^^^^^^^^^^^^^^^^^^
+The Assur module works on a ``LinkageGraph``; ``from_hypergraph`` converts
+the topology built above.
 
 .. code-block:: python
 
-   from pylinkage.assur import LinkageGraph, Node, Edge
+   from pylinkage.assur import decompose_assur_groups, from_hypergraph
 
-   # Create nodes (joints)
-   ground_a = Node(id="A", x=0, y=0, is_ground=True)
-   ground_b = Node(id="B", x=4, y=0, is_ground=True)
-   crank_tip = Node(id="C", x=1, y=0)
-   coupler = Node(id="D", x=3, y=2)
+   graph = from_hypergraph(hg)
+   result = decompose_assur_groups(graph)
 
-   # Create edges (links)
-   crank = Edge(id="crank", nodes=["A", "C"], length=1.0)
-   link_cd = Edge(id="coupler", nodes=["C", "D"], length=3.0)
-   link_bd = Edge(id="rocker", nodes=["B", "D"], length=3.0)
-
-   # Assemble the graph
-   graph = LinkageGraph(
-       nodes=[ground_a, ground_b, crank_tip, coupler],
-       edges=[crank, link_cd, link_bd],
-       driver_edge="crank",
-   )
-
-   print(f"Nodes: {[n.id for n in graph.nodes]}")
-   print(f"Edges: {[e.id for e in graph.edges]}")
-   print(f"Driver: {graph.driver_edge}")
+   print(f"Ground joints: {result.ground}")
+   print(f"Drivers:       {result.drivers}")
+   print(f"Assur groups:  {len(result.groups)}")
+   for group in result.groups:
+       print(f"  {type(group).__name__} {group.joint_signature}: "
+             f"solves {group.internal_nodes} from {group.anchor_nodes} "
+             f"through links {group.internal_edges}")
 
 **Expected output:**
 
 .. code-block:: text
 
-   Nodes: ['A', 'B', 'C', 'D']
-   Edges: ['crank', 'coupler', 'rocker']
-   Driver: crank
+   Ground joints: ['A', 'D']
+   Drivers:       ['B']
+   Assur groups:  1
+     Dyad RRR: solves ('C',) from ('B', 'D') through links ('BC', 'CD')
 
-Decomposing into Assur Groups
+``validate_decomposition`` returns a list of problems — an empty list
+means every joint is either ground, driven by a motor, or solved by a
+group:
+
+.. code-block:: python
+
+   from pylinkage.assur import validate_decomposition
+
+   print(f"Problems: {validate_decomposition(result)}")
+
+Converting Graph to Mechanism
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+A ``LinkageGraph`` plus ``Dimensions`` gives a ``Mechanism`` too, and the
+conversion runs both ways:
+
 .. code-block:: python
 
-   from pylinkage.assur import decompose_assur_groups
+   from pylinkage.assur import graph_to_mechanism, mechanism_to_graph
 
-   # Decompose the linkage
-   groups = decompose_assur_groups(graph)
+   mechanism = graph_to_mechanism(graph, dims)
+   print(f"Created mechanism with {len(mechanism.joints)} joints")
+   for joint in mechanism.joints:
+       print(f"  {joint.id}: {type(joint).__name__}")
 
-   print(f"Found {len(groups)} Assur groups:")
-   for i, group in enumerate(groups):
-       print(f"\nGroup {i + 1}: {type(group).__name__}")
-       print(f"  Joints: {group.joint_ids}")
-       print(f"  Links: {group.link_ids}")
+   # Back from any Mechanism, e.g. one from MechanismBuilder or synthesis
+   graph_back, dims_back = mechanism_to_graph(mechanism)
+   print(f"Recovered {len(graph_back.nodes)} nodes, lengths {dims_back.edge_distances}")
 
 **Expected output:**
 
 .. code-block:: text
 
-   Found 1 Assur groups:
+   Created mechanism with 4 joints
+     A: GroundJoint
+     D: GroundJoint
+     B: RevoluteJoint
+     C: RevoluteJoint
+   Recovered 4 nodes, lengths {'edge_0': 4.0, 'edge_1': 1.0, 'edge_2': 3.0, 'edge_3': 3.0}
 
-   Group 1: DyadRRR
-     Joints: ['C', 'D']
-     Links: ['coupler', 'rocker']
+The recovered graph names its edges ``edge_0`` … and includes the ground
+link explicitly; the topology is the same, the labels are not.
 
-Assur Group Types
-^^^^^^^^^^^^^^^^^
+AssurMechanism
+^^^^^^^^^^^^^^
 
-.. code-block:: python
-
-   from pylinkage.assur import DyadRRR, DyadRRP, DyadRPR, DyadPRR
-
-   # RRR Dyad: All revolute joints (most common)
-   # Used when both constraints are distance-based
-   rrr = DyadRRR(
-       joint_ids=["C", "D"],
-       link_ids=["coupler", "rocker"],
-       parent_joints=["A", "B"],
-       distances=[3.0, 3.0],
-   )
-
-   # RRP Dyad: Two revolute, one prismatic
-   # Used when one joint slides along a line
-   rrp = DyadRRP(
-       joint_ids=["C", "D"],
-       link_ids=["coupler", "slider"],
-       parent_joints=["A", "B"],
-       distance=3.0,
-       line_angle=0.0,  # Angle of sliding line
-   )
-
-   # Each dyad can be solved independently
-   position_c, position_d = rrr.solve(
-       parent_positions=[(0, 0), (4, 0)],
-       initial_guess=[(1, 0), (3, 2)],
-   )
-
-Converting Graph to Linkage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``AssurMechanism`` bundles a ``Mechanism`` with its decomposition:
 
 .. code-block:: python
 
-   from pylinkage.assur import graph_to_linkage
-   import pylinkage as pl
+   from pylinkage.assur import AssurMechanism
+   from pylinkage.mechanism import fourbar
 
-   # Convert graph representation to simulatable Linkage
-   linkage = graph_to_linkage(graph)
+   assur = AssurMechanism.from_mechanism(fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0))
 
-   print(f"Created linkage with {len(linkage.joints)} joints")
-   for joint in linkage.joints:
-       print(f"  {joint.name}: {type(joint).__name__}")
-
-   # Now use standard simulation and visualization
-   loci = list(linkage.step())
-   pl.show_linkage(linkage)
+   print(f"DOF: {assur.degree_of_freedom}")
+   print(f"Assur groups: {assur.num_assur_groups}")
+   print(f"Valid: {assur.is_valid()}")
+   print(f"Group signatures: {[g.joint_signature for g in assur.assur_groups]}")
 
 **Expected output:**
 
 .. code-block:: text
 
-   Created linkage with 2 joints
-     C: Crank
-     D: Revolute
+   DOF: 1
+   Assur groups: 1
+   Valid: True
+   Group signatures: ['RRR']
+
+Assur Signatures
+^^^^^^^^^^^^^^^^
+
+A signature string names a group by its joint types. ``parse_signature``
+classifies it, and ``signature_to_hypergraph`` produces the group's
+topology — anchors plus internal joints — ready to be composed into a
+larger mechanism:
+
+.. code-block:: python
+
+   from pylinkage.assur import parse_signature, signature_to_hypergraph
+
+   signature = parse_signature("RRP")
+   print(f"{signature.raw_string}: {signature.group_class.name}, joints {[j.name for j in signature.joints]}")
+
+   dyad = signature_to_hypergraph("RRR", prefix="d1_")
+   print(f"Nodes: {list(dyad.nodes)}")
+   print(f"Edges: {list(dyad.edges)}")
+
+**Expected output:**
+
+.. code-block:: text
+
+   RRP: DYAD, joints ['REVOLUTE', 'REVOLUTE', 'PRISMATIC']
+   Nodes: ['d1_anchor_0', 'd1_anchor_1', 'd1_internal_0']
+   Edges: ['d1_link_0', 'd1_link_1']
 
 Serializing Linkage Graphs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Save and load graph representations:
+Both graph flavours are plain data. ``graph_to_dict`` gives a JSON-ready
+dictionary; ``graph_to_json`` writes a file.
 
 .. code-block:: python
 
-   from pylinkage.assur import LinkageGraph, graph_to_json, graph_from_json
-
-   # Save to JSON
-   json_str = graph_to_json(graph)
-   print(json_str)
-
-   # Load from JSON
-   loaded_graph = graph_from_json(json_str)
-
-   # Save to file
-   with open("linkage_graph.json", "w") as f:
-       f.write(graph_to_json(graph))
-
-   # Load from file
-   with open("linkage_graph.json", "r") as f:
-       graph = graph_from_json(f.read())
-
-Hypergraph Representation
--------------------------
-
-.. figure:: /../assets/hypergraph_components.png
-   :width: 800px
-   :align: center
-   :alt: Hypergraph component-based design
-
-   Component-based linkage design: a library of reusable components (left),
-   hierarchical composition (middle), and the flattened result (right).
-
-Overview
-^^^^^^^^
-
-The hypergraph module provides a higher-level abstraction for building
-complex linkages from reusable components. Key concepts:
-
-- **Node**: A point in the linkage (joint location)
-- **Edge**: A binary connection (link between two nodes)
-- **Hyperedge**: A connection involving multiple nodes (complex joints)
-- **Component**: A reusable subgraph with ports for connection
-- **HierarchicalLinkage**: A linkage built from component instances
-
-Creating a Hypergraph Linkage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import (
-       HypergraphLinkage,
-       Node,
-       Edge,
-       Hyperedge,
-   )
-
-   # Create a simple four-bar as a hypergraph
-   graph = HypergraphLinkage()
-
-   # Add nodes
-   graph.add_node(Node(id="ground_a", x=0, y=0, is_fixed=True))
-   graph.add_node(Node(id="ground_b", x=4, y=0, is_fixed=True))
-   graph.add_node(Node(id="crank_tip", x=1, y=0))
-   graph.add_node(Node(id="coupler", x=3, y=2))
-
-   # Add edges (links)
-   graph.add_edge(Edge(id="crank", source="ground_a", target="crank_tip", length=1.0))
-   graph.add_edge(Edge(id="coupler_link", source="crank_tip", target="coupler", length=3.0))
-   graph.add_edge(Edge(id="rocker", source="ground_b", target="coupler", length=3.0))
-
-   print(f"Hypergraph has {len(graph.nodes)} nodes and {len(graph.edges)} edges")
-
-Defining Reusable Components
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import Component, Port
-
-   # Define a four-bar component with configurable ports
-   fourbar_component = Component(
-       name="FourBar",
-       description="A standard four-bar linkage",
-
-       # Define connection ports
-       ports=[
-           Port(id="input", node="crank_tip", description="Crank output"),
-           Port(id="output", node="coupler", description="Coupler point"),
-           Port(id="ground_a", node="ground_a", description="Fixed pivot A"),
-           Port(id="ground_b", node="ground_b", description="Fixed pivot B"),
-       ],
-
-       # Define parameters
-       parameters={
-           "crank_length": 1.0,
-           "coupler_length": 3.0,
-           "rocker_length": 3.0,
-           "ground_length": 4.0,
-       },
-   )
-
-   # Add the internal structure
-   fourbar_component.add_node(Node(id="ground_a", x=0, y=0, is_fixed=True))
-   fourbar_component.add_node(Node(id="ground_b", x="${ground_length}", y=0, is_fixed=True))
-   fourbar_component.add_node(Node(id="crank_tip", x="${crank_length}", y=0))
-   fourbar_component.add_node(Node(id="coupler", x=3, y=2))
-
-   fourbar_component.add_edge(Edge(
-       id="crank",
-       source="ground_a",
-       target="crank_tip",
-       length="${crank_length}"
-   ))
-   fourbar_component.add_edge(Edge(
-       id="coupler_link",
-       source="crank_tip",
-       target="coupler",
-       length="${coupler_length}"
-   ))
-   fourbar_component.add_edge(Edge(
-       id="rocker",
-       source="ground_b",
-       target="coupler",
-       length="${rocker_length}"
-   ))
-
-Using Built-in Components
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Pylinkage provides pre-built components:
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import FOURBAR, DYAD, CRANK_SLIDER
-
-   # Use the built-in four-bar component
-   print(f"FOURBAR ports: {[p.id for p in FOURBAR.ports]}")
-   print(f"FOURBAR parameters: {FOURBAR.parameters}")
-
-   # Use the built-in dyad component
-   print(f"DYAD ports: {[p.id for p in DYAD.ports]}")
-
-**Expected output:**
-
-.. code-block:: text
-
-   FOURBAR ports: ['input', 'output', 'ground_a', 'ground_b']
-   FOURBAR parameters: {'crank_length': 1.0, 'coupler_length': 3.0, ...}
-   DYAD ports: ['input_a', 'input_b', 'output']
-
-Building Hierarchical Linkages
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Compose complex mechanisms from component instances:
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import (
-       HierarchicalLinkage,
-       ComponentInstance,
-       Connection,
-       FOURBAR,
-       DYAD,
-   )
-
-   # Create a hierarchical linkage
-   linkage = HierarchicalLinkage(name="Double Four-bar")
-
-   # Add component instances
-   linkage.add_instance(ComponentInstance(
-       id="fourbar1",
-       component=FOURBAR,
-       parameters={
-           "crank_length": 1.0,
-           "coupler_length": 3.0,
-           "rocker_length": 3.0,
-           "ground_length": 4.0,
-       },
-       position=(0, 0),
-   ))
-
-   linkage.add_instance(ComponentInstance(
-       id="fourbar2",
-       component=FOURBAR,
-       parameters={
-           "crank_length": 0.8,
-           "coupler_length": 2.5,
-           "rocker_length": 2.5,
-           "ground_length": 3.0,
-       },
-       position=(5, 0),
-   ))
-
-   # Connect the two four-bars
-   linkage.add_connection(Connection(
-       source_instance="fourbar1",
-       source_port="output",
-       target_instance="fourbar2",
-       target_port="ground_a",
-   ))
-
-   print(f"Hierarchical linkage has {len(linkage.instances)} instances")
-
-Flattening to Hypergraph
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-Convert a hierarchical linkage to a flat hypergraph:
-
-.. code-block:: python
-
-   # Flatten the hierarchy
-   flat_graph = linkage.flatten()
-
-   print(f"Flattened graph has {len(flat_graph.nodes)} nodes")
-   print(f"Flattened graph has {len(flat_graph.edges)} edges")
-
-   # Convert to simulatable Linkage
-   from pylinkage.hypergraph import to_linkage
-
-   sim_linkage = to_linkage(flat_graph)
-
-Converting Between Representations
-----------------------------------
-
-Hypergraph to Assur Graph
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import to_assur_graph
-
-   assur_graph = to_assur_graph(flat_graph)
-
-   # Now use Assur decomposition
-   from pylinkage.assur import decompose_assur_groups
-
-   groups = decompose_assur_groups(assur_graph)
-   print(f"Decomposed into {len(groups)} Assur groups")
-
-Linkage to Hypergraph
-^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-
-   import pylinkage as pl
-   from pylinkage.hypergraph import from_linkage
-
-   # Create a standard linkage
-   crank = pl.Crank(0, 1, joint0=(0, 0), angle=0.31, distance=1)
-   output = pl.Revolute(3, 2, joint0=crank, joint1=(4, 0), distance0=3, distance1=3)
-   linkage = pl.Linkage(joints=(crank, output))
-
-   # Convert to hypergraph
-   graph = from_linkage(linkage)
-
-   print(f"Converted to hypergraph with {len(graph.nodes)} nodes")
-
-Practical Example: Stephenson Six-bar
--------------------------------------
-
-Build a Stephenson Type I six-bar linkage using components:
-
-.. code-block:: python
-
-   from pylinkage.hypergraph import (
-       HierarchicalLinkage,
-       ComponentInstance,
-       Connection,
-       FOURBAR,
-       DYAD,
-   )
-
-   # Stephenson I: Four-bar with a dyad attached to the coupler
-   stephenson = HierarchicalLinkage(name="Stephenson Type I")
-
-   # Base four-bar
-   stephenson.add_instance(ComponentInstance(
-       id="base_fourbar",
-       component=FOURBAR,
-       parameters={
-           "crank_length": 1.0,
-           "coupler_length": 4.0,
-           "rocker_length": 3.0,
-           "ground_length": 5.0,
-       },
-       position=(0, 0),
-   ))
-
-   # Additional dyad attached to coupler
-   stephenson.add_instance(ComponentInstance(
-       id="extra_dyad",
-       component=DYAD,
-       parameters={
-           "length_a": 2.0,
-           "length_b": 2.5,
-       },
-   ))
-
-   # Connect dyad to four-bar coupler and ground
-   stephenson.add_connection(Connection(
-       source_instance="base_fourbar",
-       source_port="coupler_point",
-       target_instance="extra_dyad",
-       target_port="input_a",
-   ))
-
-   stephenson.add_connection(Connection(
-       source_instance="base_fourbar",
-       source_port="ground_c",  # Additional ground point
-       target_instance="extra_dyad",
-       target_port="input_b",
-   ))
-
-   # Flatten and simulate
-   flat = stephenson.flatten()
-   linkage = to_linkage(flat)
-
-   import pylinkage as pl
-   pl.show_linkage(linkage)
+   import json
+   import tempfile
+   from pathlib import Path
+
+   from pylinkage.assur import graph_from_json, graph_to_dict, graph_to_json
+
+   print(json.dumps(graph_to_dict(graph)["nodes"][0]))
+
+   with tempfile.TemporaryDirectory() as tmp:
+       path = Path(tmp) / "fourbar_assur.json"
+       graph_to_json(graph, path)
+       loaded = graph_from_json(path)
+   print(f"Reloaded {len(loaded.nodes)} nodes, {len(loaded.edges)} edges")
+
+The hypergraph module has the same four functions for ``HypergraphLinkage``
+(``pylinkage.hypergraph.graph_to_json`` …) plus ``hierarchical_to_json`` /
+``hierarchical_from_json`` for a ``HierarchicalLinkage``.
 
 Analysis Applications
 ---------------------
@@ -491,110 +418,127 @@ Analysis Applications
 Mobility Analysis
 ^^^^^^^^^^^^^^^^^
 
+``compute_mobility`` applies the Kutzbach–Grübler equation
+:math:`M = 3(n - 1) - 2 j_1 - j_2` to a hypergraph. Every edge counts as
+one binary link, every hyperedge as one rigid body, plus the ground; every
+node is a one-DOF joint.
+
 .. code-block:: python
 
-   from pylinkage.assur import compute_mobility
+   from pylinkage.topology import compute_dof, compute_mobility
 
-   # Gruebler's equation: M = 3(n-1) - 2*j1 - j2
-   # n = number of links, j1 = 1-DOF joints, j2 = 2-DOF joints
+   info = compute_mobility(hg)
+   print(f"Links: {info.num_links}, full joints: {info.num_full_joints}, DOF: {info.dof}")
 
-   mobility = compute_mobility(graph)
-   print(f"Mechanism mobility (DOF): {mobility}")
-
+   mobility = compute_dof(hg)
    if mobility == 1:
        print("Single-DOF mechanism (typical linkage)")
    elif mobility == 0:
        print("Structure (no motion)")
-   elif mobility > 1:
+   else:
        print(f"Under-constrained ({mobility} DOF)")
 
-Structural Classification
-^^^^^^^^^^^^^^^^^^^^^^^^^
+**Expected output:**
 
-.. code-block:: python
+.. code-block:: text
 
-   from pylinkage.assur import classify_structure
+   Links: 4, full joints: 4, DOF: 1
+   Single-DOF mechanism (typical linkage)
 
-   classification = classify_structure(graph)
-
-   print(f"Structure type: {classification.type}")
-   print(f"Is overconstrained: {classification.is_overconstrained}")
-   print(f"Is underconstrained: {classification.is_underconstrained}")
-   print(f"Redundant constraints: {classification.redundant_constraints}")
+Because a hyperedge is a link of its own, a ternary link meant for
+mobility analysis is a hyperedge with **no** edges among its nodes — the
+convention the topology catalog below follows. The coupler four-bar above
+adds the triangle's edges so that ``to_mechanism`` can solve it, and
+``compute_dof`` then counts the same body four times; for its mobility,
+analyze the topology without the coupler point, or rebuild it
+hyperedge-only.
 
 Isomorphism Detection
 ^^^^^^^^^^^^^^^^^^^^^
 
-Check if two linkages have the same topology:
+Two linkages have the same topology when their graphs are isomorphic,
+whatever the node names or the dimensions:
 
 .. code-block:: python
 
-   from pylinkage.hypergraph import are_isomorphic
+   from pylinkage.topology import are_isomorphic, canonical_hash
 
-   graph1 = create_fourbar_graph(1, 3, 3, 4)
-   graph2 = create_fourbar_graph(2, 4, 4, 5)  # Different dimensions, same topology
+   other = HypergraphLinkage(name="renamed")
+   for node_id, role in [
+       ("p", NodeRole.GROUND), ("q", NodeRole.DRIVER), ("r", NodeRole.DRIVEN), ("s", NodeRole.GROUND),
+   ]:
+       other.add_node(Node(node_id, role=role))
+   other.add_edge(Edge("e1", "p", "q"))
+   other.add_edge(Edge("e2", "q", "r"))
+   other.add_edge(Edge("e3", "r", "s"))
 
-   if are_isomorphic(graph1, graph2):
-       print("Linkages have the same topology")
-   else:
-       print("Different topologies")
+   print(f"Same topology: {are_isomorphic(hg, other)}")
+   print(f"Same hash: {canonical_hash(hg) == canonical_hash(other)}")
+   print(f"Coupler four-bar is a four-bar: {are_isomorphic(hg, hg_coupler)}")
 
-Serialization
--------------
+**Expected output:**
 
-Save and load hypergraph representations:
+.. code-block:: text
+
+   Same topology: True
+   Same hash: True
+   Coupler four-bar is a four-bar: False
+
+The Topology Catalog
+^^^^^^^^^^^^^^^^^^^^
+
+Known one-DOF topologies up to eight links ship as a catalog, each with
+its Assur decomposition and a ready-made hypergraph:
 
 .. code-block:: python
 
-   from pylinkage.hypergraph import (
-       hypergraph_to_json,
-       hypergraph_from_json,
-       component_to_json,
-       component_from_json,
-   )
+   from pylinkage.topology import load_catalog
 
-   # Save hypergraph
-   json_str = hypergraph_to_json(graph)
-   with open("linkage.json", "w") as f:
-       f.write(json_str)
+   catalog = load_catalog()
+   for entry in catalog.by_num_links(6):
+       print(f"{entry.id}: {entry.name}, {entry.num_joints} joints, groups {entry.assur_groups}")
 
-   # Load hypergraph
-   with open("linkage.json", "r") as f:
-       loaded = hypergraph_from_json(f.read())
+   stephenson = catalog.get("stephenson").to_graph()
+   print(f"Stephenson: {len(stephenson.nodes)} nodes, {len(stephenson.hyperedges)} ternary links")
 
-   # Save custom components for reuse
-   component_json = component_to_json(fourbar_component)
-   with open("fourbar_component.json", "w") as f:
-       f.write(component_json)
+**Expected output:**
+
+.. code-block:: text
+
+   watt: Watt six-bar, 7 joints, groups ('RRR', 'RRR')
+   stephenson: Stephenson six-bar, 7 joints, groups ('RRRRRR',)
+   Stephenson: 7 nodes, 2 ternary links
+
+``pylinkage.synthesis.multi_topology_synthesize`` searches this catalog for
+mechanisms whose coupler passes through given points; see :doc:`synthesis`.
 
 When to Use Graph Representations
 ---------------------------------
 
-**Use Assur module when:**
+**Use the Hypergraph module when:**
+
+- You're building complex mechanisms from parts
+- You need a topology without geometry to reason about — enumeration,
+  isomorphism, mobility
+- You want to pair one topology with many dimension sets
+
+**Use the Assur module when:**
 
 - You need formal kinematic analysis
 - You want to understand the structure of a linkage
 - You're implementing new solving algorithms
-- You need to verify linkage properties
 
-**Use Hypergraph module when:**
-
-- You're building complex mechanisms from parts
-- You want reusable component libraries
-- You need to transform or manipulate linkage topology
-- You're doing research on linkage generation
-
-**Use standard Linkage class when:**
+**Use the component API (``Linkage``) or ``MechanismBuilder`` when:**
 
 - You just need simulation and visualization
 - You're doing optimization
 - You have a simple mechanism
-- Performance is critical
 
 Next Steps
 ----------
 
 - :doc:`getting_started` - Basic linkage simulation
 - :doc:`synthesis` - Design linkages from requirements
-- See :py:mod:`pylinkage.assur` for Assur group API
-- See :py:mod:`pylinkage.hypergraph` for hypergraph API
+- See :py:mod:`pylinkage.hypergraph` for the hypergraph API
+- See :py:mod:`pylinkage.assur` for the Assur group API
+- See :py:mod:`pylinkage.topology` for mobility, isomorphism and the catalog

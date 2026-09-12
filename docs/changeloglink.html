@@ -6,20 +6,20 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Changelog &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Changelog &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=486e5634"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tutorials" href="tutorials/index.html" />
+    <link rel="next" title="Benchmarks" href="benchmarks.html" />
     <link rel="prev" title="Pylinkage" href="readmelink.html" /> 
 </head>
 
@@ -46,20 +46,47 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readmelink.html">Readme</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#unreleased">[Unreleased]</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">[1.2.0] - 2026-09-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deprecated">Deprecated</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#removed">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id1">[0.8.0] - 2026-03-28</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Added</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Fixed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">[1.1.1] - 2026-09-04</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Added</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id4">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Fixed</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">[0.7.0] - 2025-12-13</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id6">[1.1.0] - 2026-08-12</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Added</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">[1.0.0] - 2026-07-05</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Removed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Fixed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">[0.9.0] - 2026-04-14</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Deprecated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Changed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Removed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id20">[0.8.0] - 2026-03-28</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Added</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Fixed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Changed</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id24">[0.7.0] - 2025-12-13</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-7-0">Added in 0.7.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-7-0">Changed in 0.7.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-7-0">Fixed in 0.7.0</a></li>
@@ -67,7 +94,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#removed-in-0-7-0">Removed in 0.7.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">[0.6.0] - 2024-10-02</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id25">[0.6.0] - 2024-10-02</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-6-0">Added in 0.6.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-6-0">Changed in 0.6.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-6-0">Fixed in 0.6.0</a></li>
@@ -75,69 +102,71 @@
 <li class="toctree-l3"><a class="reference internal" href="#removed-in-0-6-0">Removed in 0.6.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">[0.5.3] - 2023-06-23</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id26">[0.5.3] - 2023-06-23</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-5-3">Added in 0.5.3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-5-3">Changed in 0.5.3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-5-3">Fixed in 0.5.3</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deprecated-in-0-5-3">Deprecated in 0.5.3</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id8">[0.5.2] - 2021-07-21</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id27">[0.5.2] - 2021-07-21</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-5-2">Added in 0.5.2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-5-2">Changed in 0.5.2</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id9">[0.5.1] - 2021-07-14</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id28">[0.5.1] - 2021-07-14</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-5-1">Added in 0.5.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-5-1">Changed in 0.5.1</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id10">[0.5.0] - 2021-07-12</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id29">[0.5.0] - 2021-07-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-5-0">Added in 0.5.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-5-0">Changed in 0.5.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-5-0">Fixed in 0.5.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id11">[0.4.1] - 2021-07-11</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id30">[0.4.1] - 2021-07-11</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-4-1">Added in 0.4.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-4-1">Changed in 0.4.1</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id12">[0.4.0] - 2021-07-06</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id31">[0.4.0] - 2021-07-06</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-4-0">Added in 0.4.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-4-0">Fixed in 0.4.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-4-0">Changed in 0.4.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#removed-in-0-4-0">Removed in 0.4.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id13">[0.3.0] - 2021-07-05</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id32">[0.3.0] - 2021-07-05</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-3-0">Added in 0.3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-3-0">Changed in 0.3.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-3-0">Fixed in 0.3.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id14">[0.2.2] - 2021-06-22</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id33">[0.2.2] - 2021-06-22</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-2-2">Added in 0.2.2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-2-2">Fixed in 0.2.2</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id15">[0.2.1] - 2021-06-16</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id34">[0.2.1] - 2021-06-16</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-2-1">Added in 0.2.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-2-1">Changed in 0.2.1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fixed-in-0-2-1">Fixed in 0.2.1</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id16">[0.2.0] - 2021-06-14</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id35">[0.2.0] - 2021-06-14</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-2-0">Added in 0.2.0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changed-in-0-2-0">Changed in 0.2.0</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#id17">[0.0.1] - 2021-06-12</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id36">[0.0.1] - 2021-06-12</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#added-in-0-0-1">Added in 0.0.1</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
@@ -184,12 +213,744 @@
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h1>
 <p>All notable changes to pylinkage are documented here.</p>
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
-and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
-<section id="unreleased">
-<h2>[Unreleased]<a class="headerlink" href="#unreleased" title="Link to this heading"></a></h2>
+and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.
+What the version number promises, and how a name is retired, is in
+the <a class="reference external" href="https://hugofara.github.io/pylinkage/deprecations.html">Deprecations</a> page.</p>
+<section id="id1">
+<h2>[1.2.0] - 2026-09-12<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <section id="added">
 <h3>Added<a class="headerlink" href="#added" title="Link to this heading"></a></h3>
 <ul class="simple">
+<li><p><strong>A defined public surface.</strong> A name is public when it is in a package’s
+<code class="docutils literal notranslate"><span class="pre">__all__</span></code>; modules inside a package are implementation; each name has one
+home. The rule is on the Deprecations page, and the surface is pinned name
+by name in <code class="docutils literal notranslate"><span class="pre">tests/test_public_api.py</span></code>, so it cannot change without a diff in
+that file. Newer subsystems are marked provisional there (<code class="docutils literal notranslate"><span class="pre">topology</span></code>,
+<code class="docutils literal notranslate"><span class="pre">solver</span></code>, co-design, multi-topology synthesis, hierarchical hypergraphs, CAD
+export): exported and documented, but not yet promised.</p></li>
+<li><p><strong>Every subpackage is reachable from the top level</strong> (<code class="docutils literal notranslate"><span class="pre">pylinkage.components</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code>, …; before, only <code class="docutils literal notranslate"><span class="pre">assur</span></code>,
+<code class="docutils literal notranslate"><span class="pre">dyads</span></code>, <code class="docutils literal notranslate"><span class="pre">mechanism</span></code>, <code class="docutils literal notranslate"><span class="pre">symbolic</span></code> and <code class="docutils literal notranslate"><span class="pre">synthesis</span></code> were), and the definition
+path is importable straight from <code class="docutils literal notranslate"><span class="pre">pylinkage</span></code>: <code class="docutils literal notranslate"><span class="pre">Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">PointTracker</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearActuator</span></code>, <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">PPDyad</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>, alongside <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>.</p></li>
+<li><p><strong>A deprecation policy, at <code class="docutils literal notranslate"><span class="pre">docs/source/deprecations.md</span></code>.</strong> One page stating
+what pylinkage promises about public names: a name is announced with a
+<code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> naming its replacement and removal release, and is
+removed no earlier than the next major version. It carries the table of
+everything currently deprecated, and how to surface the warnings, which are
+silent by default in Python.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage._deprecation</span></code>, the machinery behind that: deprecated names are
+removed from their module’s namespace and served by a module-level
+<code class="docutils literal notranslate"><span class="pre">__getattr__</span></code> (PEP 562), so reading one warns while <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">...</span> <span class="pre">import</span> <span class="pre">Name</span></code>
+keeps resolving exactly as before.</p></li>
+<li><p><strong>A “Which API should I use?” section in the README</strong>, naming
+<code class="docutils literal notranslate"><span class="pre">components</span></code> / <code class="docutils literal notranslate"><span class="pre">actuators</span></code> / <code class="docutils literal notranslate"><span class="pre">dyads</span></code> / <code class="docutils literal notranslate"><span class="pre">simulation</span></code> as the definition path
+and saying in one line each what <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code>, <code class="docutils literal notranslate"><span class="pre">hypergraph</span></code>, <code class="docutils literal notranslate"><span class="pre">assur</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> are for. The API reference index opens with the same
+guidance instead of an alphabetical list.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.crank_angle_limits(crank,</span> <span class="pre">coupler,</span> <span class="pre">rocker,</span> <span class="pre">ground)</span></code></strong>,
+the angular range of a crank that cannot rotate fully. It sits beside
+<code class="docutils literal notranslate"><span class="pre">grashof_check</span></code> and <code class="docutils literal notranslate"><span class="pre">is_crank_rocker</span></code>, and returns <code class="docutils literal notranslate"><span class="pre">None</span></code> for a crank that
+rotates fully. It was <code class="docutils literal notranslate"><span class="pre">synthesis.conversion._compute_crank_limits</span></code>, a private
+name that only the editor’s backend ever called; it now has a public name
+and a test that checks the returned bounds against the collinear positions.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">solution_to_linkage()</span></code> honours <code class="docutils literal notranslate"><span class="pre">FourBarSolution.arc_limits</span></code>.</strong> The field
+existed but nothing in pylinkage read it. Set it — typically from
+<code class="docutils literal notranslate"><span class="pre">crank_angle_limits()</span></code> — and the linkage is built around an <code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code>
+sweeping that range instead of a <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, so a double-rocker or non-Grashof
+solution can be stepped and animated; a full turn would stop at an
+unbuildable position. The limits are relative to the ground line, as
+<code class="docutils literal notranslate"><span class="pre">crank_angle_limits()</span></code> returns them, and are placed on whichever side the
+crank starts.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">orientation_resolution</span></code> on <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code></strong>, replacing
+<code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code>. It is the number of angles sampled per free
+orientation, so the cost model is now readable from the signature: the search
+grid holds <code class="docutils literal notranslate"><span class="pre">orientation_resolution</span> <span class="pre">**</span> <span class="pre">(n_precision_points</span> <span class="pre">-</span> <span class="pre">1)</span></code> candidates.
+The default of 6 reproduces the old default exactly.</p></li>
+<li><p><strong>A warning when path generation is about to be slow.</strong> Cost grows
+exponentially in the number of precision points, and nothing said so. Five
+points reach a four-dimensional grid that can run for seconds and still
+return nothing. Calls whose grid exceeds a thousand candidates now warn up
+front, and the message is repeated in <code class="docutils literal notranslate"><span class="pre">SynthesisResult.warnings</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Ensemble.to_pareto_front()</span></code></strong> — the members as a <code class="docutils literal notranslate"><span class="pre">ParetoFront</span></code>, one
+objective per score column, for its <code class="docutils literal notranslate"><span class="pre">best_compromise()</span></code>, <code class="docutils literal notranslate"><span class="pre">filter()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hypervolume()</span></code> and <code class="docutils literal notranslate"><span class="pre">plot()</span></code>. The inverse of <code class="docutils literal notranslate"><span class="pre">Ensemble.from_pareto_front()</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">PointTracker</span></code> in the numba solver.</strong> It has <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code> geometry and
+now gets the same kernel; before, <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> silently froze a tracker
+at its initial position and returned that as its trajectory.</p></li>
+<li><p><strong>Slider rails in every drawing backend.</strong> <code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer.core</span></code>
+gains <code class="docutils literal notranslate"><span class="pre">get_rail_pairs()</span></code> / <code class="docutils literal notranslate"><span class="pre">build_rails()</span></code>, and <code class="docutils literal notranslate"><span class="pre">get_parent_pairs()</span></code> knows
+<code class="docutils literal notranslate"><span class="pre">RRPDyad.revolute_anchor</span></code>, so a slider-crank draws its connecting rod and
+the line it slides on in matplotlib, SVG, DXF and STEP alike.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.TrackerJoint</span></code> and <code class="docutils literal notranslate"><span class="pre">ArcDriverLink</span></code></strong> are exported.
+Both leggedsnake and the editor’s backend were importing them from the
+<code class="docutils literal notranslate"><span class="pre">mechanism.joint</span></code> and <code class="docutils literal notranslate"><span class="pre">mechanism.link</span></code> modules because the package did not
+offer them.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.dimensions</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.exceptions</span></code> have an <code class="docutils literal notranslate"><span class="pre">__all__</span></code></strong>
+(<code class="docutils literal notranslate"><span class="pre">Dimensions</span></code>, <code class="docutils literal notranslate"><span class="pre">DriverAngle</span></code>; the four exception classes).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.BurmesterDyad</span></code></strong>, the new name for what was
+<code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.Dyad</span></code>. Same class, same behaviour; the old name still
+works and now warns.</p></li>
+</ul>
+</section>
+<section id="changed">
+<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
+<ul>
+<li><p><strong>54 implementation names left the <code class="docutils literal notranslate"><span class="pre">__all__</span></code> of their packages.</strong> They stay
+importable exactly as before; they are no longer advertised as public and
+<code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">*</span></code> no longer pulls them in. Among them: the numba kernels and
+<code class="docutils literal notranslate"><span class="pre">step_single*</span></code> helpers in <code class="docutils literal notranslate"><span class="pre">solver</span></code> (<code class="docutils literal notranslate"><span class="pre">simulate</span></code>, <code class="docutils literal notranslate"><span class="pre">simulate_with_kinematics</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SolverData</span></code>, the <code class="docutils literal notranslate"><span class="pre">JOINT_*</span></code> constants and the conversion functions remain
+public); <code class="docutils literal notranslate"><span class="pre">AnyJoint</span></code>, <code class="docutils literal notranslate"><span class="pre">AnyLink</span></code>, the per-entity <code class="docutils literal notranslate"><span class="pre">joint_to_dict</span></code> /
+<code class="docutils literal notranslate"><span class="pre">link_from_dict</span></code> halves of <code class="docutils literal notranslate"><span class="pre">mechanism_to_dict</span></code> and <code class="docutils literal notranslate"><span class="pre">is_legacy_format</span></code> in
+<code class="docutils literal notranslate"><span class="pre">mechanism</span></code>; the <code class="docutils literal notranslate"><span class="pre">Point2D</span></code> / <code class="docutils literal notranslate"><span class="pre">ComplexPoint</span></code> / <code class="docutils literal notranslate"><span class="pre">AnglePair</span></code> aliases,
+<code class="docutils literal notranslate"><span class="pre">point_to_complex</span></code>, <code class="docutils literal notranslate"><span class="pre">complex_to_point</span></code> and <code class="docutils literal notranslate"><span class="pre">compute_metrics</span></code> in <code class="docutils literal notranslate"><span class="pre">synthesis</span></code>;
+<code class="docutils literal notranslate"><span class="pre">SymCoord</span></code> in <code class="docutils literal notranslate"><span class="pre">symbolic</span></code>; the styling constants and <code class="docutils literal notranslate"><span class="pre">LinkStyle</span></code> /
+<code class="docutils literal notranslate"><span class="pre">SymbolType</span></code> in <code class="docutils literal notranslate"><span class="pre">visualizer</span></code>; <code class="docutils literal notranslate"><span class="pre">DYAD_TYPES</span></code>, <code class="docutils literal notranslate"><span class="pre">identify_dyad_type</span></code>,
+<code class="docutils literal notranslate"><span class="pre">identify_group_type</span></code> in <code class="docutils literal notranslate"><span class="pre">assur</span></code>; <code class="docutils literal notranslate"><span class="pre">DEFAULT_ANGULAR_VELOCITY</span></code> in <code class="docutils literal notranslate"><span class="pre">actuators</span></code>;
+<code class="docutils literal notranslate"><span class="pre">MutableAgent</span></code> in <code class="docutils literal notranslate"><span class="pre">optimization.collections</span></code>; <code class="docutils literal notranslate"><span class="pre">_AnchorProxy</span></code> in <code class="docutils literal notranslate"><span class="pre">components</span></code>
+and <code class="docutils literal notranslate"><span class="pre">dyads</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> is 2-8x faster</strong>, with byte-identical results. Verifying
+a candidate by simulating it was 67% of the runtime, and ran through the
+pure-Python <code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code>; it now uses the numba solver, which executes the
+same <code class="docutils literal notranslate"><span class="pre">solve_*</span></code> functions roughly twenty times faster. Measured end to end:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Precision points</p></th>
+<th class="head text-right"><p>Before</p></th>
+<th class="head text-right"><p>After</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>README example</p></td>
+<td class="text-right"><p>345 ms</p></td>
+<td class="text-right"><p>163 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p>Benchmarked example</p></td>
+<td class="text-right"><p>1689 ms</p></td>
+<td class="text-right"><p>678 ms</p></td>
+</tr>
+<tr class="row-even"><td><p>Three points</p></td>
+<td class="text-right"><p>430 ms</p></td>
+<td class="text-right"><p>55 ms</p></td>
+</tr>
+</tbody>
+</table>
+<p>The two paths report an unassemblable mechanism differently — <code class="docutils literal notranslate"><span class="pre">step()</span></code> raises,
+the solver writes <code class="docutils literal notranslate"><span class="pre">NaN</span></code> — so a naive switch would silently change which
+candidates survive. Both are treated as rejection, and the solution sets are
+verified identical across six point sets. <code class="docutils literal notranslate"><span class="pre">step()</span></code> is still used when numba is
+absent or the mechanism contains a component the solver cannot represent.
+This became possible only once <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> stopped returning <code class="docutils literal notranslate"><span class="pre">NaN</span></code> for
+<code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>, the component carrying the coupler point.</p>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code> is about a quarter faster</strong> — 257,550 to 325,718 steps/s on
+the reference four-bar — which speeds up every simulation, not only synthesis.
+Two things in the innermost loop: <code class="docutils literal notranslate"><span class="pre">step()</span></code> re-ran <code class="docutils literal notranslate"><span class="pre">isinstance(component,</span> <span class="pre">(Crank,</span> <span class="pre">ArcCrank,</span> <span class="pre">LinearActuator))</span></code> for every component on every iteration
+although the classification is a property of the solve order, and
+<code class="docutils literal notranslate"><span class="pre">_get_anchor_position</span></code> ran an <code class="docutils literal notranslate"><span class="pre">isinstance</span></code> check against an abstract base
+class whose two branches returned the same expression. The published
+<code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> speedup falls from 6.4x to 5.1x as a result: the numerator got
+faster, the solver did not regress.</p></li>
+</ul>
+</section>
+<section id="deprecated">
+<h3>Deprecated<a class="headerlink" href="#deprecated" title="Link to this heading"></a></h3>
+<ul>
+<li><p><strong>The sibling re-exports in <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code></strong>: <code class="docutils literal notranslate"><span class="pre">Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">PointTracker</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Component</span></code>, <code class="docutils literal notranslate"><span class="pre">ConnectedComponent</span></code>, <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearActuator</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Linkage</span></code>. Each still resolves to the same object and warns, naming its home
+(<code class="docutils literal notranslate"><span class="pre">pylinkage.components</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.actuators</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.simulation</span></code>).
+<code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Ground</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.components.Ground</span></code> were both correct,
+which is why tutorials disagreed on which to write.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization.Ensemble</span></code></strong>, in favour of
+<code class="docutils literal notranslate"><span class="pre">pylinkage.population.Ensemble</span></code>, its home.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.MobilityResult</span></code> and <code class="docutils literal notranslate"><span class="pre">StructuralAnalysis</span></code>.</strong> Nothing in
+the package produced them; they were dataclasses exported without a function
+to fill them. The mobility analysis that exists is
+<code class="docutils literal notranslate"><span class="pre">pylinkage.topology.compute_mobility()</span></code>, returning a <code class="docutils literal notranslate"><span class="pre">MobilityInfo</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code>, which never denoted a number of samples.</strong> It was
+folded into a per-axis grid resolution through
+<code class="docutils literal notranslate"><span class="pre">max(6,</span> <span class="pre">round(n_samples</span> <span class="pre">**</span> <span class="pre">(1</span> <span class="pre">/</span> <span class="pre">free)))</span></code>, so the floor swallowed it: with four
+precision points every value from 6 to 216 produced an identical search.
+Measured on the README’s points, 6, 12, 36 and 72 all took the same time and
+returned the same ten solutions. It now emits a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>, is
+translated through the old formula so no result moves, and is scheduled for
+removal in 2.0.0. Use <code class="docutils literal notranslate"><span class="pre">orientation_resolution</span></code>.</p>
+<p>Redefining it to mean what its name says — roughly that many candidates in
+total — was implemented, measured and rejected: on three of six test point
+sets the search then returned nothing where it had found ten. Reordering the
+grid coarse-to-fine or shuffling it was also measured, in case truncation was
+merely sampling a biased corner; neither changed the solutions found nor the
+time taken. The dense grid earns its cost, so the search is unchanged and only
+the name was wrong.</p>
+</li>
+<li><p><strong>The three <code class="docutils literal notranslate"><span class="pre">Dyad</span></code> names that were not what they said.</strong> Three unrelated
+classes were reachable as <code class="docutils literal notranslate"><span class="pre">Dyad</span></code>, and only two were dyads at all:
+<code class="docutils literal notranslate"><span class="pre">pylinkage.assur.Dyad</span></code> (an Assur group, unaffected and keeping its name),
+<code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.Dyad</span></code> (a Burmester dyad, now <code class="docutils literal notranslate"><span class="pre">BurmesterDyad</span></code>), and
+<code class="docutils literal notranslate"><span class="pre">pylinkage.components.Dyad</span></code> / <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.Dyad</span></code> with their
+<code class="docutils literal notranslate"><span class="pre">ConnectedDyad</span></code> counterparts, which were plain aliases of <code class="docutils literal notranslate"><span class="pre">Component</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ConnectedComponent</span></code> — a <code class="docutils literal notranslate"><span class="pre">Ground</span></code> point is a <code class="docutils literal notranslate"><span class="pre">Component</span></code>, and calling it a
+dyad is simply wrong. All four aliases now emit a <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> and
+are scheduled for removal in 2.0.0. Nothing breaks: each name still resolves
+to the same object it always did, and stays in its module’s <code class="docutils literal notranslate"><span class="pre">__all__</span></code>.</p>
+<p>The concrete cost of the collision was that Sphinx could not tell the three
+apart, so cross-references landed on the wrong class. With the aliases
+deprecated and the rename in place, the documentation build goes from 8
+warnings to <strong>0</strong>.</p>
+</li>
+</ul>
+</section>
+<section id="removed">
+<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>The <code class="docutils literal notranslate"><span class="pre">api/</span></code> directory, the <code class="docutils literal notranslate"><span class="pre">[api]</span></code> extra and <code class="docutils literal notranslate"><span class="pre">task</span> <span class="pre">api</span></code>.</strong> The FastAPI
+server was the backend of
+<a class="reference external" href="https://github.com/HugoFara/pylinkage-editor">pylinkage-editor</a> and now
+lives there, in <code class="docutils literal notranslate"><span class="pre">server/</span></code>, with pylinkage as a dependency. It was never part
+of the wheel: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[api]</span></code> installed fastapi and uvicorn for
+code that was not there, and anyone setting up the editor had to find the
+server by reading this repository’s source (#46). If you were running it from
+a checkout, <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">pylinkage-editor/server</span> <span class="pre">&amp;&amp;</span> <span class="pre">uv</span> <span class="pre">run</span> <span class="pre">pylinkage-editor-server</span></code>
+replaces <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">task</span> <span class="pre">api</span></code>.</p></li>
+</ul>
+</section>
+<section id="fixed">
+<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Optimizers accept every linkage again.</strong> <code class="docutils literal notranslate"><span class="pre">Ensemble</span></code> compiled its numba
+solver template on construction, and since the solver started refusing
+dyads it cannot represent, every optimizer that returns an <code class="docutils literal notranslate"><span class="pre">Ensemble</span></code>
+(<code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization</span></code>, <code class="docutils literal notranslate"><span class="pre">multi_objective_optimization</span></code>, …) raised
+<code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> for a linkage holding a <code class="docutils literal notranslate"><span class="pre">PPDyad</span></code>, a cam follower, or
+leggedsnake’s <code class="docutils literal notranslate"><span class="pre">Walker</span></code> — none of which the optimizer itself needed the
+solver for. The template is now compiled on first use (<code class="docutils literal notranslate"><span class="pre">Ensemble.template</span></code>,
+<code class="docutils literal notranslate"><span class="pre">simulate()</span></code>, <code class="docutils literal notranslate"><span class="pre">topology_key</span></code>), so those linkages optimize as they did in
+1.1.1 and the clear error only appears where batch simulation is asked for.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> silently returned NaN for every dyad except <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>.</strong>
+<code class="docutils literal notranslate"><span class="pre">linkage_to_solver_data()</span></code> typed every dyad as <code class="docutils literal notranslate"><span class="pre">JOINT_REVOLUTE</span></code> and read
+<code class="docutils literal notranslate"><span class="pre">distance1</span></code> / <code class="docutils literal notranslate"><span class="pre">distance2</span></code> off it. Only <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code> has those attributes, so a
+<code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code> — which has <code class="docutils literal notranslate"><span class="pre">distance</span></code> and <code class="docutils literal notranslate"><span class="pre">angle</span></code> — reached the solver as two
+zero-radius circles that never intersect, and the joint plus everything
+downstream of it came out <code class="docutils literal notranslate"><span class="pre">NaN</span></code>. No exception was raised: callers got a
+full-shaped array of <code class="docutils literal notranslate"><span class="pre">NaN</span></code> where positions should be, while <code class="docutils literal notranslate"><span class="pre">step()</span></code>
+computed the same mechanism correctly. Since a <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code> is how a traced
+point is rigidly attached to a coupler link, this covered most mechanisms
+worth simulating quickly, including everything <code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code> emits.
+The conversion now dispatches on the actual dyad class: <code class="docutils literal notranslate"><span class="pre">JOINT_FIXED</span></code> with
+<code class="docutils literal notranslate"><span class="pre">(distance,</span> <span class="pre">angle)</span></code> for <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">JOINT_PRISMATIC</span></code> with three parents for
+<code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">JOINT_REVOLUTE</span></code> only for <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>. Both were already implemented
+in <code class="docutils literal notranslate"><span class="pre">solver/simulation.py</span></code> and simply unreachable. <code class="docutils literal notranslate"><span class="pre">PPDyad</span></code> and the cam
+followers, which the solver cannot represent, now raise <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code>
+naming <code class="docutils literal notranslate"><span class="pre">step()</span></code> as the alternative rather than producing a wrong answer.
+<code class="docutils literal notranslate"><span class="pre">update_solver_constraints()</span></code> shares the same table, so the two cannot drift.
+<code class="docutils literal notranslate"><span class="pre">step()</span></code> and <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> now agree bit for bit on all three supported dyad
+types, and are tested to.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> refuses a component it cannot represent</strong> — a custom
+<code class="docutils literal notranslate"><span class="pre">Component</span></code>, say — with <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> naming it, instead of
+typing it as a fixed point and reporting a frozen trajectory.</p></li>
+<li><p><strong>The SVG, DXF and STEP exporters draw the component API.</strong> All three
+walked the legacy <code class="docutils literal notranslate"><span class="pre">linkage.joints</span></code> / <code class="docutils literal notranslate"><span class="pre">joint0</span></code> / <code class="docutils literal notranslate"><span class="pre">joint1</span></code> attributes, so
+<code class="docutils literal notranslate"><span class="pre">plot_linkage_svg()</span></code> produced joints and trajectories but no bars for a
+<code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code>, and <code class="docutils literal notranslate"><span class="pre">plot_linkage_dxf()</span></code> / <code class="docutils literal notranslate"><span class="pre">build_linkage_3d()</span></code>
+raised <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>. They now share <code class="docutils literal notranslate"><span class="pre">build_connections()</span></code> with the
+matplotlib backend.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">show_kinematics()</span></code>, <code class="docutils literal notranslate"><span class="pre">animate_kinematics()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">plot_linkage_plotly_with_velocity()</span></code> work on a <code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code>.</strong>
+Same legacy attributes, plus an <code class="docutils literal notranslate"><span class="pre">omega</span></code> check that never saw the value
+<code class="docutils literal notranslate"><span class="pre">set_input_velocity()</span></code> stores; their tests wrapped the linkage in an
+adapter that mimicked the old API and passed around the bug.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Ensemble.show()</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_plotly()</span></code> and <code class="docutils literal notranslate"><span class="pre">save_svg()</span></code> no longer require
+a prior <code class="docutils literal notranslate"><span class="pre">simulate()</span></code>.</strong> They simulated the member on the spot and then
+looked for the trajectory in the batch cache, which the one-off
+simulation does not fill, and raised <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">parallel_coordinates_plot()</span></code> with unbuildable particles.</strong> A score of
+<code class="docutils literal notranslate"><span class="pre">±inf</span></code> (the <code class="docutils literal notranslate"><span class="pre">kinematic_*</span></code> decorators’ penalty) made the score axis NaN;
+such particles now sit at the bad end of the axis.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage</span></code> works on Python 3.10.</strong> <code class="docutils literal notranslate"><span class="pre">mechanism.builder</span></code>
+imports <code class="docutils literal notranslate"><span class="pre">Self</span></code> from <code class="docutils literal notranslate"><span class="pre">typing_extensions</span></code> below 3.11 but the package never
+declared it, so a fresh 3.10 environment failed at <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pylinkage</span></code>.</p></li>
+<li><p><strong>The tutorials run.</strong> Ten of the eleven pages under
+<code class="docutils literal notranslate"><span class="pre">docs/source/tutorials/</span></code> failed on 1.1.1: <code class="docutils literal notranslate"><span class="pre">pylinkage.joints</span></code>, keyword
+arguments that never existed (<code class="docutils literal notranslate"><span class="pre">show_linkage(animated=…)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">generate_bounds(max_ratio=…)</span></code>), <code class="docutils literal notranslate"><span class="pre">len(result)</span></code> on a <code class="docutils literal notranslate"><span class="pre">SynthesisResult</span></code>,
+tuple-unpacking an <code class="docutils literal notranslate"><span class="pre">Ensemble</span></code>, an invented hypergraph API, change-point
+four-bars that no perturbation survives. <code class="docutils literal notranslate"><span class="pre">custom_joints</span></code>,
+<code class="docutils literal notranslate"><span class="pre">graph_representation</span></code> and <code class="docutils literal notranslate"><span class="pre">visualization</span></code> are rewritten against the
+current API; the others are corrected in place, with expected outputs
+regenerated. Every code block of every tutorial now executes in order
+with <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> as an error.</p></li>
+<li><p><strong>The example scripts run again.</strong> The three synthesis demos still called
+<code class="docutils literal notranslate"><span class="pre">len(result)</span></code> and <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">result:</span></code> on a <code class="docutils literal notranslate"><span class="pre">SynthesisResult</span></code>, which lost those
+since 1.0; every demo animated whatever came out of synthesis with a
+full-turn <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, which stops on a double-rocker; and the Grashof-type
+table in <code class="docutils literal notranslate"><span class="pre">fourbar_from_lengths_demo.py</span></code> labelled two change-point linkages
+as double-crank and double-rocker. The demos now animate through
+<code class="docutils literal notranslate"><span class="pre">crank_angle_limits()</span></code> + <code class="docutils literal notranslate"><span class="pre">arc_limits</span></code>, the table’s lengths match their
+labels, and three demos that always came back empty — five-position
+approximate function generation, the straight-line path (three collinear
+points are degenerate for Burmester theory), and the two fixed-ground-pivot
+demos (arbitrary frame points never lie on the center-point curve) — now
+show the workflow that does produce a linkage. All twelve scripts under
+<code class="docutils literal notranslate"><span class="pre">docs/examples/</span></code> run to completion with <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code> as an error.</p></li>
+<li><p><strong>The benchmarks page figures are regenerated</strong> against the above, and its
+breakdown of <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> is rewritten: Burmester synthesis over the
+orientation grid is now 87% of the runtime and verification under 10%, the
+reverse of what the page described. It also now warns that cost grows
+exponentially in the number of precision points — five points can take seconds
+and return nothing — which no documentation said.</p></li>
+<li><p><strong>The benchmarks page gave wrong advice about <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code>.</strong> It
+attributed the cost to the orientation sweep and said lowering
+<code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> trades coverage for time roughly linearly. Profiling
+shows neither is true: verifying candidates by simulation is 67% of the
+runtime and Burmester synthesis only 21%, and <code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> is
+close to inert — the values 6, 12, 36 and 72 take the same time and return
+the same ten solutions on the README’s points, because the per-axis grid
+resolution it feeds is floored at 6. The real control is <code class="docutils literal notranslate"><span class="pre">max_solutions</span></code>,
+measured from 124 ms at 1 solution to 2316 ms for all 79. The page and the
+<code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> docstring now say so, and the page notes that cost
+depends heavily on which points are asked for: two four-point problems
+returning ten solutions each measured 336 ms and 1676 ms. Tracked in #29.</p></li>
+<li><p><strong>The cited DOI pointed at 1.0.0 and would have gone stale every release.</strong>
+<code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> and the README badge carried <code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.21207487</span></code>, the
+<em>version</em> DOI Zenodo minted for 1.0.0. Zenodo also mints a <em>concept</em> DOI per
+project — <code class="docutils literal notranslate"><span class="pre">10.5281/zenodo.21207486</span></code> here — which never changes and always
+resolves to the newest version. Both now cite that instead, so neither needs
+touching at release time; the 1.0.0 version DOI is kept as a second
+identifier, since anything already citing it should keep resolving.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> was bumped by hand.</strong> Its <code class="docutils literal notranslate"><span class="pre">version</span></code> and <code class="docutils literal notranslate"><span class="pre">date-released</span></code> were
+not in the bump-my-version file list, so every release depended on
+remembering to edit them. They are now bumped automatically, the date from
+<code class="docutils literal notranslate"><span class="pre">{now}</span></code>. <code class="docutils literal notranslate"><span class="pre">CONTRIBUTING.md</span></code>’s release section is corrected to match, and gains
+the <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">lock</span></code> step it was missing — <code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> records the project version and
+bump-my-version does not touch it.</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>[1.1.1] - 2026-09-04<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<section id="id3">
+<h3>Added<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Public benchmarks.</strong> <code class="docutils literal notranslate"><span class="pre">docs/source/benchmarks.md</span></code> reports figures for the
+numba solver, PSO throughput, and the three synthesis entry points, together
+with the hardware they came from and the command that reproduces them. The
+harness behind it is <code class="docutils literal notranslate"><span class="pre">benchmarks/run_benchmarks.py</span></code>, which measures the public
+API only, takes the median of repeated runs, and discards warmup so numba’s
+one-off JIT compilation is not charged to steady-state figures. The
+pre-existing scripts in <code class="docutils literal notranslate"><span class="pre">benchmarks/</span></code> are now marked as development
+explorations, since two of them benchmark reimplementations and a
+hypothetical joint rather than shipped code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.to_mechanism()</span></code> is now public. It converts a component
+<code class="docutils literal notranslate"><span class="pre">Linkage</span></code> into a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code>, and previously existed only as
+<code class="docutils literal notranslate"><span class="pre">pylinkage.dyads._conversion.to_mechanism</span></code>, so it could not be used or
+documented without reaching into a private module. The conversion remains
+one-way: there is no <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> to <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> direction, the old
+<code class="docutils literal notranslate"><span class="pre">mechanism_to_linkage()</span></code> having been removed with the legacy joints module.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>Changed<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>One docstring style across the codebase.</strong> Docstrings were split between
+two conventions: 85 files used Google style (<code class="docutils literal notranslate"><span class="pre">Args:</span></code>) while 16 used reST
+field lists (<code class="docutils literal notranslate"><span class="pre">:param:</span></code>), and <code class="docutils literal notranslate"><span class="pre">linkage/transmission.py</span></code> used both at once. The
+16 reST files — concentrated in <code class="docutils literal notranslate"><span class="pre">symbolic/</span></code>, <code class="docutils literal notranslate"><span class="pre">optimization/</span></code> and <code class="docutils literal notranslate"><span class="pre">geometry/</span></code>,
+the oldest code in the package — are converted to Google style, so all 100
+documented modules now read the same way. This is presentation only: 393
+fields were rewritten with no change to wording, and the sole vocabulary
+removed across all 16 files is the <code class="docutils literal notranslate"><span class="pre">param</span></code>/<code class="docutils literal notranslate"><span class="pre">returns</span></code>/<code class="docutils literal notranslate"><span class="pre">raises</span></code> markers
+themselves. Sphinx cross-reference roles such as <code class="docutils literal notranslate"><span class="pre">:func:`max`</span> </code> are
+untouched, being valid in Google-style docstrings.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">full</span></code> extra now includes <code class="docutils literal notranslate"><span class="pre">pymoo</span></code>, so <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage[full]</span></code>
+covers multi-objective optimization as the README’s “all optional backends”
+description promises. <code class="docutils literal notranslate"><span class="pre">moo</span></code> remains available on its own, and is now listed
+in the README’s extras table.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Fixed<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Documentation links that pointed at the wrong class.</strong> <code class="docutils literal notranslate"><span class="pre">pylinkage.dyads</span></code>
+exports <code class="docutils literal notranslate"><span class="pre">Dyad</span></code> as a plain alias of <code class="docutils literal notranslate"><span class="pre">Component</span></code> (and <code class="docutils literal notranslate"><span class="pre">ConnectedDyad</span></code> of
+<code class="docutils literal notranslate"><span class="pre">ConnectedComponent</span></code>), and the package annotated its anchors with that alias —
+<code class="docutils literal notranslate"><span class="pre">revolute_anchor:</span> <span class="pre">Dyad</span> <span class="pre">|</span> <span class="pre">_AnchorProxy</span></code>. Two unrelated classes are also named
+<code class="docutils literal notranslate"><span class="pre">Dyad</span></code> (<code class="docutils literal notranslate"><span class="pre">pylinkage.assur.Dyad</span></code>, an Assur group, and <code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.Dyad</span></code>,
+a Burmester construct), so Sphinx resolved those annotations to one of them and
+sent readers to a class the code never referred to. The annotations now name
+<code class="docutils literal notranslate"><span class="pre">Component</span></code> directly. The <code class="docutils literal notranslate"><span class="pre">Dyad</span></code> and <code class="docutils literal notranslate"><span class="pre">ConnectedDyad</span></code> aliases remain exported
+and unchanged, so no import breaks. Docs build warnings drop from 38 to 8.</p></li>
+<li><p><strong>Broken README links, on three surfaces at once.</strong> The README linked to the
+15 tutorial notebooks, <code class="docutils literal notranslate"><span class="pre">CONTRIBUTING.md</span></code> and <code class="docutils literal notranslate"><span class="pre">CODE_OF_CONDUCT.md</span></code> with
+repository-relative paths. Those resolve only on GitHub: on the PyPI landing
+page and in the rendered documentation they were dead. They are now absolute
+GitHub URLs, matching how the README already linked its images. The in-page
+<code class="docutils literal notranslate"><span class="pre">[tutorials](#tutorials)</span></code> link is fixed by enabling <code class="docutils literal notranslate"><span class="pre">myst_heading_anchors</span></code>,
+so heading anchors resolve in the docs as they do on GitHub.</p></li>
+<li><p><strong>The README was rendered twice in the documentation.</strong> <code class="docutils literal notranslate"><span class="pre">index.rst</span></code> listed it
+in the toctree <em>and</em> pulled it in again with <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">include::</span></code>, so the front page
+duplicated the entire README and every warning it produced was counted twice.
+The inline include is removed; the README remains as its own page, linked
+first under Introduction. Docs build warnings drop from 76 to 38.</p></li>
+<li><p><strong>Docstrings rendered wrongly in the API reference.</strong> The codebase writes
+Google-style docstrings (<code class="docutils literal notranslate"><span class="pre">Args:</span></code>, <code class="docutils literal notranslate"><span class="pre">Returns:</span></code>, <code class="docutils literal notranslate"><span class="pre">Raises:</span></code>), but the docs never
+enabled <code class="docutils literal notranslate"><span class="pre">sphinx.ext.napoleon</span></code>, so every one of them was parsed as a
+definition list: parameter descriptions were swallowed as stray indentation,
+and <code class="docutils literal notranslate"><span class="pre">*args</span></code> / <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> were read as emphasis markup. Enabling napoleon
+renders them as proper parameter tables. <code class="docutils literal notranslate"><span class="pre">napoleon_use_ivar</span></code> is set alongside
+it so a documented attribute does not collide with the entry autodoc already
+generates for the same dataclass field, and package-level <code class="docutils literal notranslate"><span class="pre">automodule</span></code>
+directives are marked <code class="docutils literal notranslate"><span class="pre">:no-index:</span></code> so each object is indexed once rather than
+once per re-export. Nine genuinely malformed docstrings were fixed by hand:
+bullet lists and formula blocks missing their preceding blank line, isomer
+signatures such as <code class="docutils literal notranslate"><span class="pre">RRT_</span></code> that RST read as link targets, and an empty
+<code class="docutils literal notranslate"><span class="pre">Conversion:</span></code> section in <code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism</span></code> left behind when the
+mechanism/linkage conversion helpers were removed. Docs build warnings drop
+from 496 to 76, with none remaining from docstrings.</p></li>
+<li><p><strong>Stale API reference.</strong> <code class="docutils literal notranslate"><span class="pre">docs/source/api/</span></code> was checked-in <code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span></code>
+output that had not been regenerated since before 1.0. It documented three
+modules that no longer exist — the legacy <code class="docutils literal notranslate"><span class="pre">pylinkage.joints</span></code> package removed
+with the joints API, plus <code class="docutils literal notranslate"><span class="pre">pylinkage.collections</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.linkage</span></code> — which failed to import on every docs build. More
+importantly it covered only 6 of the package’s 18 subpackages, so
+<code class="docutils literal notranslate"><span class="pre">synthesis</span></code>, <code class="docutils literal notranslate"><span class="pre">mechanism</span></code>, <code class="docutils literal notranslate"><span class="pre">hypergraph</span></code>, <code class="docutils literal notranslate"><span class="pre">cam</span></code>, <code class="docutils literal notranslate"><span class="pre">symbolic</span></code>, <code class="docutils literal notranslate"><span class="pre">solver</span></code>,
+<code class="docutils literal notranslate"><span class="pre">components</span></code>, <code class="docutils literal notranslate"><span class="pre">actuators</span></code>, <code class="docutils literal notranslate"><span class="pre">dyads</span></code>, <code class="docutils literal notranslate"><span class="pre">simulation</span></code>, <code class="docutils literal notranslate"><span class="pre">assur</span></code>, <code class="docutils literal notranslate"><span class="pre">bridge</span></code>,
+<code class="docutils literal notranslate"><span class="pre">population</span></code> and <code class="docutils literal notranslate"><span class="pre">topology</span></code> had no API reference at all. Regenerated against
+the current package.</p></li>
+<li><p><strong>Type information was not exposed to users.</strong> The package is fully
+annotated and passes <code class="docutils literal notranslate"><span class="pre">mypy</span> <span class="pre">--strict</span></code> on all 133 source files, but shipped no
+PEP 561 <code class="docutils literal notranslate"><span class="pre">py.typed</span></code> marker, so type checkers and editors in downstream
+projects silently ignored every annotation and treated <code class="docutils literal notranslate"><span class="pre">pylinkage</span></code> as
+untyped. The marker is now included in the wheel; no packaging change was
+needed, since <code class="docutils literal notranslate"><span class="pre">[tool.hatch.build.targets.wheel]</span></code> already covers the whole
+package directory.</p></li>
+<li><p><strong>The front-page example did not say what to install.</strong> The first snippet in
+the README — the one PyPI shows above the fold, and the one reported in #25 —
+calls <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> and <code class="docutils literal notranslate"><span class="pre">show_linkage()</span></code>, which live behind the <code class="docutils literal notranslate"><span class="pre">scipy</span></code>
+and <code class="docutils literal notranslate"><span class="pre">viz</span></code> extras. Every other example needing an extra said so; this one did
+not, so after a plain <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pylinkage</span></code> it raised <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError</span></code>
+before reaching any pylinkage code. It now names the install line it needs.</p></li>
+<li><p><strong>Broken examples on the PyPI landing page.</strong> Both README visualization
+snippets called <code class="docutils literal notranslate"><span class="pre">plot_kinematic_linkage(linkage)</span></code>, but that function takes
+<code class="docutils literal notranslate"><span class="pre">(linkage,</span> <span class="pre">fig,</span> <span class="pre">axis,</span> <span class="pre">loci)</span></code> and always has — the signature is identical in
+1.0.0, so these examples never ran. They now call <code class="docutils literal notranslate"><span class="pre">show_linkage()</span></code>, which
+builds the figure and runs the simulation itself. The PSO snippet separately
+used <code class="docutils literal notranslate"><span class="pre">get_num_constraints()</span></code> / <code class="docutils literal notranslate"><span class="pre">set_num_constraints()</span></code>, removed earlier in
+the 1.x line; it now uses <code class="docutils literal notranslate"><span class="pre">get_constraints()</span></code> / <code class="docutils literal notranslate"><span class="pre">set_constraints()</span></code>.</p></li>
+<li><p><strong>Tutorial notebooks failing to execute.</strong> Seven of the fifteen notebooks
+raised on execution, against removed API: <code class="docutils literal notranslate"><span class="pre">get_num_constraints()</span></code> /
+<code class="docutils literal notranslate"><span class="pre">set_num_constraints()</span></code> (notebooks 02, 03, 09, 10, 11, 13),
+<code class="docutils literal notranslate"><span class="pre">SymbolicLinkage.components</span></code> in place of <code class="docutils literal notranslate"><span class="pre">.joints</span></code> (05), and
+<code class="docutils literal notranslate"><span class="pre">mechanism_to_linkage()</span></code> (10). Notebook 10 additionally described the
+component/dyad <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> as a “legacy” API throughout; the legacy API was
+<code class="docutils literal notranslate"><span class="pre">pylinkage.joints</span></code>, which no longer exists. A <code class="docutils literal notranslate"><span class="pre">Notebooks</span></code> CI workflow now
+executes every notebook on push and pull request.</p></li>
+</ul>
+</section>
+</section>
+<section id="id6">
+<h2>[1.1.0] - 2026-08-12<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id7">
+<h3>Fixed<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<ul>
+<li><p><strong>Velocities and accelerations no longer treat an unknown anchor as a
+stationary one.</strong> <code class="docutils literal notranslate"><span class="pre">Mechanism.step_with_derivatives</span></code> read each
+anchor’s kinematics as <code class="docutils literal notranslate"><span class="pre">anchor.velocity</span> <span class="pre">or</span> <span class="pre">(0.0,</span> <span class="pre">0.0)</span></code>. A joint
+solved against an anchor whose own velocity was undefined was
+therefore solved against one wrongly assumed at rest, and returned a
+plausible number instead of <code class="docutils literal notranslate"><span class="pre">None</span></code> — so a single unresolved joint
+quietly corrupted everything downstream of it rather than announcing
+itself. Checked against finite differences of the position stream,
+one leggedsnake walker had a foot reporting ~5x its true speed and
+another ~0.3x. Unknown kinematics now propagate: if an anchor’s
+velocity or acceleration is undefined, so is the dependent joint’s.</p>
+<p>Ground joints are unaffected — their zero velocity is a fact about
+the frame, not a stand-in for a missing value.</p>
+</li>
+<li><p><strong>A joint collinear with its two anchors is no longer mistaken for a
+dead centre.</strong> <code class="docutils literal notranslate"><span class="pre">solve_revolute_velocity</span></code> intersects the two
+differentiated distance constraints, whose Jacobian is singular when
+the joint lies on the line through its anchors. That test conflated
+two unrelated situations: a genuine toggle of an RRR dyad, where the
+velocity really is indeterminate, and a joint riding on a rigid body
+together with both its anchors, where the motion is fully determined
+and only the formulation degenerates. The second is a normal design —
+a ternary link carrying its coupler point on the line through its
+other two ports, as in the Chebyshev and Hoeken straight-line
+linkages — and it silently produced no derivative at all.</p>
+<p>Such joints are now resolved by propagating the body’s motion. The
+two cases are told apart structurally rather than numerically: the
+fallback applies only when a link holds the two anchors at a fixed
+distance, so a real dead centre still yields <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</li>
+</ul>
+</section>
+<section id="id8">
+<h3>Added<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">solve_rigid_body_velocity</span></code> / <code class="docutils literal notranslate"><span class="pre">solve_rigid_body_acceleration</span></code></strong>
+in <code class="docutils literal notranslate"><span class="pre">pylinkage.solver</span></code>. Given two points of a planar rigid body and
+their kinematics, these return the velocity and acceleration of any
+third point on that body. They agree with the constraint-intersection
+solvers wherever both apply, and stay well-conditioned for collinear
+points, where those are singular — they need two <em>distinct</em> points on
+the body rather than two <em>independent</em> constraint directions.</p></li>
+</ul>
+</section>
+</section>
+<section id="id9">
+<h2>[1.0.0] - 2026-07-05<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="id10">
+<h3>Added<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">multi_objective_optimization</span></code> parallel evaluation.</strong> New
+<code class="docutils literal notranslate"><span class="pre">n_workers</span></code> and <code class="docutils literal notranslate"><span class="pre">linkage_factory</span></code> keyword arguments route
+candidate evaluation through a
+<code class="docutils literal notranslate"><span class="pre">concurrent.futures.ProcessPoolExecutor</span></code> when <code class="docutils literal notranslate"><span class="pre">n_workers</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>.
+<code class="docutils literal notranslate"><span class="pre">linkage_factory</span></code> is an escape hatch for linkages that are not
+picklable (e.g. carry cached numba <code class="docutils literal notranslate"><span class="pre">SolverData</span></code>): each worker
+builds its own linkage via the factory instead of receiving a
+pickled copy. This unblocks downstream packages (notably
+<code class="docutils literal notranslate"><span class="pre">leggedsnake</span></code>) dropping their custom parallel NSGA problem
+wrappers.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">simulation.Linkage.to_hypergraph()</span></code></strong> (+ the module-level
+:func:<code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph.from_sim_linkage</span></code>). Converts a modern
+<code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code> (the object produced by synthesis and
+<code class="docutils literal notranslate"><span class="pre">co_optimize</span></code>) into a <code class="docutils literal notranslate"><span class="pre">(HypergraphLinkage,</span> <span class="pre">Dimensions)</span></code> pair so
+downstream hypergraph-native consumers (notably
+<code class="docutils literal notranslate"><span class="pre">leggedsnake.Walker.from_synthesis</span></code>) can ingest synthesis output
+directly without a local shim. Covers <code class="docutils literal notranslate"><span class="pre">Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">Crank</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code>, <code class="docutils literal notranslate"><span class="pre">LinearActuator</span></code>, <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>, <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code>,
+<code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code> and <code class="docutils literal notranslate"><span class="pre">PPDyad</span></code>; unknown component types raise
+<code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> instead of silently dropping topology.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Dimensions.to_dict</span></code> / <code class="docutils literal notranslate"><span class="pre">Dimensions.from_dict</span></code></strong> (and matching
+<code class="docutils literal notranslate"><span class="pre">DriverAngle.to_dict</span></code> / <code class="docutils literal notranslate"><span class="pre">DriverAngle.from_dict</span></code>). Returns a
+JSON-safe representation so downstream consumers (notably
+<code class="docutils literal notranslate"><span class="pre">leggedsnake.serialization</span></code>) can drop their manual hyperedge-key
+stringification helpers. Hyperedge pairwise constraints are emitted
+as <code class="docutils literal notranslate"><span class="pre">[node_a,</span> <span class="pre">node_b,</span> <span class="pre">distance]</span></code> triples; <code class="docutils literal notranslate"><span class="pre">from_dict</span></code> also
+accepts the legacy <code class="docutils literal notranslate"><span class="pre">&quot;('a',</span> <span class="pre">'b')&quot;</span></code> stringified-tuple form for
+back-compat with previously saved files.</p></li>
+<li><p><strong>Modern-container parity with the legacy <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>.</strong> Both
+<code class="docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.Mechanism</span></code>
+now carry the full kinematic and analysis surface the legacy class
+used to expose:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">compile()</span></code> + <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> — pre-compile the numba SolverData once
+and reuse it across calls (via <code class="docutils literal notranslate"><span class="pre">pylinkage.bridge</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step_fast_with_kinematics()</span></code> — batched numba simulation returning
+<code class="docutils literal notranslate"><span class="pre">(positions,</span> <span class="pre">velocities,</span> <span class="pre">accelerations)</span></code> trajectory arrays.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_input_velocity(driver_or_crank,</span> <span class="pre">omega,</span> <span class="pre">alpha=0.0)</span></code> +
+<code class="docutils literal notranslate"><span class="pre">get_velocities()</span></code> / <code class="docutils literal notranslate"><span class="pre">get_accelerations()</span></code> — per-joint
+velocity/acceleration accessors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">step_with_derivatives()</span></code> — per-step Python path that computes
+velocities and accelerations via <code class="docutils literal notranslate"><span class="pre">solver.velocity</span></code> /
+<code class="docutils literal notranslate"><span class="pre">solver.acceleration</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">analyze_transmission()</span></code> / <code class="docutils literal notranslate"><span class="pre">analyze_stroke()</span></code> /
+<code class="docutils literal notranslate"><span class="pre">analyze_sensitivity()</span></code> / <code class="docutils literal notranslate"><span class="pre">analyze_tolerance()</span></code> — bound-method
+shims over the free functions in <code class="docutils literal notranslate"><span class="pre">pylinkage.linkage</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">transmission_angle()</span></code> / <code class="docutils literal notranslate"><span class="pre">stroke_position()</span></code> — single-shot
+accessors at the current pose.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_completely(constraints,</span> <span class="pre">positions)</span></code> — apply a flat constraint
+vector and joint positions in one call.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simulation(iterations=None,</span> <span class="pre">dt=1.0)</span></code> — context manager that
+restores the initial joint positions on exit (new helper in
+<code class="docutils literal notranslate"><span class="pre">pylinkage._simulation_context.Simulation</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">indeterminacy()</span></code> — planar Gruebler-Kutzbach mobility (a standard
+Grashof four-bar returns <code class="docutils literal notranslate"><span class="pre">1</span></code>).</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> cross-API aliases.</strong> <code class="docutils literal notranslate"><span class="pre">get_coords</span></code> / <code class="docutils literal notranslate"><span class="pre">set_coords</span></code> now
+work on a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> as well, delegating to the native
+<code class="docutils literal notranslate"><span class="pre">get_joint_positions</span></code> / <code class="docutils literal notranslate"><span class="pre">set_joint_positions</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Mechanism.rebuild(initial_positions=None)</span></code></strong> — matches
+<code class="docutils literal notranslate"><span class="pre">simulation.Linkage.rebuild</span></code>. Optionally writes new joint positions
+and always clears the cached SolverData so the next <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code>
+recompiles.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Mechanism.step(iterations=None,</span> <span class="pre">dt=1.0)</span></code></strong> — accepts an
+<code class="docutils literal notranslate"><span class="pre">iterations</span></code> keyword (matching both legacy and modern Linkage).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Joint.velocity</span></code> / <code class="docutils literal notranslate"><span class="pre">Joint.acceleration</span></code></strong> (runtime state,
+<code class="docutils literal notranslate"><span class="pre">compare=False</span></code>) on all <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> joints — populated by
+<code class="docutils literal notranslate"><span class="pre">step_with_derivatives</span></code> and <code class="docutils literal notranslate"><span class="pre">step_fast_with_kinematics</span></code>.</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>Changed<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">LinkageProblem</span></code> reuses one process pool across generations.</strong>
+<code class="docutils literal notranslate"><span class="pre">LinkageProblem</span></code> now creates the <code class="docutils literal notranslate"><span class="pre">ProcessPoolExecutor</span></code> lazily on
+the first parallel batch and reuses it for every subsequent batch.
+<code class="docutils literal notranslate"><span class="pre">multi_objective_optimization</span></code> calls <code class="docutils literal notranslate"><span class="pre">problem.close()</span></code> in a
+<code class="docutils literal notranslate"><span class="pre">finally</span></code> block so workers don’t outlive the optimization. The
+previous code forked N workers per generation, taxing every batch
+with ~50–500 ms of pool startup (heavier still when worker imports
+are large). Apples-to-apples savings scale with generation count;
+expect 15–25 % wall-time wins at <code class="docutils literal notranslate"><span class="pre">n_workers</span> <span class="pre">≥</span> <span class="pre">4</span></code> on multi-gen
+runs. Behaviour is unchanged for <code class="docutils literal notranslate"><span class="pre">n_workers</span> <span class="pre">==</span> <span class="pre">1</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage._compat</span></code></strong> now targets only the modern surface. The
+joint-legacy branches (<code class="docutils literal notranslate"><span class="pre">Static</span></code> / <code class="docutils literal notranslate"><span class="pre">_StaticBase</span></code> / <code class="docutils literal notranslate"><span class="pre">Revolute</span></code> /
+<code class="docutils literal notranslate"><span class="pre">Pivot</span></code> / <code class="docutils literal notranslate"><span class="pre">Fixed</span></code> / <code class="docutils literal notranslate"><span class="pre">Prismatic</span></code> / <code class="docutils literal notranslate"><span class="pre">Linear</span></code> name matches) were
+dead after phase 2c; <code class="docutils literal notranslate"><span class="pre">is_ground</span></code> / <code class="docutils literal notranslate"><span class="pre">is_dyad</span></code> now only recognise
+the modern component classes and the Mechanism joint types.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage._compat</span></code></strong>: <code class="docutils literal notranslate"><span class="pre">is_ground</span></code> now recognises a Mechanism
+<code class="docutils literal notranslate"><span class="pre">GroundJoint</span></code>; <code class="docutils literal notranslate"><span class="pre">is_driver</span></code> recognises a <code class="docutils literal notranslate"><span class="pre">RevoluteJoint</span></code> that sits as
+the output of a <code class="docutils literal notranslate"><span class="pre">DriverLink</span></code>/<code class="docutils literal notranslate"><span class="pre">ArcDriverLink</span></code>; <code class="docutils literal notranslate"><span class="pre">is_dyad</span></code> recognises a
+non-ground, non-driver <code class="docutils literal notranslate"><span class="pre">RevoluteJoint</span></code>/<code class="docutils literal notranslate"><span class="pre">PrismaticJoint</span></code>. The
+container-agnostic analysis helpers in <code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.*</span></code> now
+auto-detect four-bar joints on a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> without additional
+hints.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.bridge.solver_conversion.linkage_to_solver_data</span></code></strong> gains
+a <code class="docutils literal notranslate"><span class="pre">_mechanism_to_solver_data</span></code> dispatch path. <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code>’s
+Links-on-constraints data model is now translated to <code class="docutils literal notranslate"><span class="pre">SolverData</span></code>
+for numba simulation (driver outputs become <code class="docutils literal notranslate"><span class="pre">JOINT_CRANK</span></code> with
+radius/angular-velocity pulled from the owning <code class="docutils literal notranslate"><span class="pre">DriverLink</span></code>; driven
+revolute joints become <code class="docutils literal notranslate"><span class="pre">JOINT_REVOLUTE</span></code> with anchor distances
+walked from the joint’s <code class="docutils literal notranslate"><span class="pre">_links</span></code>).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.bridge.solver_conversion</span></code></strong>: collapsed to a single
+compatibility-agnostic implementation that dispatches through
+<code class="docutils literal notranslate"><span class="pre">pylinkage._compat</span></code> — no more legacy joint-type dispatch.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.nbar_solution_to_linkage</span></code> /
+<code class="docutils literal notranslate"><span class="pre">_generic_nbar_to_linkage</span></code></strong>: now build a modern
+<code class="docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code> from the component/actuator/dyad API
+instead of a legacy joint-based <code class="docutils literal notranslate"><span class="pre">Linkage</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis.linkage_to_synthesis_params</span></code></strong>: accepts the
+component API only; raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> for legacy linkages.</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>Removed<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph._types</span></code></strong> re-export module (deprecated since
+0.8.0). Import the canonical types from <code class="docutils literal notranslate"><span class="pre">pylinkage._types</span></code>
+(<code class="docutils literal notranslate"><span class="pre">JointType</span></code>, <code class="docutils literal notranslate"><span class="pre">NodeRole</span></code>, <code class="docutils literal notranslate"><span class="pre">NodeId</span></code>, …) directly. All internal
+callers have been migrated.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.solver.JOINT_LINEAR</span></code></strong> constant. This was always an
+alias for <code class="docutils literal notranslate"><span class="pre">JOINT_PRISMATIC</span> <span class="pre">=</span> <span class="pre">4</span></code>; the duplicate name has been
+removed. Use <code class="docutils literal notranslate"><span class="pre">JOINT_PRISMATIC</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">&quot;Linear&quot;</span></code> entry in <code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer.SYMBOL_SPECS</span></code></strong> and
+the matching <code class="docutils literal notranslate"><span class="pre">&quot;Linear&quot;</span></code> branch in the auto-detect path inside
+<code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.transmission</span></code>. These matched the legacy
+<code class="docutils literal notranslate"><span class="pre">joints.Linear</span></code> class name, which is gone. Modern prismatic
+components are resolved through <code class="docutils literal notranslate"><span class="pre">&quot;Prismatic&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">&quot;RRPDyad&quot;</span></code> /
+<code class="docutils literal notranslate"><span class="pre">&quot;LinearActuator&quot;</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">get_num_constraints</span></code> / <code class="docutils literal notranslate"><span class="pre">set_num_constraints</span></code></strong> on both
+<code class="docutils literal notranslate"><span class="pre">simulation.Linkage</span></code> and <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code>. These deprecated wrappers were
+added to ease the rename to <code class="docutils literal notranslate"><span class="pre">get_constraints</span></code> / <code class="docutils literal notranslate"><span class="pre">set_constraints</span></code>
+and are now gone. Calling them raises <code class="docutils literal notranslate"><span class="pre">AttributeError</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.Linkage</span></code> and <code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.Simulation</span></code></strong>:
+the legacy <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> class is gone. <code class="docutils literal notranslate"><span class="pre">pl.Linkage</span></code> now points at
+:class:<code class="docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code> (component/actuator/dyad API);
+<code class="docutils literal notranslate"><span class="pre">pl.Simulation</span></code> points at the shared
+:class:<code class="docutils literal notranslate"><span class="pre">pylinkage._simulation_context.Simulation</span></code> context manager.
+Internal TYPE_CHECKING imports that referenced
+<code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.Linkage</span></code> have been repointed to
+<code class="docutils literal notranslate"><span class="pre">pylinkage.simulation.Linkage</span></code>. User code that built linkages via
+<code class="docutils literal notranslate"><span class="pre">pl.Linkage(joints=[...])</span></code> must migrate to the component API —
+see the migration notes in the 1.0.0 notebooks and tutorials.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.joints</span></code> module</strong> (legacy joint API — <code class="docutils literal notranslate"><span class="pre">Static</span></code>, <code class="docutils literal notranslate"><span class="pre">Crank</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Revolute</span></code>, <code class="docutils literal notranslate"><span class="pre">Pivot</span></code>, <code class="docutils literal notranslate"><span class="pre">Fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">Prismatic</span></code>, <code class="docutils literal notranslate"><span class="pre">Joint</span></code>). Deprecated since
+0.7.0 (Pivot since 0.6.0). Use the component/actuator/dyad API:
+<code class="docutils literal notranslate"><span class="pre">pylinkage.components.Ground</span></code>, <code class="docutils literal notranslate"><span class="pre">pylinkage.actuators.Crank</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pylinkage.dyads.RRRDyad</span></code> / <code class="docutils literal notranslate"><span class="pre">FixedDyad</span></code> / <code class="docutils literal notranslate"><span class="pre">RRPDyad</span></code>. Top-level
+re-exports (<code class="docutils literal notranslate"><span class="pre">pl.Static</span></code>, <code class="docutils literal notranslate"><span class="pre">pl.Crank</span></code>, …) are gone.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.Linkage.to_dict/from_dict/to_json/from_json</span></code></strong>:
+serialization of legacy joint-based linkages is no longer supported.
+Use <code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.mechanism_to_dict/from_dict</span></code> on a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code>
+instead.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.serialization</span></code></strong>: module removed — served legacy
+joints only.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.mechanism_from_linkage</span></code> /
+<code class="docutils literal notranslate"><span class="pre">mechanism_to_linkage</span></code> / <code class="docutils literal notranslate"><span class="pre">convert_legacy_dict</span></code></strong>: bridged the legacy
+<code class="docutils literal notranslate"><span class="pre">Linkage</span></code> ↔ <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> models, neither of which needs the bridge now
+that the legacy joint API is gone. Use <code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.fourbar</span></code>
+and friends to build a <code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> directly.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph.from_linkage</span></code></strong> and
+<strong><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.linkage_to_graph</span></code></strong>: same rationale as the legacy
+<code class="docutils literal notranslate"><span class="pre">to_linkage()</span></code> / <code class="docutils literal notranslate"><span class="pre">graph_to_linkage()</span></code> removed in 0.9.0. Use
+<code class="docutils literal notranslate"><span class="pre">from_mechanism</span></code> / <code class="docutils literal notranslate"><span class="pre">mechanism_to_graph</span></code> respectively.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.symbolic.linkage_to_symbolic</span></code> /
+<code class="docutils literal notranslate"><span class="pre">symbolic_to_linkage</span></code></strong>: removed. Build <code class="docutils literal notranslate"><span class="pre">SymbolicLinkage</span></code> directly
+with :class:<code class="docutils literal notranslate"><span class="pre">SymCrank</span></code> / :class:<code class="docutils literal notranslate"><span class="pre">SymRevolute</span></code> / :class:<code class="docutils literal notranslate"><span class="pre">SymStatic</span></code>, or
+use :func:<code class="docutils literal notranslate"><span class="pre">fourbar_symbolic</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.optimization.grid_search.tqdm_verbosity()</span></code></strong>: overdue since
+0.7.0. Use <code class="docutils literal notranslate"><span class="pre">tqdm.tqdm(iterable,</span> <span class="pre">disable=not</span> <span class="pre">verbose)</span></code> directly.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">SynthesisResult.__len__</span></code> / <code class="docutils literal notranslate"><span class="pre">__iter__</span></code> / <code class="docutils literal notranslate"><span class="pre">__getitem__</span></code> / <code class="docutils literal notranslate"><span class="pre">__bool__</span></code></strong>:
+deprecated in 0.9.0. Access <code class="docutils literal notranslate"><span class="pre">result.solutions</span></code> (or <code class="docutils literal notranslate"><span class="pre">result.ensemble</span></code> for
+batch operations) instead — e.g. <code class="docutils literal notranslate"><span class="pre">len(result.solutions)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">linkage</span> <span class="pre">in</span> <span class="pre">result.solutions</span></code>, <code class="docutils literal notranslate"><span class="pre">result.solutions[i]</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph.to_linkage()</span></code></strong>: deprecated in 0.8.0. Use
+<code class="docutils literal notranslate"><span class="pre">pylinkage.hypergraph.to_mechanism()</span></code> for conversion to the current
+<code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> model.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.assur.graph_to_linkage()</span></code></strong>: deprecated in 0.8.0. Use
+<code class="docutils literal notranslate"><span class="pre">pylinkage.assur.graph_to_mechanism()</span></code> for conversion to the current
+<code class="docutils literal notranslate"><span class="pre">Mechanism</span></code> model.</p></li>
+</ul>
+</section>
+<section id="id13">
+<h3>Fixed<a class="headerlink" href="#id13" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">multi_objective_optimization</span></code> single-objective runs.</strong> pymoo
+returns the single best solution with <code class="docutils literal notranslate"><span class="pre">F</span></code> shape <code class="docutils literal notranslate"><span class="pre">(n_obj,)</span></code> and
+<code class="docutils literal notranslate"><span class="pre">X</span></code> shape <code class="docutils literal notranslate"><span class="pre">(n_var,)</span></code> when <code class="docutils literal notranslate"><span class="pre">n_obj</span> <span class="pre">==</span> <span class="pre">1</span></code>, not <code class="docutils literal notranslate"><span class="pre">(n_pop,</span> <span class="pre">n_obj)</span></code>.
+The previous code indexed <code class="docutils literal notranslate"><span class="pre">result.F[:,</span> <span class="pre">k]</span></code> unconditionally and
+crashed. Results are now normalised to 2-D before building the
+Ensemble so <code class="docutils literal notranslate"><span class="pre">n_obj</span> <span class="pre">==</span> <span class="pre">1</span></code> works uniformly.</p></li>
+<li><p><strong>Solver-cache invalidation on constraint mutation.</strong>
+<code class="docutils literal notranslate"><span class="pre">simulation.Linkage.set_num_constraints</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Mechanism.set_constraints</span></code> now clear <code class="docutils literal notranslate"><span class="pre">_solver_data</span></code> before applying
+the new constraints, so a subsequent <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> rebuilds the
+numba arrays. Without this, optimizers that round-tripped candidate
+constraints would silently keep simulating the previous parameters.</p></li>
+</ul>
+</section>
+</section>
+<section id="id14">
+<h2>[0.9.0] - 2026-04-14<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<section id="id15">
+<h3>Added<a class="headerlink" href="#id15" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">extract_trajectory(loci,</span> <span class="pre">joint=-1)</span></code></strong> in <code class="docutils literal notranslate"><span class="pre">pylinkage.linkage.analysis</span></code>
+(re-exported from <code class="docutils literal notranslate"><span class="pre">pylinkage</span></code>): returns <code class="docutils literal notranslate"><span class="pre">(xs,</span> <span class="pre">ys)</span></code> numpy arrays for one
+joint’s path, skipping unbuildable frames. Replaces the recurring
+<code class="docutils literal notranslate"><span class="pre">[(p[i][0],</span> <span class="pre">p[i][1])</span> <span class="pre">for</span> <span class="pre">p</span> <span class="pre">in</span> <span class="pre">loci</span> <span class="pre">if</span> <span class="pre">p[i][0]</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">None]</span></code> boilerplate.
+Accepts integer index, joint name, or joint instance (when <code class="docutils literal notranslate"><span class="pre">linkage</span></code> is
+given).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">extract_trajectories(loci,</span> <span class="pre">linkage=None)</span></code></strong>: all-joints variant of
+the above. Returns <code class="docutils literal notranslate"><span class="pre">{joint_name:</span> <span class="pre">(xs,</span> <span class="pre">ys)}</span></code> when <code class="docutils literal notranslate"><span class="pre">linkage</span></code> is given,
+or <code class="docutils literal notranslate"><span class="pre">{index:</span> <span class="pre">(xs,</span> <span class="pre">ys)}</span></code> otherwise. Skips <code class="docutils literal notranslate"><span class="pre">None</span></code> frames per joint.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">pylinkage.mechanism.fourbar(crank,</span> <span class="pre">coupler,</span> <span class="pre">rocker,</span> <span class="pre">ground,</span> <span class="pre">...)</span></code></strong> and
+<strong><code class="docutils literal notranslate"><span class="pre">slider_crank(crank,</span> <span class="pre">rod,</span> <span class="pre">...)</span></code></strong> factory functions: collapse the
+eight-line <code class="docutils literal notranslate"><span class="pre">MechanismBuilder</span></code> chain for the canonical four-bar and
+slider-crank topologies into a single call, returning an assembled
+<code class="docutils literal notranslate"><span class="pre">Mechanism</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">TransmissionAngleAnalysis.plot(ax=None)</span></code></strong>: one-line replacement for
+the matplotlib boilerplate (<code class="docutils literal notranslate"><span class="pre">axhline</span></code> at the acceptable-range bounds,
+the 90° optimum, fixed <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">180]</span></code> y-axis, crank-angle x-axis). Accepts
+an existing axes for use inside subplot grids.</p></li>
+<li><p><strong>Population abstractions for batch mechanism work</strong> (<code class="docutils literal notranslate"><span class="pre">pylinkage.population</span></code>):</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Member</span></code>: universal single-mechanism record (dimensions, scores, trajectory).
+<code class="docutils literal notranslate"><span class="pre">to_loci()</span></code> converts trajectories to the tuple format the visualizer expects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ensemble</span></code>: topology-bound population — one linkage structure with N parameter
+variants. Batch simulation via the numba solver, numpy-style indexing
+(<code class="docutils literal notranslate"><span class="pre">ens[i]</span></code> → Member, <code class="docutils literal notranslate"><span class="pre">ens[1:3]</span></code> → Ensemble), columnar scores for vectorized
+<code class="docutils literal notranslate"><span class="pre">rank()</span></code>, <code class="docutils literal notranslate"><span class="pre">top()</span></code>, <code class="docutils literal notranslate"><span class="pre">filter()</span></code>, <code class="docutils literal notranslate"><span class="pre">filter_by_score()</span></code>. Visualization shortcuts:
+<code class="docutils literal notranslate"><span class="pre">show()</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_plotly()</span></code>, <code class="docutils literal notranslate"><span class="pre">save_svg()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Population</span></code>: heterogeneous collection of Ensembles, keyed by topology label.
+<code class="docutils literal notranslate"><span class="pre">simulate_all()</span></code>, <code class="docutils literal notranslate"><span class="pre">rank()</span></code>, <code class="docutils literal notranslate"><span class="pre">top()</span></code> across topologies.
+<code class="docutils literal notranslate"><span class="pre">from_members()</span></code> auto-groups by topology key.
+<code class="docutils literal notranslate"><span class="pre">from_topology_solutions()</span></code> wraps multi-topology synthesis results with
+<code class="docutils literal notranslate"><span class="pre">QualityMetrics</span></code> as score columns.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SynthesisResult.ensemble</span></code> property: lazily builds an Ensemble from synthesis
+solutions with link lengths as score columns.</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">skip_unbuildable</span></code> mode for <code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code>:</strong> new boolean parameter that
+catches <code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code> per iteration and yields <code class="docutils literal notranslate"><span class="pre">None</span></code>-coordinate tuples
+instead of aborting the entire simulation. Non-Grashof and double-rocker
+linkages now recover the valid trajectory on both sides of dead zones.</p></li>
 <li><p><strong>Dual Annealing optimizer:</strong> <code class="docutils literal notranslate"><span class="pre">dual_annealing_optimization()</span></code> wraps scipy’s
 generalized simulated annealing — a single-trajectory global optimizer effective
 for problems with many local minima and expensive evaluations.</p></li>
@@ -226,6 +987,15 @@ group decomposition internally, solving dyads and triads via <code class="docuti
 dispatch. Six-bar linkages (Watt and Stephenson types) can be simulated
 end-to-end. <code class="docutils literal notranslate"><span class="pre">graph_to_mechanism()</span></code> handles triad groups (2 internal nodes,
 4+ edges), creating the appropriate joints and links.</p></li>
+<li><p><strong>Convenience builders for six-bar linkages:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">watt_from_lengths()</span></code>: build a Watt six-bar from seven link lengths +
+ground length. Returns a <code class="docutils literal notranslate"><span class="pre">SimLinkage</span></code> ready for simulation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stephenson_from_lengths()</span></code>: build a Stephenson six-bar from the same
+parameter pattern. Both include ASCII kinematic chain diagrams in docstrings.</p></li>
+<li><p>Exported from <code class="docutils literal notranslate"><span class="pre">pylinkage.synthesis</span></code> alongside <code class="docutils literal notranslate"><span class="pre">fourbar_from_lengths()</span></code>.</p></li>
+</ul>
+</li>
 <li><p><strong>Topology enumeration:</strong></p>
 <ul>
 <li><p>Graph isomorphism detection via WL-1 color refinement + backtracking
@@ -241,34 +1011,77 @@ family, joint count).</p></li>
 </li>
 </ul>
 </section>
-<section id="fixed">
-<h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
+<section id="id16">
+<h3>Fixed<a class="headerlink" href="#id16" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong><code class="docutils literal notranslate"><span class="pre">compute_dof</span></code> hyperedge counting:</strong> <code class="docutils literal notranslate"><span class="pre">compute_mobility()</span></code> counted each hyperedge
 with k nodes as (k−1) links instead of 1 rigid body, giving wrong DOF for any
 mechanism with ternary or higher links (all six-bars and eight-bars).</p></li>
 </ul>
 </section>
-<section id="changed">
-<h3>Changed<a class="headerlink" href="#changed" title="Link to this heading"></a></h3>
+<section id="id17">
+<h3>Deprecated<a class="headerlink" href="#id17" title="Link to this heading"></a></h3>
 <ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">SynthesisResult</span></code> collection protocol:</strong> <code class="docutils literal notranslate"><span class="pre">len(result)</span></code>, <code class="docutils literal notranslate"><span class="pre">result[i]</span></code>,
+<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">linkage</span> <span class="pre">in</span> <span class="pre">result</span></code>, and <code class="docutils literal notranslate"><span class="pre">bool(result)</span></code> now emit <code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>.
+Use <code class="docutils literal notranslate"><span class="pre">result.ensemble</span></code> instead. Will be removed in 1.0.0.</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>Changed<a class="headerlink" href="#id18" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">fourbar_from_lengths()</span></code> now returns <code class="docutils literal notranslate"><span class="pre">SimLinkage</span></code></strong> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.simulation</span></code>)
+instead of the legacy <code class="docutils literal notranslate"><span class="pre">Linkage</span></code> (from <code class="docutils literal notranslate"><span class="pre">pylinkage.linkage</span></code>). The new object uses
+the component/actuator/dyad API: access joints via <code class="docutils literal notranslate"><span class="pre">.components</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">.joints</span></code>. The <code class="docutils literal notranslate"><span class="pre">.step()</span></code> method is unchanged. <code class="docutils literal notranslate"><span class="pre">linkage_to_synthesis_params()</span></code>
+accepts both old and new linkage types.</p></li>
+<li><p><strong>All optimization functions now return <code class="docutils literal notranslate"><span class="pre">Ensemble</span></code></strong> instead of <code class="docutils literal notranslate"><span class="pre">list[Agent]</span></code>,
+<code class="docutils literal notranslate"><span class="pre">list[MutableAgent]</span></code>, or <code class="docutils literal notranslate"><span class="pre">ParetoFront</span></code>. Affected functions:
+<code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code>, <code class="docutils literal notranslate"><span class="pre">trials_and_errors_optimization()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">differential_evolution_optimization()</span></code>, <code class="docutils literal notranslate"><span class="pre">dual_annealing_optimization()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">minimize_linkage()</span></code>, <code class="docutils literal notranslate"><span class="pre">chain_optimizers()</span></code>, <code class="docutils literal notranslate"><span class="pre">multi_objective_optimization()</span></code>,
+and all async variants. Migration: replace <code class="docutils literal notranslate"><span class="pre">score,</span> <span class="pre">dims,</span> <span class="pre">pos</span> <span class="pre">=</span> <span class="pre">result[0]</span></code>
+(Agent tuple unpacking) with <code class="docutils literal notranslate"><span class="pre">member</span> <span class="pre">=</span> <span class="pre">result[0];</span> <span class="pre">member.score</span></code>.</p></li>
+<li><p><strong>Default simulation resolution increased from ~63 to 360 steps per rotation:</strong>
+The default angular velocity for <code class="docutils literal notranslate"><span class="pre">Crank</span></code>, <code class="docutils literal notranslate"><span class="pre">ArcCrank</span></code>, <code class="docutils literal notranslate"><span class="pre">DriverLink</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">ArcDriverLink</span></code> changed from <code class="docutils literal notranslate"><span class="pre">0.1</span></code> rad/step to <code class="docutils literal notranslate"><span class="pre">tau</span> <span class="pre">/</span> <span class="pre">360</span></code> (~0.01745 rad/step),
+giving one sample per degree. The <code class="docutils literal notranslate"><span class="pre">Mechanism.get_rotation_period()</span></code> fallback
+and all synthesis/visualizer iteration defaults changed from <code class="docutils literal notranslate"><span class="pre">100</span></code> to <code class="docutils literal notranslate"><span class="pre">360</span></code>
+accordingly. A <code class="docutils literal notranslate"><span class="pre">DEFAULT_ANGULAR_VELOCITY</span></code> constant is now exported from
+<code class="docutils literal notranslate"><span class="pre">pylinkage.actuators</span></code>.</p></li>
 <li><p><strong>PSO is now pure NumPy:</strong> <code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code> no longer depends on
 pyswarms (unmaintained since 2021). Replaced with a built-in local-best
 ring-topology PSO. The <code class="docutils literal notranslate"><span class="pre">pso</span></code> optional extra is kept but empty for backwards
 compatibility. The API is unchanged.</p></li>
+<li><p><strong>Renamed abbreviated parameters for clarity
+(<a class="reference external" href="https://github.com/HugoFara/pylinkage/issues/17">#17</a>):</strong>
+All old names are still accepted as keyword arguments for backwards
+compatibility.</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">iters</span></code> → <code class="docutils literal notranslate"><span class="pre">iterations</span></code> in <code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code> and its async
+variant.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pos</span></code> → <code class="docutils literal notranslate"><span class="pre">initial_positions</span></code> in <code class="docutils literal notranslate"><span class="pre">Linkage.rebuild()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">init_positions</span></code> → <code class="docutils literal notranslate"><span class="pre">initial_positions</span></code> in <code class="docutils literal notranslate"><span class="pre">Agent</span></code>, <code class="docutils literal notranslate"><span class="pre">MutableAgent</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">ParetoSolution</span></code>.</p></li>
+</ul>
+</li>
 </ul>
 </section>
-<section id="removed">
-<h3>Removed<a class="headerlink" href="#removed" title="Link to this heading"></a></h3>
+<section id="id19">
+<h3>Removed<a class="headerlink" href="#id19" title="Link to this heading"></a></h3>
 <ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">HypostaticError</span></code></strong> alias removed. Use <code class="docutils literal notranslate"><span class="pre">UnderconstrainedError</span></code> directly
+(alias was deprecated since 0.7.0).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">Linear</span></code></strong> joint alias removed. Use <code class="docutils literal notranslate"><span class="pre">Prismatic</span></code> directly
+(alias was deprecated since 0.7.0).</p></li>
 <li><p><strong>pyswarms dependency</strong> removed from all extras (<code class="docutils literal notranslate"><span class="pre">pso</span></code>, <code class="docutils literal notranslate"><span class="pre">full</span></code>, dev group).</p></li>
 </ul>
 </section>
 </section>
-<section id="id1">
-<h2>[0.8.0] - 2026-03-28<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
-<section id="id2">
-<h3>Added<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<section id="id20">
+<h2>[0.8.0] - 2026-03-28<a class="headerlink" href="#id20" title="Link to this heading"></a></h2>
+<section id="id21">
+<h3>Added<a class="headerlink" href="#id21" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Multi-objective optimization:</strong></p>
 <ul>
@@ -334,8 +1147,8 @@ formula (<code class="docutils literal notranslate"><span class="pre">DOF</span>
 </li>
 </ul>
 </section>
-<section id="id3">
-<h3>Fixed<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<section id="id22">
+<h3>Fixed<a class="headerlink" href="#id22" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>PSO score sign:</strong> <code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code> returned the negated pyswarms
 cost when <code class="docutils literal notranslate"><span class="pre">order_relation=max</span></code>, producing incorrect (often negative) scores.</p></li>
@@ -346,8 +1159,8 @@ Constraints are now sorted by center position before intersection, making branch
 0/1 deterministic.</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Changed<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<section id="id23">
+<h3>Changed<a class="headerlink" href="#id23" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Breaking:</strong> Dropped Python 3.9 support. Minimum version is now Python 3.10.</p></li>
 <li><p>Added Python 3.14 to CI test matrix.</p></li>
@@ -359,8 +1172,8 @@ to avoid conflict with the new <code class="docutils literal notranslate"><span 
 </ul>
 </section>
 </section>
-<section id="id5">
-<h2>[0.7.0] - 2025-12-13<a class="headerlink" href="#id5" title="Link to this heading"></a></h2>
+<section id="id24">
+<h2>[0.7.0] - 2025-12-13<a class="headerlink" href="#id24" title="Link to this heading"></a></h2>
 <section id="added-in-0-7-0">
 <h3>Added in 0.7.0<a class="headerlink" href="#added-in-0-7-0" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -404,8 +1217,8 @@ Old names kept as deprecated aliases.</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2>[0.6.0] - 2024-10-02<a class="headerlink" href="#id6" title="Link to this heading"></a></h2>
+<section id="id25">
+<h2>[0.6.0] - 2024-10-02<a class="headerlink" href="#id25" title="Link to this heading"></a></h2>
 <section id="added-in-0-6-0">
 <h3>Added in 0.6.0<a class="headerlink" href="#added-in-0-6-0" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -536,8 +1349,8 @@ function name).</p></li>
 </ul>
 </section>
 </section>
-<section id="id7">
-<h2>[0.5.3] - 2023-06-23<a class="headerlink" href="#id7" title="Link to this heading"></a></h2>
+<section id="id26">
+<h2>[0.5.3] - 2023-06-23<a class="headerlink" href="#id26" title="Link to this heading"></a></h2>
 <section id="added-in-0-5-3">
 <h3>Added in 0.5.3<a class="headerlink" href="#added-in-0-5-3" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -582,8 +1395,8 @@ It will no longer be tested, use it at your own risks!</p></li>
 </ul>
 </section>
 </section>
-<section id="id8">
-<h2>[0.5.2] - 2021-07-21<a class="headerlink" href="#id8" title="Link to this heading"></a></h2>
+<section id="id27">
+<h2>[0.5.2] - 2021-07-21<a class="headerlink" href="#id27" title="Link to this heading"></a></h2>
 <section id="added-in-0-5-2">
 <h3>Added in 0.5.2<a class="headerlink" href="#added-in-0-5-2" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -601,8 +1414,8 @@ false positive.</p></li>
 </ul>
 </section>
 </section>
-<section id="id9">
-<h2>[0.5.1] - 2021-07-14<a class="headerlink" href="#id9" title="Link to this heading"></a></h2>
+<section id="id28">
+<h2>[0.5.1] - 2021-07-14<a class="headerlink" href="#id28" title="Link to this heading"></a></h2>
 <section id="added-in-0-5-1">
 <h3>Added in 0.5.1<a class="headerlink" href="#added-in-0-5-1" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -618,8 +1431,8 @@ one in particle swarm optimization), using
 </ul>
 </section>
 </section>
-<section id="id10">
-<h2>[0.5.0] - 2021-07-12<a class="headerlink" href="#id10" title="Link to this heading"></a></h2>
+<section id="id29">
+<h2>[0.5.0] - 2021-07-12<a class="headerlink" href="#id29" title="Link to this heading"></a></h2>
 <p>End of alpha development!
 The package is now robust enough to be used by a mere human.
 This version introduces a lot of changes and simplifications,
@@ -672,8 +1485,8 @@ have a high convergence rate (~100%), and results equivalent to the
 </ul>
 </section>
 </section>
-<section id="id11">
-<h2>[0.4.1] - 2021-07-11<a class="headerlink" href="#id11" title="Link to this heading"></a></h2>
+<section id="id30">
+<h2>[0.4.1] - 2021-07-11<a class="headerlink" href="#id30" title="Link to this heading"></a></h2>
 <section id="added-in-0-4-1">
 <h3>Added in 0.4.1<a class="headerlink" href="#added-in-0-4-1" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -691,8 +1504,8 @@ folder.</p></li>
 </ul>
 </section>
 </section>
-<section id="id12">
-<h2>[0.4.0] - 2021-07-06<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<section id="id31">
+<h2>[0.4.0] - 2021-07-06<a class="headerlink" href="#id31" title="Link to this heading"></a></h2>
 <section id="added-in-0-4-0">
 <h3>Added in 0.4.0<a class="headerlink" href="#added-in-0-4-0" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -742,8 +1555,8 @@ to align to PySwarms.</p></li>
 </ul>
 </section>
 </section>
-<section id="id13">
-<h2>[0.3.0] - 2021-07-05<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<section id="id32">
+<h2>[0.3.0] - 2021-07-05<a class="headerlink" href="#id32" title="Link to this heading"></a></h2>
 <section id="added-in-0-3-0">
 <h3>Added in 0.3.0<a class="headerlink" href="#added-in-0-3-0" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -777,8 +1590,8 @@ provided.</p></li>
 </ul>
 </section>
 </section>
-<section id="id14">
-<h2>[0.2.2] - 2021-06-22<a class="headerlink" href="#id14" title="Link to this heading"></a></h2>
+<section id="id33">
+<h2>[0.2.2] - 2021-06-22<a class="headerlink" href="#id33" title="Link to this heading"></a></h2>
 <section id="added-in-0-2-2">
 <h3>Added in 0.2.2<a class="headerlink" href="#added-in-0-2-2" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -793,8 +1606,8 @@ provided.</p></li>
 </ul>
 </section>
 </section>
-<section id="id15">
-<h2>[0.2.1] - 2021-06-16<a class="headerlink" href="#id15" title="Link to this heading"></a></h2>
+<section id="id34">
+<h2>[0.2.1] - 2021-06-16<a class="headerlink" href="#id34" title="Link to this heading"></a></h2>
 <section id="added-in-0-2-1">
 <h3>Added in 0.2.1<a class="headerlink" href="#added-in-0-2-1" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -822,8 +1635,8 @@ Python.</p></li>
 </ul>
 </section>
 </section>
-<section id="id16">
-<h2>[0.2.0] - 2021-06-14<a class="headerlink" href="#id16" title="Link to this heading"></a></h2>
+<section id="id35">
+<h2>[0.2.0] - 2021-06-14<a class="headerlink" href="#id35" title="Link to this heading"></a></h2>
 <section id="added-in-0-2-0">
 <h3>Added in 0.2.0<a class="headerlink" href="#added-in-0-2-0" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -852,8 +1665,8 @@ workflow.</p></li>
 </ul>
 </section>
 </section>
-<section id="id17">
-<h2>[0.0.1] - 2021-06-12<a class="headerlink" href="#id17" title="Link to this heading"></a></h2>
+<section id="id36">
+<h2>[0.0.1] - 2021-06-12<a class="headerlink" href="#id36" title="Link to this heading"></a></h2>
 <section id="added-in-0-0-1">
 <h3>Added in 0.0.1<a class="headerlink" href="#added-in-0-0-1" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -878,7 +1691,7 @@ and exhaustive optimization.</p></li>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="readmelink.html" class="btn btn-neutral float-left" title="Pylinkage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="benchmarks.html" class="btn btn-neutral float-right" title="Benchmarks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cam-Follower Mechanisms &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Cam-Follower Mechanisms &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -46,6 +46,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -394,22 +396,25 @@ an anchor point that other dyads can connect to.</p>
     <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Connect downstream rocker via RRRDyad</span>
+<span class="c1"># Connect downstream rocker via RRRDyad. The follower travels from</span>
+<span class="c1"># (0, 3) to (0, 4), between 4.2 and 5 units from the rocker pivot, so</span>
+<span class="c1"># the two links must span that whole range.</span>
 <span class="n">rocker</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
     <span class="n">anchor1</span><span class="o">=</span><span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>  <span class="c1"># Connects to follower output</span>
     <span class="n">anchor2</span><span class="o">=</span><span class="n">rocker_pivot</span><span class="p">,</span>
-    <span class="n">distance1</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-    <span class="n">distance2</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
+    <span class="n">distance2</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
     <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">guide</span><span class="p">,</span> <span class="n">rocker_pivot</span><span class="p">,</span> <span class="n">cam_crank</span><span class="p">,</span> <span class="n">follower</span><span class="p">,</span> <span class="n">rocker</span><span class="p">],</span>
 <span class="p">)</span>
 
-<span class="c1"># Simulate the complete mechanism</span>
+<span class="c1"># Simulate the complete mechanism. A dyad is itself the joint it</span>
+<span class="c1"># solves, so its position is read directly; only actuators and cam</span>
+<span class="c1"># followers expose a separate ``output``.</span>
 <span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
-    <span class="n">rocker_pos</span> <span class="o">=</span> <span class="n">rocker</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rocker output at: </span><span class="si">{</span><span class="n">rocker_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rocker joint at: </span><span class="si">{</span><span class="n">rocker</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -467,7 +472,7 @@ High pressure angles (&gt;30 degrees) can cause binding.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="advanced_optimization.html"><span class="doc">Advanced Optimization Techniques</span></a> - Optimize cam profile parameters with PSO</p></li>
 <li><p><a class="reference internal" href="kinematics_optimization.html"><span class="doc">Kinematics-Based Optimization</span></a> - Analyze velocities and accelerations</p></li>
-<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Joint Creation</span></a> - Create custom dyad types</p></li>
+<li><p><a class="reference internal" href="custom_joints.html"><span class="doc">Custom Components</span></a> - Create custom dyad types</p></li>
 </ul>
 </section>
 </section>

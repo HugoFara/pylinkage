@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Advanced Optimization Techniques &mdash; pylinkage 0.8.0 documentation</title>
+  <title>Advanced Optimization Techniques &mdash; pylinkage 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../_static/documentation_options.js?v=6efca38a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -46,6 +46,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../readmelink.html">Readme</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changeloglink.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../benchmarks.html">Benchmarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deprecations.html">Deprecations</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current">
@@ -149,23 +151,30 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <span class="sd">        - Outer tuple: simulation steps</span>
 <span class="sd">        - Middle tuple: joints at each step</span>
 <span class="sd">        - Inner tuple: (x, y) coordinates</span>
-<span class="sd">    :param kwargs: Additional arguments (linkage, constraints, etc.)</span>
+<span class="sd">    :param kwargs: ``linkage``, ``params`` (the candidate constraints)</span>
+<span class="sd">        and ``init_pos`` (the joint positions the simulation started from).</span>
 <span class="sd">    :return: Fitness score (lower is better for minimization)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get the locus (path) of the last joint</span>
     <span class="n">output_locus</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
 
-    <span class="c1"># Calculate your fitness metric</span>
-    <span class="n">score</span> <span class="o">=</span> <span class="n">calculate_score</span><span class="p">(</span><span class="n">output_locus</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">score</span>
+    <span class="c1"># Calculate your fitness metric: here, how far the path strays</span>
+    <span class="c1"># from a horizontal line.</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">output_locus</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The decorator handles:</p>
+<p>The decorated function has the signature every optimizer expects,
+<code class="docutils literal notranslate"><span class="pre">(linkage,</span> <span class="pre">params,</span> <span class="pre">init_pos)</span></code>. The decorator:</p>
 <ul class="simple">
-<li><p>Setting up the linkage with candidate constraints</p></li>
-<li><p>Running the simulation</p></li>
-<li><p>Catching <code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code> and returning infinity</p></li>
+<li><p>applies the candidate <code class="docutils literal notranslate"><span class="pre">params</span></code> with <code class="docutils literal notranslate"><span class="pre">linkage.set_constraints()</span></code>;</p></li>
+<li><p>runs the simulation and passes the loci in;</p></li>
+<li><p>catches <code class="docutils literal notranslate"><span class="pre">UnbuildableError</span></code> and returns infinity (<code class="docutils literal notranslate"><span class="pre">-inf</span></code> for
+<code class="docutils literal notranslate"><span class="pre">&#64;kinematic_maximization</span></code>), so impossible geometries lose without
+crashing the search.</p></li>
 </ul>
+<p>Optimizers look for the <strong>highest</strong> score by default. A minimization
+fitness therefore goes with <code class="docutils literal notranslate"><span class="pre">order_relation=min</span></code>, as below.</p>
 </section>
 <section id="working-with-loci-data">
 <h3>Working with Loci Data<a class="headerlink" href="#working-with-loci-data" title="Link to this heading"></a></h3>
@@ -188,7 +197,8 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
     <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
     <span class="c1"># bbox = (min_y, max_x, max_y, min_x)</span>
 
-    <span class="k">return</span> <span class="n">some_score</span>
+    <span class="c1"># Score: the crank&#39;s highest point should stay under the output&#39;s</span>
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">crank_path</span><span class="p">)</span> <span class="o">-</span> <span class="n">bbox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
@@ -197,29 +207,24 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <h2>Example: Optimizing for Path Shape<a class="headerlink" href="#example-optimizing-for-path-shape" title="Link to this heading"></a></h2>
 <p>Let’s optimize a four-bar linkage so its output traces a specific rectangular path:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.components</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ground</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.dyads</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRRDyad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">create_linkage</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create the base linkage to optimize.&quot;&quot;&quot;</span>
-    <span class="n">crank</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Crank</span><span class="p">(</span>
-        <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">joint0</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">angle</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
-        <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
+        <span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Revolute</span><span class="p">(</span>
-        <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">joint0</span><span class="o">=</span><span class="n">crank</span><span class="p">,</span>
-        <span class="n">joint1</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="n">distance0</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">distance1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
+        <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">Linkage</span><span class="p">(</span>
-        <span class="n">joints</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
-        <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">),</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">output</span><span class="p">])</span>
 
 
 <span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
@@ -240,29 +245,42 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">create_linkage</span><span class="p">()</span>
 
 <span class="c1"># Generate search bounds around current constraints</span>
-<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">())</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">())</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
     <span class="n">eval_func</span><span class="o">=</span><span class="n">rectangle_fitness</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
     <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>   <span class="c1"># rectangle_fitness is an error to minimize</span>
+    <span class="n">n_particles</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Best result</span>
-<span class="n">best_score</span><span class="p">,</span> <span class="n">best_constraints</span><span class="p">,</span> <span class="n">best_coords</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best score: </span><span class="si">{</span><span class="n">best_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># Every optimizer returns an Ensemble: the optimized linkage plus one</span>
+<span class="c1"># Member per candidate kept, best first.</span>
+<span class="n">best</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best score: </span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best constraints: </span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Apply best constraints and visualize</span>
-<span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">best_constraints</span><span class="p">)</span>
-<span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
+<span class="c1"># Animate the best member: the Ensemble simulates it from the joint</span>
+<span class="c1"># positions the search started from, then hands the loci to show_linkage</span>
+<span class="n">results</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Apply the best constraints to the linkage itself</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="n">best</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>An optimum often sits right at the edge of what can be assembled, where a
+four-bar has two mirror-image ways to close and a fine simulation from the
+original joint positions may pick the wrong one. <code class="docutils literal notranslate"><span class="pre">results.show()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">results[0].trajectory</span></code> avoid the question by simulating the member the
+way the optimizer scored it; prefer them to re-stepping the linkage by hand.</p>
 </section>
 <section id="particle-swarm-optimization-parameters">
 <h2>Particle Swarm Optimization Parameters<a class="headerlink" href="#particle-swarm-optimization-parameters" title="Link to this heading"></a></h2>
 <p>Fine-tune PSO behavior for better results:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_function</span><span class="p">,</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">rectangle_fitness</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
     <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
 
@@ -270,16 +288,23 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
     <span class="n">n_particles</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>      <span class="c1"># More particles = better exploration, slower</span>
 
     <span class="c1"># Number of iterations</span>
-    <span class="n">iters</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>            <span class="c1"># More iterations = better convergence, slower</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>       <span class="c1"># More iterations = better convergence, slower</span>
 
     <span class="c1"># Starting position (optional)</span>
-    <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>          <span class="c1"># Use current linkage constraints as center</span>
+    <span class="n">center</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>          <span class="c1"># None: particles start uniformly within bounds</span>
 
     <span class="c1"># Number of dimensions (usually auto-detected)</span>
     <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 
+    <span class="c1"># Swarm dynamics</span>
+    <span class="n">leader</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>           <span class="c1"># Pull towards the neighbourhood&#39;s best</span>
+    <span class="n">follower</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>         <span class="c1"># Pull towards the particle&#39;s own best</span>
+    <span class="n">inertia</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span>          <span class="c1"># Momentum</span>
+    <span class="n">neighbors</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span>         <span class="c1"># Ring-topology neighbourhood size</span>
+
     <span class="c1"># Order relation for optimization</span>
     <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>   <span class="c1"># min for minimization, max for maximization</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>        <span class="c1"># No progress bar</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -287,24 +312,24 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <section id="generating-bounds">
 <h2>Generating Bounds<a class="headerlink" href="#generating-bounds" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">generate_bounds</span></code> function creates search ranges around current values:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">constraints</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_num_constraints</span><span class="p">()</span>
-<span class="c1"># Example: [0.31, 1.0, 3.0, 1.0]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">constraints</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span>
+<span class="c1"># Here: [1.0, 3.0, 1.0] — crank radius, coupler length, rocker length</span>
 
 <span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
 <span class="c1"># Returns: (lower_bounds, upper_bounds)</span>
-<span class="c1"># Default: values * 0.5 to values * 2.0</span>
+<span class="c1"># Default: values / 5 to values * 5</span>
 
 <span class="c1"># Custom bounds</span>
 <span class="n">bounds</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">generate_bounds</span><span class="p">(</span>
     <span class="n">constraints</span><span class="p">,</span>
-    <span class="n">min_ratio</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>    <span class="c1"># Lower bound = value * 0.8</span>
-    <span class="n">max_ratio</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>    <span class="c1"># Upper bound = value * 1.2</span>
+    <span class="n">min_ratio</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>   <span class="c1"># Lower bound = value / 1.25</span>
+    <span class="n">max_factor</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>  <span class="c1"># Upper bound = value * 1.25</span>
 <span class="p">)</span>
 
 <span class="c1"># Or define bounds manually for precise control</span>
 <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>    <span class="c1"># Lower bounds</span>
-    <span class="p">[</span><span class="mf">6.28</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>   <span class="c1"># Upper bounds</span>
+    <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>    <span class="c1"># Lower bounds</span>
+    <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>    <span class="c1"># Upper bounds</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -313,11 +338,15 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <h2>Grid Search Optimization<a class="headerlink" href="#grid-search-optimization" title="Link to this heading"></a></h2>
 <p>For simpler problems or exhaustive search:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">trials_and_errors_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness_function</span><span class="p">,</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">rectangle_fitness</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
-    <span class="n">divisions</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>          <span class="c1"># Points per dimension</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">divisions</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>           <span class="c1"># Points per dimension</span>
+    <span class="n">n_results</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>           <span class="c1"># Members to keep</span>
     <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>    <span class="c1"># min or max</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> candidates kept, best score </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Note: Grid search is O(divisions^n) where n = number of constraints</span>
 <span class="c1"># Use sparingly for high-dimensional problems</span>
@@ -354,15 +383,17 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <h2>Constraint Preservation<a class="headerlink" href="#constraint-preservation" title="Link to this heading"></a></h2>
 <p>Sometimes you want to optimize only certain constraints while keeping others fixed:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">constrained_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">constrained_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fitness function that enforces additional constraints.&quot;&quot;&quot;</span>
-    <span class="c1"># Penalize if crank arm (constraint 1) is too short</span>
-    <span class="k">if</span> <span class="n">constraints</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+    <span class="c1"># Penalize if the crank radius (first constraint of this</span>
+    <span class="c1"># linkage) is too short</span>
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
 
     <span class="c1"># Normal fitness calculation</span>
     <span class="n">output_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">calculate_path_score</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="n">bbox</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">bounding_box</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">((</span><span class="n">a</span> <span class="o">-</span> <span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
 </pre></div>
 </div>
 </section>
@@ -374,13 +405,17 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 
 <span class="c1"># Optimize</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span>
+    <span class="n">eval_func</span><span class="o">=</span><span class="n">rectangle_fitness</span><span class="p">,</span>
     <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
     <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+    <span class="n">n_particles</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Apply results</span>
-<span class="n">linkage</span><span class="o">.</span><span class="n">set_num_constraints</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
 <span class="n">linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_coords</span><span class="p">)</span>  <span class="c1"># Restore initial positions</span>
 </pre></div>
 </div>
@@ -392,52 +427,75 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">tracking_fitness</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">initial_positions</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper that records optimization history.&quot;&quot;&quot;</span>
-    <span class="c1"># Your actual fitness calculation</span>
-    <span class="n">score</span> <span class="o">=</span> <span class="n">my_fitness</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">initial_positions</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper that records every evaluation.&quot;&quot;&quot;</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">rectangle_fitness</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">initial_positions</span><span class="p">)</span>
     <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">score</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">constraints</span><span class="p">),</span> <span class="n">initial_positions</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">score</span>
 
 
 <span class="c1"># Run optimization with tracking</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
-    <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">tracking_fitness</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">),</span>
+    <span class="n">tracking_fitness</span><span class="p">,</span>
     <span class="n">linkage</span><span class="p">,</span>
     <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-    <span class="n">n_particles</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">iters</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+    <span class="n">n_particles</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="c1"># Analyze history</span>
+<span class="c1"># Analyze history: one entry per particle per iteration, after the</span>
+<span class="c1"># initial swarm</span>
 <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">history</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best score: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Score improvement: </span><span class="si">{</span><span class="n">scores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">scores</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluations: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="si">}</span><span class="s2">, best score: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">first_iteration</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span>
+<span class="n">last_iteration</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best of first iteration: </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">first_iteration</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best of last iteration:  </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">last_iteration</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The <code class="docutils literal notranslate"><span class="pre">pylinkage.visualizer</span></code> PSO plots (<code class="docutils literal notranslate"><span class="pre">parallel_coordinates_plot</span></code>,
+<code class="docutils literal notranslate"><span class="pre">dashboard_layout</span></code>, <code class="docutils literal notranslate"><span class="pre">animate_dashboard</span></code>) consume exactly this history,
+grouped per iteration; see the strider example.</p>
 </section>
 <section id="async-optimization">
 <h2>Async Optimization<a class="headerlink" href="#async-optimization" title="Link to this heading"></a></h2>
 <p>For long-running optimizations, use the async version with progress callbacks:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.optimization</span><span class="w"> </span><span class="kn">import</span> <span class="n">particle_swarm_optimization_async</span>
+
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">optimize_with_progress</span><span class="p">():</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">on_progress</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">best_score</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">iteration</span><span class="si">}</span><span class="s2">: best = </span><span class="si">{</span><span class="n">best_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_progress</span><span class="p">(</span><span class="n">progress</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">progress</span><span class="o">.</span><span class="n">current_iteration</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Iteration </span><span class="si">{</span><span class="n">progress</span><span class="o">.</span><span class="n">current_iteration</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="n">progress</span><span class="o">.</span><span class="n">total_iterations</span><span class="si">}</span><span class="s2">: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;best = </span><span class="si">{</span><span class="n">progress</span><span class="o">.</span><span class="n">best_score</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
-    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization_async</span><span class="p">(</span>
-        <span class="n">eval_func</span><span class="o">=</span><span class="n">fitness</span><span class="p">,</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">particle_swarm_optimization_async</span><span class="p">(</span>
+        <span class="n">eval_func</span><span class="o">=</span><span class="n">rectangle_fitness</span><span class="p">,</span>
         <span class="n">linkage</span><span class="o">=</span><span class="n">linkage</span><span class="p">,</span>
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
-        <span class="n">progress_callback</span><span class="o">=</span><span class="n">on_progress</span><span class="p">,</span>
+        <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
+        <span class="n">n_particles</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">on_progress</span><span class="o">=</span><span class="n">on_progress</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">results</span>
 
 
 <span class="c1"># Run async optimization</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">optimize_with_progress</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Async result: </span><span class="si">{</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The optimization runs in a thread-pool executor, so the event loop stays
+free; <code class="docutils literal notranslate"><span class="pre">on_progress</span></code> receives an <code class="docutils literal notranslate"><span class="pre">OptimizationProgress</span></code> with
+<code class="docutils literal notranslate"><span class="pre">current_iteration</span></code>, <code class="docutils literal notranslate"><span class="pre">total_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">best_score</span></code> and
+<code class="docutils literal notranslate"><span class="pre">is_complete</span></code>.</p>
 </section>
 <section id="troubleshooting">
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
@@ -455,7 +513,7 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 </ul>
 <p><strong>Optimization is too slow:</strong></p>
 <ul class="simple">
-<li><p>Reduce <code class="docutils literal notranslate"><span class="pre">n_particles</span></code> or <code class="docutils literal notranslate"><span class="pre">iters</span></code></p></li>
+<li><p>Reduce <code class="docutils literal notranslate"><span class="pre">n_particles</span></code> or <code class="docutils literal notranslate"><span class="pre">iterations</span></code></p></li>
 <li><p>Use coarser simulation (fewer steps in <code class="docutils literal notranslate"><span class="pre">linkage.step()</span></code>)</p></li>
 <li><p>Consider grid search for low-dimensional problems</p></li>
 </ul>
@@ -464,7 +522,7 @@ Use the <code class="docutils literal notranslate"><span class="pre">&#64;kinema
 <h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>See <a class="reference internal" href="../examples/examples.html"><span class="doc">Example Scripts</span></a> for complete optimization examples</p></li>
-<li><p>Check <a class="reference internal" href="../api/pylinkage.optimization.html#module-pylinkage.optimization" title="pylinkage.optimization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code></a> for API details</p></li>
+<li><p>Check <code class="xref py py-mod docutils literal notranslate"><span class="pre">pylinkage.optimization</span></code> for API details</p></li>
 <li><p>The strider example demonstrates advanced PSO visualization techniques</p></li>
 </ul>
 </section>

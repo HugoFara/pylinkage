@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benchmarks &mdash; pylinkage 1.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6efca38a"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Deprecations" href="deprecations.html" />
+    <link rel="prev" title="Changelog" href="changeloglink.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pylinkage
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readmelink.html">Readme</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changeloglink.html">Changelog</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reproducing-these-numbers">Reproducing these numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solver">Solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pso-throughput">PSO throughput</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#synthesis">Synthesis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#where-path-generation-spends-its-time">Where <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> spends its time</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#what-is-not-benchmarked-here">What is not benchmarked here</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deprecations.html">Deprecations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Packages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">pylinkage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/modules.html">examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Quick Links</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage">Source Code</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://pypi.org/project/pylinkage/">Download on PyPi</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/HugoFara/pylinkage/issues">Get Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_of_conductlink.html">Code of Conduct</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pylinkage</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Benchmarks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/benchmarks.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="benchmarks">
+<h1>Benchmarks<a class="headerlink" href="#benchmarks" title="Link to this heading"></a></h1>
+<p>Reproducible performance figures for pylinkage’s public API.</p>
+<p>Every number here comes from calling the library the way a user would, through
+the documented entry points. Nothing on this page measures a prototype, a
+hypothetical optimisation, or a reimplementation kept only in the benchmark
+suite.</p>
+<section id="reproducing-these-numbers">
+<h2>Reproducing these numbers<a class="headerlink" href="#reproducing-these-numbers" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>benchmarks/run_benchmarks.py
+</pre></div>
+</div>
+<p>The harness prints the tables below as Markdown. Add <code class="docutils literal notranslate"><span class="pre">--json</span> <span class="pre">results.json</span></code> for
+machine-readable output, or <code class="docutils literal notranslate"><span class="pre">--quick</span></code> to check that the harness runs without
+waiting for publication-quality repeat counts.</p>
+<p>Each measurement is the <strong>median of 7 repeats</strong>, with warmup runs discarded so
+that numba’s one-off JIT compilation is not charged to the steady-state figures.
+The <em>spread</em> column is the full range across repeats as a fraction of the
+median, and is reported so you can tell a solid number from a noisy one.</p>
+</section>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
+<p>These figures were collected on a laptop, not dedicated benchmarking hardware.
+Treat the ratios as meaningful and the absolute values as indicative.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pylinkage</p></td>
+<td><p>1.1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>python</p></td>
+<td><p>3.11.14</p></td>
+</tr>
+<tr class="row-even"><td><p>platform</p></td>
+<td><p>Linux-7.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>cpu</p></td>
+<td><p>AMD Ryzen 7 7840U</p></td>
+</tr>
+<tr class="row-even"><td><p>numpy</p></td>
+<td><p>2.4.6</p></td>
+</tr>
+<tr class="row-odd"><td><p>numba</p></td>
+<td><p>0.66.0</p></td>
+</tr>
+<tr class="row-even"><td><p>scipy</p></td>
+<td><p>1.17.1</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="solver">
+<h2>Solver<a class="headerlink" href="#solver" title="Link to this heading"></a></h2>
+<p>Simulating the reference four-bar (two grounds, a crank, and an <code class="docutils literal notranslate"><span class="pre">RRRDyad</span></code>).</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Measurement</p></th>
+<th class="head text-right"><p>Median</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head text-right"><p>Spread</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Linkage.step()</span></code></p></td>
+<td class="text-right"><p>325,718</p></td>
+<td><p>steps/s</p></td>
+<td class="text-right"><p>10.8%</p></td>
+<td><p>pure-Python generator</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Linkage.step_fast()</span></code></p></td>
+<td class="text-right"><p>1,675,768</p></td>
+<td><p>steps/s</p></td>
+<td class="text-right"><p>2.0%</p></td>
+<td><p>numba JIT, compilation excluded by warmup</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> speedup</p></td>
+<td class="text-right"><p>5.1</p></td>
+<td><p>x</p></td>
+<td class="text-right"><p>—</p></td>
+<td><p>ratio of the two medians above</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> is the numba-backed path and is roughly <strong>5x faster</strong> on this
+mechanism. The gap is what makes optimisation practical: an optimiser run spends
+essentially all of its time inside the solver.</p>
+<p>The ratio was 6.4x in earlier releases. It narrowed because <code class="docutils literal notranslate"><span class="pre">step()</span></code> itself got
+about a quarter faster, not because the solver regressed.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">step_fast()</span></code> pays JIT compilation on its first call. That cost is
+excluded here because it is paid once per process, but it is the reason a single
+short simulation may not feel faster than <code class="docutils literal notranslate"><span class="pre">step()</span></code>.</p>
+</section>
+<section id="pso-throughput">
+<h2>PSO throughput<a class="headerlink" href="#pso-throughput" title="Link to this heading"></a></h2>
+<p>Particle swarm optimisation of the same four-bar, with a cheap fitness function,
+so the figure reflects the optimiser and solver rather than the objective.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Measurement</p></th>
+<th class="head text-right"><p>Median</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head text-right"><p>Spread</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">particle_swarm_optimization()</span></code></p></td>
+<td class="text-right"><p>20,117</p></td>
+<td><p>evaluations/s</p></td>
+<td class="text-right"><p>72.3%</p></td>
+<td><p>100 particles x 100 iterations</p></td>
+</tr>
+<tr class="row-odd"><td><p>Full optimisation run</p></td>
+<td class="text-right"><p>0.502</p></td>
+<td><p>s</p></td>
+<td class="text-right"><p>59.1%</p></td>
+<td><p>~10,100 fitness evaluations</p></td>
+</tr>
+</tbody>
+</table>
+<p>Evaluations are counted at the fitness function itself rather than inferred from
+<code class="docutils literal notranslate"><span class="pre">n_particles</span> <span class="pre">*</span> <span class="pre">iterations</span></code>, so the figure stays correct even if the swarm’s
+internal call pattern changes.</p>
+<p>The spread here is much wider than elsewhere – it is the least trustworthy
+number on this page – because a half-second run is dominated by CPU frequency
+scaling. Read the order of magnitude and nothing finer: <strong>on the order of ten
+thousand fitness evaluations per second</strong> on a four-bar, meaning a realistic
+optimisation budget is governed by how expensive <em>your</em> fitness function is.</p>
+</section>
+<section id="synthesis">
+<h2>Synthesis<a class="headerlink" href="#synthesis" title="Link to this heading"></a></h2>
+<p>Classical synthesis entry points, timed end to end.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Measurement</p></th>
+<th class="head text-right"><p>Median</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head text-right"><p>Spread</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">function_generation()</span></code></p></td>
+<td class="text-right"><p>0.07</p></td>
+<td><p>ms</p></td>
+<td class="text-right"><p>72.6%</p></td>
+<td><p>3 angle pairs (Freudenstein); 1 solution</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">path_generation()</span></code></p></td>
+<td class="text-right"><p>677.35</p></td>
+<td><p>ms</p></td>
+<td class="text-right"><p>0.7%</p></td>
+<td><p>4 precision points, <code class="docutils literal notranslate"><span class="pre">max_solutions=10</span></code>; 10 solutions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">motion_generation()</span></code></p></td>
+<td class="text-right"><p>0.66</p></td>
+<td><p>ms</p></td>
+<td class="text-right"><p>3.6%</p></td>
+<td><p>3 poses; 10 solutions</p></td>
+</tr>
+</tbody>
+</table>
+<p>The three differ by four orders of magnitude, and the reason is structural
+rather than incidental:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">function_generation()</span></code></strong> solves Freudenstein’s equation directly. For three
+angle pairs that is a small linear system, hence microseconds.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">motion_generation()</span></code></strong> applies Burmester theory to a fixed set of poses. The
+work is bounded by the number of poses.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">path_generation()</span></code></strong> has no prescribed timing, so coupler orientation at
+each precision point is a free variable. It runs Burmester synthesis once per
+candidate orientation, over a grid that grows exponentially with the number of
+precision points, which is why it costs <strong>hundreds of milliseconds</strong>.</p></li>
+</ul>
+<section id="where-path-generation-spends-its-time">
+<h3>Where <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> spends its time<a class="headerlink" href="#where-path-generation-spends-its-time" title="Link to this heading"></a></h3>
+<p>Cost depends strongly on <em>which</em> points you ask for, not just how many. Both of
+these are four precision points returning ten solutions:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Precision points</p></th>
+<th class="head text-right"><p>Time</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[(0,0),</span> <span class="pre">(1,1),</span> <span class="pre">(2,1),</span> <span class="pre">(3,0)]</span></code> (the README example)</p></td>
+<td class="text-right"><p>164 ms</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[(0,1),</span> <span class="pre">(1,2),</span> <span class="pre">(2,1.5),</span> <span class="pre">(3,0)]</span></code> (benchmarked above)</p></td>
+<td class="text-right"><p>685 ms</p></td>
+</tr>
+</tbody>
+</table>
+<p>Points that admit solutions early are found early, and the search stops. The
+table at the top of this section reports the slower of the two, so treat it as
+an upper bound rather than a typical figure.</p>
+<p>Profiled on the README’s points, the time splits as:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Stage</p></th>
+<th class="head text-right"><p>Share</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Burmester synthesis over the orientation grid</p></td>
+<td class="text-right"><p>87%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Verifying candidates by simulation</p></td>
+<td class="text-right"><p>9%</p></td>
+</tr>
+</tbody>
+</table>
+<p>The search dominates. Verification used to be 67% of the runtime; it now runs
+through the numba solver, which is why it no longer does.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">max_solutions</span></code></strong> (default 10) is the knob that controls the cost, because the
+search stops as soon as it has that many confirmed solutions. Measured on the
+README’s points:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">max_solutions</span></code></p></th>
+<th class="head text-right"><p>Time</p></th>
+<th class="head text-right"><p>Solutions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td class="text-right"><p>87 ms</p></td>
+<td class="text-right"><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td class="text-right"><p>129 ms</p></td>
+<td class="text-right"><p>5</p></td>
+</tr>
+<tr class="row-even"><td><p>10 (default)</p></td>
+<td class="text-right"><p>165 ms</p></td>
+<td class="text-right"><p>10</p></td>
+</tr>
+<tr class="row-odd"><td><p>20</p></td>
+<td class="text-right"><p>550 ms</p></td>
+<td class="text-right"><p>20</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td class="text-right"><p>1108 ms</p></td>
+<td class="text-right"><p>79</p></td>
+</tr>
+</tbody>
+</table>
+<p>If you need <code class="docutils literal notranslate"><span class="pre">path_generation()</span></code> faster — in a loop, or behind an interactive
+control — lower <code class="docutils literal notranslate"><span class="pre">max_solutions</span></code>. Asking for one solution instead of ten is
+roughly half the cost.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Cost grows <strong>exponentially in the number of precision points</strong>, because the
+orientation grid is searched over one free angle per point after the first. Five
+points can take several seconds and still return nothing. Three or four points
+are the practical range, as the docstring’s “best results with 3-5 points”
+implies more gently than the timings warrant.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">n_orientation_samples</span></code> is deprecated in favour of <code class="docutils literal notranslate"><span class="pre">orientation_resolution</span></code>,
+which is the per-axis grid resolution the old argument was silently folded
+into. The grid holds <code class="docutils literal notranslate"><span class="pre">orientation_resolution</span> <span class="pre">**</span> <span class="pre">(n_points</span> <span class="pre">-</span> <span class="pre">1)</span></code> candidates, so
+the exponential above is visible in the signature rather than discovered at
+runtime. The default of 6 is unchanged, and old calls are translated, so no
+result moves. See <a class="reference internal" href="deprecations.html"><span class="std std-doc">Deprecations</span></a>.</p>
+<p>Lowering the resolution is rarely the trade it looks like: a coarser grid
+returns <em>no</em> solutions more often than it returns fewer. On three of six test
+point sets, shrinking it took the result from ten solutions to zero. The dense
+grid earns its cost. Use <code class="docutils literal notranslate"><span class="pre">max_solutions</span></code> to control the time; that one is
+monotone.</p>
+</div>
+</section>
+</section>
+<section id="what-is-not-benchmarked-here">
+<h2>What is not benchmarked here<a class="headerlink" href="#what-is-not-benchmarked-here" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">benchmarks/</span></code> directory also contains <code class="docutils literal notranslate"><span class="pre">benchmark_geometry.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">benchmark_integrated.py</span></code>, and <code class="docutils literal notranslate"><span class="pre">benchmark_optimizations.py</span></code>. Those are
+development explorations — they compare candidate implementations, some of
+which were never shipped — and their output should not be quoted as pylinkage
+performance figures. Only <code class="docutils literal notranslate"><span class="pre">run_benchmarks.py</span></code> and <code class="docutils literal notranslate"><span class="pre">benchmark_solver.py</span></code> measure
+the library as released.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="changeloglink.html" class="btn btn-neutral float-left" title="Changelog" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deprecations.html" class="btn btn-neutral float-right" title="Deprecations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hugo Farajallah.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
