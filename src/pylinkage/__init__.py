@@ -87,6 +87,7 @@ __all__ = [
 ]
 
 import importlib as _importlib
+from typing import TYPE_CHECKING
 
 # --- Eager imports (lightweight, always available) ---
 from . import actuators as actuators
@@ -181,6 +182,25 @@ from .simulation import (
 )
 
 # --- Lazy imports (heavy optional dependencies) ---
+
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from . import optimization, population, solver, symbolic, synthesis, visualizer
+    from .optimization import (
+        collections,
+        generate_bounds,
+        kinematic_maximization,
+        kinematic_minimization,
+        particle_swarm_optimization,
+        trials_and_errors_optimization,
+    )
+    from .population import Ensemble, Member, Population
+    from .visualizer import (
+        plot_kinematic_linkage,
+        plot_static_linkage,
+        show_linkage,
+        swarm_tiled_repr,
+    )
 
 _LAZY_SUBMODULES = {
     "optimization",

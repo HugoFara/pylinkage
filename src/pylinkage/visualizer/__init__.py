@@ -47,8 +47,41 @@ __all__ = [
 ]
 
 import importlib as _importlib
+from typing import TYPE_CHECKING
 
 # Mapping from public name to (module, attribute) within this package.
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from .animated import plot_kinematic_linkage, show_linkage, swarm_tiled_repr
+    from .drawsvg_viz import (
+        plot_linkage_svg,
+        plot_linkage_svg_with_velocity,
+        save_linkage_svg,
+        save_linkage_svg_with_velocity,
+    )
+    from .dxf_export import plot_linkage_dxf, save_linkage_dxf
+    from .kinematics import (
+        animate_kinematics,
+        plot_acceleration_vectors,
+        plot_kinematics_frame,
+        plot_velocity_vectors,
+        show_kinematics,
+    )
+    from .plotly_viz import (
+        animate_linkage_plotly,
+        interactive_linkage_plotly,
+        plot_linkage_plotly,
+        plot_linkage_plotly_with_velocity,
+    )
+    from .pso_plots import (
+        animate_dashboard,
+        animate_parallel_coordinates,
+        dashboard_layout,
+        parallel_coordinates_plot,
+    )
+    from .static import plot_static_linkage
+    from .step_export import JointProfile, LinkProfile, build_linkage_3d, save_linkage_step
+
 _LAZY_ATTRS: dict[str, tuple[str, str]] = {
     # Matplotlib backend
     "plot_kinematic_linkage": (".animated", "plot_kinematic_linkage"),

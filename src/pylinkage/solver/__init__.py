@@ -23,6 +23,8 @@ For direct access to the solver:
     ... )
 """
 
+from typing import TYPE_CHECKING
+
 # Pure numba components (no Python object dependencies). The kernels stay
 # importable from here but are not public: see tests/test_public_api.py.
 from .acceleration import (
@@ -79,6 +81,15 @@ from .velocity import (
 # Conversion functions are loaded lazily to avoid circular imports. They are
 # implemented in pylinkage.bridge (which keeps this package free of Python
 # object dependencies) but this package is their public home.
+if TYPE_CHECKING:
+    # Eager imports for type checkers only; at runtime these load on first access.
+    from ..bridge.solver_conversion import (
+        linkage_to_solver_data,
+        solver_data_to_linkage,
+        update_solver_constraints,
+        update_solver_positions,
+    )
+
 _conversion_attrs = {
     "linkage_to_solver_data",
     "solver_data_to_linkage",
