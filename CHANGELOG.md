@@ -9,6 +9,8 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-09-12
+
 ### Added
 
 - **The documentation's code runs in CI.** `tests/docs` executes every
