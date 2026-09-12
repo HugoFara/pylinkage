@@ -170,6 +170,7 @@ __all__ = [
     "watt_from_lengths",
     "stephenson_from_lengths",
     # Utility functions
+    "crank_angle_limits",
     "grashof_check",
     "is_grashof",
     "is_crank_rocker",
@@ -241,6 +242,7 @@ from .topology_types import (
 # Utility functions
 from .utils import (
     GrashofType,
+    crank_angle_limits,
     grashof_check,
     is_crank_rocker,
     is_grashof,

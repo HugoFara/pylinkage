@@ -6,6 +6,7 @@ import unittest
 from pylinkage.synthesis import (
     FourBarSolution,
     GrashofType,
+    crank_angle_limits,
     grashof_check,
     is_crank_rocker,
     is_grashof,
@@ -88,6 +89,51 @@ class TestIsCrankRocker(unittest.TestCase):
     def test_non_grashof_returns_false(self):
         """Test non-Grashof returns False."""
         self.assertFalse(is_crank_rocker(5, 2, 3, 1))
+
+
+class TestCrankAngleLimits(unittest.TestCase):
+    """Tests for crank_angle_limits helper."""
+
+    def test_full_rotation_returns_none(self):
+        """Crank-rocker, double-crank and change-point cranks rotate fully."""
+        self.assertIsNone(crank_angle_limits(1, 3, 3, 4))
+        self.assertIsNone(crank_angle_limits(2, 2.5, 2, 1))
+        self.assertIsNone(crank_angle_limits(1, 3, 2, 4))
+
+    def test_non_grashof_limits_match_collinear_positions(self):
+        """The bounds are the law-of-cosines angles, pulled in by the margin."""
+        crank, coupler, rocker, ground = 3.0, 1.5, 1.5, 2.0
+        limits = crank_angle_limits(crank, coupler, rocker, ground)
+        self.assertIsNotNone(limits)
+        lo, hi = limits
+
+        def crank_angle_at(span):
+            cos_val = (crank**2 + ground**2 - span**2) / (2 * crank * ground)
+            return math.acos(max(-1.0, min(1.0, cos_val)))
+
+        extended = crank_angle_at(coupler + rocker)
+        folded = crank_angle_at(abs(coupler - rocker))
+        self.assertAlmostEqual(lo, min(extended, folded) + 0.02)
+        self.assertAlmostEqual(hi, max(extended, folded) - 0.02)
+        self.assertLess(lo, hi)
+
+    def test_limits_are_reachable_positions(self):
+        """Inside the range the coupler and rocker can close the loop."""
+        crank, coupler, rocker, ground = 3.0, 1.5, 1.5, 2.0
+        lo, hi = crank_angle_limits(crank, coupler, rocker, ground)
+        for theta in (lo, (lo + hi) / 2, hi):
+            # Distance from crank tip to rocker pivot must lie within
+            # [|coupler - rocker|, coupler + rocker] for the dyad to assemble.
+            tip = (crank * math.cos(theta), crank * math.sin(theta))
+            span = math.dist(tip, (ground, 0.0))
+            self.assertGreaterEqual(span, abs(coupler - rocker))
+            self.assertLessEqual(span, coupler + rocker)
+
+    def test_narrow_range_returns_none(self):
+        """A range that the margin swallows is reported as no range."""
+        # A tiny rocker puts the extended and folded positions within a
+        # few hundredths of a radian of each other, less than the margin.
+        self.assertIsNone(crank_angle_limits(3.0, 1.5, 0.01, 2.0))
 
 
 class TestValidateFourbar(unittest.TestCase):

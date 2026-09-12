@@ -92,14 +92,14 @@ def _linkage_to_mechanism_dict(sol: FourBarSolution, index: int) -> dict[str, An
 
 def _build_response(result: SynthesisResult) -> SynthesisResponse:
     """Build a SynthesisResponse from a SynthesisResult."""
-    from pylinkage.synthesis.conversion import _compute_crank_limits
+    from pylinkage.synthesis import crank_angle_limits
 
     solution_dtos: list[FourBarSolutionDTO] = []
     mechanism_dicts: list[dict[str, Any]] = []
 
     for i, raw_sol in enumerate(result.raw_solutions):
         # Compute arc limits for non-Grashof solutions
-        arc_limits = _compute_crank_limits(
+        arc_limits = crank_angle_limits(
             raw_sol.crank_length,
             raw_sol.coupler_length,
             raw_sol.rocker_length,

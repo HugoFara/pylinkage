@@ -9,7 +9,6 @@ import pytest
 from pylinkage.synthesis._types import FourBarSolution
 from pylinkage.synthesis.conversion import (
     _compute_coupler_point_params,
-    _compute_crank_limits,
     _generic_nbar_to_linkage,
     _point_dist,
     fourbar_from_lengths,
@@ -38,19 +37,6 @@ class TestComputeCouplerPointParams:
         d, a = _compute_coupler_point_params(B, C, P)
         assert d == pytest.approx(1.0)
         assert a == pytest.approx(math.pi / 2)
-
-
-class TestComputeCrankLimits:
-    def test_grashof_crank_rocker_returns_none(self):
-        # Classic grashof 1-2-2-3 (s+l <= p+q)
-        result = _compute_crank_limits(1.0, 2.0, 2.0, 3.0)
-        assert result is None
-
-    def test_non_grashof_returns_limits(self):
-        # Non-Grashof - very long input crank relative to others
-        result = _compute_crank_limits(3.0, 1.5, 1.5, 2.0)
-        # Verify it returns either None or tuple
-        assert result is None or (isinstance(result, tuple) and len(result) == 2)
 
 
 class TestSolutionToLinkageCouplerPoint:
