@@ -55,4 +55,5 @@ def run_script(path: Path, cwd: Path) -> None:
     )
     if result.returncode != 0:
         tail = "\n".join(result.stderr.splitlines()[-40:])
-        pytest.fail(f"{path.relative_to(REPO)} exited {result.returncode}:\n{tail}")
+        shown = path.relative_to(REPO) if path.is_relative_to(REPO) else path.name
+        pytest.fail(f"{shown} exited {result.returncode}:\n{tail}")

@@ -10,6 +10,8 @@ Created on Sat Jun 19, 12:32:37 2021.
 @author: HugoFara
 """
 
+from math import tau
+
 import pylinkage as pl
 from pylinkage.actuators import Crank
 from pylinkage.components import Ground
@@ -23,11 +25,12 @@ def define_linkage() -> Linkage:
     A = Ground(0.0, 0.0, name="A")
     D = Ground(3.0, 0.0, name="D")
 
-    # Driver crank
+    # Driver crank. A whole number of steps per turn (here 20) means the
+    # fitness and the animation sample the very same crank angles.
     crank = Crank(
         anchor=A,
         radius=1.0,
-        angular_velocity=0.31,
+        angular_velocity=tau / 20,
         name="B",
     )
 
@@ -98,7 +101,8 @@ def main() -> None:
     )[0]
     print("Score after particle swarm optimization:", result.score)
 
-    # Visualize the optimized linkage.
+    # Visualize the optimized linkage, from the position it was scored at.
+    my_linkage.set_coords(init_pos)
     my_linkage.set_constraints(list(result.dimensions))
     pl.show_linkage(my_linkage)
 
