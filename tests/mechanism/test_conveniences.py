@@ -137,3 +137,23 @@ class TestIndeterminacy:
     def test_simulation_linkage_fourbar_dof_one(self) -> None:
         linkage = _modern_fourbar()
         assert linkage.indeterminacy() == 1
+
+    def test_slider_crank_dof_one(self) -> None:
+        """The slider is a revolute pair on the rod plus a prismatic pair with the frame."""
+        from pylinkage.mechanism import slider_crank
+
+        assert slider_crank(crank=1.0, rod=3.0).indeterminacy() == 1
+
+    def test_ground_point_and_coupler_point_are_no_pairs(self) -> None:
+        """A joint on a single link joins nothing: a marker on the frame or a coupler point."""
+        from pylinkage.mechanism import GroundJoint, RevoluteJoint
+
+        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
+        assert m.ground is not None
+        m.ground.joints.append(GroundJoint("mark", position=(2.0, -1.0)))
+        coupler = m.get_link("coupler")
+        assert coupler is not None
+        coupler.joints.append(RevoluteJoint("P", position=(2.0, 3.0)))
+        m.joints.extend([m.ground.joints[-1], coupler.joints[-1]])
+        m.rebuild()
+        assert m.indeterminacy() == 1

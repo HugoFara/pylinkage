@@ -604,8 +604,12 @@ class Mechanism:
 
         Returns ``3·(n − 1) − 2·R − P`` where ``n`` is the total number
         of links (including the ground frame), ``R`` counts revolute
-        pairs (``RevoluteJoint`` and ``GroundJoint``) and ``P`` counts
-        prismatic pairs.
+        pairs and ``P`` prismatic pairs. A joint on ``k`` links joins
+        them with ``k − 1`` pairs: a ground joint that only marks a
+        point of the frame, or a coupler point, is no pair at all. A
+        ``PrismaticJoint`` adds the prismatic pair with the frame its
+        slide line stands for, on top of the revolute pairs of its
+        links.
 
         Positive ⇒ unconstrained DOF (a 1-DOF four-bar returns ``1``);
         zero ⇒ statically determinate; negative ⇒ over-constrained.
@@ -615,9 +619,10 @@ class Mechanism:
         prismatic_pairs = 0
         for joint in self.joints:
             if isinstance(joint, PrismaticJoint):
+                revolute_pairs += max(len(joint.links) - 1, 0)
                 prismatic_pairs += 1
             elif isinstance(joint, RevoluteJoint):
-                revolute_pairs += 1
+                revolute_pairs += max(len(joint.links) - 1, 0)
         return 3 * (n - 1) - 2 * revolute_pairs - prismatic_pairs
 
     def get_joint_positions(self) -> list[Coord]:

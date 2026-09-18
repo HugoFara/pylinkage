@@ -24,6 +24,24 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   represent — a guide on a moving link, a double slider, a prismatic node
   without a guide — now raises `NotImplementedError` instead of
   mis-solving.
+- **`from_mechanism` keeps a `PrismaticJoint`'s slide line**, as a
+  hyperedge over the slider and two ground nodes on the line. Ground joints
+  already on the line are reused; otherwise `<id>_rail0` / `<id>_rail1`
+  ground nodes are added at `line_point` and one axis length along. It used
+  to drop the line, so `slider_crank()` → `from_mechanism` → `to_mechanism`
+  failed with "Could not determine solve order". The round trip now
+  reproduces the original simulation and is stable: a second pass adds no
+  node.
+- **`to_mechanism` refuses a prismatic driver node** (a `LinearActuator`)
+  with `NotImplementedError`. It used to build it as a rotary crank without
+  a word; `Mechanism` has no linear driver link yet.
+- **`Mechanism.indeterminacy()` counts pairs, not joints.** A joint on `k`
+  links joins them with `k − 1` pairs, so a ground joint that only marks a
+  point of the frame, or a coupler point, is no pair at all; a
+  `PrismaticJoint` adds the prismatic pair with the frame its slide line
+  stands for. It counted every joint as a pair, reporting −1 for a
+  slider-crank with a spare ground point and −3 for a four-bar with a
+  coupler point and a frame mark. `slider_crank()` reports 1, as before.
 
 ## [1.2.2] - 2026-09-18
 

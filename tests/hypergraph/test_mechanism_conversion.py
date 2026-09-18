@@ -17,6 +17,7 @@ from pylinkage.mechanism import (
     Mechanism,
     PrismaticJoint,
     RevoluteJoint,
+    slider_crank,
 )
 
 
@@ -302,6 +303,77 @@ class TestPrismaticNode:
         hg.nodes["C"].joint_type = JointType.PRISMATIC
         with pytest.raises(NotImplementedError, match="one revolute leg"):
             to_mechanism(hg, dims)
+
+    def test_prismatic_driver_is_refused(self):
+        """A linear actuator has no Mechanism counterpart; say so, don't build a crank."""
+        hg = HypergraphLinkage(name="piston")
+        hg.add_node(Node(id="O", role=NodeRole.GROUND))
+        hg.add_node(Node(id="P", role=NodeRole.DRIVER, joint_type=JointType.PRISMATIC))
+        hg.add_edge(Edge(id="e0", source="O", target="P"))
+        dims = Dimensions(
+            node_positions={"O": (0.0, 0.0), "P": (1.0, 0.0)},
+            driver_angles={"P": DriverAngle(angular_velocity=0.1)},
+        )
+        with pytest.raises(NotImplementedError, match="linear"):
+            to_mechanism(hg, dims)
+
+
+class TestSliderLineRoundTrip:
+    """from_mechanism() keeps a PrismaticJoint's slide line."""
+
+    @staticmethod
+    def _positions_by_id(mech: Mechanism) -> dict[str, tuple[float, float]]:
+        out = {}
+        for j in mech.joints:
+            x, y = j.position
+            assert x is not None and y is not None
+            out[j.id] = (x, y)
+        return out
+
+    def test_line_becomes_hyperedge_over_ground_nodes(self):
+        hg, dims = from_mechanism(slider_crank(crank=1.0, rod=3.0))
+        rails = [h for h in hg.hyperedges.values() if "rod.1" in h.nodes]
+        assert len(rails) == 1
+        line = [n for n in rails[0].nodes if n != "rod.1"]
+        assert len(line) == 2
+        for n in line:
+            assert hg.nodes[n].role == NodeRole.GROUND
+            # Both on the rail: y = 0.
+            assert dims.node_positions[n][1] == pytest.approx(0.0)
+        # The motor ground joint already sits on the rail and is reused;
+        # only one rail node had to be added.
+        assert "crank.motor_ground.O" in line
+        assert [n for n in line if n.endswith("_rail1")]
+
+    def test_no_synthetic_node_when_two_ground_joints_lie_on_the_line(self):
+        hg, dims = _make_slider_crank_hypergraph()
+        mech = to_mechanism(hg, dims)
+        hg2, _ = from_mechanism(mech)
+        assert set(hg2.nodes) == {"A", "D", "B", "S"}
+        assert [set(h.nodes) for h in hg2.hyperedges.values()] == [{"A", "D", "S"}]
+
+    @pytest.mark.parametrize(
+        "through, direction",
+        [((0.0, 0.0), (1.0, 0.0)), ((0.5, 0.5), (1.0, 1.0)), ((2.0, -1.0), (0.0, 1.0))],
+    )
+    def test_round_trip_reproduces_simulation(self, through, direction):
+        original = slider_crank(
+            crank=1.0, rod=3.0, slide_through=through, slide_direction=direction
+        )
+        hg, dims = from_mechanism(original)
+        rebuilt = to_mechanism(hg, dims)
+        assert isinstance(rebuilt.get_joint("rod.1"), PrismaticJoint)
+        for _ in zip(original.step(iterations=40), rebuilt.step(iterations=40), strict=True):
+            got = self._positions_by_id(rebuilt)
+            for jid, pos in self._positions_by_id(original).items():
+                assert got[jid] == pytest.approx(pos)
+
+    def test_second_round_trip_adds_nothing(self):
+        """Rail nodes added once are reused, not stacked up."""
+        hg, dims = from_mechanism(slider_crank(crank=1.0, rod=3.0))
+        hg2, _ = from_mechanism(to_mechanism(hg, dims))
+        assert set(hg2.nodes) == set(hg.nodes)
+        assert len(hg2.hyperedges) == 1
 
 
 class TestFromMechanism:
