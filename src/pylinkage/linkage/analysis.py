@@ -21,7 +21,10 @@ def kinematic_default_test(
     """Standard run for any linkage before a complete fitness evaluation.
 
     This decorator makes a kinematic simulation, before passing the loci to the
-    decorated function.
+    decorated function: one complete cycle of the linkage from its initial
+    position, at the stride ``step()`` uses (``dt=1``), with at least 96
+    frames. An evaluation therefore costs ``linkage.get_rotation_period()``
+    steps, the least common multiple of the actuators' periods.
 
     Args:
         func: Fitness function to be decorated.
@@ -49,14 +52,14 @@ def kinematic_default_test(
             linkage.set_coords(init_pos)
         linkage.set_constraints(params)
         try:
-            points = 12
+            # One complete cycle, and at least 96 frames of it, at the
+            # natural stride: dt=1 is what ``step()`` and the visualizers
+            # use, and which assembly branch the solver follows past a
+            # toggle position depends on the stride. No quick sweep in
+            # long strides beforehand: it would leave the actuators
+            # elsewhere in their cycle, and there is no way to rewind them.
             n = linkage.get_rotation_period()
-            # Complete revolution with 12 points
-            tuple(tuple(i) for i in linkage.step(iterations=points + 1, dt=n / points))
-            # Again with n points, and at least 12 iterations
-            n = 96
-            factor = int(points / n) + 1
-            loci = tuple(tuple(i) for i in linkage.step(iterations=n * factor, dt=1 / factor))
+            loci = tuple(tuple(i) for i in linkage.step(iterations=max(96, n)))
         except UnbuildableError:
             return error_penalty
         else:

@@ -11,6 +11,30 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **`kinematic_minimization` / `kinematic_maximization` score the linkage the
+  caller will simulate.** The wrapper first swept one revolution in 12 long
+  strides to reject the unbuildable early, then recorded the loci in a fine
+  run — which started from wherever the sweep had left the linkage. A long
+  stride can hop over a position the linkage cannot take, or onto the other
+  assembly branch past a toggle, so the score certified a mechanism that
+  raised `UnbuildableError` as soon as it was stepped from its initial
+  position; `docs/examples/fourbar_linkage.py` did so on about half its
+  runs. The sweep is gone: an `ArcCrank`, a `LinearActuator` or a
+  `Mechanism` driver keeps its phase as internal state that `set_coords`
+  cannot rewind, so the recorded run has to be the first thing that moves.
+  It now covers a complete cycle: it was 96 steps at `dt=1` since 2021
+  whatever the crank speed, a quarter turn for the default crank of one
+  degree per step, so a fitness read the locus of a quarter of the cycle.
+  It keeps `dt=1`, the stride `step()` and the visualizers use, because
+  which branch the solver follows past a toggle depends on the stride. An
+  evaluation therefore costs `get_rotation_period()` steps (at least 96):
+  360 for the default crank, and the least common multiple of the periods
+  when several actuators drive the linkage.
+- The four-bar example's crank turns in a whole number of steps, so the
+  animation samples the crank angles the fitness scored, and the example
+  puts the linkage back in its initial position before animating the
+  optimum, the position every particle was scored from.
+
 - **A slider-crank survives `Linkage.to_hypergraph()` → `to_mechanism()`**
   (#56). `from_sim_linkage` now tags the output node of an `RRPDyad` or
   `PPDyad` as `JointType.PRISMATIC`, so `compute_mobility` counts it as a
