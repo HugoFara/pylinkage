@@ -387,15 +387,17 @@ def multi_objective_optimization(
     else:
         raise OptimizationError(f"Unknown algorithm: {algorithm}. Use 'nsga2' or 'nsga3'.")
 
-    # Run optimization
+    # Run optimization. Infeasible candidates score +inf by design, and
+    # pymoo's crowding distance then computes inf - inf: expected, not a bug.
     try:
-        result = minimize(
-            problem.problem,
-            algo,
-            ("n_gen", n_generations),
-            seed=seed,
-            verbose=verbose,
-        )
+        with np.errstate(invalid="ignore"):
+            result = minimize(
+                problem.problem,
+                algo,
+                ("n_gen", n_generations),
+                seed=seed,
+                verbose=verbose,
+            )
     finally:
         problem.close()
 

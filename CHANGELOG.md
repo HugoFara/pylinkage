@@ -11,6 +11,34 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **`eliminate_theta()` returns the coupler curve.** It rewrote `cos(theta)`
+  as `sin(theta + pi/2)` before substituting `cos(theta)` — so nothing was
+  substituted, the Groebner basis was computed over the wrong generators,
+  and for a four-bar the function returned an expression still in `theta`
+  (which `docs/notebooks/05_symbolic_coupler_curve.ipynb` printed as a
+  "degree 0" curve). The rewrite is gone; every square root of the
+  parametrization becomes an unknown `r` with the constraint `r**2 = R`, so
+  the system is polynomial; floats are read as the rationals they stand for
+  (to 1e-10) so the basis is exact; and `cos(2*theta)` and the like are
+  expanded first. The rocker tip of a four-bar now gives its circle in well
+  under a second. Symbolic link lengths and a point built on a second dyad
+  (a root inside a root) remain slow, as the docstring says.
+
+- **The scipy and pymoo optimizers no longer print
+  `RuntimeWarning: invalid value encountered in subtract`.** Every wrapper
+  scores a candidate that cannot be built as `+inf` on purpose, and the
+  third-party code then subtracts one infinity from another — scipy's
+  finite differences in `dual_annealing_optimization`, the final polish of
+  `differential_evolution_optimization` and any gradient method given to
+  `minimize_linkage`; pymoo's crowding distance in
+  `multi_objective_optimization` and `co_optimize`. The wrappers now run the
+  third-party optimizer under `numpy.errstate(invalid="ignore")`, so the
+  expected `inf - inf` is silent. A warning printed during a run also names
+  the file that raised it, which is how the private path of the machine that
+  executed three tutorial notebooks ended up committed with their outputs;
+  the notebooks are re-executed, and a test now refuses a notebook whose
+  outputs name a home directory.
+
 - **Putting a linkage back in a position puts its actuators back too.** An
   `ArcCrank` kept its angle and sweep direction, a `LinearActuator` its
   extension and direction, and a `Mechanism` `DriverLink` / `ArcDriverLink`
