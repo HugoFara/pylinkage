@@ -117,6 +117,22 @@ def cyl_to_cart(
     return (radius * math.cos(theta) + ori_x, radius * math.sin(theta) + ori_y)
 
 
+def _angle_within_arc(angle: float, arc_start: float, arc_end: float) -> float:
+    """Return ``angle`` (mod 2π) as the value in ``[arc_start, arc_end]``.
+
+    Angles are the same direction 2π apart, and an arc such as
+    ``[0, 3π/2]`` reaches past the ``(-π, π]`` range of ``atan2``. When
+    no representative of the direction lies on the arc, the nearer end
+    is returned.
+    """
+    shifted = arc_start + (angle - arc_start) % math.tau
+    if shifted <= arc_end:
+        return shifted
+    past_end = shifted - arc_end
+    before_start = math.tau - (shifted - arc_start)
+    return arc_end if past_end <= before_start else arc_start
+
+
 def line_from_points(
     first_x: float,
     first_y: float,

@@ -56,8 +56,8 @@ def kinematic_default_test(
             # natural stride: dt=1 is what ``step()`` and the visualizers
             # use, and which assembly branch the solver follows past a
             # toggle position depends on the stride. No quick sweep in
-            # long strides beforehand: it would leave the actuators
-            # elsewhere in their cycle, and there is no way to rewind them.
+            # long strides beforehand: a full cycle rejects the unbuildable
+            # just as surely, and this run is then the one the caller gets.
             n = linkage.get_rotation_period()
             loci = tuple(tuple(i) for i in linkage.step(iterations=max(96, n)))
         except UnbuildableError:

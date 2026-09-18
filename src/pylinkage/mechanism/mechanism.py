@@ -634,9 +634,11 @@ class Mechanism:
         return positions
 
     def set_joint_positions(self, positions: list[Coord]) -> None:
-        """Set positions of all joints."""
+        """Set positions of all joints, and read the drivers' angles from them."""
         for joint, pos in zip(self.joints, positions, strict=False):
             joint.set_coord(pos[0], pos[1])
+        for driver in self._driver_links:
+            driver.read_angle()
 
     # ------------------------------------------------------------------
     # Analysis bound methods — thin shims over pylinkage.linkage.*

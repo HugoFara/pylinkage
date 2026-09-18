@@ -117,6 +117,28 @@ class TestLinearActuator:
         assert actuator.x == pytest.approx(0.0)
         assert actuator.y == pytest.approx(0.0)
 
+    def test_set_coord_reads_extension_and_restarts_extending(self):
+        """Placing the output puts the actuator in the state its position describes."""
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=math.pi / 2, stroke=2.0, speed=0.5)
+        for _ in range(7):  # past the end of the stroke and back: retracting
+            actuator.reload()
+        assert actuator._direction == -1.0
+
+        actuator.set_coord(0.0, 1.5)
+        assert actuator.extension == pytest.approx(1.5)
+        assert actuator._direction == 1.0
+        actuator.reload()
+        assert actuator.extension == pytest.approx(2.0)
+
+    def test_set_coord_holds_extension_within_stroke(self):
+        origin = Ground(0.0, 0.0)
+        actuator = LinearActuator(anchor=origin, angle=0.0, stroke=2.0, speed=0.1)
+        actuator.set_coord(5.0, 0.3)  # off the axis and past the stroke
+        assert actuator.extension == pytest.approx(2.0)
+        actuator.set_coord(-1.0, 0.0)
+        assert actuator.extension == pytest.approx(0.0)
+
     def test_linear_actuator_with_angle(self):
         """Test creating a linear actuator with non-zero angle."""
         origin = Ground(0.0, 0.0)
@@ -590,6 +612,33 @@ class TestArcCrank:
         # Initial position at arc_start (angle 0) should be (2, 0)
         assert arc_crank.x == pytest.approx(2.0)
         assert arc_crank.y == pytest.approx(0.0)
+
+    def test_set_coord_reads_angle_and_restarts_forward(self):
+        """Placing the output puts the crank in the state its position describes."""
+        origin = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=origin, radius=2.0, angular_velocity=0.5, arc_start=0.0, arc_end=math.pi / 2
+        )
+        for _ in range(5):  # past the end of the arc and back: sweeping backwards
+            arc_crank.reload()
+        assert arc_crank._direction == -1.0
+
+        arc_crank.set_coord(2 * math.cos(1.0), 2 * math.sin(1.0))
+        assert arc_crank.angle == pytest.approx(1.0)
+        assert arc_crank._direction == 1.0
+        arc_crank.reload()
+        assert arc_crank.angle == pytest.approx(1.5)
+
+    def test_set_coord_brings_angle_onto_the_arc(self):
+        """An arc past the range of atan2 still reads the right angle."""
+        origin = Ground(0.0, 0.0)
+        arc_crank = ArcCrank(
+            anchor=origin, radius=1.0, angular_velocity=0.1, arc_start=0.0, arc_end=3 * math.pi / 2
+        )
+        arc_crank.set_coord(math.cos(4.0), math.sin(4.0))  # atan2 says 4 − 2π
+        assert arc_crank.angle == pytest.approx(4.0)
+        arc_crank.set_coord(math.cos(5.0), math.sin(5.0))  # off the arc: nearer end
+        assert arc_crank.angle == pytest.approx(3 * math.pi / 2)
 
     def test_arc_crank_with_initial_angle(self):
         """Test creating an arc crank with custom initial angle."""

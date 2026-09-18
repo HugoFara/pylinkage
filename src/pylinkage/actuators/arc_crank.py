@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 
 from ..components import ConnectedComponent, Ground, _AnchorProxy
+from ..geometry.core import _angle_within_arc
 from .crank import DEFAULT_ANGULAR_VELOCITY
 
 
@@ -180,6 +181,23 @@ class ArcCrank(ConnectedComponent):
             # Clamp current angle if needed
             if self._angle > arc_end:
                 self._angle = arc_end
+
+    def set_coord(self, x: float | None, y: float | None) -> None:
+        """Place the output, and read the crank angle from where it lands.
+
+        The angle is the direction from the anchor to ``(x, y)``, brought
+        onto the arc; the sweep restarts in the positive direction, as it
+        does on a new crank. Like a :class:`Crank`, the arc crank is then
+        entirely in the state its coordinates describe, so putting a
+        linkage back in a position puts its actuators back too.
+        """
+        super().set_coord(x, y)
+        if x is None or y is None or self.anchor.x is None or self.anchor.y is None:
+            return
+        self._angle = _angle_within_arc(
+            math.atan2(y - self.anchor.y, x - self.anchor.x), self.arc_start, self.arc_end
+        )
+        self._direction = 1.0
 
     def reload(self, dt: float = 1) -> None:
         """Advance the arc crank by one step.

@@ -11,6 +11,23 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Fixed
 
+- **Putting a linkage back in a position puts its actuators back too.** An
+  `ArcCrank` kept its angle and sweep direction, a `LinearActuator` its
+  extension and direction, and a `Mechanism` `DriverLink` / `ArcDriverLink`
+  its `current_angle`, as internal state that `set_coords()` left alone —
+  only a `Crank` reads its angle from its coordinates. So the second
+  evaluation of a candidate by `kinematic_minimization`, a sensitivity
+  analysis or a `simulation()` context started with the actuator wherever
+  the previous run had stopped it, and two evaluations of the same
+  candidate returned different loci. `ArcCrank.set_coord()` and
+  `LinearActuator.set_coord()` now read the angle or the extension from the
+  position they are given (brought onto the arc or within the stroke) and
+  restart the sweep in the positive direction, as a new actuator does;
+  `Mechanism.set_joint_positions()` — hence `set_coords()`, `rebuild()` and
+  `set_completely()` — calls the new `DriverLink.read_angle()` /
+  `ArcDriverLink.read_angle()`, which do the same from the motor and output
+  joints.
+
 - **`kinematic_minimization` / `kinematic_maximization` score the linkage the
   caller will simulate.** The wrapper first swept one revolution in 12 long
   strides to reject the unbuildable early, then recorded the loci in a fine
@@ -19,9 +36,7 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
   assembly branch past a toggle, so the score certified a mechanism that
   raised `UnbuildableError` as soon as it was stepped from its initial
   position; `docs/examples/fourbar_linkage.py` did so on about half its
-  runs. The sweep is gone: an `ArcCrank`, a `LinearActuator` or a
-  `Mechanism` driver keeps its phase as internal state that `set_coords`
-  cannot rewind, so the recorded run has to be the first thing that moves.
+  runs. The sweep is gone; the recorded run is the first thing that moves.
   It now covers a complete cycle: it was 96 steps at `dt=1` since 2021
   whatever the crank speed, a quarter turn for the default crank of one
   degree per step, so a fitness read the locus of a quarter of the cycle.
