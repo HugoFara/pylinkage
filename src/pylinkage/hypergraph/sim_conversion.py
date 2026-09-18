@@ -19,10 +19,12 @@ co-optimization actually emit are handled:
 - ``RRRDyad`` → two edges (one per distance constraint)
 - ``FixedDyad`` → a hyperedge over the rigid triangle plus two edges
   carrying the two leg distances as numeric fallbacks
-- ``RRPDyad`` → one edge for the revolute leg; the prismatic track is
-  encoded as a hyperedge over the three line/anchor nodes
-- ``PPDyad`` → a hyperedge over the four line anchors (no numeric
-  distances — it is fully determined by the four line anchors)
+- ``RRPDyad`` → a ``JointType.PRISMATIC`` node; one edge for the
+  revolute leg, and the slide line encoded as a hyperedge over the
+  two line anchors and the slider itself
+- ``PPDyad`` → a ``JointType.PRISMATIC`` node in a hyperedge over the
+  four line anchors (no numeric distances — it is fully determined by
+  the four line anchors)
 
 Anything else raises :class:`NotImplementedError` so callers know to
 extend the bridge when pylinkage grows new component types.
@@ -94,6 +96,11 @@ def from_sim_linkage(sim_linkage: SimLinkage) -> tuple[HypergraphLinkage, Dimens
             joint_type = JointType.REVOLUTE
         elif isinstance(comp, LinearActuator):
             role = NodeRole.DRIVER
+            joint_type = JointType.PRISMATIC
+        elif isinstance(comp, (RRPDyad, PPDyad)):
+            # The dyad's own output is the slider: it is a prismatic
+            # pair with the line its hyperedge describes.
+            role = NodeRole.DRIVEN
             joint_type = JointType.PRISMATIC
         else:
             role = NodeRole.DRIVEN

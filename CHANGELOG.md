@@ -9,6 +9,22 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+### Fixed
+
+- **A slider-crank survives `Linkage.to_hypergraph()` → `to_mechanism()`**
+  (#56). `from_sim_linkage` now tags the output node of an `RRPDyad` or
+  `PPDyad` as `JointType.PRISMATIC`, so `compute_mobility` counts it as a
+  slider block (a slider-crank reports 1 DOF instead of 0). `to_mechanism`
+  builds such a node as a `PrismaticJoint` whose `axis` and `line_point`
+  come from the two other nodes of its guide hyperedge, with a single link
+  to its revolute anchor; the round trip now reproduces `Linkage.step()`.
+  It used to build every driven node from its first two solved neighbours
+  as an RRR dyad, which pinned the slider to a ground node at its initial
+  distance and jammed as soon as the crank turned. What `Mechanism` cannot
+  represent — a guide on a moving link, a double slider, a prismatic node
+  without a guide — now raises `NotImplementedError` instead of
+  mis-solving.
+
 ## [1.2.2] - 2026-09-18
 
 ### Fixed
