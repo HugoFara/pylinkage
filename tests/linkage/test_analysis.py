@@ -14,7 +14,7 @@ import math
 import numpy as np
 import pytest
 
-from pylinkage.actuators import Crank
+from pylinkage.actuators import ArcCrank, Crank
 from pylinkage.components import Ground
 from pylinkage.dyads import RRRDyad
 from pylinkage.linkage.analysis import (
@@ -302,11 +302,26 @@ def test_kinematic_default_test_penalty_from_step_failure():
     assert penalty_raised["count"] == 1
 
 
-def test_kinematic_default_test_loci_start_from_the_initial_position():
-    """The recorded run restarts where the caller will simulate from.
+def _make_arc_fourbar() -> Linkage:
+    """Like ``_make_fourbar`` with an ``ArcCrank``, whose phase is internal state."""
+    o1 = Ground(0.0, 0.0, name="O1")
+    o2 = Ground(3.0, 0.0, name="O2")
+    crank = ArcCrank(
+        anchor=o1, radius=1.0, arc_start=0.0, arc_end=math.pi, angular_velocity=0.1, name="crank"
+    )
+    rocker = RRRDyad(
+        anchor1=crank.output, anchor2=o2, distance1=2.5, distance2=2.0, name="rocker"
+    )
+    return Linkage([o1, o2, crank, rocker], name="ArcFourBar")
 
-    The 12-stride sweep that precedes it leaves the joints elsewhere;
-    the first recorded frame must be the first step from ``init_pos``.
+
+@pytest.mark.parametrize("make", [_make_fourbar, _make_arc_fourbar])
+def test_kinematic_default_test_loci_start_from_the_initial_position(make):
+    """The recorded run is the one the caller gets from ``init_pos``.
+
+    Its first frame is the first step of a fresh linkage. An
+    ``ArcCrank`` keeps its phase as internal state that ``set_coords``
+    cannot rewind, so no sweep may run before the recorded one.
     """
     seen = {}
 
@@ -314,14 +329,11 @@ def test_kinematic_default_test_loci_start_from_the_initial_position():
         seen["loci"] = loci
         return 0.0
 
-    lk = _make_fourbar()
+    lk = make()
     params = list(lk.get_constraints())
-    init_pos = lk.get_coords()
-    kinematic_default_test(fitness, error_penalty=float("inf"))(lk, params, init_pos)
+    kinematic_default_test(fitness, error_penalty=float("inf"))(lk, params, lk.get_coords())
 
-    lk.set_coords(init_pos)
-    lk.set_constraints(params)
-    first_step = tuple(tuple(p) for p in lk.step(iterations=1))[0]
+    first_step = tuple(tuple(p) for p in make().step(iterations=1))[0]
     assert np.allclose(np.array(seen["loci"][0], dtype=float), np.array(first_step, dtype=float))
 
 
