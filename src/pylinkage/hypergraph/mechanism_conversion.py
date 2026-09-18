@@ -25,11 +25,54 @@ if TYPE_CHECKING:
     from ..mechanism import Mechanism
 
 
+def _slider_anchor_and_line(
+    hypergraph: HypergraphLinkage, node_id: NodeId
+) -> tuple[NodeId, tuple[NodeId, NodeId]]:
+    """Return the revolute anchor and the two line nodes of a slider node.
+
+    Reads the ``RRPDyad`` encoding of :func:`from_sim_linkage`: one edge
+    to the revolute anchor, one hyperedge over the slider and the two
+    nodes that define its slide line.
+
+    Raises:
+        NotImplementedError: If the node is not a slider on a fixed line.
+    """
+    edges = hypergraph.get_edges_for_node(node_id)
+    hyperedges = hypergraph.get_hyperedges_for_node(node_id)
+    what = f"Prismatic node {node_id!r}"
+    if len(edges) != 1:
+        raise NotImplementedError(
+            f"{what} has {len(edges)} edges; Mechanism only represents a slider "
+            "with one revolute leg on a fixed line (an RRP dyad), not a "
+            "double slider or a slider pinned to several links."
+        )
+    if len(hyperedges) != 1 or len(hyperedges[0].nodes) != 3:
+        raise NotImplementedError(
+            f"{what} needs exactly one hyperedge of three nodes to define its "
+            f"slide line, found {[list(h.nodes) for h in hyperedges]}."
+        )
+    line_ids = tuple(n for n in hyperedges[0].nodes if n != node_id)
+    moving = [n for n in line_ids if hypergraph.nodes[n].role != NodeRole.GROUND]
+    if moving:
+        raise NotImplementedError(
+            f"{what} slides on a line through {moving}, which is not ground; "
+            "Mechanism only represents a slide line fixed to the frame."
+        )
+    return edges[0].other_node(node_id), (line_ids[0], line_ids[1])
+
+
 def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mechanism:
     """Convert a HypergraphLinkage and Dimensions to a Mechanism.
 
     This converts the hypergraph topology plus dimensional data to the
     mechanism model. This is the preferred conversion path for new code.
+
+    A driven ``JointType.PRISMATIC`` node is a slider: it needs one
+    edge, to the revolute anchor it is linked to, and one hyperedge of
+    three nodes whose two other nodes lie on the slide line, which is
+    how :func:`from_sim_linkage` encodes an ``RRPDyad``. The mechanism
+    keeps the line as the :class:`~pylinkage.mechanism.PrismaticJoint`'s
+    ``axis`` and ``line_point``, so the two line nodes must be ground.
 
     Args:
         hypergraph: The HypergraphLinkage defining the topology.
@@ -41,6 +84,11 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
     Raises:
         ValueError: If the hypergraph is underconstrained or has
             disconnected components that cannot be solved.
+        NotImplementedError: If a prismatic node is not a slider on a
+            fixed line (its guide is a moving link, it has no revolute
+            leg or several, or it is a ``PPDyad``-style double slider),
+            which :class:`~pylinkage.mechanism.Mechanism` cannot
+            represent yet.
 
     Example:
         >>> hg = HypergraphLinkage(name="Four-bar")
@@ -159,49 +207,68 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
             break
 
         for node_id, node in list(remaining.items()):
-            neighbors = simple.neighbors(node_id)
-            parent_ids = [n for n in neighbors if n in solved_nodes]
+            pos = dimensions.get_node_position(node_id)
+            x = pos[0] if pos else 0.0
+            y = pos[1] if pos else 0.0
 
-            # Need at least 2 solved parents for a driven joint
-            if len(parent_ids) >= 2:
-                pos = dimensions.get_node_position(node_id)
-                x = pos[0] if pos else 0.0
-                y = pos[1] if pos else 0.0
+            created_joint: Joint
 
-                created_joint: Joint
-
-                if node.joint_type == JointType.PRISMATIC:
-                    # Prismatic joint - needs circle center + line
-                    created_joint = PrismaticJoint(
-                        id=node_id,
-                        position=(x, y),
-                        name=node.name,
+            if node.joint_type == JointType.PRISMATIC:
+                # A slider: one link to its revolute anchor, and the
+                # slide line taken from its guide hyperedge.
+                anchor_id, line_ids = _slider_anchor_and_line(hypergraph, node_id)
+                if anchor_id not in solved_nodes:
+                    continue
+                line_start = dimensions.get_node_position(line_ids[0])
+                line_end = dimensions.get_node_position(line_ids[1])
+                if line_start is None or line_end is None:
+                    raise ValueError(
+                        f"Prismatic node {node_id!r} slides on the line through "
+                        f"{line_ids[0]!r} and {line_ids[1]!r}, which need positions."
                     )
-                else:
-                    # Revolute joint (most common)
-                    created_joint = RevoluteJoint(
-                        id=node_id,
-                        position=(x, y),
-                        name=node.name,
+                axis = (line_end[0] - line_start[0], line_end[1] - line_start[1])
+                if math.hypot(*axis) < 1e-12:
+                    raise ValueError(
+                        f"Prismatic node {node_id!r}: line nodes {line_ids[0]!r} and "
+                        f"{line_ids[1]!r} coincide, so they define no slide line."
                     )
+                created_joint = PrismaticJoint(
+                    id=node_id,
+                    position=(x, y),
+                    name=node.name,
+                    axis=axis,
+                    line_point=(line_start[0], line_start[1]),
+                )
+                parent_ids = [anchor_id]
+            else:
+                neighbors = simple.neighbors(node_id)
+                parent_ids = [n for n in neighbors if n in solved_nodes][:2]
+                # Need 2 solved parents for a revolute joint
+                if len(parent_ids) < 2:
+                    continue
+                created_joint = RevoluteJoint(
+                    id=node_id,
+                    position=(x, y),
+                    name=node.name,
+                )
 
-                joints.append(created_joint)
-                node_to_joint[node_id] = created_joint
+            joints.append(created_joint)
+            node_to_joint[node_id] = created_joint
 
-                # Create links to parent joints
-                for i, parent_id in enumerate(parent_ids[:2]):
-                    parent_joint = node_to_joint[parent_id]
+            # Create links to parent joints
+            for i, parent_id in enumerate(parent_ids):
+                parent_joint = node_to_joint[parent_id]
 
-                    link = Link(
-                        id=f"{node_id}_link{i}",
-                        joints=[parent_joint, created_joint],
-                        name=f"{node_id}_link{i}",
-                    )
-                    links.append(link)
+                link = Link(
+                    id=f"{node_id}_link{i}",
+                    joints=[parent_joint, created_joint],
+                    name=f"{node_id}_link{i}",
+                )
+                links.append(link)
 
-                solved_nodes.add(node_id)
-                del remaining[node_id]
-                break
+            solved_nodes.add(node_id)
+            del remaining[node_id]
+            break
 
     if remaining:
         raise ValueError(

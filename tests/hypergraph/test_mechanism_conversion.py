@@ -4,7 +4,7 @@ import math
 
 import pytest
 
-from pylinkage._types import NodeRole
+from pylinkage._types import JointType, NodeRole
 from pylinkage.dimensions import Dimensions, DriverAngle
 from pylinkage.hypergraph.core import Edge, Hyperedge, Node
 from pylinkage.hypergraph.graph import HypergraphLinkage
@@ -15,6 +15,7 @@ from pylinkage.mechanism import (
     GroundLink,
     Link,
     Mechanism,
+    PrismaticJoint,
     RevoluteJoint,
 )
 
@@ -182,6 +183,125 @@ class TestToMechanism:
         pos = {j.id: j.position for j in mech.joints}
         assert math.dist(pos["B"], pos["P"]) == pytest.approx(math.dist(b, p))
         assert math.dist(pos["C"], pos["P"]) == pytest.approx(math.dist(c, p))
+
+
+def _make_slider_crank_hypergraph() -> tuple[HypergraphLinkage, Dimensions]:
+    """A slider-crank as ``from_sim_linkage`` encodes it.
+
+    The slider ``S`` has one edge to the crank tip ``B`` and rides the
+    line through the ground nodes ``A`` and ``D``, written as the
+    hyperedge ``(A, D, S)``.
+    """
+    hg = HypergraphLinkage(name="Slider-crank")
+    hg.add_node(Node(id="A", role=NodeRole.GROUND, name="A"))
+    hg.add_node(Node(id="D", role=NodeRole.GROUND, name="D"))
+    hg.add_node(Node(id="B", role=NodeRole.DRIVER, name="B"))
+    hg.add_node(Node(id="S", role=NodeRole.DRIVEN, joint_type=JointType.PRISMATIC, name="S"))
+    hg.add_edge(Edge(id="e0", source="A", target="B"))
+    hg.add_edge(Edge(id="e1", source="B", target="S"))
+    hg.add_hyperedge(Hyperedge("he2", ("A", "D", "S")))
+    dims = Dimensions(
+        node_positions={
+            "A": (0.0, 0.0),
+            "D": (3.0, 0.0),
+            "B": (1.0, 0.0),
+            "S": (3.2, 0.0),
+        },
+        driver_angles={"B": DriverAngle(angular_velocity=0.2)},
+        edge_distances={"e0": 1.0, "e1": 2.2},
+        name="Slider-crank",
+    )
+    return hg, dims
+
+
+class TestPrismaticNode:
+    """A driven prismatic node becomes a slider on a fixed line (#56)."""
+
+    def test_builds_prismatic_joint_on_the_line(self):
+        hg, dims = _make_slider_crank_hypergraph()
+        mech = to_mechanism(hg, dims)
+        slider = mech.get_joint("S")
+        assert isinstance(slider, PrismaticJoint)
+        assert slider.line_point == (0.0, 0.0)
+        assert slider.get_axis_normalized() == pytest.approx((1.0, 0.0))
+        # One link, to the revolute anchor: the ground nodes are the
+        # line, not links.
+        links = [lk for lk in mech.links if slider in lk.joints]
+        assert [sorted(j.id for j in lk.joints) for lk in links] == [["B", "S"]]
+
+    def test_slider_stays_on_line_and_rod_keeps_length(self):
+        hg, dims = _make_slider_crank_hypergraph()
+        mech = to_mechanism(hg, dims)
+        for _ in mech.step(iterations=50):
+            pos = {j.id: j.position for j in mech.joints}
+            assert pos["S"][1] == pytest.approx(0.0, abs=1e-9)
+            assert math.dist(pos["B"], pos["S"]) == pytest.approx(2.2)
+
+    def test_slanted_line_is_taken_from_its_nodes(self):
+        hg, dims = _make_slider_crank_hypergraph()
+        dims.node_positions["D"] = (0.0, 3.0)
+        # S at x=0 with |BS| = 2.2 from B=(1, 0): y = sqrt(2.2² − 1).
+        dims.node_positions["S"] = (0.0, math.sqrt(2.2**2 - 1.0))
+        mech = to_mechanism(hg, dims)
+        slider = mech.get_joint("S")
+        assert isinstance(slider, PrismaticJoint)
+        assert slider.get_axis_normalized() == pytest.approx((0.0, 1.0))
+        for _ in mech.step(iterations=20):
+            assert slider.position[0] == pytest.approx(0.0, abs=1e-9)
+
+    def test_waits_for_its_anchor(self):
+        """The slider is built after the driven joint it hangs from."""
+        hg, dims = _make_fourbar_hypergraph()
+        hg.add_node(Node(id="S", role=NodeRole.DRIVEN, joint_type=JointType.PRISMATIC))
+        hg.add_edge(Edge(id="e4", source="C", target="S"))
+        hg.add_hyperedge(Hyperedge("rail", ("S", "G1", "G2")))
+        dims.node_positions["S"] = (5.0, 0.0)
+        # Listed before C, and C is only solvable after B.
+        hg.nodes = {k: hg.nodes[k] for k in ("G1", "G2", "B", "S", "C")}
+        mech = to_mechanism(hg, dims)
+        assert isinstance(mech.get_joint("S"), PrismaticJoint)
+        for _ in mech.step(iterations=10):
+            pass
+        pos = {j.id: j.position for j in mech.joints}
+        assert pos["S"][1] == pytest.approx(0.0, abs=1e-9)
+        assert math.dist(pos["C"], pos["S"]) == pytest.approx(math.dist((3.0, 2.0), (5.0, 0.0)))
+
+    def test_moving_guide_is_refused(self):
+        """Mechanism has no slider on a moving link; say so instead of mis-solving."""
+        hg, dims = _make_fourbar_hypergraph()
+        hg.add_node(Node(id="S", role=NodeRole.DRIVEN, joint_type=JointType.PRISMATIC))
+        hg.add_edge(Edge(id="e4", source="G2", target="S"))
+        # Guide along the coupler B–C.
+        hg.add_hyperedge(Hyperedge("guide", ("B", "C", "S")))
+        dims.node_positions["S"] = (1.0, 1.0)
+        with pytest.raises(NotImplementedError, match="not ground"):
+            to_mechanism(hg, dims)
+
+    def test_double_slider_is_refused(self):
+        """A PPDyad-style node (no revolute leg) is not representable."""
+        hg = HypergraphLinkage(name="PP")
+        for nid in "ABCD":
+            hg.add_node(Node(id=nid, role=NodeRole.GROUND))
+        hg.add_node(Node(id="X", role=NodeRole.DRIVEN, joint_type=JointType.PRISMATIC))
+        hg.add_hyperedge(Hyperedge("lines", ("A", "B", "C", "D", "X")))
+        dims = Dimensions(
+            node_positions={
+                "A": (0.0, 0.0),
+                "B": (2.0, 0.0),
+                "C": (1.0, -1.0),
+                "D": (1.0, 1.0),
+                "X": (1.0, 0.0),
+            }
+        )
+        with pytest.raises(NotImplementedError, match="one revolute leg"):
+            to_mechanism(hg, dims)
+
+    def test_prismatic_without_line_is_refused(self):
+        """A prismatic node with two edges and no guide has no slide line."""
+        hg, dims = _make_fourbar_hypergraph()
+        hg.nodes["C"].joint_type = JointType.PRISMATIC
+        with pytest.raises(NotImplementedError, match="one revolute leg"):
+            to_mechanism(hg, dims)
 
 
 class TestFromMechanism:

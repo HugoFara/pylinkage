@@ -13,6 +13,22 @@ from pylinkage.components import Ground
 from pylinkage.dyads import FixedDyad, PPDyad, RRPDyad, RRRDyad
 from pylinkage.hypergraph import from_sim_linkage, to_mechanism
 from pylinkage.simulation import Linkage
+from pylinkage.topology import compute_mobility
+
+
+def _slider_crank() -> Linkage:
+    """The slider-crank of issue #56: the slider ``S`` rides the line ``A``–``D``."""
+    A = Ground(0.0, 0.0, name="A")
+    D = Ground(3.0, 0.0, name="D")
+    crank = Crank(anchor=A, radius=1.0, angular_velocity=0.2, name="B")
+    slider = RRPDyad(
+        revolute_anchor=crank.output,
+        line_anchor1=A,
+        line_anchor2=D,
+        distance=2.2,
+        name="S",
+    )
+    return Linkage([A, D, crank, slider], name="slider-crank")
 
 
 def _fourbar() -> Linkage:
@@ -130,6 +146,28 @@ class TestRRPDyad:
         ternary = [h for h in hg.hyperedges.values() if set(h.nodes) == {"L1", "L2", "S"}]
         assert len(ternary) == 1
 
+    def test_slider_is_prismatic(self) -> None:
+        """The dyad's output node is the slider, a prismatic pair (#56)."""
+        hg, _ = from_sim_linkage(_slider_crank())
+        assert hg.nodes["S"].joint_type.name == "PRISMATIC"
+        assert hg.nodes["S"].role == NodeRole.DRIVEN
+
+    def test_slider_crank_has_one_dof(self) -> None:
+        """A slider block on a ground line leaves the mechanism 1 DOF (#56)."""
+        hg, _ = from_sim_linkage(_slider_crank())
+        assert compute_mobility(hg).dof == 1
+
+    def test_round_trip_via_mechanism_reproduces_simulation(self) -> None:
+        """to_mechanism() rebuilds the slider and follows the SimLinkage (#56)."""
+        sim = _slider_crank()
+        sim.rebuild()
+        hg, dims = from_sim_linkage(sim)
+        mech = to_mechanism(hg, dims)
+
+        expected = [tuple(map(tuple, pos)) for pos in sim.step(iterations=40)]
+        got = list(mech.step(iterations=40))
+        assert np.allclose(np.array(got, dtype=float), np.array(expected, dtype=float))
+
 
 class TestPPDyad:
     def test_creates_5ary_hyperedge(self) -> None:
@@ -150,6 +188,7 @@ class TestPPDyad:
         hyperedges = list(hg.hyperedges.values())
         assert len(hyperedges) == 1
         assert set(hyperedges[0].nodes) == {"A", "B", "C", "D", "X"}
+        assert hg.nodes["X"].joint_type.name == "PRISMATIC"
 
 
 class TestLinearActuatorAndArcCrank:
