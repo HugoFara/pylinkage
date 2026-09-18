@@ -244,4 +244,4 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"

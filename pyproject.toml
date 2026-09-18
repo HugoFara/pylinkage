@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pylinkage"
-version = "1.2.1"
+version = "1.2.2"
 authors = [
     {name = "Hugo Farajallah", email = "contact@hugofara.net"},
 ]
@@ -155,7 +155,7 @@ format = "ruff format ."
 typecheck = "mypy src/pylinkage"
 
 [tool.bumpversion]
-current_version = "1.2.1"
+current_version = "1.2.2"
 commit = true
 tag = true
 tag_name = "v{new_version}"
@@ -174,9 +174,12 @@ replace = '__version__ = "{new_version}"'
 
 # CITATION.cff carries the release version and date. Both were edited by hand
 # before; the DOI below it is the Zenodo concept DOI, which never changes.
+# The search is anchored to the line start so that it does not also match the
+# `cff-version:` line, which is the CFF format version, not ours.
 [[tool.bumpversion.files]]
 filename = "CITATION.cff"
-search = "version: {current_version}"
+regex = true
+search = "^version: {current_version}"
 replace = "version: {new_version}"
 
 [[tool.bumpversion.files]]

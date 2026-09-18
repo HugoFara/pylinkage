@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.mechanism package &mdash; pylinkage 1.2.1 documentation</title>
+  <title>pylinkage.mechanism package &mdash; pylinkage 1.2.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ca842793"></script>
+      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -1433,8 +1433,10 @@ otherwise computes from current positions (for initialization).</p>
 <dt class="sig sig-object py" id="pylinkage.mechanism.link.Link.length">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">length</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pylinkage.mechanism.link.Link.length" title="Link to this definition"></a></dt>
 <dd><p>Return the length of a binary link.</p>
-<p>Only meaningful for binary links (2 joints). Returns the
-Euclidean distance between the two joint positions.</p>
+<p>Only meaningful for binary links (2 joints). Returns the rigid
+distance the solver maintains between the two joints (see
+<a class="reference internal" href="#pylinkage.mechanism.link.Link.get_distance" title="pylinkage.mechanism.link.Link.get_distance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_distance()</span></code></a>): the cached constraint once the mechanism is
+built, the distance between the joint positions before that.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Distance between joints, or None if not a binary link
@@ -1471,6 +1473,28 @@ or if positions are undefined.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The other joint, or None if not a binary link
 or if joint is not in this link.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pylinkage.mechanism.link.Link.set_distance">
+<span class="sig-name descname"><span class="pre">set_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.mechanism.joint.Joint" title="pylinkage.mechanism.joint.Joint"><span class="pre">Joint</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.mechanism.joint.Joint" title="pylinkage.mechanism.joint.Joint"><span class="pre">Joint</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.mechanism.link.Link.set_distance" title="Link to this definition"></a></dt>
+<dd><p>Set the distance constraint between two joints on this link.</p>
+<p>Changes the rigid dimension the solver maintains between the two
+joints; their positions are not moved, the next simulation step
+re-solves them against the new value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joint1</strong> – First joint (must be in this link).</p></li>
+<li><p><strong>joint2</strong> – Second joint (must be in this link).</p></li>
+<li><p><strong>distance</strong> – New distance, must be positive.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If either joint is not part of this link, or if
+    <code class="docutils literal notranslate"><span class="pre">distance</span></code> is not positive.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1708,8 +1732,12 @@ joint positions are left untouched.</p>
 <span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pylinkage.mechanism.mechanism.Mechanism.set_constraints" title="Link to this definition"></a></dt>
 <dd><p>Set distance constraints from a flat list.</p>
 <p>Used for optimization. Applies constraints in the same order
-as <a class="reference internal" href="#pylinkage.mechanism.mechanism.Mechanism.get_constraints" title="pylinkage.mechanism.mechanism.Mechanism.get_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constraints()</span></code></a>. Invalidates any cached SolverData
-so the next <a class="reference internal" href="#pylinkage.mechanism.mechanism.Mechanism.step_fast" title="pylinkage.mechanism.mechanism.Mechanism.step_fast"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step_fast()</span></code></a> recompiles.</p>
+as <a class="reference internal" href="#pylinkage.mechanism.mechanism.Mechanism.get_constraints" title="pylinkage.mechanism.mechanism.Mechanism.get_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constraints()</span></code></a>: the radius of each driver and the
+length of each binary link. The values become the rigid
+dimensions the solver maintains, so the next <a class="reference internal" href="#pylinkage.mechanism.mechanism.Mechanism.step" title="pylinkage.mechanism.mechanism.Mechanism.step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code></a>
+re-solves every joint against them (a driver’s output joint is
+moved right away, keeping its current angle). Invalidates any
+cached SolverData so the next <a class="reference internal" href="#pylinkage.mechanism.mechanism.Mechanism.step_fast" title="pylinkage.mechanism.mechanism.Mechanism.step_fast"><code class="xref py py-meth docutils literal notranslate"><span class="pre">step_fast()</span></code></a> recompiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>values</strong> – List of constraint values to apply.</p>
@@ -2499,8 +2527,10 @@ otherwise computes from current positions (for initialization).</p>
 <dt class="sig sig-object py">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">length</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></dt>
 <dd><p>Return the length of a binary link.</p>
-<p>Only meaningful for binary links (2 joints). Returns the
-Euclidean distance between the two joint positions.</p>
+<p>Only meaningful for binary links (2 joints). Returns the rigid
+distance the solver maintains between the two joints (see
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">get_distance()</span></code>): the cached constraint once the mechanism is
+built, the distance between the joint positions before that.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Distance between joints, or None if not a binary link
@@ -2537,6 +2567,28 @@ or if positions are undefined.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The other joint, or None if not a binary link
 or if joint is not in this link.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.mechanism.joint.Joint" title="pylinkage.mechanism.joint.Joint"><span class="pre">Joint</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">joint2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pylinkage.mechanism.joint.Joint" title="pylinkage.mechanism.joint.Joint"><span class="pre">Joint</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
+<dd><p>Set the distance constraint between two joints on this link.</p>
+<p>Changes the rigid dimension the solver maintains between the two
+joints; their positions are not moved, the next simulation step
+re-solves them against the new value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>joint1</strong> – First joint (must be in this link).</p></li>
+<li><p><strong>joint2</strong> – Second joint (must be in this link).</p></li>
+<li><p><strong>distance</strong> – New distance, must be positive.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If either joint is not part of this link, or if
+    <code class="docutils literal notranslate"><span class="pre">distance</span></code> is not positive.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2760,8 +2812,12 @@ joint positions are left untouched.</p>
 <span class="sig-name descname"><span class="pre">set_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
 <dd><p>Set distance constraints from a flat list.</p>
 <p>Used for optimization. Applies constraints in the same order
-as <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constraints()</span></code>. Invalidates any cached SolverData
-so the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">step_fast()</span></code> recompiles.</p>
+as <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_constraints()</span></code>: the radius of each driver and the
+length of each binary link. The values become the rigid
+dimensions the solver maintains, so the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">step()</span></code>
+re-solves every joint against them (a driver’s output joint is
+moved right away, keeping its current angle). Invalidates any
+cached SolverData so the next <code class="xref py py-meth docutils literal notranslate"><span class="pre">step_fast()</span></code> recompiles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>values</strong> – List of constraint values to apply.</p>
