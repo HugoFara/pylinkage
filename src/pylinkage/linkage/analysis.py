@@ -48,15 +48,21 @@ def kinematic_default_test(
         if init_pos is not None:
             linkage.set_coords(init_pos)
         linkage.set_constraints(params)
+        start = linkage.get_coords()
         try:
             points = 12
             n = linkage.get_rotation_period()
             # Complete revolution with 12 points
             tuple(tuple(i) for i in linkage.step(iterations=points + 1, dt=n / points))
-            # Again with n points, and at least 12 iterations
-            n = 96
-            factor = int(points / n) + 1
-            loci = tuple(tuple(i) for i in linkage.step(iterations=n * factor, dt=1 / factor))
+            # Its long strides may have hopped over a position the linkage
+            # cannot take, or onto the other assembly branch. Score the
+            # fine run from the position the caller will simulate from.
+            linkage.set_coords(start)
+            # Again at the natural stride (dt=1, the one ``step()`` and the
+            # visualizers use: which assembly branch the solver follows past
+            # a toggle position depends on the stride), for at least one
+            # complete revolution and at least 96 points.
+            loci = tuple(tuple(i) for i in linkage.step(iterations=max(96, n)))
         except UnbuildableError:
             return error_penalty
         else:

@@ -300,3 +300,44 @@ def test_kinematic_default_test_penalty_from_step_failure():
     params = list(lk.get_constraints())
     assert wrapped(lk, params) == 7.0
     assert penalty_raised["count"] == 1
+
+
+def test_kinematic_default_test_loci_start_from_the_initial_position():
+    """The recorded run restarts where the caller will simulate from.
+
+    The 12-stride sweep that precedes it leaves the joints elsewhere;
+    the first recorded frame must be the first step from ``init_pos``.
+    """
+    seen = {}
+
+    def fitness(linkage, params, init_pos, loci):
+        seen["loci"] = loci
+        return 0.0
+
+    lk = _make_fourbar()
+    params = list(lk.get_constraints())
+    init_pos = lk.get_coords()
+    kinematic_default_test(fitness, error_penalty=float("inf"))(lk, params, init_pos)
+
+    lk.set_coords(init_pos)
+    lk.set_constraints(params)
+    first_step = tuple(tuple(p) for p in lk.step(iterations=1))[0]
+    assert np.allclose(np.array(seen["loci"][0], dtype=float), np.array(first_step, dtype=float))
+
+
+@pytest.mark.parametrize(
+    "angular_velocity, expected_frames",
+    [(0.1, 96), (math.tau / 360, 360)],
+)
+def test_kinematic_default_test_loci_cover_one_revolution(angular_velocity, expected_frames):
+    """At least one full turn at dt=1, and at least 96 frames of it."""
+    seen = {}
+
+    def fitness(linkage, params, init_pos, loci):
+        seen["loci"] = loci
+        return 0.0
+
+    lk = _make_fourbar()
+    lk.components[2].angular_velocity = angular_velocity
+    kinematic_default_test(fitness, error_penalty=float("inf"))(lk, list(lk.get_constraints()))
+    assert len(seen["loci"]) == expected_frames
