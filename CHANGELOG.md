@@ -9,6 +9,8 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-09-18
+
 ### Fixed
 
 - **`Mechanism.set_constraints()` now changes the mechanism.** Link lengths
