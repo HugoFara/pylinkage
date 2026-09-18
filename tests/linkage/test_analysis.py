@@ -14,7 +14,7 @@ import math
 import numpy as np
 import pytest
 
-from pylinkage.actuators import ArcCrank, Crank
+from pylinkage.actuators import ArcCrank, Crank, LinearActuator
 from pylinkage.components import Ground
 from pylinkage.dyads import RRRDyad
 from pylinkage.linkage.analysis import (
@@ -315,7 +315,41 @@ def _make_arc_fourbar() -> Linkage:
     return Linkage([o1, o2, crank, rocker], name="ArcFourBar")
 
 
-@pytest.mark.parametrize("make", [_make_fourbar, _make_arc_fourbar])
+def _make_linear_fourbar() -> Linkage:
+    """A ``LinearActuator`` drives the rocker; its extension is internal state."""
+    o1 = Ground(0.0, 0.0, name="O1")
+    o2 = Ground(3.0, 0.0, name="O2")
+    piston = LinearActuator(anchor=o1, angle=math.pi / 2, stroke=1.0, speed=0.05, name="piston")
+    rocker = RRRDyad(
+        anchor1=piston.output, anchor2=o2, distance1=2.5, distance2=2.0, name="rocker"
+    )
+    return Linkage([o1, o2, piston, rocker], name="LinearFourBar")
+
+
+@pytest.mark.parametrize("make", [_make_fourbar, _make_arc_fourbar, _make_linear_fourbar])
+def test_kinematic_default_test_is_repeatable(make):
+    """Evaluating the same candidate twice gives the same loci.
+
+    ``init_pos`` puts the actuators back too: an ``ArcCrank`` or a
+    ``LinearActuator`` reads its phase from where it is placed, so the
+    second run does not start where the first one's actuator stopped.
+    """
+    runs = []
+
+    def fitness(linkage, params, init_pos, loci):
+        runs.append(np.array(loci, dtype=float))
+        return 0.0
+
+    lk = make()
+    params = list(lk.get_constraints())
+    init_pos = lk.get_coords()
+    wrapped = kinematic_default_test(fitness, error_penalty=float("inf"))
+    wrapped(lk, params, init_pos)
+    wrapped(lk, params, init_pos)
+    assert np.allclose(runs[0], runs[1])
+
+
+@pytest.mark.parametrize("make", [_make_fourbar, _make_arc_fourbar, _make_linear_fourbar])
 def test_kinematic_default_test_loci_start_from_the_initial_position(make):
     """The recorded run is the one the caller gets from ``init_pos``.
 

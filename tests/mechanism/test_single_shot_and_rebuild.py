@@ -105,3 +105,29 @@ class TestMechanismRebuild:
         m.step_fast(iterations=5)
         assert m._solver_data is not None
         assert m._solver_data is not first
+
+
+class TestSetCoordsReadsDriverAngles:
+    def test_run_repeats_after_set_coords(self) -> None:
+        """Putting the joints back puts the crank's angle back with them."""
+        import numpy as np
+
+        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
+        init = m.get_coords()
+        first = np.array(list(m.step(iterations=40)), dtype=float)
+        m.set_coords(init)
+        again = np.array(list(m.step(iterations=40)), dtype=float)
+        assert np.allclose(first, again)
+
+    def test_rebuild_reads_driver_angle(self) -> None:
+        import math
+
+        m = fourbar(crank=1.0, coupler=3.0, rocker=3.0, ground=4.0)
+        for _ in m.step(iterations=25):
+            pass
+        positions = m.get_coords()
+        tip = m._driver_links[0].output_joint
+        assert tip is not None
+        positions[m.joints.index(tip)] = (math.cos(2.0), math.sin(2.0))
+        m.rebuild(positions)
+        assert m._driver_links[0].current_angle == pytest.approx(2.0)

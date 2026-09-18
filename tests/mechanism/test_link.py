@@ -198,6 +198,18 @@ class TestDriverLinkProperties:
         d = DriverLink("crank", joints=[origin, A], motor_joint=None)
         assert d.radius is None
 
+    def test_read_angle_from_joints(self):
+        origin = GroundJoint("O", position=(0.0, 0.0))
+        A = RevoluteJoint("A", position=(1.0, 0.0))
+        d = DriverLink("crank", joints=[origin, A], motor_joint=origin, angular_velocity=0.5)
+        for _ in range(20):
+            d.step()
+        A.set_coord(math.cos(1.0), math.sin(1.0))
+        d.read_angle()
+        assert d.current_angle == pytest.approx(1.0)
+        d.step()
+        assert d.current_angle == pytest.approx(1.5)
+
     def test_radius_non_binary(self):
         origin = GroundJoint("O", position=(0.0, 0.0))
         d = DriverLink("crank", joints=[origin], motor_joint=origin)
@@ -269,6 +281,22 @@ class TestArcDriverLink:
     def test_radius(self):
         arc = self._make_arc()
         assert abs(arc.radius - 1.0) < 1e-10
+
+    def test_read_angle_from_joints(self):
+        arc = self._make_arc(arc_start=0.0, arc_end=math.pi, omega=0.5)
+        for _ in range(8):  # past the end of the arc and back
+            arc.step()
+        assert arc._direction == -1.0
+        arc.output_joint.set_coord(math.cos(2.0), math.sin(2.0))
+        arc.read_angle()
+        assert arc.current_angle == pytest.approx(2.0)
+        assert arc._direction == 1.0
+
+    def test_read_angle_leaves_unplaced_joints_alone(self):
+        arc = self._make_arc(arc_start=0.5)
+        arc.output_joint.set_coord(None, None)
+        arc.read_angle()
+        assert arc.current_angle == 0.5
 
     def test_output_joint(self):
         origin = GroundJoint("O", position=(0.0, 0.0))

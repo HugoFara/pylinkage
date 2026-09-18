@@ -16,6 +16,8 @@ from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
+from ..geometry.core import _angle_within_arc
+
 if TYPE_CHECKING:
     from .joint import GroundJoint, Joint
 
@@ -331,6 +333,16 @@ class DriverLink(Link):
         """Reset the crank to its initial angle."""
         self.current_angle = self.initial_angle
 
+    def read_angle(self) -> None:
+        """Set ``current_angle`` from where the motor and output joints are.
+
+        The crank is then in the state its joints describe, so putting
+        a mechanism back in a position puts its drivers back too.
+        """
+        angle = _angle_of(self.motor_joint, self.output_joint)
+        if angle is not None:
+            self.current_angle = angle
+
 
 @dataclass(eq=False)
 class ArcDriverLink(Link):
@@ -445,6 +457,28 @@ class ArcDriverLink(Link):
             self.initial_angle if self.initial_angle is not None else self.arc_start
         )
         self._direction = 1.0
+
+    def read_angle(self) -> None:
+        """Set ``current_angle`` from where the motor and output joints are.
+
+        The angle is brought onto the arc and the sweep restarts in the
+        positive direction, as on a new crank.
+        """
+        angle = _angle_of(self.motor_joint, self.output_joint)
+        if angle is not None:
+            self.current_angle = _angle_within_arc(angle, self.arc_start, self.arc_end)
+            self._direction = 1.0
+
+
+def _angle_of(motor: Joint | None, output: Joint | None) -> float | None:
+    """Direction from ``motor`` to ``output``, or None while either is unplaced."""
+    if motor is None or output is None:
+        return None
+    mx, my = motor.position
+    ox, oy = output.position
+    if mx is None or my is None or ox is None or oy is None:
+        return None
+    return math.atan2(oy - my, ox - mx)
 
 
 # Type alias for any link

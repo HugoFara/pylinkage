@@ -157,6 +157,25 @@ class LinearActuator(ConnectedComponent):
         if speed is not None:
             self.speed = speed
 
+    def set_coord(self, x: float | None, y: float | None) -> None:
+        """Place the output, and read the extension from where it lands.
+
+        The extension is the projection of ``(x, y)`` from the anchor
+        onto the actuator's axis, held within ``[0, stroke]``; the stroke
+        restarts in the extending direction, as it does on a new
+        actuator. The actuator is then entirely in the state its
+        coordinates describe, so putting a linkage back in a position
+        puts its actuators back too.
+        """
+        super().set_coord(x, y)
+        if x is None or y is None or self.anchor.x is None or self.anchor.y is None:
+            return
+        along = (x - self.anchor.x) * math.cos(self.angle) + (y - self.anchor.y) * math.sin(
+            self.angle
+        )
+        self._extension = min(max(along, 0.0), self.stroke)
+        self._direction = 1.0
+
     def reload(self, dt: float = 1) -> None:
         """Advance the actuator by one step.
 
