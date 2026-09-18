@@ -54,6 +54,15 @@ def solve_linkage_symbolically(
     return trajectories
 
 
+def _rationalize(expr: sp.Expr) -> sp.Expr:
+    """Replace every float by the rational it stands for, to 1e-10.
+
+    The Groebner basis needs exact coefficients, and ``solve_linkage_symbolically``
+    leaves rounding noise such as ``85.3312500000001`` on the ones it simplifies.
+    """
+    return sp.nsimplify(expr, rational=True, tolerance=1e-10)
+
+
 def eliminate_theta(
     x_expr: sp.Expr,
     y_expr: sp.Expr,
@@ -67,8 +76,12 @@ def eliminate_theta(
     algebraic equation of the coupler curve.
 
     Uses the substitution cos(theta) = c, sin(theta) = s with the
-    constraint c^2 + s^2 = 1, then eliminates c and s using
-    Groebner basis.
+    constraint c^2 + s^2 = 1. Each square root ``sqrt(R)`` of the
+    parametrization becomes a symbol ``r`` with the constraint
+    ``r^2 = R``, so the system is polynomial; a Groebner basis then
+    eliminates c, s and every r. The curve found is the full algebraic
+    curve: both signs of every root, hence both assembly branches of the
+    joint, lie on it.
 
     Args:
         x_expr: X coordinate as a function of theta.
@@ -76,7 +89,15 @@ def eliminate_theta(
         theta: The angle symbol to eliminate. Default uses global theta.
 
     Returns:
-        Polynomial in x and y, or None if elimination fails.
+        Polynomial in x and y (and in the link lengths kept symbolic), or
+        None if elimination fails. Floating-point coefficients are read as
+        the rationals they stand for (to 1e-10), so the polynomial is exact.
+
+    Note:
+        The joint at the end of the first dyad has a single square root
+        in its parametrization and its curve comes out in a fraction of a
+        second. A joint built on that one has a root inside a root, and
+        the Groebner basis computation may then run for minutes.
 
     Example:
         >>> theta = sp.Symbol('theta')
@@ -88,45 +109,61 @@ def eliminate_theta(
     if theta is None:
         theta = default_theta
 
-    # Create symbols for x, y, c (cos), s (sin)
     x, y = sp.symbols("x y", real=True)
     c, s = sp.symbols("c s", real=True)
 
-    # Substitute cos(theta) -> c, sin(theta) -> s
-    x_sub = x_expr.rewrite(sp.cos, sp.sin).subs(
-        [
-            (sp.cos(theta), c),
-            (sp.sin(theta), s),
-        ]
-    )
-    y_sub = y_expr.rewrite(sp.cos, sp.sin).subs(
-        [
-            (sp.cos(theta), c),
-            (sp.sin(theta), s),
-        ]
-    )
+    # cos(theta) -> c, sin(theta) -> s; expand_trig first so that
+    # cos(2*theta) and the like are polynomial in c and s too.
+    trig = {sp.cos(theta): c, sp.sin(theta): s}
+    x_sub = sp.expand_trig(_rationalize(x_expr)).subs(trig)
+    y_sub = sp.expand_trig(_rationalize(y_expr)).subs(trig)
+    if theta in x_sub.free_symbols or theta in y_sub.free_symbols:
+        return None
 
-    # Create polynomial equations
-    eq1 = x - x_sub  # x = x_expr
-    eq2 = y - y_sub  # y = y_expr
-    eq3 = c**2 + s**2 - 1  # Pythagorean identity
+    # sqrt(R) -> r with r**2 == R, innermost roots first
+    radicals: dict[sp.Expr, sp.Symbol] = {}
+
+    def is_root(expr: sp.Basic) -> bool:
+        return bool(expr.is_Pow) and expr.exp.is_Rational and expr.exp.q == 2
+
+    def as_symbol(expr: sp.Pow) -> sp.Expr:
+        if expr.base not in radicals:
+            radicals[expr.base] = sp.Symbol(f"_r{len(radicals)}", real=True)
+        return radicals[expr.base] ** int(2 * expr.exp)
+
+    x_sub = x_sub.replace(is_root, as_symbol)
+    y_sub = y_sub.replace(is_root, as_symbol)
+
+    equations = [
+        sp.numer(sp.together(x - x_sub)),
+        sp.numer(sp.together(y - y_sub)),
+        c**2 + s**2 - 1,
+        *(sp.numer(sp.together(r**2 - radicand)) for radicand, r in radicals.items()),
+    ]
+    roots = list(radicals.values())
+    parameters = sorted(
+        (x_sub.free_symbols | y_sub.free_symbols) - {c, s, x, y, *roots},
+        key=str,
+    )
+    keep = {x, y, *parameters}
 
     try:
-        # Compute Groebner basis to eliminate c and s
-        # Using lex order with c, s first means they will be eliminated
-        basis = sp.groebner([eq1, eq2, eq3], c, s, x, y, order="lex")
-
-        # Find polynomials that only contain x and y
-        for poly in basis:
-            free = poly.free_symbols
-            if c not in free and s not in free and (x in free or y in free):
-                return poly
-
+        # Lex order eliminates the leading generators: s and c first (the
+        # parametrization is linear in s, so they go cheaply), then the
+        # roots. x, y and the symbolic lengths are what remains.
+        basis = sp.groebner(equations, s, c, *roots, x, y, *parameters, order="lex")
     except Exception:
         # Groebner basis computation can fail for complex expressions
-        pass
+        return None
 
-    return None
+    curves = [
+        poly
+        for poly in basis
+        if poly.free_symbols <= keep and (x in poly.free_symbols or y in poly.free_symbols)
+    ]
+    if not curves:
+        return None
+    return min(curves, key=lambda poly: sp.Poly(poly, x, y).total_degree())
 
 
 def compute_trajectory_numeric(

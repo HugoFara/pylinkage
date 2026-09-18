@@ -165,21 +165,23 @@ def differential_evolution_optimization(
 
     from scipy.optimize import differential_evolution
 
-    # Run differential evolution
-    result = differential_evolution(
-        objective,
-        bounds=scipy_bounds,
-        strategy=strategy,
-        maxiter=maxiter,
-        popsize=popsize,
-        tol=tol,
-        mutation=mutation,
-        recombination=recombination,
-        seed=seed,
-        workers=workers,
-        disp=verbose,
-        **kwargs,
-    )
+    # An unbuildable candidate scores +inf by design; the final polish's
+    # finite differences then compute inf - inf, which is only noise here.
+    with np.errstate(invalid="ignore"):
+        result = differential_evolution(
+            objective,
+            bounds=scipy_bounds,
+            strategy=strategy,
+            maxiter=maxiter,
+            popsize=popsize,
+            tol=tol,
+            mutation=mutation,
+            recombination=recombination,
+            seed=seed,
+            workers=workers,
+            disp=verbose,
+            **kwargs,
+        )
 
     # Convert result
     best_score = -result.fun if order_relation is max else result.fun
@@ -302,18 +304,21 @@ def dual_annealing_optimization(
             )
             return False
 
-    result = dual_annealing(
-        objective,
-        bounds=scipy_bounds,
-        maxiter=maxiter,
-        initial_temp=initial_temp,
-        restart_temp_ratio=restart_temp_ratio,
-        visit=visit,
-        accept=accept,
-        seed=seed,
-        callback=callback,
-        **kwargs,
-    )
+    # An unbuildable candidate scores +inf by design; the local search's
+    # finite differences then compute inf - inf, which is only noise here.
+    with np.errstate(invalid="ignore"):
+        result = dual_annealing(
+            objective,
+            bounds=scipy_bounds,
+            maxiter=maxiter,
+            initial_temp=initial_temp,
+            restart_temp_ratio=restart_temp_ratio,
+            visit=visit,
+            accept=accept,
+            seed=seed,
+            callback=callback,
+            **kwargs,
+        )
 
     if verbose:
         print()
@@ -441,16 +446,18 @@ def minimize_linkage(
 
     from scipy.optimize import minimize
 
-    # Run minimize
-    result = minimize(
-        objective,
-        x0=np.array(x0),
-        method=method,
-        bounds=scipy_bounds,
-        tol=tol,
-        options=options if options else None,
-        **kwargs,
-    )
+    # An unbuildable candidate scores +inf by design; a gradient method's
+    # finite differences then compute inf - inf, which is only noise here.
+    with np.errstate(invalid="ignore"):
+        result = minimize(
+            objective,
+            x0=np.array(x0),
+            method=method,
+            bounds=scipy_bounds,
+            tol=tol,
+            options=options if options else None,
+            **kwargs,
+        )
 
     # Convert result
     best_score = -result.fun if order_relation is max else result.fun

@@ -240,14 +240,16 @@ def co_optimize(
     else:
         raise ValueError(f"Unknown algorithm: {config.algorithm}")
 
-    # Run optimization
-    result = minimize(
-        problem,
-        algo,
-        ("n_gen", config.n_generations),
-        seed=config.seed,
-        verbose=config.verbose,
-    )
+    # Run optimization. Infeasible candidates score +inf by design, and
+    # pymoo's crowding distance then computes inf - inf: expected, not a bug.
+    with np.errstate(invalid="ignore"):
+        result = minimize(
+            problem,
+            algo,
+            ("n_gen", config.n_generations),
+            seed=config.seed,
+            verbose=config.verbose,
+        )
 
     # Extract results
     from .collections.pareto import ParetoFront, ParetoSolution

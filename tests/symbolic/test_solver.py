@@ -59,33 +59,71 @@ class TestSolveLinkageSymbolically:
         assert "B" in traj2
 
 
+def _same_curve(result, expected):
+    """True when *result* and *expected* are the same polynomial up to a constant factor."""
+    x, y = sp.symbols("x y", real=True)
+    return sp.Poly(result, x, y).monic() == sp.Poly(expected, x, y).monic()
+
+
 class TestEliminateTheta:
     """Tests for eliminate_theta function."""
 
     def test_circle_parametric(self):
-        """Test eliminating theta from circle parametric equations."""
-        # x = cos(theta), y = sin(theta) -> x^2 + y^2 = 1
-        x_expr = sp.cos(theta)
-        y_expr = sp.sin(theta)
+        """x = cos(theta), y = sin(theta) -> x^2 + y^2 - 1."""
+        x, y = sp.symbols("x y", real=True)
+        result = eliminate_theta(sp.cos(theta), sp.sin(theta), theta)
+        assert result is not None
+        assert _same_curve(result, x**2 + y**2 - 1)
 
-        result = eliminate_theta(x_expr, y_expr, theta)
+    def test_ellipse_with_float_coefficients(self):
+        """Floats are read as the rationals they stand for: the result is exact."""
+        x, y = sp.symbols("x y", real=True)
+        result = eliminate_theta(2.0 * sp.cos(theta) + 1.0, 3.0 * sp.sin(theta), theta)
+        assert result is not None
+        assert _same_curve(result, 9 * (x - 1) ** 2 + 4 * y**2 - 36)
 
-        # Result may be None if Groebner basis fails (acceptable)
-        # If it succeeds, verify it's correct
-        if result is not None:
-            x, y = sp.symbols("x y")
-            # Substitute to verify: x^2 + y^2 should equal 1
-            check = result.subs([(x, sp.Rational(3, 5)), (y, sp.Rational(4, 5))])
-            # Try to convert to float, but handle case where result still has symbols
-            try:
-                check_val = float(check.evalf())
-                assert check_val == pytest.approx(0.0, abs=1e-10)
-            except (TypeError, AttributeError):
-                # Result might still contain symbols if Groebner didn't fully eliminate
-                pytest.skip("Groebner result still contains symbols")
-        else:
-            # Groebner basis can fail for some expressions - this is acceptable
-            pytest.skip("Groebner basis computation did not produce implicit curve")
+    def test_multiple_angle(self):
+        """cos(2 theta) is polynomial in cos and sin: x = 1 - 2 y^2."""
+        x, y = sp.symbols("x y", real=True)
+        result = eliminate_theta(sp.cos(2 * theta), sp.sin(theta), theta)
+        assert result is not None
+        assert _same_curve(result, x + 2 * y**2 - 1)
+
+    @pytest.mark.parametrize(
+        ("lengths", "expected"),
+        [
+            ((4, 1, 3, 3), "(x - 4)**2 + y**2 - 9"),
+            ((4.5, 1.25, 3.1, 2.9), "(x - 4.5)**2 + y**2 - 2.9**2"),
+        ],
+    )
+    def test_fourbar_rocker_tip_is_a_circle(self, lengths, expected):
+        """The rocker tip's parametrization has a square root; its curve is the rocker circle."""
+        from pylinkage.symbolic import fourbar_symbolic
+
+        ground, crank, coupler, rocker = lengths
+        linkage = fourbar_symbolic(
+            ground_length=ground,
+            crank_length=crank,
+            coupler_length=coupler,
+            rocker_length=rocker,
+        )
+        x_expr, y_expr = solve_linkage_symbolically(linkage)["C"]
+
+        result = eliminate_theta(x_expr, y_expr)
+
+        assert result is not None
+        x, y = sp.symbols("x y", real=True)
+        assert _same_curve(result, sp.nsimplify(sp.sympify(expected, locals={"x": x, "y": y})))
+        # and the numeric trajectory lies on it
+        curve = sp.lambdify((x, y), result)
+        positions = compute_trajectory_numeric(linkage, {}, np.linspace(0.1, 6.0, 12))["C"]
+        for px, py in positions:
+            if not math.isnan(px):
+                assert curve(px, py) == pytest.approx(0.0, abs=1e-9)
+
+    def test_unknown_function_of_theta_gives_none(self):
+        """A parametrization that is not polynomial in cos and sin is refused, not mangled."""
+        assert eliminate_theta(sp.exp(theta), sp.sin(theta), theta) is None
 
 
 class TestComputeTrajectoryNumeric:
