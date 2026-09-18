@@ -18,11 +18,14 @@ from typing import TYPE_CHECKING
 
 from .._types import JointType, NodeId, NodeRole
 from ..dimensions import Dimensions, DriverAngle
-from .core import Edge, Node
+from .core import Edge, Hyperedge, Node
 from .graph import HypergraphLinkage
 
 if TYPE_CHECKING:
-    from ..mechanism import Mechanism
+    from collections.abc import Sequence
+
+    from ..mechanism import Mechanism, PrismaticJoint
+    from ..mechanism.joint import Joint
 
 
 def _slider_anchor_and_line(
@@ -87,8 +90,8 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
         NotImplementedError: If a prismatic node is not a slider on a
             fixed line (its guide is a moving link, it has no revolute
             leg or several, or it is a ``PPDyad``-style double slider),
-            which :class:`~pylinkage.mechanism.Mechanism` cannot
-            represent yet.
+            or if a driver node is prismatic (a linear actuator), which
+            :class:`~pylinkage.mechanism.Mechanism` cannot represent yet.
 
     Example:
         >>> hg = HypergraphLinkage(name="Four-bar")
@@ -109,7 +112,6 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
         PrismaticJoint,
         RevoluteJoint,
     )
-    from ..mechanism.joint import Joint
 
     # First expand hyperedges to simple graph
     simple = hypergraph.to_simple_graph()
@@ -146,6 +148,11 @@ def to_mechanism(hypergraph: HypergraphLinkage, dimensions: Dimensions) -> Mecha
 
     # Create driver joints and links
     for node in simple.driver_nodes():
+        if node.joint_type == JointType.PRISMATIC:
+            raise NotImplementedError(
+                f"Driver node {node.id!r} is prismatic (a linear actuator); "
+                "Mechanism has no linear driver link yet, only rotary ones."
+            )
         pos = dimensions.get_node_position(node.id)
         x = pos[0] if pos else 0.0
         y = pos[1] if pos else 0.0
@@ -290,6 +297,12 @@ def from_mechanism(mechanism: Mechanism) -> tuple[HypergraphLinkage, Dimensions]
     This converts an existing Mechanism to the hypergraph representation
     for analysis, visualization, or manipulation.
 
+    A :class:`~pylinkage.mechanism.PrismaticJoint` keeps its slide line
+    as a hyperedge over itself and two ground nodes on the line, the
+    encoding :func:`to_mechanism` reads. Ground joints that already lie
+    on the line are used; otherwise ``<id>_rail0`` / ``<id>_rail1``
+    ground nodes are added at ``line_point`` and one axis length along.
+
     Args:
         mechanism: The Mechanism to convert.
 
@@ -403,6 +416,16 @@ def from_mechanism(mechanism: Mechanism) -> tuple[HypergraphLinkage, Dimensions]
 
                             edge_counter += 1
 
+    # Slide lines: a hyperedge over the slider and two ground nodes on
+    # its line, so that to_mechanism() can rebuild the PrismaticJoint.
+    for joint in mechanism.joints:
+        if isinstance(joint, PrismaticJoint):
+            slider_id = joint_to_node[joint.id]
+            rail = _ground_nodes_on_line(
+                joint, mechanism.joints, joint_to_node, node_positions, hypergraph
+            )
+            hypergraph.add_hyperedge(Hyperedge(f"{slider_id}_rail", (*rail, slider_id)))
+
     dimensions = Dimensions(
         node_positions=node_positions,
         driver_angles=driver_angles,
@@ -411,3 +434,47 @@ def from_mechanism(mechanism: Mechanism) -> tuple[HypergraphLinkage, Dimensions]
     )
 
     return hypergraph, dimensions
+
+
+def _ground_nodes_on_line(
+    slider: PrismaticJoint,
+    joints: Sequence[Joint],
+    joint_to_node: dict[str, NodeId],
+    node_positions: dict[str, tuple[float, float]],
+    hypergraph: HypergraphLinkage,
+) -> tuple[NodeId, NodeId]:
+    """Return two distinct ground nodes on ``slider``'s slide line.
+
+    Existing ground joints on the line come first; missing ones are
+    added to ``hypergraph`` and ``node_positions`` as ``<id>_rail0`` /
+    ``<id>_rail1`` at ``line_point`` and one axis length further.
+    """
+    from ..mechanism import GroundJoint
+
+    dx, dy = slider.get_axis_normalized()
+    lpx, lpy = slider.line_point
+    tol = 1e-9 * max(1.0, abs(lpx), abs(lpy))
+
+    def on_line(x: float, y: float) -> bool:
+        return abs((x - lpx) * dy - (y - lpy) * dx) <= tol
+
+    found: list[tuple[NodeId, tuple[float, float]]] = []
+    for joint in joints:
+        x, y = joint.position
+        if isinstance(joint, GroundJoint) and x is not None and y is not None and on_line(x, y):
+            found.append((joint_to_node[joint.id], (x, y)))
+        if len(found) == 2:
+            break
+
+    slider_id = joint_to_node[slider.id]
+    for candidate in ((lpx, lpy), (lpx + dx, lpy + dy)):
+        if len(found) == 2:
+            break
+        if any(math.dist(candidate, pos) <= tol for _, pos in found):
+            continue
+        node_id = f"{slider_id}_rail{len(found)}"
+        hypergraph.add_node(Node(id=node_id, role=NodeRole.GROUND, name=node_id))
+        node_positions[node_id] = candidate
+        found.append((node_id, candidate))
+
+    return found[0][0], found[1][0]
