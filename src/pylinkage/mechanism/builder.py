@@ -23,13 +23,8 @@ Example:
 from __future__ import annotations
 
 import math
-import sys
 from dataclasses import dataclass, field
-
-if sys.version_info >= (3, 11):
-    from typing import Self
-else:
-    from typing_extensions import Self
+from typing import Self
 
 from ..exceptions import UnbuildableError, UnderconstrainedError
 from ..geometry.secants import (

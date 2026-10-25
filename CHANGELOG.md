@@ -9,6 +9,12 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** Dropped Python 3.10 support, which reached end of life in
+  October 2026. Minimum version is now Python 3.11. `typing_extensions` is no
+  longer a dependency.
+
 ### Fixed
 
 - **`eliminate_theta()` returns the coupler curve.** It rewrote `cos(theta)`

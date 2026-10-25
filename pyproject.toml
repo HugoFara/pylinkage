@@ -10,7 +10,7 @@ authors = [
 ]
 description = " Create and optimize kinematic planar linkages in Python "
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = [
     "linkage", "mechanism", "optimization",
     "particle swarm optimization"
@@ -19,7 +19,6 @@ license = {text = "MIT License"}
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -34,7 +33,6 @@ classifiers = [
 dependencies = [
     "numpy>=1.20.2",
     "tqdm>=4.40.0",
-    "typing_extensions>=4.0.0; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
@@ -97,13 +95,13 @@ addopts = "-v -m 'not docs'"
 markers = ["docs: executes the documentation's code (slow, needs all extras)"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 strict = true
 warn_unused_ignores = true
 ignore_missing_imports = true
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
