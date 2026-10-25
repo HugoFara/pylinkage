@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Components &mdash; pylinkage 1.2.2 documentation</title>
+  <title>Custom Components &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -155,23 +155,23 @@ parameter.</p>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Slider</span><span class="p">(</span><span class="n">BinaryDyad</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that sits a fraction ``t`` of the way from anchor1 to anchor2.</span>
+<span class="w">    </span><span class="sd">"""A joint that sits a fraction ``t`` of the way from anchor1 to anchor2.</span>
 
 <span class="sd">    - t=0 puts the joint on anchor1</span>
 <span class="sd">    - t=1 puts the joint on anchor2</span>
 <span class="sd">    - values in between interpolate linearly</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"t"</span><span class="p">,)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Slider joint.</span>
+<span class="w">        </span><span class="sd">"""Create a Slider joint.</span>
 
 <span class="sd">        :param anchor1: Parent component at the start of the slide.</span>
 <span class="sd">        :param anchor2: Parent component at the end of the slide.</span>
 <span class="sd">        :param t: Position parameter (0 to 1).</span>
 <span class="sd">        :param name: Joint name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>  <span class="c1"># position is computed below</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anchor1</span> <span class="o">=</span> <span class="n">anchor1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anchor2</span> <span class="o">=</span> <span class="n">anchor2</span>
@@ -184,7 +184,7 @@ parameter.</p>
 <h3>Step 2: Implement get_constraints<a class="headerlink" href="#step-2-implement-get-constraints" title="Link to this heading"></a></h3>
 <p>Return the geometric parameters that define this joint’s motion:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the slide parameter as constraint.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Return the slide parameter as constraint."""</span>
     <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,)</span>
 </pre></div>
 </div>
@@ -195,10 +195,10 @@ parameter.</p>
 many positional values as <code class="docutils literal notranslate"><span class="pre">get_constraints</span></code> returned; the trailing
 <code class="docutils literal notranslate"><span class="pre">*args</span></code> keeps the signature compatible with the built-in dyads:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">set_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the slide parameter.</span>
+<span class="w">    </span><span class="sd">"""Set the slide parameter.</span>
 
 <span class="sd">    :param t: New position parameter (0 to 1).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
 </pre></div>
@@ -210,14 +210,14 @@ many positional values as <code class="docutils literal notranslate"><span class
 constraints. <code class="docutils literal notranslate"><span class="pre">_get_anchor_position</span></code> reads either a component or an
 actuator’s <code class="docutils literal notranslate"><span class="pre">output</span></code> proxy:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recompute position by interpolating between the anchors.</span>
+<span class="w">    </span><span class="sd">"""Recompute position by interpolating between the anchors.</span>
 
 <span class="sd">    :param dt: Time step (unused: the slider does not move on its own).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_anchor_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor1</span><span class="p">)</span>
     <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_anchor_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor2</span><span class="p">)</span>
     <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: anchors have no position yet&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: anchors have no position yet"</span><span class="p">)</span>
 
     <span class="c1"># Linear interpolation</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
@@ -233,9 +233,9 @@ actuator’s <code class="docutils literal notranslate"><span class="pre">output
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Slider</span><span class="p">(</span><span class="n">BinaryDyad</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that sits a fraction ``t`` of the way from anchor1 to anchor2.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A joint that sits a fraction ``t`` of the way from anchor1 to anchor2."""</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"t"</span><span class="p">,)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor1</span><span class="p">,</span> <span class="n">anchor2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -255,7 +255,7 @@ actuator’s <code class="docutils literal notranslate"><span class="pre">output
         <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_anchor_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor1</span><span class="p">)</span>
         <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_anchor_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor2</span><span class="p">)</span>
         <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: anchors have no position yet&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: anchors have no position yet"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span>
 </pre></div>
@@ -273,28 +273,28 @@ follows from <code class="docutils literal notranslate"><span class="pre">anchor
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 
 <span class="c1"># The rail</span>
-<span class="n">p1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;P1&quot;</span><span class="p">)</span>
-<span class="n">p2</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;P2&quot;</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"P1"</span><span class="p">)</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"P2"</span><span class="p">)</span>
 
 <span class="c1"># A pivot halfway along it (custom component, see above)</span>
-<span class="n">pivot</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span><span class="n">anchor1</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Pivot&quot;</span><span class="p">)</span>
+<span class="n">pivot</span> <span class="o">=</span> <span class="n">Slider</span><span class="p">(</span><span class="n">anchor1</span><span class="o">=</span><span class="n">p1</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">p2</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Pivot"</span><span class="p">)</span>
 
 <span class="c1"># A crank, and a rocker between the crank tip and the pivot</span>
-<span class="n">motor</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Motor&quot;</span><span class="p">)</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">motor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">motor</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Motor"</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">motor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Crank"</span><span class="p">)</span>
 <span class="n">rocker</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
     <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
     <span class="n">anchor2</span><span class="o">=</span><span class="n">pivot</span><span class="p">,</span>
     <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
     <span class="n">distance2</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Rocker&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Rocker"</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">rocker</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sliding pivot&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">motor</span><span class="p">,</span> <span class="n">pivot</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">rocker</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Sliding pivot"</span><span class="p">)</span>
 
 <span class="n">loci</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pivot at </span><span class="si">{</span><span class="n">pivot</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2"> steps simulated&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constraints: </span><span class="si">{</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pivot at </span><span class="si">{</span><span class="n">pivot</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2"> steps simulated"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constraints: </span><span class="si">{</span><span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
 </pre></div>
@@ -310,7 +310,7 @@ can move the pivot along the rail like any other dimension — here to
 maximize the rocker’s horizontal travel:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_maximization</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">stride</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Horizontal travel of the rocker joint.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Horizontal travel of the rocker joint."""</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
     <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 
@@ -325,7 +325,7 @@ maximize the rocker’s horizontal travel:</p>
     <span class="n">n_particles</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">best</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stride </span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> with the pivot at t=</span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stride </span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">score</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> with the pivot at t=</span><span class="si">{</span><span class="n">best</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -340,18 +340,18 @@ around a single parent. With one anchor it subclasses
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Oscillator</span><span class="p">(</span><span class="n">ConnectedComponent</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A joint that moves sinusoidally around a center point.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""A joint that moves sinusoidally around a center point."""</span>
 
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;amplitude&quot;</span><span class="p">,</span> <span class="s2">&quot;period&quot;</span><span class="p">,</span> <span class="s2">&quot;_time&quot;</span><span class="p">)</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"anchor"</span><span class="p">,</span> <span class="s2">"amplitude"</span><span class="p">,</span> <span class="s2">"period"</span><span class="p">,</span> <span class="s2">"_time"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an oscillating joint.</span>
+<span class="w">        </span><span class="sd">"""Create an oscillating joint.</span>
 
 <span class="sd">        :param anchor: Center point of oscillation.</span>
 <span class="sd">        :param amplitude: Maximum displacement from center.</span>
 <span class="sd">        :param period: Steps per oscillation.</span>
 <span class="sd">        :param name: Joint name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anchor</span> <span class="o">=</span> <span class="n">anchor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">=</span> <span class="n">amplitude</span>
@@ -378,12 +378,12 @@ around a single parent. With one anchor it subclasses
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">+=</span> <span class="n">dt</span>
 
 
-<span class="n">centre</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Centre&quot;</span><span class="p">)</span>
-<span class="n">oscillator</span> <span class="o">=</span> <span class="n">Oscillator</span><span class="p">(</span><span class="n">centre</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Oscillator&quot;</span><span class="p">)</span>
+<span class="n">centre</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Centre"</span><span class="p">)</span>
+<span class="n">oscillator</span> <span class="o">=</span> <span class="n">Oscillator</span><span class="p">(</span><span class="n">centre</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Oscillator"</span><span class="p">)</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">centre</span><span class="p">,</span> <span class="n">oscillator</span><span class="p">])</span>
 
 <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">iterations</span><span class="o">=</span><span class="mi">60</span><span class="p">)]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;x swings between </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"x swings between </span><span class="si">{</span><span class="nb">min</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Expected output:</strong></p>

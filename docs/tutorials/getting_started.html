@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; pylinkage 1.2.2 documentation</title>
+  <title>Getting Started &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -180,15 +180,15 @@ the loop:</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 
 <span class="c1"># Ground anchors — two fixed points on the frame.</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"A"</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
 
 <span class="c1"># Crank — rotates about A with radius 1, one step = 0.31 rad.</span>
 <span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
     <span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
     <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Crank"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Coupler-rocker pin joint — closes the loop between the crank tip</span>
@@ -198,7 +198,7 @@ the loop:</p>
     <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
     <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>          <span class="c1"># coupler length (B → C)</span>
     <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>          <span class="c1"># rocker length  (C → D)</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Output"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -208,7 +208,7 @@ the loop:</p>
 <p>Wrap the components in a <code class="xref py py-class docutils literal notranslate"><span class="pre">Linkage</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
     <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar linkage"</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -220,9 +220,9 @@ the loop:</p>
 <span class="n">loci</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 
 <span class="c1"># loci[i] is a tuple of (x, y) coordinates in the component order.</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulation steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final crank tip: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final output point: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Simulation steps: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">loci</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final crank tip: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final output point: </span><span class="si">{</span><span class="n">loci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For a numba-accelerated simulation that returns a contiguous numpy array,
@@ -269,19 +269,19 @@ cycle.</span><a class="headerlink" href="#id2" title="Link to this image"></a
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.simulation</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linkage</span>
 
 <span class="c1"># Components</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
-<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"A"</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
+<span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Crank"</span><span class="p">)</span>
 <span class="n">pin</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
     <span class="n">anchor1</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
     <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
     <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
     <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Output&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Output"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Linkage</span>
-<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar linkage&quot;</span><span class="p">)</span>
+<span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar linkage"</span><span class="p">)</span>
 
 <span class="c1"># Visualize</span>
 <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
@@ -296,7 +296,7 @@ linkage exposes them as a flat list so optimization code can treat every
 constraint uniformly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all constraints as a flat list.</span>
 <span class="n">constraints</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constraints: </span><span class="si">{</span><span class="n">constraints</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constraints: </span><span class="si">{</span><span class="n">constraints</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="c1"># → [1.0, 3.0, 1.0]  (crank radius, d1, d2 on the RRR dyad)</span>
 
 <span class="c1"># Modify and apply.</span>
@@ -305,7 +305,7 @@ constraint uniformly:</p>
 
 <span class="c1"># Joint positions</span>
 <span class="n">coords</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Component positions: </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Component positions: </span><span class="si">{</span><span class="n">coords</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -317,7 +317,7 @@ assembled:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="nb">tuple</span><span class="p">(</span><span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">())</span>
 <span class="k">except</span> <span class="n">pl</span><span class="o">.</span><span class="n">UnbuildableError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Linkage cannot be built with these constraints&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Linkage cannot be built with these constraints"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

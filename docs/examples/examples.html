@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Example Scripts &mdash; pylinkage 1.2.2 documentation</title>
+  <title>Example Scripts &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -108,7 +108,7 @@
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">fourbar_linkage.py</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">The fourbar_linkage module demonstrates the features of pylinkage.</span>
 
 <span class="sd">It is not intended to be imported in another project, but feel</span>
@@ -117,7 +117,9 @@
 <span class="sd">Created on Sat Jun 19, 12:32:37 2021.</span>
 
 <span class="sd">@author: HugoFara</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">tau</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
@@ -127,17 +129,18 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">define_linkage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Linkage</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define a simple four-bar linkage using the component API.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Define a simple four-bar linkage using the component API."""</span>
     <span class="c1"># Ground anchors</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-    <span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"A"</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"D"</span><span class="p">)</span>
 
-    <span class="c1"># Driver crank</span>
+    <span class="c1"># Driver crank. A whole number of steps per turn (here 20) means the</span>
+    <span class="c1"># fitness and the animation sample the very same crank angles.</span>
     <span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
         <span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
         <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.31</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span>
+        <span class="n">angular_velocity</span><span class="o">=</span><span class="n">tau</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"B"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Close the loop with an RRR dyad (coupler + rocker)</span>
@@ -146,15 +149,15 @@
         <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
         <span class="n">distance1</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span>
         <span class="n">distance2</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"C"</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;My four-bar linkage&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Linkage</span><span class="p">([</span><span class="n">A</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">pin</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"My four-bar linkage"</span><span class="p">)</span>
 
 
 <span class="nd">@pl</span><span class="o">.</span><span class="n">kinematic_minimization</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">quadrant_fitness</span><span class="p">(</span><span class="n">loci</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return how fit the locus is to describe a quarter of circle.</span>
+<span class="w">    </span><span class="sd">"""Return how fit the locus is to describe a quarter of circle.</span>
 
 <span class="sd">    It is a minimization problem and the theoretical best score is 0.</span>
 
@@ -162,7 +165,7 @@
 <span class="sd">    :param kwargs: Extra kwargs (unused).</span>
 <span class="sd">    :return: Sum of square distances between tip locus bounding box</span>
 <span class="sd">        and a defined square.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="c1"># Locus of the coupler point (last component in the linkage)</span>
     <span class="n">tip_locus</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">loci</span><span class="p">]</span>
     <span class="c1"># Bounding box</span>
@@ -174,15 +177,15 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define and optimize a demo linkage.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Define and optimize a demo linkage."""</span>
     <span class="n">my_linkage</span> <span class="o">=</span> <span class="n">define_linkage</span><span class="p">()</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 
-    <span class="c1"># Save the initial position; we don&#39;t want a radically different motion.</span>
+    <span class="c1"># Save the initial position; we don't want a radically different motion.</span>
     <span class="n">init_pos</span> <span class="o">=</span> <span class="n">my_linkage</span><span class="o">.</span><span class="n">get_coords</span><span class="p">()</span>
     <span class="n">constraints</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">my_linkage</span><span class="o">.</span><span class="n">get_constraints</span><span class="p">())</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Score before optimization:&quot;</span><span class="p">,</span> <span class="n">quadrant_fitness</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">init_pos</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Score before optimization:"</span><span class="p">,</span> <span class="n">quadrant_fitness</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span> <span class="n">init_pos</span><span class="p">))</span>
 
     <span class="c1"># Trials and errors optimization as an example ONLY.</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">trials_and_errors_optimization</span><span class="p">(</span>
@@ -191,7 +194,7 @@
         <span class="n">divisions</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
         <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
     <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Score after trials and errors optimization&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Score after trials and errors optimization"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
 
     <span class="c1"># Reset to the original mechanism.</span>
     <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">constraints</span><span class="p">))</span>
@@ -205,14 +208,15 @@
         <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
         <span class="n">order_relation</span><span class="o">=</span><span class="nb">min</span><span class="p">,</span>
     <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Score after particle swarm optimization:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Score after particle swarm optimization:"</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
 
-    <span class="c1"># Visualize the optimized linkage.</span>
+    <span class="c1"># Visualize the optimized linkage, from the position it was scored at.</span>
+    <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
     <span class="n">my_linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">dimensions</span><span class="p">))</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">my_linkage</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -223,11 +227,11 @@
 <p>A four-stroke engine example using the Linear joint type.</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">inverted_stroke_engine.py</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""</span>
 <span class="sd">An inverted four-stroke engine, that converts a rotary motion into a linear one.</span>
 
 <span class="sd">See: https://en.wikipedia.org/wiki/Four-stroke_engine for details</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylinkage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.actuators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Crank</span>
@@ -237,35 +241,35 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">create_stroke_engine_linkage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Linkage</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an inverted stroke engine linkage.&quot;&quot;&quot;</span>
-    <span class="n">anchor</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank anchor&quot;</span><span class="p">)</span>
-    <span class="n">line_a</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line A&quot;</span><span class="p">)</span>
-    <span class="n">line_b</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Line B&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">"""Create an inverted stroke engine linkage."""</span>
+    <span class="n">anchor</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Crank anchor"</span><span class="p">)</span>
+    <span class="n">line_a</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Line A"</span><span class="p">)</span>
+    <span class="n">line_b</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Line B"</span><span class="p">)</span>
 
     <span class="n">crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
-        <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank&quot;</span><span class="p">,</span>
+        <span class="n">anchor</span><span class="o">=</span><span class="n">anchor</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Crank"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">slider</span> <span class="o">=</span> <span class="n">RRPDyad</span><span class="p">(</span>
         <span class="n">revolute_anchor</span><span class="o">=</span><span class="n">crank</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
         <span class="n">line_anchor1</span><span class="o">=</span><span class="n">line_a</span><span class="p">,</span>
         <span class="n">line_anchor2</span><span class="o">=</span><span class="n">line_b</span><span class="p">,</span>
         <span class="n">distance</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Slider&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Slider"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">Linkage</span><span class="p">(</span>
         <span class="p">[</span><span class="n">anchor</span><span class="p">,</span> <span class="n">line_a</span><span class="p">,</span> <span class="n">line_b</span><span class="p">,</span> <span class="n">crank</span><span class="p">,</span> <span class="n">slider</span><span class="p">],</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Simple four-stroke engine&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Simple four-stroke engine"</span><span class="p">,</span>
     <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">view_linkage</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;View a stroke engine linkage in action.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""View a stroke engine linkage in action."""</span>
     <span class="n">stroke_engine</span> <span class="o">=</span> <span class="n">create_stroke_engine_linkage</span><span class="p">()</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">stroke_engine</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">view_linkage</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -276,11 +280,11 @@
 <p>An advanced walking mechanism with 8 parameters and PSO optimization.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">strider.py</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Kinematic Strider linkage, a type of walking linkage.</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""Kinematic Strider linkage, a type of walking linkage.</span>
 
 <span class="sd">The original linkage can be found at</span>
 <span class="sd">https://www.diywalkers.com/strider-linkage-plans.html</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">anim</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -299,7 +303,7 @@
 <span class="n">LAP_PER_SECOND</span> <span class="o">=</span> <span class="mi">100</span>
 
 <span class="c1"># Design parameters — can change without changing the connectivity.</span>
-<span class="n">DIM_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;triangle&quot;</span><span class="p">,</span> <span class="s2">&quot;aperture&quot;</span><span class="p">,</span> <span class="s2">&quot;femur&quot;</span><span class="p">,</span> <span class="s2">&quot;rockerL&quot;</span><span class="p">,</span> <span class="s2">&quot;rockerS&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span> <span class="s2">&quot;tibia&quot;</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">)</span>
+<span class="n">DIM_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"triangle"</span><span class="p">,</span> <span class="s2">"aperture"</span><span class="p">,</span> <span class="s2">"femur"</span><span class="p">,</span> <span class="s2">"rockerL"</span><span class="p">,</span> <span class="s2">"rockerS"</span><span class="p">,</span> <span class="s2">"f"</span><span class="p">,</span> <span class="s2">"tibia"</span><span class="p">,</span> <span class="s2">"phi"</span><span class="p">)</span>
 
 <span class="n">DIMENSIONS</span> <span class="o">=</span> <span class="p">(</span>
     <span class="c1"># AB = AB_p distance (triangle)</span>
@@ -340,7 +344,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">param2dimensions</span><span class="p">(</span><span class="n">param</span><span class="o">=</span><span class="n">DIMENSIONS</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand the symmetric design vector into a full constraint list.</span>
+<span class="w">    </span><span class="sd">"""Expand the symmetric design vector into a full constraint list.</span>
 
 <span class="sd">    The mechanism is symmetric so only half the parameters are exposed;</span>
 <span class="sd">    this helper mirrors them back out in the order each component</span>
@@ -349,7 +353,7 @@
 <span class="sd">    :param param: Short form of the design vector.</span>
 <span class="sd">    :param flat: If ``True`` return a flat tuple of all constraint</span>
 <span class="sd">        values; if ``False`` return a per-component tuple-of-tuples.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">(</span>
         <span class="c1"># Static joints (A, Y) carry no constraints</span>
         <span class="p">(),</span>
@@ -378,14 +382,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_constraints_by_joint</span><span class="p">(</span><span class="n">dimensions</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize *dimensions* into a per-joint tuple-of-tuples.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Normalize *dimensions* into a per-joint tuple-of-tuples."""</span>
     <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">dimensions</span>
     <span class="k">return</span> <span class="n">param2dimensions</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">complete_strider</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="n">prev</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a Strider linkage from a per-joint constraint tuple.</span>
+<span class="w">    </span><span class="sd">"""Build a Strider linkage from a per-joint constraint tuple.</span>
 
 <span class="sd">    :param constraints: Per-joint constraint values (tuple-of-tuples)</span>
 <span class="sd">        or a flat design vector.</span>
@@ -394,7 +398,7 @@
 <span class="sd">        ``INIT_COORD``).</span>
 
 <span class="sd">    :return: A strider ``Linkage``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">_constraints_by_joint</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
     <span class="c1"># c[0] and c[1] are empty — A and Y contribute no constraints.</span>
     <span class="n">B_d</span><span class="p">,</span> <span class="n">B_a</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
@@ -410,14 +414,14 @@
     <span class="n">parts</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Mechanism frame — A is the origin, Y is the vertical reference.</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="o">*</span><span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-    <span class="n">Y</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="o">*</span><span class="n">prev</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Point (0, 1)&quot;</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="o">*</span><span class="n">prev</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"A"</span><span class="p">)</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="o">*</span><span class="n">prev</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Point (0, 1)"</span><span class="p">)</span>
     <span class="n">parts</span> <span class="o">+=</span> <span class="p">[</span><span class="n">A</span><span class="p">,</span> <span class="n">Y</span><span class="p">]</span>
 
     <span class="c1"># Frame-side fixed dyads</span>
-    <span class="n">B</span> <span class="o">=</span> <span class="n">FixedDyad</span><span class="p">(</span><span class="n">anchor1</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">B_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">B_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Frame right (B)&quot;</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">FixedDyad</span><span class="p">(</span><span class="n">anchor1</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">B_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">B_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Frame right (B)"</span><span class="p">)</span>
     <span class="n">B_p</span> <span class="o">=</span> <span class="n">FixedDyad</span><span class="p">(</span>
-        <span class="n">anchor1</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">Bp_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">Bp_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Frame left (B_p)&quot;</span><span class="p">,</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">A</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">Y</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">Bp_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">Bp_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Frame left (B_p)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parts</span> <span class="o">+=</span> <span class="p">[</span><span class="n">B</span><span class="p">,</span> <span class="n">B_p</span><span class="p">]</span>
 
@@ -426,7 +430,7 @@
         <span class="n">anchor</span><span class="o">=</span><span class="n">A</span><span class="p">,</span>
         <span class="n">radius</span><span class="o">=</span><span class="n">crank_r</span><span class="p">,</span>
         <span class="n">angular_velocity</span><span class="o">=-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">LAP_POINTS</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Crank link (C)&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Crank link (C)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
 
@@ -436,43 +440,43 @@
         <span class="n">anchor2</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
         <span class="n">distance1</span><span class="o">=</span><span class="n">D_d1</span><span class="p">,</span>
         <span class="n">distance2</span><span class="o">=</span><span class="n">D_d2</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left knee link (D)&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Left knee link (D)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">E</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
         <span class="n">anchor1</span><span class="o">=</span><span class="n">B</span><span class="p">,</span>
         <span class="n">anchor2</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span>
         <span class="n">distance1</span><span class="o">=</span><span class="n">E_d1</span><span class="p">,</span>
         <span class="n">distance2</span><span class="o">=</span><span class="n">E_d2</span><span class="p">,</span>
-        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right knee link (E)&quot;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">"Right knee link (E)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parts</span> <span class="o">+=</span> <span class="p">[</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">]</span>
 
     <span class="c1"># Ankle fixed dyads (F fixed to C/E, G fixed to C/D)</span>
     <span class="n">F</span> <span class="o">=</span> <span class="n">FixedDyad</span><span class="p">(</span>
-        <span class="n">anchor1</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">F_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">F_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left ankle link (F)&quot;</span><span class="p">,</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">F_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">F_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Left ankle link (F)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">G</span> <span class="o">=</span> <span class="n">FixedDyad</span><span class="p">(</span>
-        <span class="n">anchor1</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">G_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">G_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right ankle link (G)&quot;</span><span class="p">,</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="n">G_d</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="n">G_a</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Right ankle link (G)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parts</span> <span class="o">+=</span> <span class="p">[</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">]</span>
 
     <span class="c1"># Feet</span>
     <span class="n">H</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
-        <span class="n">anchor1</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">H_d1</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="n">H_d2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Left foot (H)&quot;</span><span class="p">,</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">D</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">F</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">H_d1</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="n">H_d2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Left foot (H)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">I_</span> <span class="o">=</span> <span class="n">RRRDyad</span><span class="p">(</span>
-        <span class="n">anchor1</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">G</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">I_d1</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="n">I_d2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Right foot (I)&quot;</span><span class="p">,</span>
+        <span class="n">anchor1</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">anchor2</span><span class="o">=</span><span class="n">G</span><span class="p">,</span> <span class="n">distance1</span><span class="o">=</span><span class="n">I_d1</span><span class="p">,</span> <span class="n">distance2</span><span class="o">=</span><span class="n">I_d2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Right foot (I)"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parts</span> <span class="o">+=</span> <span class="p">[</span><span class="n">H</span><span class="p">,</span> <span class="n">I_</span><span class="p">]</span>
 
-    <span class="n">strider</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Strider&quot;</span><span class="p">)</span>
+    <span class="n">strider</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span><span class="n">parts</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Strider"</span><span class="p">)</span>
     <span class="c1"># Initial coordinates are in the same order as INIT_COORD.</span>
     <span class="n">strider</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">prev</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">strider</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">sym_stride_evaluator</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">initial_positions</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score a set of dimensions by horizontal foot-stride length.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Score a set of dimensions by horizontal foot-stride length."""</span>
     <span class="n">linkage</span><span class="o">.</span><span class="n">set_completely</span><span class="p">(</span>
         <span class="nb">list</span><span class="p">(</span><span class="n">param2dimensions</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
         <span class="nb">list</span><span class="p">(</span><span class="n">initial_positions</span><span class="p">),</span>
@@ -490,14 +494,14 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">history_saver</span><span class="p">(</span><span class="n">evaluator</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">linkage</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Record each evaluation for animation/plotting.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Record each evaluation for animation/plotting."""</span>
     <span class="n">score</span> <span class="o">=</span> <span class="n">evaluator</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
     <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">score</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">dims</span><span class="p">),</span> <span class="n">pos</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">score</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">view_swarm_polar</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">DIMENSIONS</span><span class="p">,</span> <span class="n">save_each</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">400</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Animate the swarm as a polar graph over the design parameters.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Animate the swarm as a polar graph over the design parameters."""</span>
     <span class="n">history</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">ensemble</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">history_saver</span><span class="p">(</span><span class="n">sym_stride_evaluator</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="p">),</span>
@@ -508,21 +512,21 @@
         <span class="n">bounds</span><span class="o">=</span><span class="n">BOUNDS</span><span class="p">,</span>
         <span class="n">dimensions</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
     <span class="p">)</span>
-    <span class="n">best_score</span> <span class="o">=</span> <span class="n">ensemble</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">best_score</span> <span class="o">=</span> <span class="n">ensemble</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s2">&quot;Swarm in polar graph&quot;</span><span class="p">)</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Final best score: </span><span class="si">{</span><span class="o">-</span><span class="n">best_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s2">"Swarm in polar graph"</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Final best score: </span><span class="si">{</span><span class="o">-</span><span class="n">best_score</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">formatted_history</span> <span class="o">=</span> <span class="p">[</span><span class="n">history</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n_agents</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">),</span> <span class="n">n_agents</span><span class="p">)]</span>
     <span class="n">artists</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">init_polar_repr</span><span class="p">():</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">&quot;polar&quot;</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s2">"polar"</span><span class="p">)</span>
         <span class="n">artists</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_agents</span><span class="p">))</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_rmax</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">DIM_NAMES</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,)</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">DIM_NAMES</span> <span class="o">+</span> <span class="p">(</span><span class="s2">"score"</span><span class="p">,)</span>
         <span class="p">)</span>
-        <span class="n">artists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.9</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+        <span class="n">artists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">1.9</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">animated</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">artists</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">repr_polar_swarm</span><span class="p">(</span><span class="n">current_swarm</span><span class="p">):</span>
@@ -530,8 +534,8 @@
         <span class="k">for</span> <span class="n">line</span><span class="p">,</span> <span class="n">agent</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">artists</span><span class="p">,</span> <span class="n">current_swarm</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
             <span class="n">line</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">agent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">agent</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
         <span class="n">artists</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Best score: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">current_swarm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;Iteration: </span><span class="si">{</span><span class="n">current_swarm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">"Best score: </span><span class="si">{</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">current_swarm</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+            <span class="sa">f</span><span class="s2">"Iteration: </span><span class="si">{</span><span class="n">current_swarm</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">artists</span>
 
@@ -551,20 +555,20 @@
             <span class="n">fps</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
             <span class="n">bitrate</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>
             <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Particle swarm looking for R^8 in R application maximum&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="s2">&quot;Made with Python and Matplotlib&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The swarm tries to find the best dimension &quot;</span>
-                <span class="s2">&quot;set for the Strider legged mechanism&quot;</span><span class="p">,</span>
+                <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Particle swarm looking for R^8 in R application maximum"</span><span class="p">,</span>
+                <span class="s2">"comment"</span><span class="p">:</span> <span class="s2">"Made with Python and Matplotlib"</span><span class="p">,</span>
+                <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"The swarm tries to find the best dimension "</span>
+                <span class="s2">"set for the Strider legged mechanism"</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
-        <span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;Particle Swarm Optimization of Strider linkage.mp4&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">writer</span><span class="p">)</span>
-    <span class="c1"># Keep a reference so matplotlib doesn&#39;t garbage-collect the animation.</span>
+        <span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Particle Swarm Optimization of Strider linkage.mp4"</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">writer</span><span class="p">)</span>
+    <span class="c1"># Keep a reference so matplotlib doesn't garbage-collect the animation.</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">animation</span>
     <span class="k">return</span> <span class="n">ensemble</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">view_swarm_tiled</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">DIMENSIONS</span><span class="p">,</span> <span class="n">save_each</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">400</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render the swarm as a grid of small linkage previews.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Render the swarm as a grid of small linkage previews."""</span>
     <span class="n">history</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">ensemble</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">particle_swarm_optimization</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">history_saver</span><span class="p">(</span><span class="n">sym_stride_evaluator</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="p">),</span>
@@ -576,7 +580,7 @@
         <span class="n">dimensions</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),</span>
     <span class="p">)</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s2">&quot;Swarm in tiled mode&quot;</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="s2">"Swarm in tiled mode"</span><span class="p">)</span>
     <span class="n">cells</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n_agents</span><span class="p">)))</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">cells</span><span class="p">)</span>
     <span class="n">formatted_history</span> <span class="o">=</span> <span class="p">[</span><span class="n">history</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n_agents</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">),</span> <span class="n">n_agents</span><span class="p">)]</span>
@@ -602,13 +606,13 @@
             <span class="n">fps</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span>
             <span class="n">bitrate</span><span class="o">=</span><span class="mi">1800</span><span class="p">,</span>
             <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Particle swarm looking for R^8 in R application maximum&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;comment&quot;</span><span class="p">:</span> <span class="s2">&quot;Made with Python and Matplotlib&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The swarm looks for the best dimension &quot;</span>
-                <span class="s2">&quot;set for the Strider legged mechanism&quot;</span><span class="p">,</span>
+                <span class="s2">"title"</span><span class="p">:</span> <span class="s2">"Particle swarm looking for R^8 in R application maximum"</span><span class="p">,</span>
+                <span class="s2">"comment"</span><span class="p">:</span> <span class="s2">"Made with Python and Matplotlib"</span><span class="p">,</span>
+                <span class="s2">"description"</span><span class="p">:</span> <span class="s2">"The swarm looks for the best dimension "</span>
+                <span class="s2">"set for the Strider legged mechanism"</span><span class="p">,</span>
             <span class="p">},</span>
         <span class="p">)</span>
-        <span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;Strider linkage - Particle swarm optimization.mp4&quot;</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">writer</span><span class="p">)</span>
+        <span class="n">animation</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"Strider linkage - Particle swarm optimization.mp4"</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">writer</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">animation</span>
     <span class="k">return</span> <span class="n">ensemble</span>
 
@@ -622,7 +626,7 @@
     <span class="n">n_iterations</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimise a strider geometry with PSO.</span>
+<span class="w">    </span><span class="sd">"""Optimise a strider geometry with PSO.</span>
 
 <span class="sd">    :param linkage: The linkage to optimise.</span>
 <span class="sd">    :param dimensions: Starting design vector.</span>
@@ -630,8 +634,8 @@
 <span class="sd">    :param save_each: If non-zero, save every ``save_each`` iterations.</span>
 <span class="sd">    :param n_agents: Number of particles.</span>
 <span class="sd">    :param n_iterations: Iterations to run.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial dimensions:&quot;</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
+<span class="sd">    """</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Initial dimensions:"</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">show</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">view_swarm_polar</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">save_each</span><span class="p">,</span> <span class="n">n_agents</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">)</span>
@@ -650,10 +654,10 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">show_optimized</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">,</span> <span class="n">n_show</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the top members of an optimization ensemble.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Display the top members of an optimization ensemble."""</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">n_show</span><span class="p">,</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">n_members</span><span class="p">)):</span>
         <span class="n">member</span> <span class="o">=</span> <span class="n">ensemble</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">score</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="n">member</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="n">linkage</span><span class="o">.</span><span class="n">set_constraints</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">param2dimensions</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)))</span>
@@ -666,20 +670,20 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a strider and run a quick PSO over its geometry.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Build a strider and run a quick PSO over its geometry."""</span>
     <span class="n">strider</span> <span class="o">=</span> <span class="n">complete_strider</span><span class="p">(</span><span class="n">param2dimensions</span><span class="p">(</span><span class="n">DIMENSIONS</span><span class="p">),</span> <span class="n">INIT_COORD</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Initial striding score:&quot;</span><span class="p">,</span> <span class="n">sym_stride_evaluator</span><span class="p">(</span><span class="n">strider</span><span class="p">,</span> <span class="n">DIMENSIONS</span><span class="p">,</span> <span class="n">INIT_COORD</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Initial striding score:"</span><span class="p">,</span> <span class="n">sym_stride_evaluator</span><span class="p">(</span><span class="n">strider</span><span class="p">,</span> <span class="n">DIMENSIONS</span><span class="p">,</span> <span class="n">INIT_COORD</span><span class="p">))</span>
     <span class="n">pl</span><span class="o">.</span><span class="n">show_linkage</span><span class="p">(</span><span class="n">strider</span><span class="p">,</span> <span class="n">iteration_factor</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="n">ensemble</span> <span class="o">=</span> <span class="n">swarm_optimizer</span><span class="p">(</span><span class="n">strider</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save_each</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_agents</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">n_members</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;Striding score after particle swarm optimization:&quot;</span><span class="p">,</span>
-            <span class="n">ensemble</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+            <span class="s2">"Striding score after particle swarm optimization:"</span><span class="p">,</span>
+            <span class="n">ensemble</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"score"</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
         <span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>

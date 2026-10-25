@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.visualizer package &mdash; pylinkage 1.2.2 documentation</title>
+  <title>pylinkage.visualizer package &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -370,7 +370,7 @@ suitable for engineering documentation and academic publications.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">drawing</span> <span class="o">=</span> <span class="n">plot_linkage_svg_with_velocity</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">linkage</span><span class="p">,</span> <span class="n">positions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">velocities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">drawing</span><span class="o">.</span><span class="n">save_svg</span><span class="p">(</span><span class="s2">&quot;linkage_with_velocity.svg&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">drawing</span><span class="o">.</span><span class="n">save_svg</span><span class="p">(</span><span class="s2">"linkage_with_velocity.svg"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -435,7 +435,7 @@ and other CAD applications that support the DXF format.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_linkage_dxf</span><span class="p">,</span> <span class="n">save_linkage_dxf</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">plot_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s2">&quot;linkage.dxf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span><span class="o">.</span><span class="n">saveas</span><span class="p">(</span><span class="s2">"linkage.dxf"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -456,7 +456,7 @@ and other CAD applications that support the DXF format.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_dxf</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;output.dxf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_dxf</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">"output.dxf"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -491,7 +491,7 @@ and other CAD applications that support the DXF format.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">linkage</span><span class="o">.</span><span class="n">set_input_velocity</span><span class="p">(</span><span class="n">crank</span><span class="p">,</span> <span class="n">omega</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">animate_kinematics</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;vel.gif&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fig</span> <span class="o">=</span> <span class="n">animate_kinematics</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">show_velocity</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">"vel.gif"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -981,7 +981,7 @@ as separate solids for the specified frame position.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_linkage_3d</span><span class="p">,</span> <span class="n">save_linkage_step</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">build_linkage_3d</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;linkage.step&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">"linkage.step"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1002,7 +1002,7 @@ as separate solids for the specified frame position.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_linkage_step</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">&quot;output.step&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_linkage_step</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="s2">"output.step"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

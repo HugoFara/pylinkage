@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cam-Follower Mechanisms &mdash; pylinkage 1.2.2 documentation</title>
+  <title>Cam-Follower Mechanisms &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -241,14 +241,14 @@ are common choices with zero velocity/acceleration at boundaries.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">HarmonicMotionLaw</span>
 
 <span class="c1"># Fixed cam center</span>
-<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cam_center"</span><span class="p">)</span>
 
 <span class="c1"># Cam driver (rotating crank)</span>
 <span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
     <span class="n">anchor</span><span class="o">=</span><span class="n">cam_center</span><span class="p">,</span>
     <span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>           <span class="c1"># Small radius (just for visualization)</span>
     <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="c1"># Rotation speed</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam&quot;</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"cam"</span>
 <span class="p">)</span>
 
 <span class="c1"># Cam profile</span>
@@ -263,7 +263,7 @@ are common choices with zero velocity/acceleration at boundaries.</p>
 <span class="p">)</span>
 
 <span class="c1"># Guide point (defines direction of follower motion)</span>
-<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;guide&quot;</span><span class="p">)</span>
+<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"guide"</span><span class="p">)</span>
 
 <span class="c1"># Translating follower</span>
 <span class="n">follower</span> <span class="o">=</span> <span class="n">TranslatingCamFollower</span><span class="p">(</span>
@@ -272,19 +272,19 @@ are common choices with zero velocity/acceleration at boundaries.</p>
     <span class="n">guide</span><span class="o">=</span><span class="n">guide</span><span class="p">,</span>
     <span class="n">guide_angle</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># Vertical motion</span>
     <span class="n">roller_radius</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>      <span class="c1"># Knife-edge follower</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;follower&quot;</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"follower"</span>
 <span class="p">)</span>
 
 <span class="c1"># Create linkage</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">Linkage</span><span class="p">(</span>
     <span class="n">components</span><span class="o">=</span><span class="p">[</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">guide</span><span class="p">,</span> <span class="n">cam_crank</span><span class="p">,</span> <span class="n">follower</span><span class="p">],</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cam mechanism&quot;</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">"Cam mechanism"</span>
 <span class="p">)</span>
 
 <span class="c1"># Simulate</span>
 <span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
     <span class="n">follower_pos</span> <span class="o">=</span> <span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Follower at: </span><span class="si">{</span><span class="n">follower_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Follower at: </span><span class="si">{</span><span class="n">follower_pos</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -315,8 +315,8 @@ are common choices with zero velocity/acceleration at boundaries.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">CycloidalMotionLaw</span>
 
 <span class="c1"># Fixed points</span>
-<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
-<span class="n">pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pivot&quot;</span><span class="p">)</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cam_center"</span><span class="p">)</span>
+<span class="n">pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"pivot"</span><span class="p">)</span>
 
 <span class="c1"># Cam driver</span>
 <span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span>
@@ -352,7 +352,7 @@ are common choices with zero velocity/acceleration at boundaries.</p>
 
 <span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
     <span class="n">output_pos</span> <span class="o">=</span> <span class="n">follower</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">position</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arm end at: </span><span class="si">{</span><span class="n">output_pos</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Arm end at: </span><span class="si">{</span><span class="n">output_pos</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -371,9 +371,9 @@ an anchor point that other dyads can connect to.</p>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.cam</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionProfile</span><span class="p">,</span> <span class="n">HarmonicMotionLaw</span>
 
 <span class="c1"># Ground points</span>
-<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cam_center&quot;</span><span class="p">)</span>
-<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;guide&quot;</span><span class="p">)</span>
-<span class="n">rocker_pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rocker_pivot&quot;</span><span class="p">)</span>
+<span class="n">cam_center</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"cam_center"</span><span class="p">)</span>
+<span class="n">guide</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"guide"</span><span class="p">)</span>
+<span class="n">rocker_pivot</span> <span class="o">=</span> <span class="n">Ground</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"rocker_pivot"</span><span class="p">)</span>
 
 <span class="c1"># Cam mechanism</span>
 <span class="n">cam_crank</span> <span class="o">=</span> <span class="n">Crank</span><span class="p">(</span><span class="n">anchor</span><span class="o">=</span><span class="n">cam_center</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">angular_velocity</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -414,7 +414,7 @@ an anchor point that other dyads can connect to.</p>
 <span class="c1"># solves, so its position is read directly; only actuators and cam</span>
 <span class="c1"># followers expose a separate ``output``.</span>
 <span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">linkage</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rocker joint at: </span><span class="si">{</span><span class="n">rocker</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rocker joint at: </span><span class="si">{</span><span class="n">rocker</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -431,7 +431,7 @@ High pressure angles (&gt;30 degrees) can cause binding.</p>
 <span class="c1"># Check pressure angle at various cam positions</span>
 <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">]:</span>
     <span class="n">pressure</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">pressure_angle</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;At </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: pressure angle = </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> deg&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"At </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: pressure angle = </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> deg"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -441,7 +441,7 @@ High pressure angles (&gt;30 degrees) can cause binding.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">roller_radius</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="k">for</span> <span class="n">angle</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">]:</span>
     <span class="n">pitch</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">pitch_radius</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">roller_radius</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pitch radius at </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: </span><span class="si">{</span><span class="n">pitch</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pitch radius at </span><span class="si">{</span><span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> deg: </span><span class="si">{</span><span class="n">pitch</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

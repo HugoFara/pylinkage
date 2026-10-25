@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.assur package &mdash; pylinkage 1.2.2 documentation</title>
+  <title>pylinkage.assur package &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -307,8 +307,8 @@ simulation are delegated to the Mechanism and solver modules.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">assur</span> <span class="o">=</span> <span class="n">AssurMechanism</span><span class="p">(</span><span class="n">mechanism</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access formal properties</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOF: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">degree_of_freedom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Groups: </span><span class="si">{</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">joint_signature</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">assur</span><span class="o">.</span><span class="n">assur_groups</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DOF: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">degree_of_freedom</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Groups: </span><span class="si">{</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">joint_signature</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">assur</span><span class="o">.</span><span class="n">assur_groups</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simulation still works via delegation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">assur</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
@@ -553,10 +553,10 @@ solve the linkage kinematics.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">ground</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Drivers: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">drivers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ground: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">ground</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Drivers: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">drivers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_signature</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_signature</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_nodes</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -630,10 +630,10 @@ in the order they should be solved.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -681,7 +681,7 @@ are stored separately in a Dimensions object.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="s2">"AB"</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"B"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -753,12 +753,12 @@ are stored separately in a Dimensions object.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="go">[&#39;B&#39;]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">"AB"</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"B"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s2">"A"</span><span class="p">)</span>
+<span class="go">['B']</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -947,7 +947,7 @@ are stored separately in a Dimensions object.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">node</span><span class="o">.</span><span class="n">joint_type</span>
 <span class="go">&lt;JointType.REVOLUTE: 1&gt;</span>
 </pre></div>
@@ -1336,7 +1336,7 @@ object to graph_to_mechanism.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">from_hypergraph</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
 </pre></div>
@@ -1360,7 +1360,7 @@ are grouped into hyperedges.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">to_hypergraph</span><span class="p">(</span><span class="n">assur_graph</span><span class="p">)</span>
 </pre></div>
@@ -1407,9 +1407,9 @@ conversion path for new code.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span><span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)},</span> <span class="o">...</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span><span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">"A"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)},</span> <span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mechanism</span> <span class="o">=</span> <span class="n">graph_to_mechanism</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">mechanism</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
@@ -1507,8 +1507,8 @@ use the serialization functions in pylinkage.dimensions.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"my_linkage.json"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">"my_linkage.json"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1547,8 +1547,8 @@ used to reconstruct the graph later.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"my_linkage.json"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">"my_linkage.json"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1595,14 +1595,14 @@ topology only.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pylinkage.assur</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_signature</span><span class="p">,</span> <span class="n">signature_to_hypergraph</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse formal syntax</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">joint_signature</span><span class="p">)</span>
-<span class="go">&#39;RRR&#39;</span>
+<span class="go">'RRR'</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate pure topology</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-<span class="go">[&#39;anchor_0&#39;, &#39;anchor_1&#39;, &#39;internal_0&#39;]</span>
+<span class="go">['anchor_0', 'anchor_1', 'internal_0']</span>
 </pre></div>
 </div>
 <dl class="py class">
@@ -1652,13 +1652,13 @@ defining an Assur group’s topology.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">joints</span>
 <span class="go">(JointType.REVOLUTE, JointType.REVOLUTE, JointType.REVOLUTE)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">group_class</span>
 <span class="go">&lt;AssurGroupClass.DYAD: 1&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RRR&#39;</span>
+<span class="go">'RRR'</span>
 </pre></div>
 </div>
 <dl class="py property">
@@ -1721,12 +1721,12 @@ T and _ as parts of a single prismatic joint.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">&quot;RT_R&quot;</span><span class="p">)</span>
-<span class="go">&#39;RPR&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">&quot;T_R_T&quot;</span><span class="p">)</span>
-<span class="go">&#39;PRP&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
-<span class="go">&#39;RRR&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">"RT_R"</span><span class="p">)</span>
+<span class="go">'RPR'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">"T_R_T"</span><span class="p">)</span>
+<span class="go">'PRP'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isomer_to_canonical</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
+<span class="go">'RRR'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1753,16 +1753,16 @@ is a tuple of role strings (“revolute”, “slider”, “guide”).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="p">,</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">parse_isomer_signature</span><span class="p">(</span><span class="s2">&quot;RT_R&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="p">,</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">parse_isomer_signature</span><span class="p">(</span><span class="s2">"RT_R"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span>
-<span class="go">&#39;RT_R&#39;</span>
+<span class="go">'RT_R'</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">roles</span>
-<span class="go">(&#39;revolute&#39;, &#39;slider&#39;, &#39;guide&#39;, &#39;revolute&#39;)</span>
+<span class="go">('revolute', 'slider', 'guide', 'revolute')</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="p">,</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">parse_isomer_signature</span><span class="p">(</span><span class="s2">&quot;T_R_T&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="p">,</span> <span class="n">roles</span> <span class="o">=</span> <span class="n">parse_isomer_signature</span><span class="p">(</span><span class="s2">"T_R_T"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">roles</span>
-<span class="go">(&#39;slider&#39;, &#39;guide&#39;, &#39;revolute&#39;, &#39;guide&#39;, &#39;slider&#39;)</span>
+<span class="go">('slider', 'guide', 'revolute', 'guide', 'slider')</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1788,19 +1788,19 @@ is a tuple of role strings (“revolute”, “slider”, “guide”).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">joints</span>
 <span class="go">(JointType.REVOLUTE, JointType.REVOLUTE, JointType.REVOLUTE)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;R_P_R&quot;</span><span class="p">)</span>  <span class="c1"># With separators</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"R_P_R"</span><span class="p">)</span>  <span class="c1"># With separators</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RPR&#39;</span>
+<span class="go">'RPR'</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RTR&quot;</span><span class="p">)</span>  <span class="c1"># T accepted as alias for P</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RTR"</span><span class="p">)</span>  <span class="c1"># T accepted as alias for P</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RPR&#39;</span>
+<span class="go">'RPR'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1820,15 +1820,15 @@ class hierarchy (DyadRRR, DyadRRP, etc.).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
-<span class="go">&#39;DyadRRR&#39;</span>
+<span class="go">'DyadRRR'</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="s2">&quot;RPR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="s2">"RPR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
-<span class="go">&#39;DyadRPR&#39;</span>
+<span class="go">'DyadRPR'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1859,7 +1859,7 @@ All edges have distance=None, representing only structural connections.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 <span class="go">3  # 2 anchors + 1 internal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
@@ -1867,8 +1867,8 @@ All edges have distance=None, representing only structural connections.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># With prefix for unique IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">leg</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;leg1_&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;leg1_anchor_0&quot;</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">nodes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leg</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"leg1_"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"leg1_anchor_0"</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">nodes</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -1900,8 +1900,8 @@ Use pylinkage.solver.solve.solve_group() for position computation.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">assur</span> <span class="o">=</span> <span class="n">AssurMechanism</span><span class="p">(</span><span class="n">mechanism</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access structural properties</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DOF: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">degree_of_freedom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Groups: </span><span class="si">{</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">joint_signature</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">assur</span><span class="o">.</span><span class="n">assur_groups</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DOF: </span><span class="si">{</span><span class="n">assur</span><span class="o">.</span><span class="n">degree_of_freedom</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Groups: </span><span class="si">{</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">joint_signature</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">assur</span><span class="o">.</span><span class="n">assur_groups</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simulation via delegation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">assur</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
@@ -2252,13 +2252,13 @@ defining an Assur group’s topology.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">joints</span>
 <span class="go">(JointType.REVOLUTE, JointType.REVOLUTE, JointType.REVOLUTE)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">group_class</span>
 <span class="go">&lt;AssurGroupClass.DYAD: 1&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RRR&#39;</span>
+<span class="go">'RRR'</span>
 </pre></div>
 </div>
 <dl class="py property">
@@ -2325,10 +2325,10 @@ solve the linkage kinematics.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ground: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">ground</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Drivers: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">drivers</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ground: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">ground</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Drivers: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">drivers</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_signature</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_nodes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">joint_signature</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">group</span><span class="o">.</span><span class="n">internal_nodes</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -2512,7 +2512,7 @@ are stored separately in a Dimensions object.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">edge</span> <span class="o">=</span> <span class="n">Edge</span><span class="p">(</span><span class="s2">"AB"</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"B"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py attribute">
@@ -2629,12 +2629,12 @@ Values are explicit integers for serialization stability.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">&quot;AB&quot;</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
-<span class="go">[&#39;B&#39;]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"B"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">DRIVER</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">Edge</span><span class="p">(</span><span class="s2">"AB"</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"B"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s2">"A"</span><span class="p">)</span>
+<span class="go">['B']</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -2823,7 +2823,7 @@ Values are explicit integers for serialization stability.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">node</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">node</span><span class="o">.</span><span class="n">joint_type</span>
 <span class="go">&lt;JointType.REVOLUTE: 1&gt;</span>
 </pre></div>
@@ -2973,10 +2973,10 @@ distance constraint connects.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">decompose_assur_groups</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">}</span><span class="s2"> Assur groups"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3000,7 +3000,7 @@ object to graph_to_mechanism.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">HypergraphLinkage</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">from_hypergraph</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
 </pre></div>
@@ -3039,8 +3039,8 @@ object to graph_to_mechanism.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"my_linkage.json"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">"my_linkage.json"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3079,8 +3079,8 @@ used to reconstruct the graph later.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">&quot;my_linkage.json&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph_to_json</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="s2">"my_linkage.json"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">restored</span> <span class="o">=</span> <span class="n">graph_from_json</span><span class="p">(</span><span class="s2">"my_linkage.json"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3114,9 +3114,9 @@ conversion path for new code.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span><span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)},</span> <span class="o">...</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="s2">"A"</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">NodeRole</span><span class="o">.</span><span class="n">GROUND</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dims</span> <span class="o">=</span> <span class="n">Dimensions</span><span class="p">(</span><span class="n">node_positions</span><span class="o">=</span><span class="p">{</span><span class="s2">"A"</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)},</span> <span class="o">...</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mechanism</span> <span class="o">=</span> <span class="n">graph_to_mechanism</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">positions</span> <span class="ow">in</span> <span class="n">mechanism</span><span class="o">.</span><span class="n">step</span><span class="p">():</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
@@ -3167,19 +3167,19 @@ for analysis, decomposition, or visualization.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">joints</span>
 <span class="go">(JointType.REVOLUTE, JointType.REVOLUTE, JointType.REVOLUTE)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;R_P_R&quot;</span><span class="p">)</span>  <span class="c1"># With separators</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"R_P_R"</span><span class="p">)</span>  <span class="c1"># With separators</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RPR&#39;</span>
+<span class="go">'RPR'</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RTR&quot;</span><span class="p">)</span>  <span class="c1"># T accepted as alias for P</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RTR"</span><span class="p">)</span>  <span class="c1"># T accepted as alias for P</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span><span class="o">.</span><span class="n">canonical_form</span>
-<span class="go">&#39;RPR&#39;</span>
+<span class="go">'RPR'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3199,15 +3199,15 @@ class hierarchy (DyadRRR, DyadRRP, etc.).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sig</span> <span class="o">=</span> <span class="n">parse_signature</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="n">sig</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
-<span class="go">&#39;DyadRRR&#39;</span>
+<span class="go">'DyadRRR'</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="s2">&quot;RPR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span> <span class="o">=</span> <span class="n">signature_to_group_class</span><span class="p">(</span><span class="s2">"RPR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span>
-<span class="go">&#39;DyadRPR&#39;</span>
+<span class="go">'DyadRPR'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -3238,7 +3238,7 @@ All edges have distance=None, representing only structural connections.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 <span class="go">3  # 2 anchors + 1 internal</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
@@ -3246,8 +3246,8 @@ All edges have distance=None, representing only structural connections.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># With prefix for unique IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">leg</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">&quot;RRR&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;leg1_&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;leg1_anchor_0&quot;</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">nodes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leg</span> <span class="o">=</span> <span class="n">signature_to_hypergraph</span><span class="p">(</span><span class="s2">"RRR"</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"leg1_"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"leg1_anchor_0"</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">nodes</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -3270,7 +3270,7 @@ are grouped into hyperedges.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Four-bar&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">assur_graph</span> <span class="o">=</span> <span class="n">LinkageGraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"Four-bar"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ... add nodes and edges ...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">hg</span> <span class="o">=</span> <span class="n">to_hypergraph</span><span class="p">(</span><span class="n">assur_graph</span><span class="p">)</span>
 </pre></div>
