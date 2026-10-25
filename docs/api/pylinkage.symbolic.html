@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pylinkage.symbolic package &mdash; pylinkage 1.2.2 documentation</title>
+  <title>pylinkage.symbolic package &mdash; pylinkage 1.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=fd7cadf9"></script>
+      <script src="../_static/documentation_options.js?v=1f29e9d3"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/js/theme.js"></script>
@@ -708,13 +708,13 @@ fast numeric evaluation during optimization. The optimizer uses
 scipy.optimize.minimize with analytical gradients.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># Minimize deviation from y=2</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r_AB&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;r_BC&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;r_CD&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-<span class="gp">... </span>    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r_AB&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;r_BC&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;r_CD&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
+<span class="gp">... </span>    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"r_AB"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"r_BC"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"r_CD"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">"r_AB"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">"r_BC"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">"r_CD"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -863,9 +863,9 @@ results.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">buildable</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_buildability</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;r0&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">buildable</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_buildability</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="p">{</span><span class="s2">"r0"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"r1"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="ow">not</span> <span class="n">buildable</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linkage is unbuildable: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linkage is unbuildable: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -910,7 +910,7 @@ with different parameter values, as it avoids repeated lambdify calls.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">funcs</span> <span class="o">=</span> <span class="n">create_trajectory_functions</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x_func</span><span class="p">,</span> <span class="n">y_func</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_func</span><span class="p">,</span> <span class="n">y_func</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_vals</span> <span class="o">=</span> <span class="n">x_func</span><span class="p">(</span><span class="n">theta_array</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">param_values</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -924,8 +924,12 @@ with different parameter values, as it avoids repeated lambdify calls.</p>
 implicit algebraic equation in x and y only. This gives the
 algebraic equation of the coupler curve.</p>
 <p>Uses the substitution cos(theta) = c, sin(theta) = s with the
-constraint c^2 + s^2 = 1, then eliminates c and s using
-Groebner basis.</p>
+constraint c^2 + s^2 = 1. Each square root <code class="docutils literal notranslate"><span class="pre">sqrt(R)</span></code> of the
+parametrization becomes a symbol <code class="docutils literal notranslate"><span class="pre">r</span></code> with the constraint
+<code class="docutils literal notranslate"><span class="pre">r^2</span> <span class="pre">=</span> <span class="pre">R</span></code>, so the system is polynomial; a Groebner basis then
+eliminates c, s and every r. The curve found is the full algebraic
+curve: both signs of every root, hence both assembly branches of the
+joint, lie on it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -935,11 +939,20 @@ Groebner basis.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Polynomial in x and y, or None if elimination fails.</p>
+<dd class="field-even"><p>Polynomial in x and y (and in the link lengths kept symbolic), or
+None if elimination fails. Floating-point coefficients are read as
+the rationals they stand for (to 1e-10), so the polynomial is exact.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The joint at the end of the first dyad has a single square root
+in its parametrization and its curve comes out in a fraction of a
+second. A joint built on that one has a root inside a root, and
+the Groebner basis computation may then run for minutes.</p>
+</div>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">'theta'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eliminate_theta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
@@ -994,23 +1007,23 @@ efficient gradient-based optimization of linkage parameters.</p></li>
 <span class="c1"># Create a four-bar linkage symbolically</span>
 <span class="n">linkage</span> <span class="o">=</span> <span class="n">fourbar_symbolic</span><span class="p">(</span>
     <span class="n">ground_length</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">crank_length</span><span class="o">=</span><span class="s2">&quot;L1&quot;</span><span class="p">,</span>  <span class="c1"># Symbolic parameter</span>
-    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">&quot;L2&quot;</span><span class="p">,</span>
-    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">&quot;L3&quot;</span><span class="p">,</span>
+    <span class="n">crank_length</span><span class="o">=</span><span class="s2">"L1"</span><span class="p">,</span>  <span class="c1"># Symbolic parameter</span>
+    <span class="n">coupler_length</span><span class="o">=</span><span class="s2">"L2"</span><span class="p">,</span>
+    <span class="n">rocker_length</span><span class="o">=</span><span class="s2">"L3"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Get closed-form trajectory expression for coupler point C</span>
-<span class="n">x_expr</span><span class="p">,</span> <span class="n">y_expr</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">coupler_curve</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;C_x(theta) = </span><span class="si">{</span><span class="n">x_expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;C_y(theta) = </span><span class="si">{</span><span class="n">y_expr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">x_expr</span><span class="p">,</span> <span class="n">y_expr</span> <span class="o">=</span> <span class="n">linkage</span><span class="o">.</span><span class="n">coupler_curve</span><span class="p">(</span><span class="s2">"C"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"C_x(theta) = </span><span class="si">{</span><span class="n">x_expr</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"C_y(theta) = </span><span class="si">{</span><span class="n">y_expr</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Compute numeric trajectory with specific parameter values</span>
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"L1"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"L2"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"L3"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">}</span>
 <span class="n">theta_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">360</span><span class="p">)</span>
 <span class="n">trajectories</span> <span class="o">=</span> <span class="n">compute_trajectory_numeric</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">theta_vals</span><span class="p">)</span>
 
 <span class="c1"># Access (x, y) positions for joint C</span>
-<span class="n">C_positions</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>  <span class="c1"># Shape: (360, 2)</span>
+<span class="n">C_positions</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>  <span class="c1"># Shape: (360, 2)</span>
 </pre></div>
 </div>
 <p>For optimization:</p>
@@ -1018,19 +1031,19 @@ efficient gradient-based optimization of linkage parameters.</p></li>
 
 <span class="c1"># Define objective function symbolically</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>
     <span class="c1"># Minimize deviation from target y=2</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
-    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;L1&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;L2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;L3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
+    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"L1"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"L2"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"L3"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">"L1"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">"L2"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">"L3"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
 <span class="p">)</span>
 
 <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Optimal parameters: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Objective value: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">objective_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Optimal parameters: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Objective value: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">objective_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py class">
@@ -1410,13 +1423,13 @@ fast numeric evaluation during optimization. The optimizer uses
 scipy.optimize.minimize with analytical gradients.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">objective</span><span class="p">(</span><span class="n">trajectories</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># Minimize deviation from y=2</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">SymbolicOptimizer</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r_AB&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;r_BC&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">&quot;r_CD&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
-<span class="gp">... </span>    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r_AB&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;r_BC&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">&quot;r_CD&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
+<span class="gp">... </span>    <span class="n">initial_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"r_AB"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">"r_BC"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span> <span class="s2">"r_CD"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="n">bounds</span><span class="o">=</span><span class="p">{</span><span class="s2">"r_AB"</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">"r_BC"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="s2">"r_CD"</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)},</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1504,9 +1517,9 @@ results.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">buildable</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_buildability</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;r0&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">buildable</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">check_buildability</span><span class="p">(</span><span class="n">linkage</span><span class="p">,</span> <span class="p">{</span><span class="s2">"r0"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"r1"</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="ow">not</span> <span class="n">buildable</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Linkage is unbuildable: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Linkage is unbuildable: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1551,7 +1564,7 @@ with different parameter values, as it avoids repeated lambdify calls.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">funcs</span> <span class="o">=</span> <span class="n">create_trajectory_functions</span><span class="p">(</span><span class="n">linkage</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x_func</span><span class="p">,</span> <span class="n">y_func</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_func</span><span class="p">,</span> <span class="n">y_func</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">funcs</span><span class="p">[</span><span class="s2">"C"</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_vals</span> <span class="o">=</span> <span class="n">x_func</span><span class="p">(</span><span class="n">theta_array</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">param_values</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1565,8 +1578,12 @@ with different parameter values, as it avoids repeated lambdify calls.</p>
 implicit algebraic equation in x and y only. This gives the
 algebraic equation of the coupler curve.</p>
 <p>Uses the substitution cos(theta) = c, sin(theta) = s with the
-constraint c^2 + s^2 = 1, then eliminates c and s using
-Groebner basis.</p>
+constraint c^2 + s^2 = 1. Each square root <code class="docutils literal notranslate"><span class="pre">sqrt(R)</span></code> of the
+parametrization becomes a symbol <code class="docutils literal notranslate"><span class="pre">r</span></code> with the constraint
+<code class="docutils literal notranslate"><span class="pre">r^2</span> <span class="pre">=</span> <span class="pre">R</span></code>, so the system is polynomial; a Groebner basis then
+eliminates c, s and every r. The curve found is the full algebraic
+curve: both signs of every root, hence both assembly branches of the
+joint, lie on it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1576,11 +1593,20 @@ Groebner basis.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Polynomial in x and y, or None if elimination fails.</p>
+<dd class="field-even"><p>Polynomial in x and y (and in the link lengths kept symbolic), or
+None if elimination fails. Floating-point coefficients are read as
+the rationals they stand for (to 1e-10), so the polynomial is exact.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The joint at the end of the first dyad has a single square root
+in its parametrization and its curve comes out in a fraction of a
+second. A joint built on that one has a root inside a root, and
+the Groebner basis computation may then run for minutes.</p>
+</div>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;theta&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">theta</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">'theta'</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">eliminate_theta</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>

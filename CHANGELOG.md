@@ -9,6 +9,8 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-25
+
 ### Added
 
 - **Python 3.15 support.** It is tested in CI. On 3.15 the `cad` extra
@@ -17,9 +19,12 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ### Changed
 
-- **Breaking:** Dropped Python 3.10 support, which reached end of life in
-  October 2026. Minimum version is now Python 3.11. `typing_extensions` is no
-  longer a dependency.
+- **Python 3.11 or later is required.** Python 3.10 reached end of life in
+  October 2026. pip keeps a 3.10 environment on 1.2.2. `typing_extensions` is
+  no longer a dependency.
+- The development lockfile is refreshed. It moves pillow to 13.0.0, along with
+  certifi, tornado, urllib3 and nbconvert, past the advisories Dependabot
+  reported. None of them reach the published package.
 
 ### Fixed
 
