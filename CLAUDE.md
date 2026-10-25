@@ -245,7 +245,7 @@ Note: the local submodules `src/pylinkage/solver/joints.py` and `src/pylinkage/s
 
 ## Dependencies
 
-Requires Python >= 3.10
+Requires Python >= 3.11
 
 Core: numpy, numba, scipy, matplotlib, pyswarms, tqdm, plotly, drawsvg, sympy
 

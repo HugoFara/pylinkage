@@ -235,7 +235,7 @@ The public surface is pinned in
 
 ## Requirements
 
-- Python >= 3.10
+- Python >= 3.11
 - Core: numpy, tqdm
 - Optional (via extras): numba, scipy, sympy, matplotlib, plotly, drawsvg
 
