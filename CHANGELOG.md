@@ -9,6 +9,12 @@ the [Deprecations](https://hugofara.github.io/pylinkage/deprecations.html) page.
 
 ## [Unreleased]
 
+### Added
+
+- **Python 3.15 support.** It is tested in CI. On 3.15 the `cad` extra
+  installs `ezdxf` only, so DXF export works but STEP export does not:
+  build123d depends on cadquery-ocp, which publishes no 3.15 wheels yet.
+
 ### Changed
 
 - **Breaking:** Dropped Python 3.10 support, which reached end of life in

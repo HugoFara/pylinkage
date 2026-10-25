@@ -235,7 +235,8 @@ The public surface is pinned in
 
 ## Requirements
 
-- Python >= 3.11
+- Python >= 3.11 (tested up to 3.15; STEP export via the `cad` extra is not yet
+  available on 3.15)
 - Core: numpy, tqdm
 - Optional (via extras): numba, scipy, sympy, matplotlib, plotly, drawsvg
 

@@ -58,7 +58,8 @@ def _check_build123d() -> Any:
     """Check that build123d is available, raise ImportError if not."""
     if _bd is None:
         raise ImportError(
-            "STEP export requires build123d. Install with: pip install pylinkage[cad]"
+            "STEP export requires build123d. Install with: pip install pylinkage[cad] "
+            "(not yet available on Python 3.15)"
         )
     return _bd
 
