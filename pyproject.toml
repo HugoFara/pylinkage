@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Environment :: Console",
@@ -69,7 +70,8 @@ docs = [
 ]
 cad = [
     "ezdxf>=1.0.0",
-    "build123d>=0.7.0",
+    # cadquery-ocp, under build123d, has no Python 3.15 wheels yet.
+    "build123d>=0.7.0; python_version < '3.15'",
 ]
 analysis = [
     "pandas>=2.0.0",
